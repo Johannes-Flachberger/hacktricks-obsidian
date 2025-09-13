@@ -3,7 +3,7 @@ import re
 from html_to_markdown import convert_to_markdown
 
 # Root of your repo
-ROOT_DIR = "./src"
+BASE_DIR = "./src"
 
 link_pattern = r"\[([^\]]+?)\]\(([\w\-\/]*)index\.html(#([^\)]*))?\)"
 def transform_links(match):
@@ -57,7 +57,7 @@ def transform_md_links(match):
     return f"[[{match.group(2)}|{match.group(1)}]]"
 
 fenced_code_pattern = r'(\n^(`{3,})[\s\S]*?^\2\n|`.+?`)'
-for subdir, _, files in os.walk(ROOT_DIR):
+for subdir, _, files in os.walk(BASE_DIR):
     for file in files:
         if file.endswith(".md"):
             path = os.path.join(subdir, file)
