@@ -32,9 +32,8 @@ jobs:
         with:
           fetch-depth: 0  # needed to push changes later
 
-      - name: Checkout dev branch, get src/ from mdbook
+      - name: Get src/ from mdbook
         run: |
-          git checkout dev
           git fetch origin mdbook
           git checkout origin/mdbook -- src/
 
@@ -48,9 +47,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r scripts/requirements.txt
 
-      - name: Reformat markdown files
+      - name: Format markdown files
         run: |
           python scripts/transform.py
+
+      - name: Copy formatted files to obsidian vault, remove src/
+        run: |
+          rsync -a --delete --exclude='.obsidian/' ./src/ ./hacktricks/ 
+          rm -rf ./src/
 
       - name: Push transformed content to main
         run: |
@@ -58,18 +62,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
 
-          # Add a temporary worktree for main branch
-          git worktree add ../main-temp main
-
-          # Copy transformed files to main branch worktree
-          rsync -a --delete --exclude='.obsidian/' ./src/ ../main-temp/hacktricks/
-
           # Commit and push only if there are changes
-          cd ../main-temp
-          git add .
-          git diff --cached --quiet || git commit -m "Update main content from mdbook"
+          git add ./hacktricks/
+          git diff --cached --quiet || git commit -m "Updated contents from upstream"
           git push origin main
-
-          # Clean up temporary worktree
-          cd ../hacktricks-obsidian
-          git worktree remove ../main-temp
