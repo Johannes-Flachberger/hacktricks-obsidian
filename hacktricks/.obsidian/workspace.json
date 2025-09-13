@@ -11,14 +11,10 @@
             "id": "75c5259ef2de6064",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "linux-hardening/linux-environment-variables.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "linux-environment-variables"
+              "title": "New tab"
             }
           }
         ]
@@ -94,7 +90,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "linux-hardening/linux-environment-variables.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +99,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for linux-environment-variables"
+              "title": "Backlinks"
             }
           },
           {
@@ -113,12 +108,11 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "linux-hardening/linux-environment-variables.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from linux-environment-variables"
+              "title": "Outgoing links"
             }
           },
           {
@@ -142,13 +136,12 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "linux-hardening/linux-environment-variables.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of linux-environment-variables"
+              "title": "Outline"
             }
           }
         ]
@@ -171,10 +164,51 @@
   },
   "active": "75c5259ef2de6064",
   "lastOpenFiles": [
-    "linux-hardening/freeipa-pentesting.md",
-    "generic-methodologies-and-resources/pentesting-network/telecom-network-exploitation.md",
-    "SUMMARY.md",
-    "welcome/about-the-author.md",
-    "README.md"
+    "windows-hardening/active-directory-methodology/acl-persistence-abuse/README.md",
+    "windows-hardening/windows-local-privilege-escalation/dll-hijacking/writable-sys-path-+dll-hijacking-privesc.md",
+    "windows-hardening/windows-local-privilege-escalation/dll-hijacking/README.md",
+    "windows-hardening/active-directory-methodology/ad-certificates/domain-persistence.md",
+    "windows-hardening/active-directory-methodology/ad-certificates/domain-escalation.md",
+    "windows-hardening/active-directory-methodology/ad-certificates/certificate-theft.md",
+    "windows-hardening/active-directory-methodology/ad-certificates/account-persistence.md",
+    "windows-hardening/active-directory-methodology/ad-certificates/README.md",
+    "windows-hardening/active-directory-methodology/acl-persistence-abuse/shadow-credentials.md",
+    "windows-hardening/active-directory-methodology/acl-persistence-abuse/BadSuccessor.md",
+    "windows-hardening/windows-local-privilege-escalation/windows-c-payloads.md",
+    "windows-hardening/windows-local-privilege-escalation/seimpersonate-from-high-to-system.md",
+    "windows-hardening/windows-local-privilege-escalation/sedebug-+-seimpersonate-copy-token.md",
+    "windows-hardening/windows-local-privilege-escalation/roguepotato-and-printspoofer.md",
+    "windows-hardening/windows-local-privilege-escalation/privilege-escalation-with-autorun-binaries.md",
+    "windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens.md",
+    "windows-hardening/windows-local-privilege-escalation/named-pipe-client-impersonation.md",
+    "windows-hardening/windows-local-privilege-escalation/msi-wrapper.md",
+    "windows-hardening/windows-local-privilege-escalation/leaked-handle-exploitation.md",
+    "windows-hardening/windows-local-privilege-escalation/juicypotato.md",
+    "windows-hardening/windows-local-privilege-escalation/integrity-levels.md",
+    "windows-hardening/windows-local-privilege-escalation/from-high-integrity-to-system-with-name-pipes.md",
+    "windows-hardening/windows-local-privilege-escalation/dpapi-extracting-passwords.md",
+    "windows-hardening/windows-local-privilege-escalation/dll-hijacking.md",
+    "windows-hardening/windows-local-privilege-escalation/dll-hijacking",
+    "windows-hardening/windows-local-privilege-escalation/create-msi-with-wix.md",
+    "windows-hardening/windows-local-privilege-escalation/com-hijacking.md",
+    "windows-hardening/active-directory-methodology/ad-certificates",
+    "windows-hardening/active-directory-methodology/acl-persistence-abuse",
+    "windows-hardening/windows-local-privilege-escalation",
+    "windows-hardening/stealing-credentials",
+    "windows-hardening/ntlm",
+    "windows-hardening/lateral-movement",
+    "windows-hardening/basic-powershell-for-pentesters",
+    "windows-hardening/authentication-credentials-uac-and-efs",
+    "windows-hardening/active-directory-methodology",
+    "images/websec.gif",
+    "images/websec (1).svg",
+    "images/venacus-logo.svg",
+    "images/venacus-logo.png",
+    "images/threatmodel_spidersuite_2.png",
+    "images/threatmodel_spidersuite_1.png",
+    "images/threat_model_finished.jpg",
+    "images/stored-xss-via-mounted-var-folder.png",
+    "images/stm (1).png",
+    "images/sponsor_trickest.jpeg"
   ]
 }
