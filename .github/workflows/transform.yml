@@ -53,7 +53,16 @@ jobs:
       - name: Checkout main for transformations
         run: git checkout -B main mdbook
 
-      # 7. Run your transformations
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install python dependencies
+        uses: actions/py-dependency-install@v4
+        with:
+          path: "./scripts/requirements.txt"
+          
+      # 7. Run transformations
       - name: Run transformations
         run: |
           echo "Running transformations..."
