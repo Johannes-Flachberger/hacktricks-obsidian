@@ -2,11 +2,9 @@ name: Transform mdbook to Obsidian vault
 
 on:
   workflow_dispatch: # manual trigger
-  schedule:
-    - cron: '0 2 * * *' # every day at 2:00 AM UTC
   push:
     branches:
-     - main
+     - mdbook
 
 jobs:
   transform:
@@ -14,31 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Add upstream remote
-        run: git remote add upstream https://github.com/HackTricks-wiki/hacktricks.git
-
-      - name: Fetch upstream
-        run: git fetch upstream
-
-      #- name: Check for new upstream commits
-      #  id: check_upstream
-      #  run: |
-      #    UPSTREAM_COMMIT=$(git rev-parse upstream/master)
-      #    MDBOOK_COMMIT=$(git rev-parse origin/mdbook || echo "")
-      #    echo "upstream=$UPSTREAM_COMMIT" >> $GITHUB_ENV
-      #    echo "mdbook=$MDBOOK_COMMIT" >> $GITHUB_ENV
-      #    if [ "$UPSTREAM_COMMIT" = "$MDBOOK_COMMIT" ]; then
-      #      echo "no_changes=true" >> $GITHUB_ENV
-      #    else
-      #      echo "no_changes=false" >> $GITHUB_ENV
-      #    fi
-
-      #- name: Exit if no new upstream commits
-      #  if: env.no_changes == 'true'
-      #  run: |
-      #    echo "No new upstream commits. Exiting workflow."
-      #    exit 0
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
 
       - name: Install Python
         uses: actions/setup-python@v4
@@ -49,20 +24,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r scripts/requirements.txt
-
-      - name: Update mdbook branch
-        run: |
-          git checkout -B mdbook upstream/master
-          git push --force origin mdbook
-
-      - name: Checkout main
-        run: git checkout -B main mdbook
           
-      # 7. Run transformations
-      - name: Run transformations
+      - name: Reformat markdown files
         run: |
-          echo "Running transformations..."
           python scripts/transform.py
+
+      - name: Cleanup unneeded files
+        run: |
+          rm ./Dockerfile
+          rm ./hacktricks-preprocessor.py
+          rm ./clean_unused_images.sh
+          rm ./book.toml
+          rm ./searchindex.js
+          rm -r ./theme/
+          mv ./src/* ./hacktricks/
 
       # 8. Commit and push transformed changes to main
       - name: Commit and push transformed main
