@@ -1,0 +1,69 @@
+name: Upstream Transform
+
+on:
+  workflow_dispatch: # manual trigger
+  #schedule:
+  #  - cron: '0 2 * * *' # every day at 2:00 AM UTC
+
+jobs:
+  transform:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout your fork
+      - name: Checkout fork
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # full history needed
+
+      # 2. Add upstream remote
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/HackTricks-wiki/hacktricks.git
+
+      # 3. Fetch upstream changes
+      - name: Fetch upstream
+        run: git fetch upstream
+
+      # 4. Check if upstream master has new commits
+      - name: Check for new upstream commits
+        id: check_upstream
+        run: |
+          UPSTREAM_COMMIT=$(git rev-parse upstream/master)
+          MDBOOK_COMMIT=$(git rev-parse origin/mdbook || echo "")
+          echo "upstream=$UPSTREAM_COMMIT" >> $GITHUB_ENV
+          echo "mdbook=$MDBOOK_COMMIT" >> $GITHUB_ENV
+          if [ "$UPSTREAM_COMMIT" = "$MDBOOK_COMMIT" ]; then
+            echo "no_changes=true" >> $GITHUB_ENV
+          else
+            echo "no_changes=false" >> $GITHUB_ENV
+          fi
+
+      - name: Exit if no new upstream commits
+        if: env.no_changes == 'true'
+        run: |
+          echo "No new upstream commits. Exiting workflow."
+          exit 0
+
+      # 5. Update mdbook branch to match upstream master
+      - name: Update mdbook branch
+        run: |
+          git checkout -B original upstream/master
+          git push --force origin mdbook
+
+      # 6. Create main branch from mdbook
+      - name: Checkout main for transformations
+        run: git checkout -B main mdbook
+
+      # 7. Run your transformations
+      - name: Run transformations
+        run: |
+          echo "Running transformations..."
+          python scripts/transform.py
+
+      # 8. Commit and push transformed changes to main
+      - name: Commit and push transformed main
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Automated transformations" || echo "No changes to commit"
+          git push --force origin main
