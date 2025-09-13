@@ -1,0 +1,8 @@
+{
+  "enabledCssSnippets": [
+    "collapseEmbeddedSearchResults",
+    "colors",
+    "competeTaskNoStrikethrough",
+    "hideEmptyTableHeader"
+  ]
+}
