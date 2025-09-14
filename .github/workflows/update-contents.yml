@@ -63,6 +63,7 @@ jobs:
           git config user.email "actions@github.com"
 
           # Commit and push only if there are changes
+          git reset
           git add ./hacktricks/
           git diff --cached --quiet || git commit -m "Updated contents from upstream"
           git push origin main
