@@ -49,14 +49,36 @@ html_pattern = r"<([a-zA-Z][^>\s]*)\b[^>]*>.*?<\/\1>|<[a-zA-Z][^>]*\/>"
 def transform_html(match):
     return convert_to_markdown(match.group(0))
 
-md_link_pattern = r"\[([^\]]*?)\]\((.+)>?\)"
-def transform_md_links(match):
-    path = match.group(2)
-    if path.startswith("<") and path.endswith(">"):
-        path = path[1:-1]
-    return f"[[{match.group(2)}|{match.group(1)}]]"
+img_link_pattern = r"\[\]\(<(.*)>\)"
+def transform_img_links(match):
+        return f"[[{match.group(1)}]]"
 
-fenced_code_pattern = r'(\n^(`{3,})[\s\S]*?^\2\n|`.+?`)'
+
+fenced_code_pattern = r'((`{3,})[\s\S]*?^\2)|(`.+?`)'
+
+def split_content(content):
+    parts = []
+    last_end = 0
+
+    for match in re.finditer(fenced_code_pattern, content, flags=re.MULTILINE):
+        start, end = match.start(), match.end()
+
+        # Add everything before this code block
+        if last_end < start:
+            parts.append(content[last_end:start])
+
+        # Add the code block itself
+        parts.append(match.group(0))
+
+        last_end = end
+
+    # Add remaining text after last code block
+    if last_end < len(content):
+        parts.append(content[last_end:])
+
+    return parts
+
+
 for subdir, _, files in os.walk(BASE_DIR):
     for file in files:
         if file.endswith(".md"):
@@ -65,12 +87,12 @@ for subdir, _, files in os.walk(BASE_DIR):
             with open(path, "r", encoding="utf-8") as f:
                 content = f.read()
 
-            parts = re.split(fenced_code_pattern, content, flags=re.MULTILINE)
+            parts = split_content(content)
             result = []
             for i, part in enumerate(parts):
                 if not part:
                     continue
-                if part.startswith(r"\n```") or part.startswith("`"):
+                if part.startswith(r"```") or part.startswith("`"):
                     # Code section -> skip or keep as-is
                     result.append(part)
                 else:
@@ -80,12 +102,6 @@ for subdir, _, files in os.walk(BASE_DIR):
                     # Transform and cleanup HTML
                     part = re.sub(html_pattern, transform_html, part)
                     part = re.sub(img_pattern, transform_img, part)
-                    part = re.sub(r"<details[^>]*>|<\/details>", "", part)
-                    part = re.sub(r"<summary[^>]*>|<\/summary>", "**", part)
-                    part = re.sub(r"<strong[^>]*>|<\/strong>", "", part)
-                    part = re.sub(r"<pre[^>]*><code[^>]*>", "_", part)
-                    part = re.sub(r"<\/code><\/pre>", "```", part)
-                    part = re.sub(r"<code[^>]*>|<\/code>", "`", part)
                     # Transform mdbook patterns
                     part = re.sub(link_pattern,transform_links, part)
                     part = re.sub(ref_pattern, transform_refs, part)
@@ -95,9 +111,9 @@ for subdir, _, files in os.walk(BASE_DIR):
                     part = re.sub(r"{{#endtab}}|{{#endtabs}}", "", part)
                     part = re.sub(tab_pattern, transform_tabs, part)
                     part = re.sub(r"{{#note}}|{{#endnote}}", "", part)
-                    # Transform markdown to obsidian links
-                    part = re.sub(md_link_pattern, transform_md_links, part)
-                    part = re.sub(r"\n\n\n", "\n\n", part)
+                    # Transform weird image links
+                    part = re.sub(img_link_pattern, transform_img_links, part)
+                    part = re.sub(r"[\n]{3,}", "\n\n", part)
                     result.append(part)
             new_content = "".join(result)
 
