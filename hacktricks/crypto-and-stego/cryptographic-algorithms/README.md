@@ -1,6 +1,5 @@
 # Cryptographic/Compression Algorithms
 
-
 ## Identifying Algorithms
 
 If you ends in a code **using shift rights and lefts, xors and several arithmetic operations** it's highly possible that it's the implementation of a **cryptographic algorithm**. Here it's going to be showed some ways to **identify the algorithm that it's used without needing to reverse each step**.
@@ -11,9 +10,9 @@ If you ends in a code **using shift rights and lefts, xors and several arithmeti
 
 If this function is used, you can find which **algorithm is being used** checking the value of the second parameter:
 
-![[<../../images/image (156).png>|]]
+![[../../images/image (156).png]]
 
-Check here the table of possible algorithms and their assigned values: [[https://docs.microsoft.com/en-us/windows/win32/seccrypto/alg-id|https://docs.microsoft.com/en-us/windows/win32/seccrypto/alg-id]]
+Check here the table of possible algorithms and their assigned values: [https://docs.microsoft.com/en-us/windows/win32/seccrypto/alg-id](https://docs.microsoft.com/en-us/windows/win32/seccrypto/alg-id)
 
 **RtlCompressBuffer/RtlDecompressBuffer**
 
@@ -21,26 +20,26 @@ Compresses and decompresses a given buffer of data.
 
 **CryptAcquireContext**
 
-From [[https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptacquirecontexta): The **CryptAcquireContext** function is used to acquire a handle to a particular key container within a particular cryptographic service provider (CSP|the docs]]. **This returned handle is used in calls to CryptoAPI** functions that use the selected CSP.
+From [the docs](https://learn.microsoft.com/en-us/windows/win32/api/wincrypt/nf-wincrypt-cryptacquirecontexta): The **CryptAcquireContext** function is used to acquire a handle to a particular key container within a particular cryptographic service provider (CSP). **This returned handle is used in calls to CryptoAPI** functions that use the selected CSP.
 
 **CryptCreateHash**
 
 Initiates the hashing of a stream of data. If this function is used, you can find which **algorithm is being used** checking the value of the second parameter:
 
-![[<../../images/image (549).png>|]]
+![[../../images/image (549).png]]
 
 \
-Check here the table of possible algorithms and their assigned values: [[https://docs.microsoft.com/en-us/windows/win32/seccrypto/alg-id|https://docs.microsoft.com/en-us/windows/win32/seccrypto/alg-id]]
+Check here the table of possible algorithms and their assigned values: [https://docs.microsoft.com/en-us/windows/win32/seccrypto/alg-id](https://docs.microsoft.com/en-us/windows/win32/seccrypto/alg-id)
 
 ### Code constants
 
 Sometimes it's really easy to identify an algorithm thanks to the fact that it needs to use a special and unique value.
 
-![[<../../images/image (833).png>|]]
+![[../../images/image (833).png]]
 
 If you search for the first constant in Google this is what you get:
 
-![[<../../images/image (529).png>|]]
+![[../../images/image (529).png]]
 
 Therefore, you can assume that the decompiled function is a **sha256 calculator.**\
 You can search any of the other constants and you will obtain (probably) the same result.
@@ -50,7 +49,7 @@ You can search any of the other constants and you will obtain (probably) the sam
 If the code doesn't have any significant constant it may be **loading information from the .data section**.\
 You can access that data, **group the first dword** and search for it in google as we have done in the section before:
 
-![[<../../images/image (531).png>|]]
+![[../../images/image (531).png]]
 
 In this case, if you look for **0xA56363C6** you can find that it's related to the **tables of the AES algorithm**.
 
@@ -69,15 +68,15 @@ It's composed of 3 main parts:
 
 ### **Initialization stage/Substitution Box:** (Note the number 256 used as counter and how a 0 is written in each place of the 256 chars)
 
-![[<../../images/image (584).png>|]]
+![[../../images/image (584).png]]
 
 ### **Scrambling Stage:**
 
-![[<../../images/image (835).png>|]]
+![[../../images/image (835).png]]
 
 ### **XOR Stage:**
 
-![[<../../images/image (904).png>|]]
+![[../../images/image (904).png]]
 
 ## **AES (Symmetric Crypt)**
 
@@ -89,7 +88,7 @@ It's composed of 3 main parts:
 
 ### SBox constants
 
-![[<../../images/image (208).png>|]]
+![[../../images/image (208).png]]
 
 ## Serpent **(Symmetric Crypt)**
 
@@ -103,11 +102,11 @@ It's composed of 3 main parts:
 In the following image notice how the constant **0x9E3779B9** is used (note that this constant is also used by other crypto algorithms like **TEA** -Tiny Encryption Algorithm).\
 Also note the **size of the loop** (**132**) and the **number of XOR operations** in the **disassembly** instructions and in the **code** example:
 
-![[<../../images/image (547).png>|]]
+![[../../images/image (547).png]]
 
 As it was mentioned before, this code can be visualized inside any decompiler as a **very long function** as there **aren't jumps** inside of it. The decompiled code can look like the following:
 
-![[<../../images/image (513).png>|]]
+![[../../images/image (513).png]]
 
 Therefore, it's possible to identify this algorithm checking the **magic number** and the **initial XORs**, seeing a **very long function** and **comparing** some **instructions** of the long function **with an implementation** (like the shift left by 7 and the rotate left by 22).
 
@@ -121,7 +120,7 @@ Therefore, it's possible to identify this algorithm checking the **magic number*
 
 ### Identifying by comparisons
 
-![[<../../images/image (1113).png>|]]
+![[../../images/image (1113).png]]
 
 - In line 11 (left) there is a `+7) >> 3` which is the same as in line 35 (right): `+7) / 8`
 - Line 12 (left) is checking if `modulus_len < 0x040` and in line 36 (right) it's checking if `inputLen+11 > modulusLen`
@@ -139,13 +138,13 @@ Therefore, it's possible to identify this algorithm checking the **magic number*
 
 You can identify both of them checking the constants. Note that the sha_init has 1 constant that MD5 doesn't have:
 
-![[<../../images/image (406).png>|]]
+![[../../images/image (406).png]]
 
 **MD5 Transform**
 
 Note the use of more constants
 
-![[<../../images/image (253) (1) (1).png>|]]
+![[../../images/image (253) (1) (1).png]]
 
 ## CRC (hash)
 
@@ -156,11 +155,11 @@ Note the use of more constants
 
 Check **lookup table constants**:
 
-![[<../../images/image (508).png>|]]
+![[../../images/image (508).png]]
 
 A CRC hash algorithm looks like:
 
-![[<../../images/image (391).png>|]]
+![[../../images/image (391).png]]
 
 ## APLib (Compression)
 
@@ -173,11 +172,9 @@ A CRC hash algorithm looks like:
 
 The graph is quiet large:
 
-![[<../../images/image (207) (2) (1).png>|]]
+![[../../images/image (207) (2) (1).png]]
 
 Check **3 comparisons to recognise it**:
 
-![[<../../images/image (430).png>|]]
-
-
+![[../../images/image (430).png]]
 

@@ -1,6 +1,5 @@
 # Anti-Forensic Techniques
 
-
 ## Timestamps
 
 An attacker may be interested in **changing the timestamps of files** to avoid being detected.\
@@ -16,23 +15,23 @@ This tool **modifies** the timestamp information inside **`$STANDARD_INFORMATION
 
 ### Usnjrnl
 
-The **USN Journal** (Update Sequence Number Journal) is a feature of the NTFS (Windows NT file system) that keeps track of volume changes. The [[https://github.com/jschicht/UsnJrnl2Csv|**UsnJrnl2Csv**]] tool allows for the examination of these changes.
+The **USN Journal** (Update Sequence Number Journal) is a feature of the NTFS (Windows NT file system) that keeps track of volume changes. The [**UsnJrnl2Csv**](https://github.com/jschicht/UsnJrnl2Csv) tool allows for the examination of these changes.
 
-![[<../../images/image (801).png>|]]
+![[../../images/image (801).png]]
 
 The previous image is the **output** shown by the **tool** where it can be observed that some **changes were performed** to the file.
 
 ### $LogFile
 
-**All metadata changes to a file system are logged** in a process known as [[https://en.wikipedia.org/wiki/Write-ahead_logging|write-ahead logging]]. The logged metadata is kept in a file named `**$LogFile**`, located in the root directory of an NTFS file system. Tools such as [[https://github.com/jschicht/LogFileParser|LogFileParser]] can be used to parse this file and identify changes.
+**All metadata changes to a file system are logged** in a process known as [write-ahead logging](https://en.wikipedia.org/wiki/Write-ahead_logging). The logged metadata is kept in a file named `**$LogFile**`, located in the root directory of an NTFS file system. Tools such as [LogFileParser](https://github.com/jschicht/LogFileParser) can be used to parse this file and identify changes.
 
-![[<../../images/image (137).png>|]]
+![[../../images/image (137).png]]
 
 Again, in the output of the tool it's possible to see that **some changes were performed**.
 
 Using the same tool it's possible to identify to **which time the timestamps were modified**:
 
-![[<../../images/image (1089).png>|]]
+![[../../images/image (1089).png]]
 
 - CTIME: File's creation time
 - ATIME: File's modification time
@@ -57,7 +56,7 @@ NFTS uses a cluster and the minimum information size. That means that if a file 
 
 There are tools like slacker that allow hiding data in this "hidden" space. However, an analysis of the `$logfile` and `$usnjrnl` can show that some data was added:
 
-![[<../../images/image (1060).png>|]]
+![[../../images/image (1060).png]]
 
 Then, it's possible to retrieve the slack space using tools like FTK Imager. Note that this kind of tool can save the content obfuscated or even encrypted.
 
@@ -72,7 +71,7 @@ These distros are **executed inside the RAM** memory. The only way to detect the
 
 ## Secure Deletion
 
-[[https://github.com/Claudio-C/awesome-data-sanitization|https://github.com/Claudio-C/awesome-data-sanitization]]
+[https://github.com/Claudio-C/awesome-data-sanitization](https://github.com/Claudio-C/awesome-data-sanitization)
 
 ## Windows Configuration
 
@@ -109,7 +108,7 @@ Whenever a folder is opened from an NTFS volume on a Windows NT server, the syst
 ### Delete USB History
 
 All the **USB Device Entries** are stored in Windows Registry Under the **USBSTOR** registry key that contains sub keys which are created whenever you plug a USB Device into your PC or Laptop. You can find this key here H`KEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\USBSTOR`. **Deleting this** you will delete the USB history.\
-You may also use the tool [[https://www.nirsoft.net/utils/usb_devices_view.html) to be sure you have deleted them (and to delete them|**USBDeview**]].
+You may also use the tool [**USBDeview**](https://www.nirsoft.net/utils/usb_devices_view.html) to be sure you have deleted them (and to delete them).
 
 Another file that saves information about the USBs is the file `setupapi.dev.log` inside `C:\Windows\INF`. This should also be deleted.
 
@@ -118,9 +117,9 @@ Another file that saves information about the USBs is the file `setupapi.dev.log
 **List** shadow copies with `vssadmin list shadowstorage`\
 **Delete** them running `vssadmin delete shadow`
 
-You can also delete them via GUI following the steps proposed in [[https://www.ubackup.com/windows-10/how-to-delete-shadow-copies-windows-10-5740.html|https://www.ubackup.com/windows-10/how-to-delete-shadow-copies-windows-10-5740.html]]
+You can also delete them via GUI following the steps proposed in [https://www.ubackup.com/windows-10/how-to-delete-shadow-copies-windows-10-5740.html](https://www.ubackup.com/windows-10/how-to-delete-shadow-copies-windows-10-5740.html)
 
-To disable shadow copies [[https://support.waters.com/KB_Inf/Other/WKB15560_How_to_disable_Volume_Shadow_Copy_Service_VSS_in_Windows|steps from here]]:
+To disable shadow copies [steps from here](https://support.waters.com/KB_Inf/Other/WKB15560_How_to_disable_Volume_Shadow_Copy_Service_VSS_in_Windows):
 
 1. Open the Services program by typing "services" into the text search box after clicking the Windows start button.
 2. From the list, find "Volume Shadow Copy", select it, and then access Properties by right-clicking.
@@ -131,7 +130,7 @@ It's also possible to modify the configuration of which files are going to be co
 ### Overwrite deleted files
 
 - You can use a **Windows tool**: `cipher /w:C` This will indicate cipher to remove any data from the available unused disk space inside the C drive.
-- You can also use tools like [[https://eraser.heidi.ie|**Eraser**]]
+- You can also use tools like [**Eraser**](https://eraser.heidi.ie)
 
 ### Delete Windows event logs
 
@@ -170,7 +169,7 @@ New-ItemProperty -Path "HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\PowerShel
 Get-WinEvent -LogName 'Microsoft-Windows-PowerShell/Operational' |
   Remove-WinEvent               # requires admin & Win11 23H2+
 ```
-```
+
 Defenders should monitor for changes to those registry keys and high-volume removal of PowerShell events.
 
 ### ETW (Event Tracing for Windows) Patch
@@ -186,7 +185,7 @@ WriteProcessMemory(GetCurrentProcess(),
                    GetProcAddress(GetModuleHandleA("ntdll.dll"), "EtwEventWrite"),
                    patch, sizeof(patch), NULL);
 ```
-```
+
 Public PoCs (e.g. `EtwTiSwallow`) implement the same primitive in PowerShell or C++.  
 Because the patch is **process-local**, EDRs running inside other processes may miss it.  
 Detection: compare `ntdll` in memory vs. on disk, or hook before user-mode.
@@ -202,7 +201,7 @@ type cobalt.bin > report.pdf:win32res.dll
 rem Execute directly
 wmic process call create "cmd /c report.pdf:win32res.dll"
 ```
-```
+
 Enumerate streams with `dir /R`, `Get-Item -Stream *`, or Sysinternals `streams64.exe`.
 Copying the host file to FAT/exFAT or via SMB will strip the hidden stream and can be used
 by investigators to recover the payload.
@@ -218,7 +217,7 @@ suspend or terminate EDR and forensic sensors **before encryption & log destruct
 AuKill.exe -e "C:\\Program Files\\Windows Defender\\MsMpEng.exe"
 AuKill.exe -k CrowdStrike
 ```
-```
+
 The driver is removed afterwards, leaving minimal artifacts.  
 Mitigations: enable the Microsoft vulnerable-driver blocklist (HVCI/SAC),
 and alert on kernel-service creation from user-writable paths.
@@ -252,7 +251,7 @@ ln -sf activemq-openwire-legacy-5.18.3.jar activemq-openwire-legacy.jar
 # Apply changes without removing persistence
 systemctl restart activemq || service activemq restart
 ```
-```
+
 Forensic/hunting tips
 - Review service directories for unscheduled binary/JAR replacements:
   - Debian/Ubuntu: `dpkg -V activemq` and compare file hashes/paths with repo mirrors.
@@ -307,8 +306,6 @@ Defenders should correlate these artifacts with external exposure and service pa
 - Red Canary – “Patching EtwEventWrite for Stealth: Detection & Hunting” (June 2024)  
   https://redcanary.com/blog/etw-patching-detection
 
-- [[https://redcanary.com/blog/threat-intelligence/dripdropper-linux-malware/|Red Canary – Patching for persistence: How DripDropper Linux malware moves through the cloud]]
-- [[https://nvd.nist.gov/vuln/detail/CVE-2023-46604|CVE‑2023‑46604 – Apache ActiveMQ OpenWire RCE (NVD)]]
-
-
+- [Red Canary – Patching for persistence: How DripDropper Linux malware moves through the cloud](https://redcanary.com/blog/threat-intelligence/dripdropper-linux-malware/)
+- [CVE‑2023‑46604 – Apache ActiveMQ OpenWire RCE (NVD)](https://nvd.nist.gov/vuln/detail/CVE-2023-46604)
 

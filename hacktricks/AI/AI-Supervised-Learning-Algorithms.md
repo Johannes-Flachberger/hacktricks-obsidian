@@ -1,6 +1,5 @@
 # Supervised Learning Algorithms
 
-
 ## Basic Information
 
 Supervised learning uses labeled data to train models that can make predictions on new, unseen inputs. In cybersecurity, supervised machine learning is widely applied to tasks such as intrusion detection (classifying network traffic as *normal* or *attack*), malware detection (distinguishing malicious software from benign), phishing detection (identifying fraudulent websites or emails), and spam filtering, among others. Each algorithm has its strengths and is suited to different types of problems (classification or regression). Below we review key supervised learning algorithms, explain how they work, and demonstrate their use on real cybersecurity datasets. We also discuss how combining models (ensemble learning) can often improve predictive performance.
@@ -44,7 +43,7 @@ The simplest for to represent linear regression is with a line:
 ```plaintext
 y = mx + b
 ```
-```
+
 Where:
 
 - `y` is the predicted value (output)
@@ -57,7 +56,7 @@ The goal of linear regression is to find the best-fitting line that minimizes th
 ```plaintext
 y = w1*x1 + w2*x2 + ... + wn*xn + b
 ```
-```
+
 > [!TIP]
 > *Use cases in cybersecurity:* Linear regression itself is less common for core security tasks (which are often classification), but it can be applied to predict numerical outcomes. For example, one could use linear regression to **predict the volume of network traffic** or **estimate the number of attacks in a time period** based on historical data. It could also predict a risk score or the expected time until detection of an attack, given certain system metrics. In practice, classification algorithms (like logistic regression or trees) are more frequently used for detecting intrusions or malware, but linear regression serves as a foundation and is useful for regression-oriented analyses.
 
@@ -73,10 +72,10 @@ y = w1*x1 + w2*x2 + ... + wn*xn + b
 
 -   **Finding the Best Fit:** To find the best fit line that sepparates the possible categories, we use a method called **Ordinary Least Squares (OLS)**. This method minimizes the sum of the squared differences between the observed values and the values predicted by the linear model.
 
-**Example -- Predicting Connection Duration (Regression) in an Intrusion Dataset
-**
+<details>
+<summary>Example -- Predicting Connection Duration (Regression) in an Intrusion Dataset
+</summary>
 Below we demonstrate linear regression using the NSL-KDD cybersecurity dataset. We'll treat this as a regression problem by predicting the `duration` of network connections based on other features. (In reality, `duration` is one feature of NSL-KDD; we use it here just to illustrate regression.) We load the dataset, preprocess it (encode categorical features), train a linear regression model, and evaluate the Mean Squared Error (MSE) and R² score on a test set.
-
 
 ```python
 import pandas as pd
@@ -132,8 +131,9 @@ Test MSE: 3021333.56
 Test R² : -0.526
 """
 ```
-```
+
 In this example, the linear regression model tries to predict connection `duration` from other network features. We measure performance with Mean Squared Error (MSE) and R². An R² close to 1.0 would indicate the model explains most variance in `duration`, whereas a low or negative R² indicates a poor fit. (Don't be surprised if the R² is low here -- predicting `duration` might be difficult from the given features, and linear regression may not capture the patterns if they are complex.)
+</details>
 
 ### Logistic Regression
 
@@ -144,7 +144,7 @@ The logistic regression uses the logistic function (also known as the sigmoid fu
 ```plaintext
 p(y=1|x) = 1 / (1 + e^(-z))
 ```
-```
+
 Where:
 
 - `p(y=1|x)` is the probability that the output `y` is 1 given the input `x`
@@ -168,9 +168,8 @@ Logistic regression is designed for binary classification, but it can be extende
 
 -   **Limitations:** Assumes a linear decision boundary in feature space (fails if the true boundary is complex/non-linear). It may underperform on problems where interactions or non-linear effects are critical, unless you manually add polynomial or interaction features. Also, logistic regression is less effective if classes are not easily separable by a linear combination of features.
 
-
+<details>
 **Example \-\- Phishing Website Detection with Logistic Regression:**
-
 
 We'll use a **Phishing Websites Dataset** (from the UCI repository) which contains extracted features of websites (like whether the URL has an IP address, the age of the domain, presence of suspicious elements in HTML, etc.) and a label indicating if the site is phishing or legitimate. We train a logistic regression model to classify websites and then evaluate its accuracy, precision, recall, F1-score, and ROC AUC on a test split.
 
@@ -228,9 +227,10 @@ F1-score : 0.917
 ROC AUC  : 0.979
 """
 ```
-```
+
 In this phishing detection example, logistic regression produces a probability for each website being phishing. By evaluating accuracy, precision, recall, and F1, we get a sense of the model's performance. For instance, a high recall would mean it catches most phishing sites (important for security to minimize missed attacks), while high precision means it has few false alarms (important to avoid analyst fatigue). The ROC AUC (Area Under the ROC Curve) gives a threshold-independent measure of performance (1.0 is ideal, 0.5 is no better than chance). Logistic regression often performs well on such tasks, but if the decision boundary between phishing and legitimate sites is complex, more powerful non-linear models might be needed.
 
+</details>
 
 ### Decision Trees
 
@@ -256,7 +256,7 @@ A tree might end up looking like this:
           /   \      /   \
      [Leaf 1] [Leaf 2] [Leaf 3] [Leaf 4]
 ```
-```
+
 > [!TIP]
 > *Use cases in cybersecurity:* Decision trees have been used in intrusion detection systems to derive **rules** for identifying attacks. For example, early IDS like ID3/C4.5-based systems would generate human-readable rules to distinguish normal vs. malicious traffic. They are also used in malware analysis to decide if a file is malicious based on its attributes (file size, section entropy, API calls, etc.). The clarity of decision trees makes them useful when transparency is needed -- an analyst can inspect the tree to validate the detection logic.
 
@@ -299,8 +299,8 @@ Moreover, a tree is ended when:
 - The number of instances in a node is below a certain threshold. This is also a way to prevent overfitting.
 - The information gain from further splits is below a certain threshold. This is also a way to prevent overfitting.
 
-**Example \-\- Decision Tree for Intrusion Detection:**
-
+<details>
+<summary>Example -- Decision Tree for Intrusion Detection:</summary>
 We'll train a decision tree on the NSL-KDD dataset to classify network connections as either *normal* or *attack*. NSL-KDD is an improved version of the classic KDD Cup 1999 dataset, with features like protocol type, service, duration, number of failed logins, etc., and a label indicating the attack type or "normal". We will map all attack types to an "anomaly" class (binary classification: normal vs anomaly). After training, we'll evaluate the tree's performance on the test set.
 
 
@@ -366,9 +366,10 @@ F1‑score : 0.756
 ROC AUC  : 0.758
 """
 ```
-```
+
 In this decision tree example, we limited the tree depth to 10 to avoid extreme overfitting (the `max_depth=10` parameter). The metrics show how well the tree distinguishes normal vs. attack traffic. A high recall would mean it catches most attacks (important for an IDS), while high precision means few false alarms. Decision trees often achieve decent accuracy on structured data, but a single tree might not reach the best performance possible. Nonetheless, the *interpretability* of the model is a big plus -- we could examine the tree's splits to see, for instance, which features (e.g., `service`, `src_bytes`, etc.) are most influential in flagging a connection as malicious.
 
+</details>
 
 ### Random Forests
 
@@ -397,8 +398,8 @@ Random forests have become a **workhorse in cybersecurity** for tasks like intru
   2. **Tree Construction**: For each bootstrap sample, build a decision tree using a random subset of features at each split. This introduces diversity among the trees.
   3. **Aggregation**: For classification tasks, the final prediction is made by taking a majority vote among the predictions of all trees. For regression tasks, the final prediction is the average of the predictions from all trees.
 
-**Example \-\- Random Forest for Intrusion Detection (NSL\-KDD):**
-
+<details>
+<summary>Example -- Random Forest for Intrusion Detection (NSL-KDD):</summary>
 We'll use the same NSL-KDD dataset (binary labeled as normal vs anomaly) and train a Random Forest classifier. We expect the random forest to perform as well as or better than the single decision tree, thanks to the ensemble averaging reducing variance. We'll evaluate it with the same metrics.
 
 
@@ -411,7 +412,7 @@ from sklearn.metrics import (accuracy_score, precision_score,
 
 # ──────────────────────────────────────────────
 # 1. LOAD DATA  ➜  files have **no header row**, so we
-#                 pass `header=None and give our own column names.
+#                 pass `header=None` and give our own column names.
 # ──────────────────────────────────────────────
 col_names = [                       # 41 features + 2 targets
     "duration","protocol_type","service","flag","src_bytes","dst_bytes","land",
@@ -493,9 +494,10 @@ F1-score:  0.754
 ROC AUC:   0.962
 """
 ```
-```
+
 The random forest typically achieves strong results on this intrusion detection task. We might observe an improvement in metrics like F1 or AUC compared to the single decision tree, especially in recall or precision, depending on the data. This aligns with the understanding that *"Random Forest (RF) is an ensemble classifier and performs well compared to other traditional classifiers for effective classification of attacks."*. In a security operations context, a random forest model might more reliably flag attacks while reducing false alarms, thanks to the averaging of many decision rules. Feature importance from the forest could tell us which network features are most indicative of attacks (e.g., certain network services or unusual counts of packets).
 
+</details>
 
 ### Support Vector Machines (SVM)
 
@@ -519,8 +521,8 @@ However, SVMs do not scale easily to very large datasets (training complexity is
 
 *Use cases in cybersecurity:* SVMs have been used in **malware detection** (e.g., classifying files based on extracted features or opcode sequences), **network anomaly detection** (classifying traffic as normal vs malicious), and **phishing detection** (using features of URLs). For instance, an SVM could take features of an email (counts of certain keywords, sender reputation scores, etc.) and classify it as phishing or legitimate. They have also been applied to **intrusion detection** on feature sets like KDD, often achieving high accuracy at the cost of computation.
 
-**Example \-\- SVM for Malware Classification:**
-
+<details>
+<summary>Example -- SVM for Malware Classification:</summary>
 We'll use the phishing website dataset again, this time with an SVM. Because SVMs can be slow, we'll use a subset of the data for training if needed (the dataset is about 11k instances, which SVM can handle reasonably). We'll use an RBF kernel which is a common choice for non-linear data, and we'll enable probability estimates to calculate ROC AUC.
 
 ```python
@@ -590,9 +592,10 @@ F1‑score : 0.950
 ROC AUC  : 0.989
 """
 ```
-```
+
 The SVM model will output metrics that we can compare to logistic regression on the same task. We might find that SVM achieves a high accuracy and AUC if the data is well-separated by the features. On the flip side, if the dataset had a lot of noise or overlapping classes, SVM might not significantly outperform logistic regression. In practice, SVMs can give a boost when there are complex, non-linear relations between features and class -- the RBF kernel can capture curved decision boundaries that logistic regression would miss. As with all models, careful tuning of the `C` (regularization) and kernel parameters (like `gamma` for RBF) is needed to balance bias and variance.
 
+</details>
 
 #### Difference Logistic Rergessions & SVM
 
@@ -616,6 +619,7 @@ The SVM model will output metrics that we can compare to logistic regression on 
 
 Naive Bayes is a family of **probabilistic classifiers** based on applying Bayes' Theorem with a strong independence assumption between features. Despite this "naive" assumption, Naive Bayes often works surprisingly well for certain applications, especially those involving text or categorical data, such as spam detection.
 
+
 #### Bayes' Theorem
 
 Bayes' theorem is the foundation of Naive Bayes classifiers. It relates the conditional and marginal probabilities of random events. The formula is:
@@ -623,7 +627,7 @@ Bayes' theorem is the foundation of Naive Bayes classifiers. It relates the cond
 ```plaintext
 P(A|B) = (P(B|A) * P(A)) / P(B)
 ```
-```
+
 Where:
 - `P(A|B)` is the posterior probability of class `A` given feature `B`.
 - `P(B|A)` is the likelihood of feature `B` given class `A`.
@@ -634,6 +638,7 @@ For example, if we want to classify whether a text is written by a child or an a
 
 As you can see in this example, the Naive Bayes classifier is very simple and fast, but it assumes that the features are independent, which is not always the case in real-world data.
 
+
 #### Types of Naive Bayes Classifiers
 
 There are several types of Naive Bayes classifiers, depending on the type of data and the distribution of the features:
@@ -641,6 +646,7 @@ There are several types of Naive Bayes classifiers, depending on the type of dat
 - **Multinomial Naive Bayes**: Assumes that the features follow a multinomial distribution. It is suitable for discrete data, such as word counts in text classification.
 - **Bernoulli Naive Bayes**: Assumes that the features are binary (0 or 1). It is suitable for binary data, such as presence or absence of words in text classification.
 - **Categorical Naive Bayes**: Assumes that the features are categorical variables. It is suitable for categorical data, such as classifying fruits based on their color and shape.
+
 
 #### **Key characteristics of Naive Bayes:**
 
@@ -655,8 +661,8 @@ There are several types of Naive Bayes classifiers, depending on the type of dat
 > [!TIP]
 > *Use cases in cybersecurity:* The classic use is **spam detection** -- Naive Bayes was the core of early spam filters, using the frequencies of certain tokens (words, phrases, IP addresses) to calculate the probability an email is spam. It's also used in **phishing email detection** and **URL classification**, where presence of certain keywords or characteristics (like "login.php" in a URL, or `@` in a URL path) contribute to phishing probability. In malware analysis, one could imagine a Naive Bayes classifier that uses the presence of certain API calls or permissions in software to predict if it's malware. While more advanced algorithms often perform better, Naive Bayes remains a good baseline due to its speed and simplicity.
 
-**Example \-\- Naive Bayes for Phishing Detection:**
-
+<details>
+<summary>Example -- Naive Bayes for Phishing Detection:</summary>
 To demonstrate Naive Bayes, we'll use Gaussian Naive Bayes on the NSL-KDD intrusion dataset (with binary labels). Gaussian NB will treat each feature as following a normal distribution per class. This is a rough choice since many network features are discrete or highly skewed, but it shows how one would apply NB to continuous feature data. We could also choose Bernoulli NB on a dataset of binary features (like a set of triggered alerts), but we'll stick with NSL-KDD here for continuity.
 
 ```python
@@ -719,9 +725,10 @@ F1-score:  0.071
 ROC AUC:   0.867
 """
 ```
-```
+
 This code trains a Naive Bayes classifier to detect attacks. Naive Bayes will compute things like `P(service=http | Attack)` and `P(Service=http | Normal)` based on the training data, assuming independence among features. It will then use these probabilities to classify new connections as either normal or attack based on the features observed. The performance of NB on NSL-KDD may not be as high as more advanced models (since feature independence is violated), but it's often decent and comes with the benefit of extreme speed. In scenarios like real-time email filtering or initial triage of URLs, a Naive Bayes model can quickly flag obviously malicious cases with low resource usage.
 
+</details>
 
 ### k-Nearest Neighbors (k-NN)
 
@@ -743,8 +750,8 @@ Despite its simplicity, k-NN can model very complex decision boundaries (since e
 
 -   **Limitations:** Prediction can be slow for large datasets (must compute many distances). Memory-intensive -- it stores all training data. Performance degrades in high-dimensional feature spaces because all points tend to become nearly equidistant (making the concept of "nearest" less meaningful). Need to choose *k* (number of neighbors) appropriately -- too small k can be noisy, too large k can include irrelevant points from other classes. Also, features should be scaled appropriately because distance calculations are sensitive to scale.
 
-**Example \-\- k\-NN for Phishing Detection:**
-
+<details>
+<summary>Example -- k-NN for Phishing Detection:</summary>
 
 We'll again use NSL-KDD (binary classification). Because k-NN is computationally heavy, we'll use a subset of the training data to keep it tractable in this demonstration. We'll pick, say, 20,000 training samples out of the full 125k, and use k=5 neighbors. After training (really just storing the data), we'll evaluate on the test set. We'll also scale features for distance calculation to ensure no single feature dominates due to scale.
 
@@ -816,8 +823,9 @@ F1-score:  0.766
 ROC AUC:   0.837
 """
 ```
-```
+
 The k-NN model will classify a connection by looking at the 5 closest connections in the training set subset. If, for example, 4 of those neighbors are attacks (anomalies) and 1 is normal, the new connection will be classified as an attack. The performance might be reasonable, though often not as high as a well-tuned Random Forest or SVM on the same data. However, k-NN can sometimes shine when the class distributions are very irregular and complex -- effectively using a memory-based lookup. In cybersecurity, k-NN (with k=1 or small k) could be used for detection of known attack patterns by example, or as a component in more complex systems (e.g., for clustering and then classifying based on cluster membership).
+</details>
 
 ### Gradient Boosting Machines (e.g., XGBoost)
 
@@ -840,8 +848,8 @@ Why are boosted trees so effective? Each tree in the sequence is trained on the 
 > [!TIP]
 > *Use cases in cybersecurity:* Almost anywhere a decision tree or random forest could be used, a gradient boosting model might achieve better accuracy. For example, **Microsoft's malware detection** competitions have seen heavy use of XGBoost on engineered features from binary files. **Network intrusion detection** research often reports top results with GBDTs (e.g., XGBoost on CIC-IDS2017 or UNSW-NB15 datasets). These models can take a wide range of features (protocol types, frequency of certain events, statistical features of traffic, etc.) and combine them to detect threats. In phishing detection, gradient boosting can combine lexical features of URLs, domain reputation features, and page content features to achieve very high accuracy. The ensemble approach helps cover many corner cases and subtleties in the data.
 
-**Example \-\- XGBoost for Phishing Detection:**
-
+<details>
+<summary>Example -- XGBoost for Phishing Detection:</summary>
 We'll use a gradient boosting classifier on the phishing dataset. To keep things simple and self-contained, we'll use `sklearn.ensemble.GradientBoostingClassifier` (which is a slower but straightforward implementation). Normally, one might use `xgboost` or `lightgbm` libraries for better performance and additional features. We will train the model and evaluate it similarly to before.
 
 ```python
@@ -891,9 +899,10 @@ F1‑score:  0.957
 ROC AUC:   0.990
 """
 ```
-```
+
 The gradient boosting model will likely achieve very high accuracy and AUC on this phishing dataset (often these models can exceed 95% accuracy with proper tuning on such data, as seen in literature. This demonstrates why GBDTs are considered *"the state of the art model for tabular dataset"* -- they often outperform simpler algorithms by capturing complex patterns. In a cybersecurity context, this could mean catching more phishing sites or attacks with fewer misses. Of course, one must be cautious about overfitting -- we would typically use techniques like cross-validation and monitor performance on a validation set when developing such a model for deployment.
 
+</details>
 
 ### Combining Models: Ensemble Learning and Stacking
 
@@ -905,8 +914,8 @@ Ensemble learning is a strategy of **combining multiple models** to improve over
 
 Ensembles, whether by voting or stacking, tend to **boost accuracy** and robustness. The downside is increased complexity and sometimes reduced interpretability (though some ensemble approaches like an average of decision trees can still provide some insight, e.g., feature importance). In practice, if operational constraints allow, using an ensemble can lead to higher detection rates. Many winning solutions in cybersecurity challenges (and Kaggle competitions in general) use ensemble techniques to squeeze out the last bit of performance.
 
-**Example \-\- Voting Ensemble for Phishing Detection:**
-
+<details>
+<summary>Example -- Voting Ensemble for Phishing Detection:</summary>
 To illustrate model stacking, let's combine a few of the models we discussed on the phishing dataset. We'll use a logistic regression, a decision tree, and a k-NN as base learners, and use a Random Forest as a meta-learner to aggregate their predictions. The meta-learner will be trained on the outputs of the base learners (using cross-validation on the training set). We expect the stacked model to perform as well as or slightly better than the individual models.
 
 ```python
@@ -987,30 +996,28 @@ F1‑score : 0.948
 ROC AUC  : 0.992
 """
 ```
-```The stacked ensemble takes advantage of the complementary strengths of the base models. For instance, logistic regression might handle linear aspects of the data, the decision tree might capture specific rule-like interactions, and k-NN might excel in local neighborhoods of the feature space. The meta-model (a random forest here) can learn how to weigh these inputs. The resulting metrics often show an improvement (even if slight) over any single model's metrics. In our phishing example, if logistic alone had an F1 of say 0.95 and the tree 0.94, the stack might achieve 0.96 by picking up where each model errs.
+The stacked ensemble takes advantage of the complementary strengths of the base models. For instance, logistic regression might handle linear aspects of the data, the decision tree might capture specific rule-like interactions, and k-NN might excel in local neighborhoods of the feature space. The meta-model (a random forest here) can learn how to weigh these inputs. The resulting metrics often show an improvement (even if slight) over any single model's metrics. In our phishing example, if logistic alone had an F1 of say 0.95 and the tree 0.94, the stack might achieve 0.96 by picking up where each model errs.
 
 Ensemble methods like this demonstrate the principle that *"combining multiple models typically leads to better generalization"*. In cybersecurity, this can be implemented by having multiple detection engines (one might be rule-based, one machine learning, one anomaly-based) and then a layer that aggregates their alerts -- effectively a form of ensemble -- to make a final decision with higher confidence. When deploying such systems, one must consider the added complexity and ensure that the ensemble doesn't become too hard to manage or explain. But from an accuracy standpoint, ensembles and stacking are powerful tools for improving model performance.
 
-
+</details>
 
 ## References
 
-- [[https://madhuramiah.medium.com/logistic-regression-6e55553cc003|https://madhuramiah.medium.com/logistic-regression-6e55553cc003]]
-- [[https://www.geeksforgeeks.org/decision-tree-introduction-example/|https://www.geeksforgeeks.org/decision-tree-introduction-example/]]
-- [[https://rjwave.org/ijedr/viewpaperforall.php?paper=IJEDR1703132|https://rjwave.org/ijedr/viewpaperforall.php?paper=IJEDR1703132]]
-- [[https://www.ibm.com/think/topics/support-vector-machine|https://www.ibm.com/think/topics/support-vector-machine]]
-- [[https://en.m.wikipedia.org/wiki/Naive_Bayes_spam_filtering|https://en.m.wikipedia.org/wiki/Naive_Bayes_spam_filtering]]
-- [[https://medium.com/@rupalipatelkvc/gbdt-demystified-how-lightgbm-xgboost-and-catboost-work-9479b7262644|https://medium.com/@rupalipatelkvc/gbdt-demystified-how-lightgbm-xgboost-and-catboost-work-9479b7262644]]
-- [[https://zvelo.com/ai-and-machine-learning-in-cybersecurity/|https://zvelo.com/ai-and-machine-learning-in-cybersecurity/]]
-- [[https://medium.com/@chaandram/linear-regression-explained-28d5bf1934ae|https://medium.com/@chaandram/linear-regression-explained-28d5bf1934ae]]
-- [[https://cybersecurity.springeropen.com/articles/10.1186/s42400-021-00103-8|https://cybersecurity.springeropen.com/articles/10.1186/s42400-021-00103-8]]
-- [[https://www.ibm.com/think/topics/knn|https://www.ibm.com/think/topics/knn]]
-- [[https://www.ibm.com/think/topics/knn|https://www.ibm.com/think/topics/knn]]
-- [[https://arxiv.org/pdf/2101.02552|https://arxiv.org/pdf/2101.02552]]
-- [[https://cybersecurity-magazine.com/how-deep-learning-enhances-intrusion-detection-systems/|https://cybersecurity-magazine.com/how-deep-learning-enhances-intrusion-detection-systems/]]
-- [[https://cybersecurity-magazine.com/how-deep-learning-enhances-intrusion-detection-systems/|https://cybersecurity-magazine.com/how-deep-learning-enhances-intrusion-detection-systems/]]
-- [[https://medium.com/@sarahzouinina/ensemble-learning-boosting-model-performance-by-combining-strengths-02e56165b901|https://medium.com/@sarahzouinina/ensemble-learning-boosting-model-performance-by-combining-strengths-02e56165b901]]
-- [[https://medium.com/@sarahzouinina/ensemble-learning-boosting-model-performance-by-combining-strengths-02e56165b901|https://medium.com/@sarahzouinina/ensemble-learning-boosting-model-performance-by-combining-strengths-02e56165b901]]
-
-
+- [https://madhuramiah.medium.com/logistic-regression-6e55553cc003](https://madhuramiah.medium.com/logistic-regression-6e55553cc003)
+- [https://www.geeksforgeeks.org/decision-tree-introduction-example/](https://www.geeksforgeeks.org/decision-tree-introduction-example/)
+- [https://rjwave.org/ijedr/viewpaperforall.php?paper=IJEDR1703132](https://rjwave.org/ijedr/viewpaperforall.php?paper=IJEDR1703132)
+- [https://www.ibm.com/think/topics/support-vector-machine](https://www.ibm.com/think/topics/support-vector-machine)
+- [https://en.m.wikipedia.org/wiki/Naive_Bayes_spam_filtering](https://en.m.wikipedia.org/wiki/Naive_Bayes_spam_filtering)
+- [https://medium.com/@rupalipatelkvc/gbdt-demystified-how-lightgbm-xgboost-and-catboost-work-9479b7262644](https://medium.com/@rupalipatelkvc/gbdt-demystified-how-lightgbm-xgboost-and-catboost-work-9479b7262644)
+- [https://zvelo.com/ai-and-machine-learning-in-cybersecurity/](https://zvelo.com/ai-and-machine-learning-in-cybersecurity/)
+- [https://medium.com/@chaandram/linear-regression-explained-28d5bf1934ae](https://medium.com/@chaandram/linear-regression-explained-28d5bf1934ae)
+- [https://cybersecurity.springeropen.com/articles/10.1186/s42400-021-00103-8](https://cybersecurity.springeropen.com/articles/10.1186/s42400-021-00103-8)
+- [https://www.ibm.com/think/topics/knn](https://www.ibm.com/think/topics/knn)
+- [https://www.ibm.com/think/topics/knn](https://www.ibm.com/think/topics/knn)
+- [https://arxiv.org/pdf/2101.02552](https://arxiv.org/pdf/2101.02552)
+- [https://cybersecurity-magazine.com/how-deep-learning-enhances-intrusion-detection-systems/](https://cybersecurity-magazine.com/how-deep-learning-enhances-intrusion-detection-systems/)
+- [https://cybersecurity-magazine.com/how-deep-learning-enhances-intrusion-detection-systems/](https://cybersecurity-magazine.com/how-deep-learning-enhances-intrusion-detection-systems/)
+- [https://medium.com/@sarahzouinina/ensemble-learning-boosting-model-performance-by-combining-strengths-02e56165b901](https://medium.com/@sarahzouinina/ensemble-learning-boosting-model-performance-by-combining-strengths-02e56165b901)
+- [https://medium.com/@sarahzouinina/ensemble-learning-boosting-model-performance-by-combining-strengths-02e56165b901](https://medium.com/@sarahzouinina/ensemble-learning-boosting-model-performance-by-combining-strengths-02e56165b901)
 

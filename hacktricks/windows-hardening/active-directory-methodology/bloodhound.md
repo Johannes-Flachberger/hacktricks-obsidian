@@ -1,7 +1,5 @@
 # BloodHound & Other Active Directory Enumeration Tools
 
-
-
 [[adws-enumeration.md]]
 
 > NOTE: This page groups some of the most useful utilities to **enumerate** and **visualise** Active Directory relationships.  For collection over the stealthy **Active Directory Web Services (ADWS)** channel check the reference above.
@@ -10,7 +8,7 @@
 
 ## AD Explorer
 
-[[https://docs.microsoft.com/en-us/sysinternals/downloads/adexplorer) (Sysinternals|AD Explorer]] is an advanced **AD viewer & editor** which allows:
+[AD Explorer](https://docs.microsoft.com/en-us/sysinternals/downloads/adexplorer) (Sysinternals) is an advanced **AD viewer & editor** which allows:
 
 * GUI browsing of the directory tree
 * Editing of object attributes & security descriptors
@@ -26,18 +24,18 @@
 
 ## ADRecon
 
-[[https://github.com/adrecon/ADRecon) extracts a large set of artefacts from a domain (ACLs, GPOs, trusts, CA templates …|ADRecon]] and produces an **Excel report**.
+[ADRecon](https://github.com/adrecon/ADRecon) extracts a large set of artefacts from a domain (ACLs, GPOs, trusts, CA templates …) and produces an **Excel report**.
 
 ```powershell
 # On a Windows host in the domain
 PS C:\> .\ADRecon.ps1 -OutputDir C:\Temp\ADRecon
 ```
-```
+
 ---
 
 ## BloodHound (graph visualisation)
 
-[[https://github.com/BloodHoundAD/BloodHound|BloodHound]] uses graph theory + Neo4j to reveal hidden privilege relationships inside on-prem AD & Azure AD.
+[BloodHound](https://github.com/BloodHoundAD/BloodHound) uses graph theory + Neo4j to reveal hidden privilege relationships inside on-prem AD & Azure AD.
 
 ### Deployment (Docker CE)
 
@@ -45,7 +43,7 @@ PS C:\> .\ADRecon.ps1 -OutputDir C:\Temp\ADRecon
 curl -L https://ghst.ly/getbhce | docker compose -f - up
 # Web UI ➜ http://localhost:8080  (user: admin / password from logs)
 ```
-```
+
 ### Collectors
 
 * `SharpHound.exe` / `Invoke-BloodHound` – native or PowerShell variant
@@ -59,28 +57,27 @@ SharpHound.exe --CollectionMethods All           # Full sweep (noisy)
 SharpHound.exe --CollectionMethods Group,LocalAdmin,Session,Trusts,ACL
 SharpHound.exe --Stealth --LDAP                      # Low noise LDAP only
 ```
-```
+
 The collectors generate JSON which is ingested via the BloodHound GUI.
 
 ---
 
 ## Group3r
 
-[[https://github.com/Group3r/Group3r|Group3r]] enumerates **Group Policy Objects** and highlights misconfigurations.
+[Group3r](https://github.com/Group3r/Group3r) enumerates **Group Policy Objects** and highlights misconfigurations.
 
 ```bash
 # Execute inside the domain
 Group3r.exe -f gpo.log   # -s to stdout
 ```
-```
+
 ---
 
 ## PingCastle
 
-[[https://www.pingcastle.com/documentation/|PingCastle]] performs a **health-check** of Active Directory and generates an HTML report with risk scoring.
+[PingCastle](https://www.pingcastle.com/documentation/) performs a **health-check** of Active Directory and generates an HTML report with risk scoring.
 
 ```powershell
 PingCastle.exe --healthcheck --server corp.local --user bob --password "P@ssw0rd!"
-```
 ```
 

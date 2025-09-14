@@ -1,7 +1,5 @@
 # Image Acquisition & Mount
 
-
-
 ## Acquisition
 
 > Always acquire **read-only** and **hash while you copy**. Keep the original device **write-blocked** and work only on verified copies.
@@ -14,7 +12,7 @@ dd if=/dev/sdb of=disk.img bs=4M status=progress conv=noerror,sync
 # Verify integrity afterwards
 sha256sum disk.img > disk.img.sha256
 ```
-```
+
 ### dc3dd / dcfldd
 
 `dc3dd` is the actively maintained fork of dcfldd (DoD Computer Forensics Lab dd).
@@ -23,7 +21,7 @@ sha256sum disk.img > disk.img.sha256
 # Create an image and calculate multiple hashes at acquisition time
 sudo dc3dd if=/dev/sdc of=/forensics/pc.img hash=sha256,sha1 hashlog=/forensics/pc.hashes log=/forensics/pc.log bs=1M
 ```
-```
+
 ### Guymager  
 Graphical, multithreaded imager that supports **raw (dd)**, **EWF (E01/EWFX)** and **AFF4** output with parallel verification. Available in most Linux repos (`apt install guymager`).
 
@@ -33,7 +31,7 @@ sudo guymager
 # Or acquire from CLI (since v0.9.5)
 sudo guymager --simulate --input /dev/sdb --format EWF --hash sha256 --output /evidence/drive.e01
 ```
-```
+
 ### AFF4 (Advanced Forensics Format 4)
 
 AFF4 is Google’s modern imaging format designed for *very* large evidence (sparse, resumable, cloud-native).
@@ -46,22 +44,22 @@ sudo aff4imager acquire /dev/nvme0n1 /evidence/nvme.aff4 --hash sha256
 # Velociraptor can also acquire AFF4 images remotely
 velociraptor --config server.yaml frontend collect --artifact Windows.Disk.Acquire --args device="\\.\\PhysicalDrive0" format=AFF4
 ```
-```
+
 ### FTK Imager (Windows & Linux)
 
-You can [[https://accessdata.com/product-download|download FTK Imager]] and create **raw, E01 or AFF4** images:
+You can [download FTK Imager](https://accessdata.com/product-download) and create **raw, E01 or AFF4** images:
 
 ```bash
 ftkimager /dev/sdb evidence --e01 --case-number 1 --evidence-number 1 \
           --description 'Laptop seizure 2025-07-22' --examiner 'AnalystName' --compress 6
 ```
-```
+
 ### EWF tools (libewf)
 
 ```bash
 sudo ewfacquire /dev/sdb -u evidence -c 1 -d "Seizure 2025-07-22" -e 1 -X examiner --format encase6 --compression best
 ```
-```
+
 ### Imaging Cloud Disks
 
 *AWS* – create a **forensic snapshot** without shutting down the instance:
@@ -70,7 +68,7 @@ sudo ewfacquire /dev/sdb -u evidence -c 1 -d "Seizure 2025-07-22" -e 1 -X examin
 aws ec2 create-snapshot --volume-id vol-01234567 --description "IR-case-1234 web-server 2025-07-22"
 # Copy the snapshot to S3 and download with aws cli / aws snowball
 ```
-```
+
 *Azure* – use `az snapshot create` and export to a SAS URL.
 
 ## Mount
@@ -97,12 +95,12 @@ lsblk /dev/nbd0 -o NAME,SIZE,TYPE,FSTYPE,LABEL,UUID
 # Mount a partition (e.g. /dev/nbd0p2)
 sudo mount -o ro,uid=$(id -u) /dev/nbd0p2 /mnt
 ```
-```
+
 Detach when finished:
 ```bash
 sudo umount /mnt && sudo qemu-nbd --disconnect /dev/nbd0
 ```
-```
+
 ### EWF (E01/EWFX)
 
 ```bash
@@ -116,14 +114,14 @@ sudo qemu-nbd --connect=/dev/nbd1 --read-only /mnt/ewf/ewf1
 # 3. Mount the desired partition
 sudo mount -o ro,norecovery /dev/nbd1p1 /mnt/evidence
 ```
-```
+
 Alternatively convert on the fly with **xmount**:
 
 ```bash
 xmount --in ewf evidence.E01 --out raw /tmp/raw_mount
 mount -o ro /tmp/raw_mount/image.dd /mnt
 ```
-```
+
 ### LVM / BitLocker / VeraCrypt volumes
 
 After attaching the block device (loop or nbd):
@@ -137,7 +135,7 @@ sudo lvscan | grep "/dev/nbd0"
 sudo dislocker -V /dev/nbd0p3 -u -- /mnt/bitlocker
 sudo mount -o ro /mnt/bitlocker/dislocker-file /mnt/evidence
 ```
-```
+
 ### kpartx helpers
 
 `kpartx` maps partitions from an image to `/dev/mapper/` automatically:
@@ -146,7 +144,7 @@ sudo mount -o ro /mnt/bitlocker/dislocker-file /mnt/evidence
 sudo kpartx -av disk.img  # creates /dev/mapper/loop0p1, loop0p2 …
 mount -o ro /dev/mapper/loop0p2 /mnt
 ```
-```
+
 ### Common mount errors & fixes
 
 | Error | Typical Cause | Fix |
@@ -162,7 +160,6 @@ Remember to **umount** and **disconnect** loop/nbd devices to avoid leaving dang
 ```bash
 umount -Rl /mnt/evidence
 kpartx -dv /dev/loop0  # or qemu-nbd --disconnect /dev/nbd0
-```
 ```
 
 ## References

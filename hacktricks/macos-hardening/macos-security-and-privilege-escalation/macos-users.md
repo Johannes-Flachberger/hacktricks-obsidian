@@ -1,6 +1,5 @@
 # macOS Users & External Accounts
 
-
 ## Common Users
 
 - **Daemon**: User reserved for system daemons. The default daemon account names usually start with a "\_":
@@ -15,7 +14,7 @@
 state=("automaticTime" "afpGuestAccess" "filesystem" "guestAccount" "smbGuestAccess")
 for i in "${state[@]}"; do sysadminctl -"${i}" status; done;
 ```
-```
+
 - **Nobody**: Processes are executed with this user when minimal permissions are required
 - **Root**
 
@@ -30,6 +29,4 @@ for i in "${state[@]}"; do sysadminctl -"${i}" status; done;
 
 MacOS also support to login via external identity providers such as FaceBook, Google... The main daemon performing this job is `accountsd` (`/System/Library/Frameworks/Accounts.framework//Versions/A/Support/accountsd`) and it's possible to find plugins used for external authentication inside the folder `/System/Library/Accounts/Authentication/`.\
 Moreover, `accountsd` gets the list of account types from `/Library/Preferences/SystemConfiguration/com.apple.accounts.exists.plist`.
-
-
 

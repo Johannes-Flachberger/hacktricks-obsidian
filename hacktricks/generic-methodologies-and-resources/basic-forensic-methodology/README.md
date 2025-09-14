@@ -1,6 +1,5 @@
 # Basic Forensic Methodology
 
-
 ## Creating and Mounting an Image
 
 [[../../generic-methodologies-and-resources/basic-forensic-methodology/image-acquisition-and-mount.md]]
@@ -16,7 +15,6 @@ This **isn't necessary the first step to perform once you have the image**. But 
 if you are given a **forensic image** of a device you can start **analyzing the partitions, file-system** used and **recovering** potentially **interesting files** (even deleted ones). Learn how in:
 
 [[partitions-file-systems-carving/]]# Basic Forensic Methodology
-
 
 ## Creating and Mounting an Image
 
@@ -73,7 +71,6 @@ Keep in mind the possible use of anti-forensic techniques:
 
 [[file-integrity-monitoring.md]]
 
-
 ## Deep inspection of specific file-types and Software
 
 If you have very **suspicious** **file**, then **depending on the file-type and software** that created it several **tricks** may be useful.\
@@ -102,5 +99,4 @@ Keep in mind the possible use of anti-forensic techniques:
 ## Threat Hunting
 
 [[file-integrity-monitoring.md]]
-
 

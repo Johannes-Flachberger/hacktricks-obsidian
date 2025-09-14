@@ -1,6 +1,5 @@
 # macOS Default Sandbox Debug
 
-
 In this page you can find how to create an app to launch arbitrary commands from inside the default macOS sandbox:
 
 1. Compile the application:
@@ -34,7 +33,7 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 ```
-```
+
 Compile it running: `clang -framework Foundation -o SandboxedShellApp main.m`
 
 2. Build the `.app` bundle
@@ -48,19 +47,19 @@ cat << EOF > SandboxedShellApp.app/Contents/Info.plist
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    CFBundleIdentifier
-    com.example.SandboxedShellApp
-    CFBundleName
-    SandboxedShellApp
-    CFBundleVersion
-    1\.0
-    CFBundleExecutable
-    SandboxedShellApp
+    <key>CFBundleIdentifier</key>
+    <string>com.example.SandboxedShellApp</string>
+    <key>CFBundleName</key>
+    <string>SandboxedShellApp</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>CFBundleExecutable</key>
+    <string>SandboxedShellApp</string>
 </dict>
 </plist>
 EOF
 ```
-```
+
 3. Define the entitlements
 
 **sandbox**
@@ -71,12 +70,11 @@ cat << EOF > entitlements.plist
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    com.apple.security.app\-sandbox
-    
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
 </dict>
 </plist>
 EOF
-```
 ```
 
 **sandbox + downloads**
@@ -87,16 +85,14 @@ cat << EOF > entitlements.plist
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    com.apple.security.app\-sandbox
-    
-    com.apple.security.files.downloads.read\-write
-    
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <key>com.apple.security.files.downloads.read-write</key>
+    <true/>
 </dict>
 </plist>
 EOF
 ```
-```
-
 
 4. Sign the app (you need to create a certificate in the keychain)
 
@@ -107,7 +103,4 @@ codesign --entitlements entitlements.plist -s "YourIdentity" SandboxedShellApp.a
 # An d in case you need this in the future
 codesign --remove-signature SandboxedShellApp.app
 ```
-```
-
-
 

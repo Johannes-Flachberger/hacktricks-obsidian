@@ -1,7 +1,6 @@
 # Blobrunner
 
-
-The only modified line from the [[https://github.com/OALabs/BlobRunner|original code]] is the line 10.  
+The only modified line from the [original code](https://github.com/OALabs/BlobRunner) is the line 10.  
 In order to compile it just **create a C/C++ project in Visual Studio Code, copy and paste the code and build it**.
 
 ```c
@@ -27,6 +26,7 @@ const char* _banner = " __________.__        ___.  __________\n"
 "  |______  /____/\\____/|___  /____|_  /____/|___|  /___|  /\\___  >__|          \n"
 "         \\/                \\/       \\/           \\/     \\/     \\/    \n\n"
 "                                                                     %s    \n\n";
+
 
 void banner() {
 	system("cls");
@@ -206,7 +206,4 @@ int main(int argc, char* argv[])
 	return 0;
 }
 ```
-```
-
-
 

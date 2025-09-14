@@ -1,6 +1,5 @@
 # macOS MIG - Mach Interface Generator
 
-
 ## Basic Information
 
 MIG was created to **simplify the process of Mach IPC** code creation. It basically **generates the needed code** for server and client to communicate with a given definition. Even if the generated code is ugly, a developer will just need to import it and his code will be much simpler than before.
@@ -40,7 +39,7 @@ simpleroutine Subtract(
     n1          :  uint32_t;
     n2          :  uint32_t);
 ```
-```
+
 Note that the first **argument is the port to bind** and MIG will **automatically handle the reply port** (unless calling `mig_get_reply_port()` in the client code). Moreover, the **ID of the operations** will be **sequential** starting by the indicated subsystem ID (so if an operation is deprecated it's deleted and `skip` is used to still use its ID).
 
 Now use MIG to generate the server and client code that will be able to communicate within each other to call the Subtract function:
@@ -48,7 +47,7 @@ Now use MIG to generate the server and client code that will be able to communic
 ```bash
 mig -header myipcUser.h -sheader myipcServer.h myipc.defs
 ```
-```
+
 Several new files will be created in the current directory.
 
 > [!TIP]
@@ -74,7 +73,6 @@ const struct SERVERPREFmyipc_subsystem SERVERPREFmyipc_subsystem = {
 	}
 };
 ```
-```
 
 **myipcServer.h**
 
@@ -90,8 +88,6 @@ extern const struct SERVERPREFmyipc_subsystem {
 		routine[1];
 } SERVERPREFmyipc_subsystem;
 ```
-```
-
 
 Based on the previous struct the function **`myipc_server_routine`** will get the **message ID** and return the proper function to call:
 
@@ -109,7 +105,7 @@ mig_external mig_routine_t myipc_server_routine
 	return SERVERPREFmyipc_subsystem.routine[msgh_id].stub_routine;
 }
 ```
-```
+
 In this example we have only defined 1 function in the definitions, but if we would have defined more functions, they would have been inside the array of **`SERVERPREFmyipc_subsystem`** and the first one would have been assigned to the ID **500**, the second one to the ID **501**...
 
 If the function was expected to send a **reply** the function `mig_internal kern_return_t __MIG_check__Reply__<name>` would also exist.
@@ -122,10 +118,10 @@ Actually it's possible to identify this relation in the struct **`subsystem_to_n
     { "Subtract", 500 }
 #endif
 ```
-```
+
 Finally, another important function to make the server work will be **`myipc_server`**, which is the one that will actually **call the function** related to the received id:
 
-_mig_external boolean_t myipc_server
+<pre class="language-c"><code class="lang-c">mig_external boolean_t myipc_server
 	(mach_msg_header_t *InHeadP, mach_msg_header_t *OutHeadP)
 {
 	/*
@@ -147,15 +143,15 @@ _mig_external boolean_t myipc_server
 	OutHeadP->msgh_reserved = 0;
 
 	if ((InHeadP->msgh_id > 500) || (InHeadP->msgh_id < 500) ||
-	    ((routine = SERVERPREFmyipc_subsystem.routine[InHeadP->msgh_id - 500].stub_routine) == 0)) {
-		((mig_reply_error_t *)OutHeadP)->NDR = NDR_record;
+<strong>	    ((routine = SERVERPREFmyipc_subsystem.routine[InHeadP->msgh_id - 500].stub_routine) == 0)) {
+</strong>		((mig_reply_error_t *)OutHeadP)->NDR = NDR_record;
 		((mig_reply_error_t *)OutHeadP)->RetCode = MIG_BAD_ID;
 		return FALSE;
 	}
-	(*routine) (InHeadP, OutHeadP);
-	return TRUE;
+<strong>	(*routine) (InHeadP, OutHeadP);
+</strong>	return TRUE;
 }
-```
+</code></pre>
 
 Check the previously highlighted lines accessing the function to call by ID.
 
@@ -193,7 +189,6 @@ int main() {
     mach_msg_server(myipc_server, sizeof(union __RequestUnion__SERVERPREFmyipc_subsystem), port, MACH_MSG_TIMEOUT_NONE);
 }
 ```
-```
 
 **myipc_client.c**
 
@@ -221,8 +216,6 @@ int main() {
     USERPREFSubtract(port, 40, 2);
 }
 ```
-```
-
 
 ### The NDR_record
 
@@ -240,25 +233,25 @@ And **MIG clients** will use the `__NDR_record` to send with `__mach_msg` to the
 
 As many binaries now use MIG to expose mach ports, it's interesting to know how to **identify that MIG was used** and the **functions that MIG executes** with each message ID.
 
-[[../../macos-apps-inspecting-debugging-and-fuzzing/index.html#jtool2|**jtool2**]] can parse MIG information from a Mach-O binary indicating the message ID and identifying the function to execute:
+[**jtool2**](../../macos-apps-inspecting-debugging-and-fuzzing/index.html#jtool2) can parse MIG information from a Mach-O binary indicating the message ID and identifying the function to execute:
 
 ```bash
 jtool2 -d __DATA.__const myipc_server | grep MIG
 ```
-```
+
 Moreover, MIG functions are just wrappers of the actual function that gets called, which means taht getting its dissasembly and grepping for BL you might be able to find the acatual function being called:
 
 ```bash
 jtool2 -d __DATA.__const myipc_server | grep BL
 ```
-```
+
 ### Assembly
 
 It was previously mentioned that the function that will take care of **calling the correct function depending on the received message ID** was `myipc_server`. However, you usually won't have the symbols of the binary (no functions names), so it's interesting to **check how it looks like decompiled** as it will always be very similar (the code of this function is independent from the functions exposed):
 
 **myipc_server decompiled 1**
 
-_int _myipc_server(int arg0, int arg1) {
+<pre class="language-c"><code class="lang-c">int _myipc_server(int arg0, int arg1) {
     var_10 = arg0;
     var_18 = arg1;
     // Initial instructions to find the proper function ponters
@@ -274,18 +267,18 @@ _int _myipc_server(int arg0, int arg1) {
             // This stores in rax the pointer to the call that needs to be called
             // Check the used of the address 0x100004040 (functions addresses array)
             // 0x1f4 = 500 (the strating ID)
-            rax = *(sign_extend_64(rax - 0x1f4) * 0x28 + 0x100004040);
-            var_20 = rax;
+<strong>            rax = *(sign_extend_64(rax - 0x1f4) * 0x28 + 0x100004040);
+</strong>            var_20 = rax;
             // If - else, the if returns false, while the else call the correct function and returns true
-            if (rax == 0x0) {
-                    *(var_18 + 0x18) = **_NDR_record;
+<strong>            if (rax == 0x0) {
+</strong>                    *(var_18 + 0x18) = **_NDR_record;
                     *(int32_t *)(var_18 + 0x20) = 0xfffffffffffffed1;
                     var_4 = 0x0;
             }
             else {
                     // Calculated address that calls the proper function with 2 arguments
-                    (var_20)(var_10, var_18);
-                    var_4 = 0x1;
+<strong>                    (var_20)(var_10, var_18);
+</strong>                    var_4 = 0x1;
             }
     }
     else {
@@ -296,13 +289,12 @@ _int _myipc_server(int arg0, int arg1) {
     rax = var_4;
     return rax;
 }
-```
-
+</code></pre>
 
 **myipc_server decompiled 2**
 This is the same function decompiled in a difefrent Hopper free version:
 
-_int _myipc_server(int arg0, int arg1) {
+<pre class="language-c"><code class="lang-c">int _myipc_server(int arg0, int arg1) {
     r31 = r31 - 0x40;
     saved_fp = r29;
     stack[-8] = r30;
@@ -333,8 +325,8 @@ _int _myipc_server(int arg0, int arg1) {
             if ((r8 & 0x1) == 0x0) {
                     r8 = *(int32_t *)(var_10 + 0x14);
                     // 0x1f4 = 500 (the strating ID)
-                    r8 = r8 - 0x1f4;
-                    asm { smaddl     x8, w8, w9, x10 };
+<strong>                    r8 = r8 - 0x1f4;
+</strong>                    asm { smaddl     x8, w8, w9, x10 };
                     r8 = *(r8 + 0x8);
                     var_20 = r8;
                     r8 = r8 - 0x0;
@@ -345,15 +337,15 @@ _int _myipc_server(int arg0, int arg1) {
                     }
                     // Same if else as in the previous version
                     // Check the used of the address 0x100004040 (functions addresses array)
-                    if ((r8 & 0x1) == 0x0) {
-                            *(var_18 + 0x18) = **0x100004000;
-                            *(int32_t *)(var_18 + 0x20) = 0xfffffed1;
+<strong>                    if ((r8 & 0x1) == 0x0) {
+</strong><strong>                            *(var_18 + 0x18) = **0x100004000;
+</strong>                            *(int32_t *)(var_18 + 0x20) = 0xfffffed1;
                             var_4 = 0x0;
                     }
                     else {
                             // Call to the calculated address where the function should be
-                            (var_20)(var_10, var_18);
-                            var_4 = 0x1;
+<strong>                            (var_20)(var_10, var_18);
+</strong>                            var_4 = 0x1;
                     }
             }
             else {
@@ -371,19 +363,15 @@ _int _myipc_server(int arg0, int arg1) {
     return r0;
 }
 
-```
-
-
+</code></pre>
 
 Actually if you go to the function **`0x100004000`** you will find the array of **`routine_descriptor`** structs. The first element of the struct is the **address** where the **function** is implemented, and the **struct takes 0x28 bytes**, so each 0x28 bytes (starting from byte 0) you can get 8 bytes and that will be the **address of the function** that will be called:
 
-![[../../../../images/image (35).png|]]
+![](../../../../images/image (35).png)
 
+![](../../../../images/image (36).png)
 
-![[../../../../images/image (36).png|]]
-
-
-This data can be extracted [[https://github.com/knightsc/hopper/blob/master/scripts/MIG%20Detect.py|**using this Hopper script**]].
+This data can be extracted [**using this Hopper script**](https://github.com/knightsc/hopper/blob/master/scripts/MIG%20Detect.py).
 
 ### Debug
 
@@ -391,7 +379,5 @@ The code generated by MIG also calles `kernel_debug` to generate logs about oper
 
 ## References
 
-- [[https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X|\*OS Internals, Volume I, User Mode, Jonathan Levin]]
-
-
+- [\*OS Internals, Volume I, User Mode, Jonathan Levin](https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X)
 

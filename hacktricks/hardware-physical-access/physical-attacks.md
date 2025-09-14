@@ -1,13 +1,12 @@
 # Physical Attacks
 
-
 ## BIOS Password Recovery and System Security
 
 **Resetting the BIOS** can be achieved in several ways. Most motherboards include a **battery** that, when removed for around **30 minutes**, will reset the BIOS settings, including the password. Alternatively, a **jumper on the motherboard** can be adjusted to reset these settings by connecting specific pins.
 
 For situations where hardware adjustments are not possible or practical, **software tools** offer a solution. Running a system from a **Live CD/USB** with distributions like **Kali Linux** provides access to tools like **_killCmos_** and **_CmosPWD_**, which can assist in BIOS password recovery.
 
-In cases where the BIOS password is unknown, entering it incorrectly **three times** will typically result in an error code. This code can be used on websites like [[https://bios-pw.org|https://bios-pw.org]] to potentially retrieve a usable password.
+In cases where the BIOS password is unknown, entering it incorrectly **three times** will typically result in an error code. This code can be used on websites like [https://bios-pw.org](https://bios-pw.org) to potentially retrieve a usable password.
 
 ### UEFI Security
 
@@ -16,7 +15,7 @@ For modern systems using **UEFI** instead of traditional BIOS, the tool **chipse
 ```bash
 python chipsec_main.py -module exploits.secure.boot.pk
 ```
-```
+
 ---
 
 ## RAM Analysis and Cold Boot Attacks
@@ -35,7 +34,7 @@ RAM retains data briefly after power is cut, usually for **1 to 2 minutes**. Thi
 
 Changing system binaries like **_sethc.exe_** or **_Utilman.exe_** with a copy of **_cmd.exe_** can provide a command prompt with system privileges. Tools such as **chntpw** can be used to edit the **SAM** file of a Windows installation, allowing password changes.
 
-**Kon-Boot** is a tool that facilitates logging into Windows systems without knowing the password by temporarily modifying the Windows kernel or UEFI. More information can be found at [[https://www.raymond.cc/blog/login-to-windows-administrator-and-linux-root-account-without-knowing-or-changing-current-password/|https://www.raymond.cc]].
+**Kon-Boot** is a tool that facilitates logging into Windows systems without knowing the password by temporarily modifying the Windows kernel or UEFI. More information can be found at [https://www.raymond.cc](https://www.raymond.cc/blog/login-to-windows-administrator-and-linux-root-account-without-knowing-or-changing-current-password/).
 
 ---
 
@@ -91,7 +90,7 @@ Press intrusion switch  →  hold 2 s
 Release                 →  wait 2 s
 (repeat the press/release cycle 10× while the machine is powered)
 ```
-```
+
 After the tenth cycle the EC sets a flag that instructs the BIOS to wipe NVRAM at the next reboot.  The whole procedure takes ~40 s and requires **nothing but a screwdriver**.
 
 ### Generic Exploitation Procedure
@@ -113,6 +112,6 @@ After the tenth cycle the EC sets a flag that instructs the BIOS to wipe NVRAM a
 
 ## References
 
-- [[https://www.pentestpartners.com/security-blog/framework-13-press-here-to-pwn/|Pentest Partners – “Framework 13. Press here to pwn”]]
-- [[https://framewiki.net/guides/mainboard-reset|FrameWiki – Mainboard Reset Guide]]
+- [Pentest Partners – “Framework 13. Press here to pwn”](https://www.pentestpartners.com/security-blog/framework-13-press-here-to-pwn/)
+- [FrameWiki – Mainboard Reset Guide](https://framewiki.net/guides/mainboard-reset)
 

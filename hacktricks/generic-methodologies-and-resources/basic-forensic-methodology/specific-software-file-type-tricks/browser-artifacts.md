@@ -1,6 +1,5 @@
 # Browser Artifacts
 
-
 ## Browsers Artifacts 
 
 Browser artifacts include various types of data stored by web browsers, such as navigation history, bookmarks, and cache data. These artifacts are kept in specific folders within the operating system, differing in location and name across browsers, yet generally storing similar data types.
@@ -32,15 +31,15 @@ A `profiles.ini` file within these directories lists the user profiles. Each pro
 
 Within each profile folder, you can find several important files:
 
-- **places.sqlite**: Stores history, bookmarks, and downloads. Tools like [[https://www.nirsoft.net/utils/browsing_history_view.html|BrowsingHistoryView]] on Windows can access the history data.
+- **places.sqlite**: Stores history, bookmarks, and downloads. Tools like [BrowsingHistoryView](https://www.nirsoft.net/utils/browsing_history_view.html) on Windows can access the history data.
   - Use specific SQL queries to extract history and downloads information.
 - **bookmarkbackups**: Contains backups of bookmarks.
 - **formhistory.sqlite**: Stores web form data.
 - **handlers.json**: Manages protocol handlers.
 - **persdict.dat**: Custom dictionary words.
 - **addons.json** and **extensions.sqlite**: Information on installed add-ons and extensions.
-- **cookies.sqlite**: Cookie storage, with [[https://www.nirsoft.net/utils/mzcv.html|MZCookiesView]] available for inspection on Windows.
-- **cache2/entries** or **startupCache**: Cache data, accessible through tools like [[https://www.nirsoft.net/utils/mozilla_cache_viewer.html|MozillaCacheView]].
+- **cookies.sqlite**: Cookie storage, with [MZCookiesView](https://www.nirsoft.net/utils/mzcv.html) available for inspection on Windows.
+- **cache2/entries** or **startupCache**: Cache data, accessible through tools like [MozillaCacheView](https://www.nirsoft.net/utils/mozilla_cache_viewer.html).
 - **favicons.sqlite**: Stores favicons.
 - **prefs.js**: User settings and preferences.
 - **downloads.sqlite**: Older downloads database, now integrated into places.sqlite.
@@ -50,7 +49,7 @@ Within each profile folder, you can find several important files:
 
 Additionally, checking the browser’s anti-phishing settings can be done by searching for `browser.safebrowsing` entries in `prefs.js`, indicating whether safe browsing features are enabled or disabled.
 
-To try to decrypt the master password, you can use [[https://github.com/unode/firefox_decrypt|https://github.com/unode/firefox_decrypt]]\
+To try to decrypt the master password, you can use [https://github.com/unode/firefox_decrypt](https://github.com/unode/firefox_decrypt)\
 With the following script and call you can specify a password file to brute force:
 
 ```bash:brute.sh
@@ -63,8 +62,8 @@ while read pass; do
   echo "$pass" | python firefox_decrypt.py
 done < $passfile
 ```
-```
-![[<../../../images/image (692).png>|]]
+
+![[../../../images/image (692).png]]
 
 ## Google Chrome
 
@@ -76,9 +75,9 @@ Google Chrome stores user profiles in specific locations based on the operating 
 
 Within these directories, most user data can be found in the **Default/** or **ChromeDefaultData/** folders. The following files hold significant data:
 
-- **History**: Contains URLs, downloads, and search keywords. On Windows, [[https://www.nirsoft.net/utils/chrome_history_view.html|ChromeHistoryView]] can be used to read the history. The "Transition Type" column has various meanings, including user clicks on links, typed URLs, form submissions, and page reloads.
-- **Cookies**: Stores cookies. For inspection, [[https://www.nirsoft.net/utils/chrome_cookies_view.html|ChromeCookiesView]] is available.
-- **Cache**: Holds cached data. To inspect, Windows users can utilize [[https://www.nirsoft.net/utils/chrome_cache_view.html|ChromeCacheView]].
+- **History**: Contains URLs, downloads, and search keywords. On Windows, [ChromeHistoryView](https://www.nirsoft.net/utils/chrome_history_view.html) can be used to read the history. The "Transition Type" column has various meanings, including user clicks on links, typed URLs, form submissions, and page reloads.
+- **Cookies**: Stores cookies. For inspection, [ChromeCookiesView](https://www.nirsoft.net/utils/chrome_cookies_view.html) is available.
+- **Cache**: Holds cached data. To inspect, Windows users can utilize [ChromeCacheView](https://www.nirsoft.net/utils/chrome_cache_view.html).
 - **Bookmarks**: User bookmarks.
 - **Web Data**: Contains form history.
 - **Favicons**: Stores website favicons.
@@ -92,7 +91,7 @@ Within these directories, most user data can be found in the **Default/** or **C
 
 ## **SQLite DB Data Recovery**
 
-As you can observe in the previous sections, both Chrome and Firefox use **SQLite** databases to store the data. It's possible to **recover deleted entries using the tool** [[https://github.com/padfoot999/sqlparse) **or** [**sqlparse_gui**](https://github.com/mdegrazia/SQLite-Deleted-Records-Parser/releases|**sqlparse**]].
+As you can observe in the previous sections, both Chrome and Firefox use **SQLite** databases to store the data. It's possible to **recover deleted entries using the tool** [**sqlparse**](https://github.com/padfoot999/sqlparse) **or** [**sqlparse_gui**](https://github.com/mdegrazia/SQLite-Deleted-Records-Parser/releases).
 
 ## **Internet Explorer 11**
 
@@ -100,23 +99,23 @@ Internet Explorer 11 manages its data and metadata across various locations, aid
 
 ### Metadata Storage
 
-Metadata for Internet Explorer is stored in `%userprofile%\Appdata\Local\Microsoft\Windows\WebCache\WebcacheVX.data` (with VX being V01, V16, or V24). Accompanying this, the `V01.log` file might show modification time discrepancies with `WebcacheVX.data`, indicating a need for repair using `esentutl /r V01 /d`. This metadata, housed in an ESE database, can be recovered and inspected using tools like photorec and [[https://www.nirsoft.net/utils/ese_database_view.html|ESEDatabaseView]], respectively. Within the **Containers** table, one can discern the specific tables or containers where each data segment is stored, including cache details for other Microsoft tools such as Skype.
+Metadata for Internet Explorer is stored in `%userprofile%\Appdata\Local\Microsoft\Windows\WebCache\WebcacheVX.data` (with VX being V01, V16, or V24). Accompanying this, the `V01.log` file might show modification time discrepancies with `WebcacheVX.data`, indicating a need for repair using `esentutl /r V01 /d`. This metadata, housed in an ESE database, can be recovered and inspected using tools like photorec and [ESEDatabaseView](https://www.nirsoft.net/utils/ese_database_view.html), respectively. Within the **Containers** table, one can discern the specific tables or containers where each data segment is stored, including cache details for other Microsoft tools such as Skype.
 
 ### Cache Inspection
 
-The [[https://www.nirsoft.net/utils/ie_cache_viewer.html|IECacheView]] tool allows for cache inspection, requiring the cache data extraction folder location. Metadata for cache includes filename, directory, access count, URL origin, and timestamps indicating cache creation, access, modification, and expiry times.
+The [IECacheView](https://www.nirsoft.net/utils/ie_cache_viewer.html) tool allows for cache inspection, requiring the cache data extraction folder location. Metadata for cache includes filename, directory, access count, URL origin, and timestamps indicating cache creation, access, modification, and expiry times.
 
 ### Cookies Management
 
-Cookies can be explored using [[https://www.nirsoft.net/utils/iecookies.html|IECookiesView]], with metadata encompassing names, URLs, access counts, and various time-related details. Persistent cookies are stored in `%userprofile%\Appdata\Roaming\Microsoft\Windows\Cookies`, with session cookies residing in memory.
+Cookies can be explored using [IECookiesView](https://www.nirsoft.net/utils/iecookies.html), with metadata encompassing names, URLs, access counts, and various time-related details. Persistent cookies are stored in `%userprofile%\Appdata\Roaming\Microsoft\Windows\Cookies`, with session cookies residing in memory.
 
 ### Download Details
 
-Downloads metadata is accessible via [[https://www.nirsoft.net/utils/ese_database_view.html|ESEDatabaseView]], with specific containers holding data like URL, file type, and download location. Physical files can be found under `%userprofile%\Appdata\Roaming\Microsoft\Windows\IEDownloadHistory`.
+Downloads metadata is accessible via [ESEDatabaseView](https://www.nirsoft.net/utils/ese_database_view.html), with specific containers holding data like URL, file type, and download location. Physical files can be found under `%userprofile%\Appdata\Roaming\Microsoft\Windows\IEDownloadHistory`.
 
 ### Browsing History
 
-To review browsing history, [[https://www.nirsoft.net/utils/browsing_history_view.html|BrowsingHistoryView]] can be used, requiring the location of extracted history files and configuration for Internet Explorer. Metadata here includes modification and access times, along with access counts. History files are located in `%userprofile%\Appdata\Local\Microsoft\Windows\History`.
+To review browsing history, [BrowsingHistoryView](https://www.nirsoft.net/utils/browsing_history_view.html) can be used, requiring the location of extracted history files and configuration for Internet Explorer. Metadata here includes modification and access times, along with access counts. History files are located in `%userprofile%\Appdata\Local\Microsoft\Windows\History`.
 
 ### Typed URLs
 
@@ -155,11 +154,8 @@ These paths and commands are crucial for accessing and understanding the browsin
 
 ## References
 
-- [[https://nasbench.medium.com/web-browsers-forensics-7e99940c579a|https://nasbench.medium.com/web-browsers-forensics-7e99940c579a]]
-- [[https://www.sentinelone.com/labs/macos-incident-response-part-3-system-manipulation/|https://www.sentinelone.com/labs/macos-incident-response-part-3-system-manipulation/]]
-- [[https://books.google.com/books?id=jfMqCgAAQBAJ&pg=PA128&lpg=PA128&dq=%22This+file|https://books.google.com/books?id=jfMqCgAAQBAJ\&pg=PA128\&lpg=PA128\&dq=%22This+file]]
+- [https://nasbench.medium.com/web-browsers-forensics-7e99940c579a](https://nasbench.medium.com/web-browsers-forensics-7e99940c579a)
+- [https://www.sentinelone.com/labs/macos-incident-response-part-3-system-manipulation/](https://www.sentinelone.com/labs/macos-incident-response-part-3-system-manipulation/)
+- [https://books.google.com/books?id=jfMqCgAAQBAJ\&pg=PA128\&lpg=PA128\&dq=%22This+file](https://books.google.com/books?id=jfMqCgAAQBAJ&pg=PA128&lpg=PA128&dq=%22This+file)
 - **Book: OS X Incident Response: Scripting and Analysis By Jaron Bradley pag 123**
-
-
-
 

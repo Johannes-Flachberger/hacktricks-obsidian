@@ -1,6 +1,5 @@
 # Partitions/File Systems/Carving
 
-
 ## Partitions
 
 A hard drive or an **SSD disk can contain different partitions** with the goal of separating data physically.\
@@ -12,13 +11,13 @@ It's allocated in the **first sector of the disk after the 446B of the boot code
 It allows up to **4 partitions** (at most **just 1** can be active/**bootable**). However, if you need more partitions you can use **extended partitions**. The **final byte** of this first sector is the boot record signature **0x55AA**. Only one partition can be marked as active.\
 MBR allows **max 2.2TB**.
 
-![[<../../../images/image (350).png>|]]
+![[../../../images/image (350).png]]
 
-![[<../../../images/image (304).png>|]]
+![[../../../images/image (304).png]]
 
-From the **bytes 440 to the 443** of the MBR you can find the **Windows Disk Signature** (if Windows is used). The logical drive letter of the hard disk depends on the Windows Disk Signature. Changing this signature could prevent Windows from booting (tool: [[https://www.disk-editor.org/index.html)**|**Active Disk Editor**]]**.
+From the **bytes 440 to the 443** of the MBR you can find the **Windows Disk Signature** (if Windows is used). The logical drive letter of the hard disk depends on the Windows Disk Signature. Changing this signature could prevent Windows from booting (tool: [**Active Disk Editor**](https://www.disk-editor.org/index.html)**)**.
 
-![[<../../../images/image (310).png>|]]
+![[../../../images/image (310).png]]
 
 **Format**
 
@@ -48,7 +47,7 @@ From the **bytes 440 to the 443** of the MBR you can find the **Windows Disk Sig
 
 In order to mount an MBR in Linux you first need to get the start offset (you can use `fdisk` and the `p` command)
 
-![[<../../../images/image (413) (3) (3) (3) (2) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1).png>|]]
+![[../../../images/image (413) (3) (3) (3) (2) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1).png]]
 
 And then use the following code
 
@@ -58,7 +57,7 @@ mount -o ro,loop,offset=<Bytes>
 #63x512 = 32256Bytes
 mount -o ro,loop,offset=32256,noatime /path/to/image.dd /media/part/
 ```
-```
+
 **LBA (Logical block addressing)**
 
 **Logical block addressing** (**LBA**) is a common scheme used for **specifying the location of blocks** of data stored on computer storage devices, generally secondary storage systems such as hard disk drives. LBA is a particularly simple linear addressing scheme; **blocks are located by an integer index**, with the first block being LBA 0, the second LBA 1, and so on.
@@ -80,26 +79,26 @@ The GUID Partition Table, known as GPT, is favored for its enhanced capabilities
 
 - GPT maintains backward compatibility through a protective MBR. This feature resides in the legacy MBR space but is designed to prevent older MBR-based utilities from mistakenly overwriting GPT disks, hence safeguarding the data integrity on GPT-formatted disks.
 
-![[<../../../images/image (1062).png>|https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/GUID_Partition_Table_Scheme.svg/800px-GUID_Partition_Table_Scheme.svg.png]]
+![https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/GUID_Partition_Table_Scheme.svg/800px-GUID_Partition_Table_Scheme.svg.png](<../../../images/image (1062).png>)
 
 **Hybrid MBR (LBA 0 + GPT)**
 
-[[https://en.wikipedia.org/wiki/GUID_Partition_Table|From Wikipedia]]
+[From Wikipedia](https://en.wikipedia.org/wiki/GUID_Partition_Table)
 
 In operating systems that support **GPT-based boot through BIOS** services rather than EFI, the first sector may also still be used to store the first stage of the **bootloader** code, but **modified** to recognize **GPT** **partitions**. The bootloader in the MBR must not assume a sector size of 512 bytes.
 
 **Partition table header (LBA 1)**
 
-[[https://en.wikipedia.org/wiki/GUID_Partition_Table|From Wikipedia]]
+[From Wikipedia](https://en.wikipedia.org/wiki/GUID_Partition_Table)
 
 The partition table header defines the usable blocks on the disk. It also defines the number and size of the partition entries that make up the partition table (offsets 80 and 84 in the table).
 
 | Offset    | Length   | Contents                                                                                                                                                                     |
 | --------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0 (0x00)  | 8 bytes  | Signature ("EFI PART", 45h 46h 49h 20h 50h 41h 52h 54h or 0x5452415020494645ULL[[https://en.wikipedia.org/wiki/GUID_Partition_Table#_note-8)on little-endian machines| ]] |
+| 0 (0x00)  | 8 bytes  | Signature ("EFI PART", 45h 46h 49h 20h 50h 41h 52h 54h or 0x5452415020494645ULL[ ](https://en.wikipedia.org/wiki/GUID_Partition_Table#_note-8)on little-endian machines) |
 | 8 (0x08)  | 4 bytes  | Revision 1.0 (00h 00h 01h 00h) for UEFI 2.8                                                                                                                                  |
 | 12 (0x0C) | 4 bytes  | Header size in little endian (in bytes, usually 5Ch 00h 00h 00h or 92 bytes)                                                                                                 |
-| 16 (0x10) | 4 bytes  | [[https://en.wikipedia.org/wiki/CRC32) of header (offset +0 up to header size|CRC32]] in little endian, with this field zeroed during calculation                             |
+| 16 (0x10) | 4 bytes  | [CRC32](https://en.wikipedia.org/wiki/CRC32) of header (offset +0 up to header size) in little endian, with this field zeroed during calculation                             |
 | 20 (0x14) | 4 bytes  | Reserved; must be zero                                                                                                                                                       |
 | 24 (0x18) | 8 bytes  | Current LBA (location of this header copy)                                                                                                                                   |
 | 32 (0x20) | 8 bytes  | Backup LBA (location of the other header copy)                                                                                                                               |
@@ -117,24 +116,24 @@ The partition table header defines the usable blocks on the disk. It also define
 | GUID partition entry format |          |                                                                                                               |
 | --------------------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
 | Offset                      | Length   | Contents                                                                                                      |
-| 0 (0x00)                    | 16 bytes | [[https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs) (mixed endian|Partition type GUID]] |
+| 0 (0x00)                    | 16 bytes | [Partition type GUID](https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs) (mixed endian) |
 | 16 (0x10)                   | 16 bytes | Unique partition GUID (mixed endian)                                                                          |
-| 32 (0x20)                   | 8 bytes  | First LBA ([[https://en.wikipedia.org/wiki/Little_endian)|little endian]]                                      |
+| 32 (0x20)                   | 8 bytes  | First LBA ([little endian](https://en.wikipedia.org/wiki/Little_endian))                                      |
 | 40 (0x28)                   | 8 bytes  | Last LBA (inclusive, usually odd)                                                                             |
 | 48 (0x30)                   | 8 bytes  | Attribute flags (e.g. bit 60 denotes read-only)                                                               |
-| 56 (0x38)                   | 72 bytes | Partition name (36 [[https://en.wikipedia.org/wiki/UTF-16)LE code units|UTF-16]]                               |
+| 56 (0x38)                   | 72 bytes | Partition name (36 [UTF-16](https://en.wikipedia.org/wiki/UTF-16)LE code units)                               |
 
 **Partitions Types**
 
-![[<../../../images/image (83).png>|]]
+![[../../../images/image (83).png]]
 
-More partition types in [[https://en.wikipedia.org/wiki/GUID_Partition_Table|https://en.wikipedia.org/wiki/GUID_Partition_Table]]
+More partition types in [https://en.wikipedia.org/wiki/GUID_Partition_Table](https://en.wikipedia.org/wiki/GUID_Partition_Table)
 
 ### Inspecting
 
-After mounting the forensics image with [[https://arsenalrecon.com/downloads/), you can inspect the first sector using the Windows tool [**Active Disk Editor**](https://www.disk-editor.org/index.html|**ArsenalImageMounter**]]**.** In the following image an **MBR** was detected on the **sector 0** and interpreted:
+After mounting the forensics image with [**ArsenalImageMounter**](https://arsenalrecon.com/downloads/), you can inspect the first sector using the Windows tool [**Active Disk Editor**](https://www.disk-editor.org/index.html)**.** In the following image an **MBR** was detected on the **sector 0** and interpreted:
 
-![[<../../../images/image (354).png>|]]
+![[../../../images/image (354).png]]
 
 If it was a **GPT table instead of an MBR** it should appear the signature _EFI PART_ in the **sector 1** (which in the previous image is empty).
 
@@ -184,7 +183,7 @@ Some files contain metadata. This information is about the content of the file w
 - GPS coordinates
 - Image information
 
-You can use tools like [[https://exiftool.org) and [**Metadiver**](https://www.easymetadata.com/metadiver-2/|**exiftool**]] to get the metadata of a file.
+You can use tools like [**exiftool**](https://exiftool.org) and [**Metadiver**](https://www.easymetadata.com/metadiver-2/) to get the metadata of a file.
 
 ## **Deleted Files Recovery**
 
@@ -220,10 +219,9 @@ You may notice that even performing that action there might be **other parts whe
 
 ## References
 
-- [[https://en.wikipedia.org/wiki/GUID_Partition_Table|https://en.wikipedia.org/wiki/GUID_Partition_Table]]
-- [[http://ntfs.com/ntfs-permissions.htm|http://ntfs.com/ntfs-permissions.htm]]
-- [[https://www.osforensics.com/faqs-and-tutorials/how-to-scan-ntfs-i30-entries-deleted-files.html|https://www.osforensics.com/faqs-and-tutorials/how-to-scan-ntfs-i30-entries-deleted-files.html]]
-- [[https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service|https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service]]
+- [https://en.wikipedia.org/wiki/GUID_Partition_Table](https://en.wikipedia.org/wiki/GUID_Partition_Table)
+- [http://ntfs.com/ntfs-permissions.htm](http://ntfs.com/ntfs-permissions.htm)
+- [https://www.osforensics.com/faqs-and-tutorials/how-to-scan-ntfs-i30-entries-deleted-files.html](https://www.osforensics.com/faqs-and-tutorials/how-to-scan-ntfs-i30-entries-deleted-files.html)
+- [https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service](https://docs.microsoft.com/en-us/windows-server/storage/file-server/volume-shadow-copy-service)
 - **iHackLabs Certified Digital Forensics Windows**
-
 

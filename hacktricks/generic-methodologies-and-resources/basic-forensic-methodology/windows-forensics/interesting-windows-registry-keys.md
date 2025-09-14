@@ -1,6 +1,5 @@
 # Interesting Windows Registry Keys
 
-
 ### **Windows Version and Owner Info**
 
 - Located at **`Software\Microsoft\Windows NT\CurrentVersion`**, you'll find the Windows version, Service Pack, installation time, and the registered owner's name in a straightforward manner.
@@ -85,7 +84,7 @@
 
 ### **Shellbags Analysis**
 
-- Shellbags, revealing folder access details, are stored in `USRCLASS.DAT` and `NTUSER.DAT` under `Software\Microsoft\Windows\Shell`. Use **[[https://ericzimmerman.github.io/#!index.md|Shellbag Explorer]]** for analysis.
+- Shellbags, revealing folder access details, are stored in `USRCLASS.DAT` and `NTUSER.DAT` under `Software\Microsoft\Windows\Shell`. Use **[Shellbag Explorer](https://ericzimmerman.github.io/#!index.md)** for analysis.
 
 ### **USB Device History**
 
@@ -94,6 +93,4 @@
 - The last mounted device and its volume serial number can be traced through `System\MountedDevices` and `Software\Microsoft\Windows NT\CurrentVersion\EMDMgmt`, respectively.
 
 This guide condenses the crucial paths and methods for accessing detailed system, network, and user activity information on Windows systems, aiming for clarity and usability.
-
-
 

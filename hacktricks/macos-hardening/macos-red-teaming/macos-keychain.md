@@ -1,6 +1,5 @@
 # macOS Keychain
 
-
 ## Main Keychains
 
 - The **User Keychain** (`~/Library/Keychains/login.keychain-db`), which is used to store **user-specific credentials** like application passwords, internet passwords, user-generated certificates, network passwords, and user-generated public/private keys.
@@ -11,7 +10,7 @@
 
 ### Password Keychain Access
 
-These files, while they do not have inherent protection and can be **downloaded**, are encrypted and require the **user's plaintext password to be decrypted**. A tool like [[https://github.com/n0fate/chainbreaker|**Chainbreaker**]] could be used for decryption.
+These files, while they do not have inherent protection and can be **downloaded**, are encrypted and require the **user's plaintext password to be decrypted**. A tool like [**Chainbreaker**](https://github.com/n0fate/chainbreaker) could be used for decryption.
 
 ## Keychain Entries Protections
 
@@ -73,15 +72,15 @@ security set-generic-password-parition-list -s "test service" -a "test acount" -
 # Dump specifically the user keychain
 security dump-keychain ~/Library/Keychains/login.keychain-db
 ```
-```
+
 ### APIs
 
 > [!TIP]
-> The **keychain enumeration and dumping** of secrets that **won't generate a prompt** can be done with the tool [[https://github.com/its-a-feature/LockSmith|**LockSmith**]]
+> The **keychain enumeration and dumping** of secrets that **won't generate a prompt** can be done with the tool [**LockSmith**](https://github.com/its-a-feature/LockSmith)
 >
-> Other API endpoints can be found in [[https://opensource.apple.com/source/libsecurity_keychain/libsecurity_keychain-55017/lib/SecKeychain.h.auto.html|**SecKeyChain.h**]] source code.
+> Other API endpoints can be found in [**SecKeyChain.h**](https://opensource.apple.com/source/libsecurity_keychain/libsecurity_keychain-55017/lib/SecKeychain.h.auto.html) source code.
 
-List and get **info** about each keychain entry using the **Security Framework** or you could also check the Apple's open source cli tool [[https://opensource.apple.com/source/Security/Security-59306.61.1/SecurityTool/macOS/security.c.auto.html|**security**]]**.** Some API examples:
+List and get **info** about each keychain entry using the **Security Framework** or you could also check the Apple's open source cli tool [**security**](https://opensource.apple.com/source/Security/Security-59306.61.1/SecurityTool/macOS/security.c.auto.html)**.** Some API examples:
 
 - The API **`SecItemCopyMatching`** gives info about each entry and there are some attributes you can set when using it:
   - **`kSecReturnData`**: If true, it will try to decrypt the data (set to false to avoid potential pop-ups)
@@ -128,7 +127,5 @@ And these are the **requirements** to be able to **export a secret without a pro
 
 ## References
 
-- [[https://www.youtube.com/watch?v=jKE1ZW33JpY|**#OBTS v5.0: "Lock Picking the macOS Keychain" - Cody Thomas**]]
-
-
+- [**#OBTS v5.0: "Lock Picking the macOS Keychain" - Cody Thomas**](https://www.youtube.com/watch?v=jKE1ZW33JpY)
 

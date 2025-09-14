@@ -1,6 +1,5 @@
 # UART
 
-
 ## Basic Information
 
 UART is a serial protocol, which means it transfers data between components one bit at a time. In contrast, parallel communication protocols transmit data simultaneously through multiple channels. Common serial protocols include RS-232, I2C, SPI, CAN, Ethernet, HDMI, PCI Express, and USB.
@@ -9,7 +8,7 @@ Generally, the line is held high (at a logical 1 value) while UART is in the idl
 
 We call the most common configuration 8N1: eight data bits, no parity, and one stop bit. For example, if we wanted to send the character C, or 0x43 in ASCII, in an 8N1 UART configuration, we would send the following bits: 0 (the start bit); 0, 1, 0, 0, 0, 0, 1, 1 (the value of 0x43 in binary), and 0 (the stop bit).
 
-![[<../../images/image (764).png>|]]
+![[../../images/image (764).png]]
 
 Hardware tools to communicate with UART:
 
@@ -34,7 +33,7 @@ In some target devices, the UART port is disabled by the manufacturer by disabli
 
 ### Identifying the UART Baud Rate
 
-The easiest way to identify the correct baud rate is to look at the **TX pin’s output and try to read the data**. If the data you receive isn’t readable, switch to the next possible baud rate until the data becomes readable. You can use a USB-to-serial adapter or a multipurpose device like Bus Pirate to do this, paired with a helper script, such as [[https://github.com/devttys0/baudrate/|baudrate.py]]. The most common baud rates are 9600, 38400, 19200, 57600, and 115200.
+The easiest way to identify the correct baud rate is to look at the **TX pin’s output and try to read the data**. If the data you receive isn’t readable, switch to the next possible baud rate until the data becomes readable. You can use a USB-to-serial adapter or a multipurpose device like Bus Pirate to do this, paired with a helper script, such as [baudrate.py](https://github.com/devttys0/baudrate/). The most common baud rates are 9600, 38400, 19200, 57600, and 115200.
 
 > [!CAUTION]
 > It's important to note that in this protocol you need to connect the TX of one device to the RX of the other!
@@ -50,19 +49,19 @@ To list the devices connected to Linux/MacOS systems:
 ```
 ls /dev/
 ```
-```
+
 For basic interaction with the UART interface, use the following command:
 
 ```
 picocom /dev/<adapter> --baud <baudrate>
 ```
-```
+
 For minicom, use the following command to configure it:
 
 ```
 minicom -s
 ```
-```
+
 Configure the settings such as baudrate and device name in the `Serial port setup` option.
 
 After configuration, use the command `minicom` to start get the UART Console.
@@ -150,7 +149,7 @@ Escritura inicial completada:
 AAA Hi Dreg! AAA
 waiting a few secs to repeat....
 ```
-```
+
 ## Dumping Firmware with UART Console
 
 UART Console provides a great way to work with the underlying firmware in runtime environment. But when the UART Console access is read-only, it might introduce a lot of constrains. In many embedded devices, the firmware is stored in EEPROMs and executed in processors that have volatile memory. Hence, the firmware is kept read-only since the original firmware during manufacturing is inside the EEPROM itself and any new files would get lost due to volatile memory. Hence, dumping firmware is a valuable effort while working with embedded firmwares.
@@ -168,7 +167,7 @@ Usually, the command to dump the firmware is:
 ```
 md
 ```
-```
+
 which stands for "memory dump". This will dump the memory (EEPROM Content) on the screen. It is recommended to log the Serial Console output before starting the proceedure to capture the memory dump.
 
 Finally, just strip out all the unnecessary data from the log file and store the file as `filename.rom` and use binwalk to extract the contents:
@@ -176,10 +175,8 @@ Finally, just strip out all the unnecessary data from the log file and store the
 ```
 binwalk -e <filename.rom>
 ```
-```
+
 This will list the possible contents from the EEPROM as per the signatures found in the hex file.
 
 Although, it is necessary to note that it's not always the case that the uboot is unlocked even if it is being used. If the Enter Key doesn't do anything, check for different keys like Space Key, etc. If the bootloader is locked and does not get interrupted, this method would not work. To check if uboot is the bootloader for the device, check the output on the UART Console while booting of the device. It might mention uboot while booting.
-
-
 

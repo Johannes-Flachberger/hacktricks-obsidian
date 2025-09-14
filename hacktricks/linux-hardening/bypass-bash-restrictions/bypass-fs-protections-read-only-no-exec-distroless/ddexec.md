@@ -1,6 +1,5 @@
 # DDexec / EverythingExec
 
-
 ## Context
 
 In Linux in order to run a program it must exist as a file, it must be accessible in some way through the file system hierarchy (this is just how `execve()` works). This file may reside on disk or in ram (tmpfs, memfd) but you need a filepath. This has made very easy to control what is run on a Linux system, it makes easy to detect threats and attacker's tools or to prevent them from trying to execute anything of theirs at all (_e. g._ not allowing unprivileged users to place executable files anywhere).
@@ -26,7 +25,7 @@ wc
 tr
 base64
 ```
-```
+
 ## The technique
 
 If you are able to modify arbitrarily the memory of a process then you can take over it. This can be used to hijack an already existing process and replace it with another program. We can achieve this either by using the `ptrace()` syscall (which requires you to have the ability to execute syscalls or to have gdb available on the system) or, more interestingly, writing to `/proc/$pid/mem`.
@@ -60,7 +59,7 @@ The steps are relatively easy and do not require any kind of expertise to unders
 - Pass the program we want to run to the stdin of the process (will be `read()` by said "shell"code).
 - At this point it is up to the loader to load the necessary libraries for our program and jump into it.
 
-**Check out the tool in** [[https://github.com/arget13/DDexec|**https://github.com/arget13/DDexec**]]
+**Check out the tool in** [**https://github.com/arget13/DDexec**](https://github.com/arget13/DDexec)
 
 ## EverythingExec
 
@@ -72,24 +71,22 @@ hexdump
 cmp
 xxd
 ```
-```
+
 Setting the variable `SEEKER` you may change the seeker used, _e. g._:
 
 ```bash
 SEEKER=cmp bash ddexec.sh ls -l <<< $(base64 -w0 /bin/ls)
 ```
-```
+
 If you find another valid seeker not implemented in the script you may still use it setting the `SEEKER_ARGS` variable:
 
 ```bash
 SEEKER=xxd SEEKER_ARGS='-s $offset' zsh ddexec.sh ls -l <<< $(base64 -w0 /bin/ls)
 ```
-```
+
 Block this, EDRs.
 
 ## References
 
-- [[https://github.com/arget13/DDexec|https://github.com/arget13/DDexec]]
-
-
+- [https://github.com/arget13/DDexec](https://github.com/arget13/DDexec)
 

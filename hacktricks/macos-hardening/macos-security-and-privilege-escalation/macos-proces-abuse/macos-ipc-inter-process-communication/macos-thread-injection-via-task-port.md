@@ -1,10 +1,9 @@
 # macOS Thread Injection via Task port
 
-
 ## Code
 
-- [[https://github.com/bazad/threadexec|https://github.com/bazad/threadexec]]
-- [[https://gist.github.com/knightsc/bd6dfeccb02b77eb6409db5601dcef36|https://gist.github.com/knightsc/bd6dfeccb02b77eb6409db5601dcef36]]
+- [https://github.com/bazad/threadexec](https://github.com/bazad/threadexec)
+- [https://gist.github.com/knightsc/bd6dfeccb02b77eb6409db5601dcef36](https://gist.github.com/knightsc/bd6dfeccb02b77eb6409db5601dcef36)
 
 ## 1. Thread Hijacking
 
@@ -43,7 +42,7 @@ uint64_t read_func(uint64_t *address) {
     return *address;
 }
 ```
-```
+
 For **writing memory**:
 
 ```c
@@ -51,7 +50,7 @@ void write_func(uint64_t *address, uint64_t value) {
     *address = value;
 }
 ```
-```
+
 These functions correspond to the following assembly:
 
 ```
@@ -62,7 +61,7 @@ _write_func:
     str x1, [x0]
     ret
 ```
-```
+
 ### Identifying suitable functions
 
 A scan of common libraries revealed appropriate candidates for these operations:
@@ -74,7 +73,7 @@ const char *property_getName(objc_property_t prop) {
     return prop->name;
 }
 ```
-```
+
 2. **Writing memory — `_xpc_int64_set_value()`** (libxpc):
 
 ```c
@@ -82,13 +81,13 @@ __xpc_int64_set_value:
     str x1, [x0, #0x18]
     ret
 ```
-```
+
 To perform a 64-bit write at an arbitrary address:
 
 ```c
 _xpc_int64_set_value(address - 0x18, value);
 ```
-```
+
 With these primitives established, the stage is set for creating shared memory, marking a significant progression in controlling the remote process.
 
 ## 4. Shared Memory Setup
@@ -133,7 +132,7 @@ On Apple Silicon devices (arm64e) **Pointer Authentication Codes (PAC)** protect
 uint64_t ptr = (uint64_t)payload;
 ptr = ptrauth_sign_unauthenticated((void*)ptr, ptrauth_key_asia, 0);
 ```
-```
+
 4. Set `pc = ptr` in the hijacked thread state.
 
 Alternatively, stay PAC-compliant by chaining existing gadgets/functions (traditional ROP).
@@ -159,7 +158,7 @@ let client = try! ESClient(subscriptions: [.notifyRemoteThreadCreate]) {
 }
 RunLoop.main.run()
 ```
-```
+
 Querying with **osquery** ≥ 5.8:
 
 ```sql
@@ -167,7 +166,7 @@ SELECT target_pid, source_pid, target_path
 FROM es_process_events
 WHERE event_type = 'REMOTE_THREAD_CREATE';
 ```
-```
+
 ### Hardened-runtime considerations
 
 Distributing your application **without** the `com.apple.security.get-task-allow` entitlement prevents non-root attackers from obtaining its task-port. System Integrity Protection (SIP) still blocks access to many Apple binaries, but third-party software must opt-out explicitly.
@@ -183,7 +182,7 @@ Distributing your application **without** the `com.apple.security.get-task-allow
 
 ## References
 
-- [[https://bazad.github.io/2018/10/bypassing-platform-binary-task-threads/|https://bazad.github.io/2018/10/bypassing-platform-binary-task-threads/]]
-- [[https://github.com/rodionovd/task_vaccine|https://github.com/rodionovd/task_vaccine]]
-- [[https://developer.apple.com/documentation/endpointsecurity/es_event_type_notify_remote_thread_create|https://developer.apple.com/documentation/endpointsecurity/es_event_type_notify_remote_thread_create]]
+- [https://bazad.github.io/2018/10/bypassing-platform-binary-task-threads/](https://bazad.github.io/2018/10/bypassing-platform-binary-task-threads/)
+- [https://github.com/rodionovd/task_vaccine](https://github.com/rodionovd/task_vaccine)
+- [https://developer.apple.com/documentation/endpointsecurity/es_event_type_notify_remote_thread_create](https://developer.apple.com/documentation/endpointsecurity/es_event_type_notify_remote_thread_create)
 

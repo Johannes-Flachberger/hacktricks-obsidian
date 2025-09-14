@@ -1,6 +1,5 @@
 # Linux Forensics
 
-
 ## Initial Information Gathering
 
 ### Basic Information
@@ -11,7 +10,7 @@ First of all, it's recommended to have some **USB** with **good known binaries a
 export PATH=/mnt/usb/bin:/mnt/usb/sbin
 export LD_LIBRARY_PATH=/mnt/usb/lib:/mnt/usb/lib64
 ```
-```
+
 Once you have configured the system to use good and known binaries you can start **extracting some basic information**:
 
 ```bash
@@ -31,7 +30,7 @@ cat /etc/passwd #Unexpected data?
 cat /etc/shadow #Unexpected data?
 find /directory -type f -mtime -1 -print #Find modified files during the last minute in the directory
 ```
-```
+
 #### Suspicious information
 
 While obtaining the basic information you should check for weird things like:
@@ -42,20 +41,20 @@ While obtaining the basic information you should check for weird things like:
 
 ### Memory Dump
 
-To obtain the memory of the running system, it's recommended to use [[https://github.com/504ensicsLabs/LiME|**LiME**]].\
+To obtain the memory of the running system, it's recommended to use [**LiME**](https://github.com/504ensicsLabs/LiME).\
 To **compile** it, you need to use the **same kernel** that the victim machine is using.
 
 > [!TIP]
 > Remember that you **cannot install LiME or any other thing** in the victim machine as it will make several changes to it
 
 So, if you have an identical version of Ubuntu you can use `apt-get install lime-forensics-dkms`\
-In other cases, you need to download [[https://github.com/504ensicsLabs/LiME|**LiME**]] from github and compile it with correct kernel headers. To **obtain the exact kernel headers** of the victim machine, you can just **copy the directory** `/lib/modules/<kernel version>` to your machine, and then **compile** LiME using them:
+In other cases, you need to download [**LiME**](https://github.com/504ensicsLabs/LiME) from github and compile it with correct kernel headers. To **obtain the exact kernel headers** of the victim machine, you can just **copy the directory** `/lib/modules/<kernel version>` to your machine, and then **compile** LiME using them:
 
 ```bash
 make -C /lib/modules/<kernel version>/build M=$PWD
 sudo insmod lime.ko "path=/home/sansforensics/Desktop/mem_dump.bin format=lime"
 ```
-```
+
 LiME supports 3 **formats**:
 
 - Raw (every segment concatenated together)
@@ -83,7 +82,7 @@ dd if=<subject device> of=<image file> bs=512
 dcfldd if=<subject device> of=<image file> bs=512 hash=<algorithm> hashwindow=<chunk size> hashlog=<hash file>
 dcfldd if=/dev/sdc of=/media/usb/pc.image hash=sha256 hashwindow=1M hashlog=/media/usb/pc.hashes
 ```
-```
+
 ### Disk Image pre-analysis
 
 Imaging a disk image with no more data.
@@ -140,7 +139,7 @@ r/r 16: secret.txt
 icat -i raw -f ext4 disk.img 16
 ThisisTheMasterSecret
 ```
-```
+
 ## Search for known Malware
 
 ### Modified System Files
@@ -180,7 +179,7 @@ find /sbin/ –exec rpm -qf {} \; | grep "is not"
 # Find exacuable files
 find / -type f -executable | grep <something>
 ```
-```
+
 ## Recover Deleted Running Binaries
 
 Imagine a process that was executed from /tmp/exec and then deleted. It's possible to extract it
@@ -190,7 +189,7 @@ cd /proc/3746/ #PID with the exec file deleted
 head -1 maps #Get address of the file. It was 08048000-08049000
 dd if=mem bs=1 skip=08048000 count=1000 of=/tmp/exec2 #Recorver it
 ```
-```
+
 ## Inspect Autostart locations
 
 ### Scheduled Tasks
@@ -208,7 +207,7 @@ cat /var/spool/cron/crontabs/*  \
 #MacOS
 ls -l /usr/lib/cron/tabs/ /Library/LaunchAgents/ /Library/LaunchDaemons/ ~/Library/LaunchAgents/
 ```
-```
+
 #### Hunt: Cron/Anacron abuse via 0anacron and suspicious stubs
 Attackers often edit the 0anacron stub present under each /etc/cron.*/ directory to ensure periodic execution.
 
@@ -219,7 +218,7 @@ for d in /etc/cron.*; do [ -f "$d/0anacron" ] && stat -c '%n %y %s' "$d/0anacron
 # Look for obvious execution of shells or downloaders embedded in cron stubs
 grep -R --line-number -E 'curl|wget|/bin/sh|python|bash -c' /etc/cron.*/* 2>/dev/null
 ```
-```
+
 #### Hunt: SSH hardening rollback and backdoor shells
 Changes to sshd_config and system account shells are common post‑exploitation to preserve access.
 
@@ -230,7 +229,7 @@ grep -E '^\s*PermitRootLogin' /etc/ssh/sshd_config
 # System accounts with interactive shells (e.g., games → /bin/sh)
 awk -F: '($7 ~ /bin\/(sh|bash|zsh)/ && $1 ~ /^(games|lp|sync|shutdown|halt|mail|operator)$/) {print}' /etc/passwd
 ```
-```
+
 #### Hunt: Cloud C2 markers (Dropbox/Cloudflare Tunnel)
 - Dropbox API beacons typically use api.dropboxapi.com or content.dropboxapi.com over HTTPS with Authorization: Bearer tokens.
   - Hunt in proxy/Zeek/NetFlow for unexpected Dropbox egress from servers.
@@ -240,7 +239,7 @@ awk -F: '($7 ~ /bin\/(sh|bash|zsh)/ && $1 ~ /^(games|lp|sync|shutdown|halt|mail|
 ps aux | grep -E '[c]loudflared|trycloudflare'
 systemctl list-units | grep -i cloudflared
 ```
-```
+
 ### Services
 
 Paths where a malware could be installed as a service:
@@ -325,7 +324,7 @@ Some apps alse generates its own logs:
 
 ### USB Logs
 
-[[https://github.com/snovvcrash/usbrip|**usbrip**]] is a small piece of software written in pure Python 3 which parses Linux log files (`/var/log/syslog*` or `/var/log/messages*` depending on the distro) for constructing USB event history tables.
+[**usbrip**](https://github.com/snovvcrash/usbrip) is a small piece of software written in pure Python 3 which parses Linux log files (`/var/log/syslog*` or `/var/log/messages*` depending on the distro) for constructing USB event history tables.
 
 It is interesting to **know all the USBs that have been used** and it will be more useful if you have an authorized list of USBs to find "violation events" (the use of USBs that aren't inside that list).
 
@@ -335,7 +334,7 @@ It is interesting to **know all the USBs that have been used** and it will be mo
 pip3 install usbrip
 usbrip ids download #Download USB ID database
 ```
-```
+
 ### Examples
 
 ```bash
@@ -345,8 +344,8 @@ usbrip events history --pid 0002 --vid 0e0f --user kali #Search by pid OR vid OR
 usbrip ids download #Downlaod database
 usbrip ids search --pid 0002 --vid 0e0f #Search for pid AND vid
 ```
-```
-More examples and info inside the github: [[https://github.com/snovvcrash/usbrip|https://github.com/snovvcrash/usbrip]]
+
+More examples and info inside the github: [https://github.com/snovvcrash/usbrip](https://github.com/snovvcrash/usbrip)
 
 ## Review User Accounts and Logon Activities
 
@@ -378,7 +377,7 @@ ls -laR --sort=time /bin```
 # Sort files in a directory by inode:
 ls -lai /bin | sort -n```
 ````
-````
+
 > [!TIP]
 > Note that an **attacker** can **modify** the **time** to make **files appear** **legitimate**, but he **cannot** modify the **inode**. If you find that a **file** indicates that it was created and modified at the **same time** as the rest of the files in the same folder, but the **inode** is **unexpectedly bigger**, then the **timestamps of that file were modified**.
 
@@ -393,19 +392,19 @@ To compare filesystem versions and pinpoint changes, we use simplified `git diff
 ```bash
 git diff --no-index --diff-filter=A path/to/old_version/ path/to/new_version/
 ```
-```
+
 - **For modified content**, list changes while ignoring specific lines:
 
 ```bash
 git diff --no-index --diff-filter=M path/to/old_version/ path/to/new_version/ | grep -E "^\+" | grep -v "Installed-Time"
 ```
-```
+
 - **To detect deleted files**:
 
 ```bash
 git diff --no-index --diff-filter=D path/to/old_version/ path/to/new_version/
 ```
-```
+
 - **Filter options** (`--diff-filter`) help narrow down to specific changes like added (`A`), deleted (`D`), or modified (`M`) files.
   - `A`: Added files
   - `C`: Copied files
@@ -419,12 +418,10 @@ git diff --no-index --diff-filter=D path/to/old_version/ path/to/new_version/
 
 ## References
 
-- [[https://cdn.ttgtmedia.com/rms/security/Malware%20Forensics%20Field%20Guide%20for%20Linux%20Systems_Ch3.pdf|https://cdn.ttgtmedia.com/rms/security/Malware%20Forensics%20Field%20Guide%20for%20Linux%20Systems_Ch3.pdf]]
-- [[https://www.plesk.com/blog/featured/linux-logs-explained/|https://www.plesk.com/blog/featured/linux-logs-explained/]]
-- [[https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---diff-filterACDMRTUXB82308203|https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---diff-filterACDMRTUXB82308203]]
+- [https://cdn.ttgtmedia.com/rms/security/Malware%20Forensics%20Field%20Guide%20for%20Linux%20Systems_Ch3.pdf](https://cdn.ttgtmedia.com/rms/security/Malware%20Forensics%20Field%20Guide%20for%20Linux%20Systems_Ch3.pdf)
+- [https://www.plesk.com/blog/featured/linux-logs-explained/](https://www.plesk.com/blog/featured/linux-logs-explained/)
+- [https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---diff-filterACDMRTUXB82308203](https://git-scm.com/docs/git-diff#Documentation/git-diff.txt---diff-filterACDMRTUXB82308203)
 - **Book: Malware Forensics Field Guide for Linux Systems: Digital Forensics Field Guides**
 
-- [[https://redcanary.com/blog/threat-intelligence/dripdropper-linux-malware/|Red Canary – Patching for persistence: How DripDropper Linux malware moves through the cloud]]
-
-
+- [Red Canary – Patching for persistence: How DripDropper Linux malware moves through the cloud](https://redcanary.com/blog/threat-intelligence/dripdropper-linux-malware/)
 

@@ -1,17 +1,16 @@
 # Android Forensics
 
-
 ## Locked Device
 
 To start extracting data from an Android device it has to be unlocked. If it's locked you can:
 
 - Check if the device has debugging via USB activated.
-- Check for a possible [[https://www.usenix.org/legacy/event/woot10/tech/full_papers/Aviv.pdf|smudge attack]]
-- Try with [[https://www.cultofmac.com/316532/this-brute-force-device-can-crack-any-iphones-pin-code/|Brute-force]]
+- Check for a possible [smudge attack](https://www.usenix.org/legacy/event/woot10/tech/full_papers/Aviv.pdf)
+- Try with [Brute-force](https://www.cultofmac.com/316532/this-brute-force-device-can-crack-any-iphones-pin-code/)
 
 ## Data Adquisition
 
-Create an [[../mobile-pentesting/android-app-pentesting/adb-commands.md#backup) and extract it using [Android Backup Extractor](https://sourceforge.net/projects/adbextractor/|android backup using adb]]: `java -jar abe.jar unpack file.backup file.tar`
+Create an [android backup using adb](../mobile-pentesting/android-app-pentesting/adb-commands.md#backup) and extract it using [Android Backup Extractor](https://sourceforge.net/projects/adbextractor/): `java -jar abe.jar unpack file.backup file.tar`
 
 ### If root access or physical connection to JTAG interface
 
@@ -22,6 +21,4 @@ Create an [[../mobile-pentesting/android-app-pentesting/adb-commands.md#backup) 
 ### Memory
 
 Use Linux Memory Extractor (LiME) to extract the RAM information. It's a kernel extension that should be loaded via adb.
-
-
 

@@ -1,12 +1,10 @@
 # JTAG
 
-
-
 [[README.md]]
 
 ## JTAGenum
 
-[[https://github.com/cyphunk/JTAGenum) is a tool you can load on an Arduino-compatible MCU or (experimentally|**JTAGenum**]] a Raspberry Pi to brute‑force unknown JTAG pinouts and even enumerate instruction registers.
+[**JTAGenum**](https://github.com/cyphunk/JTAGenum) is a tool you can load on an Arduino-compatible MCU or (experimentally) a Raspberry Pi to brute‑force unknown JTAG pinouts and even enumerate instruction registers.
 
 - Arduino: connect digital pins D2–D11 to up to 10 suspected JTAG pads/testpoints, and Arduino GND to target GND. Power the target separately unless you know the rail is safe. Prefer 3.3 V logic (e.g., Arduino Due) or use a level shifter/series resistors when probing 1.8–3.3 V targets.
 - Raspberry Pi: the Pi build exposes fewer usable GPIOs (so scans are slower); check the repo for the current pin map and constraints.
@@ -19,12 +17,11 @@ Once flashed, open the serial monitor at 115200 baud and send `h` for help. Typi
 - `y` brute‑force IR to discover undocumented opcodes
 - `x` boundary‑scan snapshot of pin states
 
-![[<../../images/image (939).png>|]]
+![[../../images/image (939).png]]
 
-![[<../../images/image (578).png>|]]
+![[../../images/image (578).png]]
 
-![[<../../images/image (774).png>|]]
-
+![[../../images/image (774).png]]
 
 If a valid TAP is found you will see lines starting with `FOUND!` indicating discovered pins.
 
@@ -47,11 +44,11 @@ OpenOCD is the de‑facto OSS for JTAG/SWD. With a supported adapter you can sca
 openocd -f interface/jlink.cfg -c "transport select jtag; adapter speed 1000" \
   -c "init; scan_chain; shutdown"
 ```
-```- ESP32‑S3 built‑in USB‑JTAG (no external probe required):
+- ESP32‑S3 built‑in USB‑JTAG (no external probe required):
 ```
 openocd -f board/esp32s3-builtin.cfg -c "init; scan_chain; shutdown"
 ```
-```Notes
+Notes
 - If you get "all ones/zeros" IDCODE, check wiring, power, Vtref, and that the port isn’t locked by fuses/option bytes.
 - See OpenOCD low‑level `irscan`/`drscan` for manual TAP interaction when bringing up unknown chains.
 
@@ -64,17 +61,17 @@ Once the TAP is recognized and a target script is chosen, you can halt the core 
 openocd -f interface/jlink.cfg -f target/stm32f1x.cfg \
   -c "init; reset halt; mdw 0x08000000 4; dump_image flash.bin 0x08000000 0x00100000; shutdown"
 ```
-```- RISC‑V SoC (prefer SBA when available):
+- RISC‑V SoC (prefer SBA when available):
 ```
 openocd -f interface/ftdi/ft232h.cfg -f target/riscv.cfg \
   -c "init; riscv set_prefer_sba on; halt; dump_image sram.bin 0x80000000 0x20000; shutdown"
 ```
-```- ESP32‑S3, program or read via OpenOCD helper:
+- ESP32‑S3, program or read via OpenOCD helper:
 ```
 openocd -f board/esp32s3-builtin.cfg \
   -c "program_esp app.bin 0x10000 verify exit"
 ```
-```
+
 Tips
 - Use `mdw/mdh/mdb` to sanity‑check memory before long dumps.
 - For multi‑device chains, set BYPASS on non‑targets or use a board file that defines all TAPs.
@@ -95,7 +92,7 @@ jtag> instruction EXTEST
 jtag> shift ir
 jtag> dr  <bit pattern for boundary register>
 ```
-```You need the device BSDL to know boundary register bit ordering. Beware that some vendors lock boundary‑scan cells in production.
+You need the device BSDL to know boundary register bit ordering. Beware that some vendors lock boundary‑scan cells in production.
 
 ## Modern targets and notes
 

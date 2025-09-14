@@ -1,6 +1,5 @@
 # macOS GCD - Grand Central Dispatch
 
-
 ## Basic Information
 
 **Grand Central Dispatch (GCD),** also known as **libdispatch** (`libdispatch.dyld`), is available in both macOS and iOS. It's a technology developed by Apple to optimize application support for concurrent (multithreaded) execution on multicore hardware.
@@ -81,10 +80,10 @@ There are several objects that libdispatch uses and queues and blocks are just 2
 
 In Objetive-C there are different functions to send a block to be executed in parallel:
 
-- [[https://developer.apple.com/documentation/dispatch/1453057-dispatch_async|**dispatch_async**]]: Submits a block for asynchronous execution on a dispatch queue and returns immediately.
-- [[https://developer.apple.com/documentation/dispatch/1452870-dispatch_sync|**dispatch_sync**]]: Submits a block object for execution and returns after that block finishes executing.
-- [[https://developer.apple.com/documentation/dispatch/1447169-dispatch_once|**dispatch_once**]]: Executes a block object only once for the lifetime of an application.
-- [[https://developer.apple.com/documentation/dispatch/3191901-dispatch_async_and_wait|**dispatch_async_and_wait**]]: Submits a work item for execution and returns only after it finishes executing. Unlike [**`dispatch_sync`**](https://developer.apple.com/documentation/dispatch/1452870-dispatch_sync), this function respects all attributes of the queue when it executes the block.
+- [**dispatch_async**](https://developer.apple.com/documentation/dispatch/1453057-dispatch_async): Submits a block for asynchronous execution on a dispatch queue and returns immediately.
+- [**dispatch_sync**](https://developer.apple.com/documentation/dispatch/1452870-dispatch_sync): Submits a block object for execution and returns after that block finishes executing.
+- [**dispatch_once**](https://developer.apple.com/documentation/dispatch/1447169-dispatch_once): Executes a block object only once for the lifetime of an application.
+- [**dispatch_async_and_wait**](https://developer.apple.com/documentation/dispatch/3191901-dispatch_async_and_wait): Submits a work item for execution and returns only after it finishes executing. Unlike [**`dispatch_sync`**](https://developer.apple.com/documentation/dispatch/1452870-dispatch_sync), this function respects all attributes of the queue when it executes the block.
 
 These functions expect these parameters: [**`dispatch_queue_t`**](https://developer.apple.com/documentation/dispatch/dispatch_queue_t) **`queue,`** [**`dispatch_block_t`**](https://developer.apple.com/documentation/dispatch/dispatch_block_t) **`block`**
 
@@ -100,7 +99,7 @@ struct Block {
    // captured variables go here
 };
 ```
-```
+
 And this is an example to use **parallelism** with **`dispatch_async`**:
 
 ```objectivec
@@ -132,7 +131,7 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 ```
-```
+
 ## Swift
 
 **`libswiftDispatch`** is a library that provides **Swift bindings** to the Grand Central Dispatch (GCD) framework which is originally written in C.\
@@ -172,10 +171,10 @@ autoreleasepool {
     }
 }
 ```
-```
+
 ## Frida
 
-The following Frida script can be used to **hook into several `dispatch`** functions and extract the queue name, the backtrace and the block: [[https://github.com/seemoo-lab/frida-scripts/blob/main/scripts/libdispatch.js|**https://github.com/seemoo-lab/frida-scripts/blob/main/scripts/libdispatch.js**]]
+The following Frida script can be used to **hook into several `dispatch`** functions and extract the queue name, the backtrace and the block: [**https://github.com/seemoo-lab/frida-scripts/blob/main/scripts/libdispatch.js**](https://github.com/seemoo-lab/frida-scripts/blob/main/scripts/libdispatch.js)
 
 ```bash
 frida -U <prog_name> -l libdispatch.js
@@ -189,7 +188,7 @@ Backtrace:
 0x19e3a57fc UIKitCore!+[UIGraphicsRenderer _destroyCGContext:withRenderer:]
 [...]
 ```
-```
+
 ## Ghidra
 
 Currently Ghidra doesn't understand neither the ObjectiveC **`dispatch_block_t`** structure, neither the **`swift_dispatch_block`** one.
@@ -198,12 +197,9 @@ So if you want it to understand them, you could just **declare them**:
 
 ![[../../images/image (1160).png]]
 
-
 ![[../../images/image (1162).png]]
 
-
 ![[../../images/image (1163).png]]
-
 
 Then, find a place in the code where they are **used**:
 
@@ -212,20 +208,15 @@ Then, find a place in the code where they are **used**:
 
 ![[../../images/image (1164).png]]
 
-
 Right click on the variable -> Retype Variable and select in this case **`swift_dispatch_block`**:
 
 ![[../../images/image (1165).png]]
-
 
 Ghidra will automatically rewrite everything:
 
 ![[../../images/image (1166).png]]
 
-
 ## References
 
-- [[https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X|**\*OS Internals, Volume I: User Mode. By Jonathan Levin**]]
-
-
+- [**\*OS Internals, Volume I: User Mode. By Jonathan Levin**](https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X)
 

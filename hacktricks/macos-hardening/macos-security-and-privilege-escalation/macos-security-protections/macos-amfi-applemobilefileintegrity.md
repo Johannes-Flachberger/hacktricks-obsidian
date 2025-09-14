@@ -1,6 +1,5 @@
 # macOS - AMFI - AppleMobileFileIntegrity
 
-
 ## AppleMobileFileIntegrity.kext and amfid
 
 It focuses on enforcing the integrity of the code running on the system providing the logic behind XNU's code signature verification. It's also able to check entitlements and handle other sensitive tasks such as allowing debugging or obtaining task ports.
@@ -63,7 +62,7 @@ No variant specified, falling back to release
  138   com.apple.iokit.IOMobileGraphicsFamily-DCP
  162   com.apple.iokit.IONVMeFamily
 ```
-```
+
 ## amfid
 
 This is the user mode running daemon that `AMFI.kext` will use to check for code signatures in user mode.\
@@ -90,7 +89,7 @@ openssl asn1parse -inform der -in /path/to/profile
 
 security cms -D -i /path/to/profile
 ```
-```
+
 Although sometimes referred as certificated, these provisioning profiles have more than a certificate:
 
 - **AppIDName:** The Application Identifier
@@ -125,7 +124,5 @@ iOS AMFI maintains a lost of known hashes which are signed ad-hoc, called the **
 
 ## References
 
-- [[https://newosxbook.com/home.html|**\*OS Internals Volume III**]]
-
-
+- [**\*OS Internals Volume III**](https://newosxbook.com/home.html)
 

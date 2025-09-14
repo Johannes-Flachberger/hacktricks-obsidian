@@ -1,6 +1,5 @@
 # Building a Portable HID MaxiProx 125 kHz Mobile Cloner
 
-
 ## Goal
 Turn a mains-powered HID MaxiProx 5375 long-range 125 kHz reader into a field-deployable, battery-powered badge cloner that silently harvests proximity cards during physical-security assessments.
 
@@ -78,5 +77,5 @@ The conversion covered here is based on TrustedSec’s “Let’s Clone a Cloner
 
 ## References
 
-- [[https://trustedsec.com/blog/lets-clone-a-cloner-part-3-putting-it-all-together|Let’s Clone a Cloner – Part 3 (TrustedSec)]]
+- [Let’s Clone a Cloner – Part 3 (TrustedSec)](https://trustedsec.com/blog/lets-clone-a-cloner-part-3-putting-it-all-together)
 

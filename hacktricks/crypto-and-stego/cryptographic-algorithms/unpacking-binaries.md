@@ -1,14 +1,13 @@
 # Unpacking Binaries
 
-
 ## Identifying packed binaries
 
 - **lack of strings**: It's common to find that packed binaries doesn't have almost any string
 - A lot of **unused strings**: Also, when a malware is using some kind of commercial packer it's common to find a lot of strings without cross-references. Even if these strings exist that doesn't mean that the binary isn't packed.
 - You can also use some tools to try to find which packer was used to pack a binary:
-  - [[http://www.softpedia.com/get/Programming/Packers-Crypters-Protectors/PEiD-updated.shtml|PEiD]]
-  - [[http://www.softpedia.com/get/Programming/Packers-Crypters-Protectors/ExEinfo-PE.shtml|Exeinfo PE]]
-  - [[http://farrokhi.net/language/|Language 2000]]
+  - [PEiD](http://www.softpedia.com/get/Programming/Packers-Crypters-Protectors/PEiD-updated.shtml)
+  - [Exeinfo PE](http://www.softpedia.com/get/Programming/Packers-Crypters-Protectors/ExEinfo-PE.shtml)
+  - [Language 2000](http://farrokhi.net/language/)
 
 ## Basic Recommendations
 
@@ -20,7 +19,5 @@
 - While unpacking code **note** whenever you **change memory region** as a memory region change may indicate the **starting of the unpacking code**. You can easily dump a memory region using Process Hacker (process --> properties --> memory).
 - While trying to unpack code a good way to **know if you are already working with the unpacked code** (so you can just dump it) is to **check the strings of the binary**. If at some point you perform a jump (maybe changing the memory region) and you notice that **a lot more strings where added**, then you can know **you are working with the unpacked code**.\
   However, if the packer already contains a lot of strings you can see how many strings contains the word "http" and see if this number increases.
-- When you dump an executable from a region of memory you can fix some headers using [[https://github.com/hasherezade/pe-bear-releases/releases|PE-bear]].
-
-
+- When you dump an executable from a region of memory you can fix some headers using [PE-bear](https://github.com/hasherezade/pe-bear-releases/releases).
 

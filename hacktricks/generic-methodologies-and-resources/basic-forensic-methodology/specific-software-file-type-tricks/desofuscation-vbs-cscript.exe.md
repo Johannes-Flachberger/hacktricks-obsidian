@@ -1,6 +1,5 @@
 # Desobfuscation Techniques for VBS Files
 
-
 Some things that could be useful to debug/deobfuscate a malicious VBS file:
 
 ## echo
@@ -8,19 +7,19 @@ Some things that could be useful to debug/deobfuscate a malicious VBS file:
 ```bash
 Wscript.Echo "Like this?"
 ```
-```
+
 ## Commnets
 
 ```bash
 ' this is a comment
 ```
-```
+
 ## Test
 
 ```bash
 cscript.exe file.vbs
 ```
-```
+
 ## Write data to a file
 
 ```js
@@ -47,7 +46,4 @@ Function writeBinary(strBinary, strPath)
 
 End Function
 ```
-```
-
-
 

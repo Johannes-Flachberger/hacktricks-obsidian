@@ -1,6 +1,5 @@
 # macOS Chromium Injection
 
-
 ## Basic Information
 
 Chromium-based browsers like Google Chrome, Microsoft Edge, Brave, and others. These browsers are built on the Chromium open-source project, which means they share a common base and, therefore, have similar functionalities and developer options.
@@ -15,8 +14,8 @@ The `--use-fake-ui-for-media-stream` flag is another command-line option that ca
 
 ### Tools
 
-- [[https://github.com/breakpointHQ/snoop|https://github.com/breakpointHQ/snoop]]
-- [[https://github.com/breakpointHQ/VOODOO|https://github.com/breakpointHQ/VOODOO]]
+- [https://github.com/breakpointHQ/snoop](https://github.com/breakpointHQ/snoop)
+- [https://github.com/breakpointHQ/VOODOO](https://github.com/breakpointHQ/VOODOO)
 
 ### Example
 
@@ -24,12 +23,10 @@ The `--use-fake-ui-for-media-stream` flag is another command-line option that ca
 # Intercept traffic
 voodoo intercept -b chrome
 ```
-```
+
 Find more examples in the tools links
 
 ## References
 
-- [[https://twitter.com/RonMasas/status/1758106347222995007|https://twitter.com/RonMasas/status/1758106347222995007]]
-
-
+- [https://twitter.com/RonMasas/status/1758106347222995007](https://twitter.com/RonMasas/status/1758106347222995007)
 

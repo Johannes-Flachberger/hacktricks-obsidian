@@ -1,7 +1,6 @@
 # AD CS Certificate Theft
 
-
-**This is a small summary of the Theft chapters of the awesome research from [[https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf|https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf]]**
+**This is a small summary of the Theft chapters of the awesome research from [https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf](https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf)**
 
 ## What can I do with a certificate
 
@@ -18,12 +17,12 @@ $Cert.EnhancedKeyUsageList
 # cmd
 certutil.exe -dump -v cert.pfx
 ```
-```
+
 ## Exporting Certificates Using the Crypto APIs – THEFT1
 
 In an **interactive desktop session**, extracting a user or machine certificate, along with the private key, can be easily done, particularly if the **private key is exportable**. This can be achieved by navigating to the certificate in `certmgr.msc`, right-clicking on it, and selecting `All Tasks → Export` to generate a password-protected .pfx file.
 
-For a **programmatic approach**, tools such as the PowerShell `ExportPfxCertificate` cmdlet or projects like [[https://github.com/TheWover/CertStealer) are available. These utilize the **Microsoft CryptoAPI** (CAPI) or the Cryptography API: Next Generation (CNG|TheWover’s CertStealer C# project]] to interact with the certificate store. These APIs provide a range of cryptographic services, including those necessary for certificate storage and authentication.
+For a **programmatic approach**, tools such as the PowerShell `ExportPfxCertificate` cmdlet or projects like [TheWover’s CertStealer C# project](https://github.com/TheWover/CertStealer) are available. These utilize the **Microsoft CryptoAPI** (CAPI) or the Cryptography API: Next Generation (CNG) to interact with the certificate store. These APIs provide a range of cryptographic services, including those necessary for certificate storage and authentication.
 
 However, if a private key is set as non-exportable, both CAPI and CNG will normally block the extraction of such certificates. To bypass this restriction, tools like **Mimikatz** can be employed. Mimikatz offers `crypto::capi` and `crypto::cng` commands to patch the respective APIs, allowing for the exportation of private keys. Specifically, `crypto::capi` patches the CAPI within the current process, while `crypto::cng` targets the memory of **lsass.exe** for patching.
 
@@ -52,8 +51,8 @@ dpapi::masterkey /in:"C:\PATH\TO\KEY" /rpc
 # With mimikatz, if the user's password is known
 dpapi::masterkey /in:"C:\PATH\TO\KEY" /sid:accountSid /password:PASS
 ```
-```
-To streamline the decryption of masterkey files and private key files, the `certificates` command from [[https://github.com/GhostPack/SharpDPAPI|**SharpDPAPI**]] proves beneficial. It accepts `/pvk`, `/mkfile`, `/password`, or `{GUID}:KEY` as arguments to decrypt the private keys and linked certificates, subsequently generating a `.pem` file.
+
+To streamline the decryption of masterkey files and private key files, the `certificates` command from [**SharpDPAPI**](https://github.com/GhostPack/SharpDPAPI) proves beneficial. It accepts `/pvk`, `/mkfile`, `/password`, or `{GUID}:KEY` as arguments to decrypt the private keys and linked certificates, subsequently generating a `.pem` file.
 
 ```bash
 # Decrypting using SharpDPAPI
@@ -62,7 +61,7 @@ SharpDPAPI.exe certificates /mkfile:C:\temp\mkeys.txt
 # Converting .pem to .pfx
 openssl pkcs12 -in cert.pem -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out cert.pfx
 ```
-```
+
 ## Machine Certificate Theft via DPAPI – THEFT3
 
 Machine certificates stored by Windows in the registry at `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\SystemCertificates` and the associated private keys located in `%ALLUSERSPROFILE%\Application Data\Microsoft\Crypto\RSA\MachineKeys` (for CAPI) and `%ALLUSERSPROFILE%\Application Data\Microsoft\Crypto\Keys` (for CNG) are encrypted using the machine's DPAPI master keys. These keys cannot be decrypted with the domain’s DPAPI backup key; instead, the **DPAPI_SYSTEM LSA secret**, which only the SYSTEM user can access, is required.
@@ -82,7 +81,7 @@ Certificates are sometimes found directly within the filesystem, such as in file
 
 These files can be searched for using PowerShell or the command prompt by looking for the mentioned extensions.
 
-In cases where a PKCS#12 certificate file is found and it is protected by a password, the extraction of a hash is possible through the use of `pfx2john.py`, available at [[https://fossies.org/dox/john-1.9.0-jumbo-1/pfx2john_8py_source.html|fossies.org]]. Subsequently, JohnTheRipper can be employed to attempt to crack the password.
+In cases where a PKCS#12 certificate file is found and it is protected by a password, the extraction of a hash is possible through the use of `pfx2john.py`, available at [fossies.org](https://fossies.org/dox/john-1.9.0-jumbo-1/pfx2john_8py_source.html). Subsequently, JohnTheRipper can be employed to attempt to crack the password.
 
 ```bash
 # Example command to search for certificate files in PowerShell
@@ -94,24 +93,22 @@ pfx2john.py certificate.pfx > hash.txt
 # Command to crack the hash with JohnTheRipper
 john --wordlist=passwords.txt hash.txt
 ```
-```
+
 ## NTLM Credential Theft via PKINIT – THEFT5 (UnPAC the hash)
 
 The given content explains a method for NTLM credential theft via PKINIT, specifically through the theft method labeled as THEFT5. Here's a re-explanation in passive voice, with the content anonymized and summarized where applicable:
 
 To support NTLM authentication `MS-NLMP` for applications that do not facilitate Kerberos authentication, the KDC is designed to return the user's NTLM one-way function (OWF) within the privilege attribute certificate (PAC), specifically in the `PAC_CREDENTIAL_INFO` buffer, when PKCA is utilized. Consequently, should an account authenticate and secure a Ticket-Granting Ticket (TGT) via PKINIT, a mechanism is inherently provided which enables the current host to extract the NTLM hash from the TGT to uphold legacy authentication protocols. This process entails the decryption of the `PAC_CREDENTIAL_DATA` structure, which is essentially an NDR serialized depiction of the NTLM plaintext.
 
-The utility **Kekeo**, accessible at [[https://github.com/gentilkiwi/kekeo|https://github.com/gentilkiwi/kekeo]], is mentioned as capable of requesting a TGT containing this specific data, thereby facilitating the retrieval of the user's NTLM. The command utilized for this purpose is as follows:
+The utility **Kekeo**, accessible at [https://github.com/gentilkiwi/kekeo](https://github.com/gentilkiwi/kekeo), is mentioned as capable of requesting a TGT containing this specific data, thereby facilitating the retrieval of the user's NTLM. The command utilized for this purpose is as follows:
 
 ```bash
 tgt::pac /caname:generic-DC-CA /subject:genericUser /castore:current_user /domain:domain.local
 ```
-```
+
 **`Rubeus`** can also get this information with the option **`asktgt [...] /getcredentials`**.
 
-Additionally, it is noted that Kekeo can process smartcard-protected certificates, given the pin can be retrieved, with reference made to [[https://github.com/CCob/PinSwipe). The same capability is indicated to be supported by **Rubeus**, available at [https://github.com/GhostPack/Rubeus](https://github.com/GhostPack/Rubeus|https://github.com/CCob/PinSwipe]].
+Additionally, it is noted that Kekeo can process smartcard-protected certificates, given the pin can be retrieved, with reference made to [https://github.com/CCob/PinSwipe](https://github.com/CCob/PinSwipe). The same capability is indicated to be supported by **Rubeus**, available at [https://github.com/GhostPack/Rubeus](https://github.com/GhostPack/Rubeus).
 
 This explanation encapsulates the process and tools involved in NTLM credential theft via PKINIT, focusing on the retrieval of NTLM hashes through TGT obtained using PKINIT, and the utilities that facilitate this process.
-
-
 

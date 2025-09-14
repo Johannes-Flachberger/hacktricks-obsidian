@@ -1,6 +1,5 @@
 # Logstash Privilege Escalation
 
-
 ## Logstash
 
 Logstash is used to **gather, transform, and dispatch logs** through a system known as **pipelines**. These pipelines are made up of **input**, **filter**, and **output** stages. An interesting aspect arises when Logstash operates on a compromised machine.
@@ -20,7 +19,7 @@ Pipelines are configured in the file **/etc/logstash/pipelines.yml**, which list
   path.config: "/usr/share/logstash/pipeline/1*.conf"
   pipeline.workers: 6
 ```
-```
+
 This file reveals where the **.conf** files, containing pipeline configurations, are located. When employing an **Elasticsearch output module**, it's common for **pipelines** to include **Elasticsearch credentials**, which often possess extensive privileges due to Logstash's need to write data to Elasticsearch. Wildcards in configuration paths allow Logstash to execute all matching pipelines in the designated directory.
 
 ### Privilege Escalation via Writable Pipelines
@@ -52,11 +51,10 @@ output {
   }
 }
 ```
-```
+
 Here, **interval** determines the execution frequency in seconds. In the given example, the **whoami** command runs every 120 seconds, with its output directed to **/tmp/output.log**.
 
 With **config.reload.automatic: true** in **/etc/logstash/logstash.yml**, Logstash will automatically detect and apply new or modified pipeline configurations without needing a restart. If there's no wildcard, modifications can still be made to existing configurations, but caution is advised to avoid disruptions.
 
 ## References
-
 

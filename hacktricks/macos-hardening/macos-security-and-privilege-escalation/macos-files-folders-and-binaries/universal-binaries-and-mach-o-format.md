@@ -1,6 +1,5 @@
 # macOS Universal binaries & Mach-O Format
 
-
 ## Basic Information
 
 Mac OS binaries usually are compiled as **universal binaries**. A **universal binary** can **support multiple architectures in the same file**.
@@ -11,19 +10,19 @@ These binaries follows the **Mach-O structure** which is basically compased of:
 - Load Commands
 - Data
 
-![[<../../../images/image (470).png>|https://alexdremov.me/content/images/2022/10/6XLCD.gif]]
+![https://alexdremov.me/content/images/2022/10/6XLCD.gif](<../../../images/image (470).png>)
 
 ## Fat Header
 
 Search for the file with: `mdfind fat.h | grep -i mach-o | grep -E "fat.h$"`
 
-_#define FAT_MAGIC	0xcafebabe
-#define FAT_CIGAM	0xbebafeca	/* NXSwapLong(FAT_MAGIC) */
-
+<pre class="language-c"><code class="lang-c"><strong>#define FAT_MAGIC	0xcafebabe
+</strong><strong>#define FAT_CIGAM	0xbebafeca	/* NXSwapLong(FAT_MAGIC) */
+</strong>
 struct fat_header {
-	uint32_t	magic;		/* FAT_MAGIC or FAT_MAGIC_64 */
-	uint32_t	nfat_arch;	/* number of structs that follow */
-};
+<strong>	uint32_t	magic;		/* FAT_MAGIC or FAT_MAGIC_64 */
+</strong><strong>	uint32_t	nfat_arch;	/* number of structs that follow */
+</strong>};
 
 struct fat_arch {
 	cpu_type_t	cputype;	/* cpu specifier (int) */
@@ -32,13 +31,13 @@ struct fat_arch {
 	uint32_t	size;		/* size of this object file */
 	uint32_t	align;		/* alignment as a power of 2 */
 };
-```
+</code></pre>
 
 The header has the **magic** bytes followed by the **number** of **archs** the file **contains** (`nfat_arch`) and each arch will have a `fat_arch` struct.
 
 Check it with:
 
-_% file /bin/ls
+<pre class="language-shell-session"><code class="lang-shell-session">% file /bin/ls
 /bin/ls: Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit executable x86_64] [arm64e:Mach-O 64-bit executable arm64e]
 /bin/ls (for architecture x86_64):	Mach-O 64-bit executable x86_64
 /bin/ls (for architecture arm64e):	Mach-O 64-bit executable arm64e
@@ -46,27 +45,26 @@ _% file /bin/ls
 % otool -f -v /bin/ls
 Fat headers
 fat_magic FAT_MAGIC
-nfat_arch 2
-architecture x86_64
-    cputype CPU_TYPE_X86_64
+<strong>nfat_arch 2
+</strong><strong>architecture x86_64
+</strong>    cputype CPU_TYPE_X86_64
     cpusubtype CPU_SUBTYPE_X86_64_ALL
     capabilities 0x0
-    offset 16384
-    size 72896
-    align 2^14 (16384)
-architecture arm64e
-    cputype CPU_TYPE_ARM64
+<strong>    offset 16384
+</strong><strong>    size 72896
+</strong>    align 2^14 (16384)
+<strong>architecture arm64e
+</strong>    cputype CPU_TYPE_ARM64
     cpusubtype CPU_SUBTYPE_ARM64E
     capabilities PTR_AUTH_VERSION USERSPACE 0
-    offset 98304
-    size 88816
-    align 2^14 (16384)
-```
+<strong>    offset 98304
+</strong><strong>    size 88816
+</strong>    align 2^14 (16384)
+</code></pre>
 
-or using the [[https://sourceforge.net/projects/machoview/|Mach-O View]] tool:
+or using the [Mach-O View](https://sourceforge.net/projects/machoview/) tool:
 
-![[../../../images/image (1094).png|]]
-
+![](../../../images/image (1094).png)
 
 As you may be thinking usually a universal binary compiled for 2 architectures **doubles the size** of one compiled for just 1 arch.
 
@@ -100,10 +98,10 @@ struct mach_header_64 {
 	uint32_t	reserved;	/* reserved */
 };
 ```
-```
+
 ### Mach-O File Types
 
-There are different file types, you can find them defined in the [[https://opensource.apple.com/source/xnu/xnu-2050.18.24/EXTERNAL_HEADERS/mach-o/loader.h|**source code for example here**]]. The most important ones are:
+There are different file types, you can find them defined in the [**source code for example here**](https://opensource.apple.com/source/xnu/xnu-2050.18.24/EXTERNAL_HEADERS/mach-o/loader.h). The most important ones are:
 
 - `MH_OBJECT`: Relocatable object file (intermediate products of compilation, not executables yet).
 - `MH_EXECUTE`: Executable files.
@@ -123,11 +121,10 @@ Mach header
       magic  cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
 MH_MAGIC_64    ARM64          E USR00     EXECUTE    19       1728   NOUNDEFS DYLDLINK TWOLEVEL PIE
 ```
-```
-Or using [[https://sourceforge.net/projects/machoview/|Mach-O View]]:
 
-![[../../../images/image (1133).png|]]
+Or using [Mach-O View](https://sourceforge.net/projects/machoview/):
 
+![](../../../images/image (1133).png)
 
 ## **Mach-O Flags**
 
@@ -160,7 +157,7 @@ struct load_command {
         uint32_t cmdsize;       /* total size of command in bytes */
 };
 ```
-```
+
 There are about **50 different types of load commands** that the system handles differently. The most common ones are: `LC_SEGMENT_64`, `LC_LOAD_DYLINKER`, `LC_MAIN`, `LC_LOAD_DYLIB`, and `LC_CODE_SIGNATURE`.
 
 ### **LC_SEGMENT/LC_SEGMENT_64**
@@ -176,7 +173,7 @@ There are **different types** of segments, such as the **\_\_TEXT** segment, whi
 
 In the header first you find the **segment header**:
 
-_struct segment_command_64 { /* for 64-bit architectures */
+<pre class="language-c"><code class="lang-c">struct segment_command_64 { /* for 64-bit architectures */
 	uint32_t	cmd;		/* LC_SEGMENT_64 */
 	uint32_t	cmdsize;	/* includes sizeof section_64 structs */
 	char		segname[16];	/* segment name */
@@ -186,15 +183,14 @@ _struct segment_command_64 { /* for 64-bit architectures */
 	uint64_t	filesize;	/* amount to map from the file */
 	int32_t		maxprot;	/* maximum VM protection */
 	int32_t		initprot;	/* initial VM protection */
-	uint32_t	nsects;		/* number of sections in segment */
-	uint32_t	flags;		/* flags */
+<strong>	uint32_t	nsects;		/* number of sections in segment */
+</strong>	uint32_t	flags;		/* flags */
 };
-```
+</code></pre>
 
 Example of segment header:
 
-![[../../../images/image (1126).png|]]
-
+![](../../../images/image (1126).png)
 
 This header defines the **number of sections whose headers appear after** it:
 
@@ -214,23 +210,21 @@ struct section_64 { /* for 64-bit architectures */
 	uint32_t	reserved3;	/* reserved */
 };
 ```
-```
+
 Example of **section header**:
 
-![[../../../images/image (1108).png|]]
-
+![](../../../images/image (1108).png)
 
 If you **add** the **section offset** (0x37DC) + the **offset** where the **arch starts**, in this case `0x18000` --> `0x37DC + 0x18000 = 0x1B7DC`
 
-![[../../../images/image (701).png|]]
-
+![](../../../images/image (701).png)
 
 It's also possible to get **headers information** from the **command line** with:
 
 ```bash
 otool -lv /bin/ls
 ```
-```
+
 Common segments loaded by this cmd:
 
 - **`__PAGEZERO`:** It instructs the kernel to **map** the **address zero** so it **cannot be read from, written to, or executed**. The maxprot and minprot variables in the structure are set to zero to indicate there are **no read-write-execute rights on this page**.
@@ -299,11 +293,11 @@ Load command 13
 
 [...]
 ```
-```
+
 ### **`LC_CODE_SIGNATURE`**
 
 Contains information about the **code signature of the Macho-O file**. It only contains an **offset** that **points** to the **signature blob**. This is typically at the very end of the file.\
-However, you can find some information about this section in [[https://davedelong.com/blog/2018/01/10/reading-your-own-entitlements/) and this [**gists**](https://gist.github.com/carlospolop/ef26f8eb9fafd4bc22e69e1a32b81da4|**this blog post**]].
+However, you can find some information about this section in [**this blog post**](https://davedelong.com/blog/2018/01/10/reading-your-own-entitlements/) and this [**gists**](https://gist.github.com/carlospolop/ef26f8eb9fafd4bc22e69e1a32b81da4).
 
 ### **`LC_ENCRYPTION_INFO[_64]`**
 
@@ -345,8 +339,8 @@ struct dylib {
     uint32_t compatibility_version;     /* library's compatibility vers number*/
 };
 ```
-```
-![[<../../../images/image (486).png>|]]
+
+![[../../../images/image (486).png]]
 
 You could also get this info from the cli with:
 
@@ -357,7 +351,7 @@ otool -L /bin/ls
 	/usr/lib/libncurses.5.4.dylib (compatibility version 5.4.0, current version 5.4.0)
 	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1319.0.0)
 ```
-```
+
 Some potential malware related libraries are:
 
 - **DiskArbitration**: Monitoring USB drives
@@ -375,7 +369,7 @@ At the core of the file lies the data region, which is composed of several segme
 > [!TIP]
 > The data is basically the part containing all the **information** that is loaded by the load commands **LC_SEGMENTS_64**
 
-![[<../../../images/image (507) (3).png>|https://www.oreilly.com/api/v2/epubs/9781785883378/files/graphics/B05055_02_38.jpg]]
+![https://www.oreilly.com/api/v2/epubs/9781785883378/files/graphics/B05055_02_38.jpg](<../../../images/image (507) (3).png>)
 
 This includes:
 
@@ -383,17 +377,16 @@ This includes:
 - **Symbol table**: Which contains information about the external function used by the binary
 - It could also contain internal function, variable names as well and more.
 
-To check it you could use the [[https://sourceforge.net/projects/machoview/|**Mach-O View**]] tool:
+To check it you could use the [**Mach-O View**](https://sourceforge.net/projects/machoview/) tool:
 
-![[../../../images/image (1120).png|]]
-
+![](../../../images/image (1120).png)
 
 Or from the cli:
 
 ```bash
 size -m /bin/ls
 ```
-```
+
 ## Objetive-C Common Sections
 
 In `__TEXT` segment (r-x):
@@ -415,6 +408,4 @@ In `__DATA` segment (rw-):
 ## Swift
 
 - `_swift_typeref`, `_swift3_capture`, `_swift3_assocty`, `_swift3_types, _swift3_proto`, `_swift3_fieldmd`, `_swift3_builtin`, `_swift3_reflstr`
-
-
 

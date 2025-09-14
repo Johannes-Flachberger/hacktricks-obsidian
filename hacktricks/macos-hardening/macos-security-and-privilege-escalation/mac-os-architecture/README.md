@@ -1,13 +1,12 @@
 # macOS Kernel & System Extensions
 
-
 ## XNU Kernel
 
 The **core of macOS is XNU**, which stands for "X is Not Unix". This kernel is fundamentally composed of the **Mach microkerne**l (to be discussed later), **and** elements from Berkeley Software Distribution (**BSD**). XNU also provides a platform for **kernel drivers via a system called the I/O Kit**. The XNU kernel is part of the Darwin open source project, which means **its source code is freely accessible**.
 
 From a perspective of a security researcher or a Unix developer, **macOS** can feel quite **similar** to a **FreeBSD** system with an elegant GUI and a host of custom applications. Most applications developed for BSD will compile and run on macOS without needing modifications, as the command-line tools familiar to Unix users are all present in macOS. However, because the XNU kernel incorporates Mach, there are some significant differences between a traditional Unix-like system and macOS, and these differences might cause potential issues or provide unique advantages.
 
-Open source version of XNU: [[https://opensource.apple.com/source/xnu/|https://opensource.apple.com/source/xnu/]]
+Open source version of XNU: [https://opensource.apple.com/source/xnu/](https://opensource.apple.com/source/xnu/)
 
 ### Mach
 
@@ -56,8 +55,6 @@ Instead of using Kernel Extensions macOS created the System Extensions, which of
 
 ## References
 
-- [[https://www.amazon.com/-/es/Charlie-Miller-ebook-dp-B004U7MUMU/dp/B004U7MUMU/ref=mt_other?_encoding=UTF8&me=&qid=|**The Mac Hacker's Handbook**]]
-- [[https://taomm.org/vol1/analysis.html|**https://taomm.org/vol1/analysis.html**]]
-
-
+- [**The Mac Hacker's Handbook**](https://www.amazon.com/-/es/Charlie-Miller-ebook-dp-B004U7MUMU/dp/B004U7MUMU/ref=mt_other?_encoding=UTF8&me=&qid=)
+- [**https://taomm.org/vol1/analysis.html**](https://taomm.org/vol1/analysis.html)
 

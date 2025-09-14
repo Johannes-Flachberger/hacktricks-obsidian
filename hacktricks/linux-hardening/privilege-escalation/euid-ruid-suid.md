@@ -1,7 +1,5 @@
 # euid, ruid, suid
 
-
-
 ### User Identification Variables
 
 - **`ruid`**: The **real user ID** denotes the user who initiated the process.
@@ -14,8 +12,8 @@ A process not operating under root can only modify its `euid` to match the curre
 
 ### Understanding set\*uid Functions
 
-- **`setuid`**: Contrary to initial assumptions, `setuid` primarily modifies `euid` rather than `ruid`. Specifically, for privileged processes, it aligns `ruid`, `euid`, and `suid` with the specified user, often root, effectively solidifying these IDs due to the overriding `suid`. Detailed insights can be found in the [[https://man7.org/linux/man-pages/man2/setuid.2.html|setuid man page]].
-- **`setreuid`** and **`setresuid`**: These functions allow for the nuanced adjustment of `ruid`, `euid`, and `suid`. However, their capabilities are contingent on the process's privilege level. For non-root processes, modifications are restricted to the current values of `ruid`, `euid`, and `suid`. In contrast, root processes or those with `CAP_SETUID` capability can assign arbitrary values to these IDs. More information can be gleaned from the [[https://man7.org/linux/man-pages/man2/setresuid.2.html) and the [setreuid man page](https://man7.org/linux/man-pages/man2/setreuid.2.html|setresuid man page]].
+- **`setuid`**: Contrary to initial assumptions, `setuid` primarily modifies `euid` rather than `ruid`. Specifically, for privileged processes, it aligns `ruid`, `euid`, and `suid` with the specified user, often root, effectively solidifying these IDs due to the overriding `suid`. Detailed insights can be found in the [setuid man page](https://man7.org/linux/man-pages/man2/setuid.2.html).
+- **`setreuid`** and **`setresuid`**: These functions allow for the nuanced adjustment of `ruid`, `euid`, and `suid`. However, their capabilities are contingent on the process's privilege level. For non-root processes, modifications are restricted to the current values of `ruid`, `euid`, and `suid`. In contrast, root processes or those with `CAP_SETUID` capability can assign arbitrary values to these IDs. More information can be gleaned from the [setresuid man page](https://man7.org/linux/man-pages/man2/setresuid.2.html) and the [setreuid man page](https://man7.org/linux/man-pages/man2/setreuid.2.html).
 
 These functionalities are designed not as a security mechanism but to facilitate the intended operational flow, such as when a program adopts another user's identity by altering its effective user ID.
 
@@ -75,19 +73,19 @@ int main(void) {
     return 0;
 }
 ```
-```
+
 **Compilation and Permissions:**
 
 ```bash
 oxdf@hacky$ gcc a.c -o /mnt/nfsshare/a;
 oxdf@hacky$ chmod 4755 /mnt/nfsshare/a
 ```
-```
+
 ```bash
 bash-4.2$ $ ./a
 uid=99(nobody) gid=99(nobody) groups=99(nobody) context=system_u:system_r:unconfined_service_t:s0
 ```
-```
+
 **Analysis:**
 
 - `ruid` and `euid` start as 99 (nobody) and 1000 (frank) respectively.
@@ -110,20 +108,20 @@ int main(void) {
     return 0;
 }
 ```
-```
+
 **Compilation and Permissions:**
 
 ```bash
 oxdf@hacky$ gcc b.c -o /mnt/nfsshare/b; chmod 4755 /mnt/nfsshare/b
 ```
-```
+
 **Execution and Result:**
 
 ```bash
 bash-4.2$ $ ./b
 uid=1000(frank) gid=99(nobody) groups=99(nobody) context=system_u:system_r:unconfined_service_t:s0
 ```
-```
+
 **Analysis:**
 
 - `setreuid` sets both ruid and euid to 1000.
@@ -144,14 +142,14 @@ int main(void) {
     return 0;
 }
 ```
-```
+
 **Execution and Result:**
 
 ```bash
 bash-4.2$ $ ./c
 uid=99(nobody) gid=99(nobody) euid=1000(frank) groups=99(nobody) context=system_u:system_r:unconfined_service_t:s0
 ```
-```
+
 **Analysis:**
 
 - `ruid` remains 99, but euid is set to 1000, in line with setuid's effect.
@@ -169,7 +167,7 @@ int main(void) {
     return 0;
 }
 ```
-```
+
 **Execution and Result:**
 
 ```bash
@@ -177,7 +175,7 @@ bash-4.2$ $ ./d
 bash-4.2$ $ id
 uid=99(nobody) gid=99(nobody) groups=99(nobody) context=system_u:system_r:unconfined_service_t:s0
 ```
-```
+
 **Analysis:**
 
 - Although `euid` is set to 1000 by `setuid`, `bash` resets euid to `ruid` (99) due to the absence of `-p`.
@@ -196,7 +194,7 @@ int main(void) {
     return 0;
 }
 ```
-```
+
 **Execution and Result:**
 
 ```bash
@@ -204,10 +202,8 @@ bash-4.2$ $ ./e
 bash-4.2$ $ id
 uid=99(nobody) gid=99(nobody) euid=100
 ```
-```
+
 ## References
 
-- [[https://0xdf.gitlab.io/2022/05/31/setuid-rabbithole.html#testing-on-jail|https://0xdf.gitlab.io/2022/05/31/setuid-rabbithole.html#testing-on-jail]]
-
-
+- [https://0xdf.gitlab.io/2022/05/31/setuid-rabbithole.html#testing-on-jail](https://0xdf.gitlab.io/2022/05/31/setuid-rabbithole.html#testing-on-jail)
 

@@ -1,6 +1,5 @@
 # macOS Apple Events
 
-
 ## Basic Information
 
 **Apple Events** are a feature in Apple's macOS that allows applications to communicate with each other. They are part of the **Apple Event Manager**, which is a component of the macOS operating system responsible for handling interprocess communication. This system enables one application to send a message to another application to request that it perform a particular operation, like opening a file, retrieving data, or executing a command.
@@ -17,6 +16,4 @@ Sandboxed applications requires privileges like `allow appleevent-send` and `(al
 > ```bash
 > AEDebugSends=1 osascript -e 'tell application "iTerm" to activate'
 > ```
-
-
 

@@ -1,6 +1,5 @@
 # macOS Files, Folders, Binaries & Memory
 
-
 ## File hierarchy layout
 
 - **/Applications**: The installed apps should be here. All the users will be able to access them.
@@ -75,7 +74,7 @@ In iOS you can find them in **`/System/Library/Caches/com.apple.dyld/`**.
 
 Similar to the dyld shared cache, the kernel and the kernel extensions are also compiled into a kernel cache, which is loaded at boot time.
 
-In order to extract the libraries from the single file dylib shared cache it was possible to use the binary [[https://www.mbsplugins.de/files/dyld_shared_cache_util-dyld-733.8.zip) which might not be working nowadays but you can also use [**dyldextractor**](https://github.com/arandomdev/dyldextractor|dyld_shared_cache_util]]:
+In order to extract the libraries from the single file dylib shared cache it was possible to use the binary [dyld_shared_cache_util](https://www.mbsplugins.de/files/dyld_shared_cache_util-dyld-733.8.zip) which might not be working nowadays but you can also use [**dyldextractor**](https://github.com/arandomdev/dyldextractor):
 
 ```bash
 # dyld_shared_cache_util
@@ -86,12 +85,11 @@ dyldex -l [dyld_shared_cache_path] # List libraries
 dyldex_all [dyld_shared_cache_path] # Extract all
 # More options inside the readme
 ```
-```
+
 > [!TIP]
 > Note that even if `dyld_shared_cache_util` tool doesn't work, you can pass the **shared dyld binary to Hopper** and Hopper will be able to identify all the libraries and let you **select which one** you want to investigate:
 
 ![[../../../images/image (1152).png]]
-
 
 Some extractors won't work as dylibs are prelinked with hard coded addresses in therefore they might be jumping to unknown addresses
 
@@ -163,7 +161,7 @@ When the file contains ACLs you will **find a "+" when listing the permissions l
 ls -ld Movies
 drwx------+   7 username  staff     224 15 Apr 19:42 Movies
 ```
-```
+
 You can **read the ACLs** of the file with:
 
 ```bash
@@ -171,13 +169,13 @@ ls -lde Movies
 drwx------+ 7 username  staff  224 15 Apr 19:42 Movies
  0: group:everyone deny delete
 ```
-```
+
 You can find **all the files with ACLs** with (this is veeery slow):
 
 ```bash
 ls -RAle / 2>/dev/null | grep -E -B1 "\d: "
 ```
-```
+
 ### Extended Attributes
 
 Extended attributes have a name and any desired value, and can be seen using `ls -@` and manipulated using the `xattr` command. Some common extended attributes are:
@@ -210,13 +208,13 @@ com.apple.ResourceFork: Hello Mac ADS
 ls -l a.txt #The file length is still q
 -rw-r--r--@ 1 username  wheel  6 17 Jul 01:15 a.txt
 ```
-```
+
 You can **find all the files containing this extended attribute** with:
 
 ```bash
 find / -type f -exec ls -ld {} \; 2>/dev/null | grep -E "[x\-]@ " | awk '{printf $9; printf "\n"}' | xargs -I {} xattr -lv {} | grep "com.apple.ResourceFork"
 ```
-```
+
 ### decmpfs
 
 The extended attribute `com.apple.decmpfs` indicates that the file is stored encrypted, `ls -l` will report a **size of 0** and the compressed data is inside this attribute. Whenever the file is accessed it'll be decrypted in memory.
@@ -256,6 +254,4 @@ The directory `/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/
 - **`$HOME/Library/Logs/DiskUtility.log`**: Log file for thee DiskUtility App (info about drives, including USBs)
 - **`/Library/Preferences/SystemConfiguration/com.apple.airport.preferences.plist`**: Data about wireless access points.
 - **`/private/var/db/launchd.db/com.apple.launchd/overrides.plist`**: List of daemons deactivated.
-
-
 

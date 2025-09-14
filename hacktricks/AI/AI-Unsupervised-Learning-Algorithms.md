@@ -1,6 +1,5 @@
 # Unsupervised Learning Algorithms
 
-
 ## Unsupervised Learning
 
 Unsupervised learning is a type of machine learning where the model is trained on data without labeled responses. The goal is to find patterns, structures, or relationships within the data. Unlike supervised learning, where the model learns from labeled examples, unsupervised learning algorithms work with unlabeled data.
@@ -27,8 +26,9 @@ The number of clusters (K) is a hyperparameter that needs to be defined before r
 
 K-Means assumes that **clusters are spherical and equally sized**, which may not hold true for all datasets. It is sensitive to the initial placement of centroids and can converge to local minima. Additionally, K-Means is not suitable for datasets with varying densities or non-globular shapes and features with different scales. Preprocessing steps like normalization or standardization may be necessary to ensure that all features contribute equally to the distance calculations.
 
-**Example -- Clustering Network Events
-**
+<details>
+<summary>Example -- Clustering Network Events
+</summary>
 Below we simulate network traffic data and use K-Means to cluster it. Suppose we have events with features like connection duration and byte count. We create 3 clusters of “normal” traffic and 1 small cluster representing an attack pattern. Then we run K-Means to see if it separates them.
 
 ```python
@@ -56,8 +56,9 @@ print("Cluster centers (duration, bytes):")
 for idx, center in enumerate(kmeans.cluster_centers_):
     print(f"  Cluster {idx}: {center}")
 ```
-```
+
 In this example, K-Means should find 4 clusters. The small attack cluster (with unusually high duration ~200) will ideally form its own cluster given its distance from normal clusters. We print the cluster sizes and centers to interpret the results. In a real scenario, one could label the cluster with few points as potential anomalies or inspect its members for malicious activity.
+</details>
 
 ### Hierarchical Clustering
 
@@ -77,8 +78,9 @@ Hierarchical clustering produces a dendrogram, a tree-like structure that shows 
 
 Hierarchical clustering does not assume a particular cluster shape and can capture nested clusters. It’s useful for discovering taxonomy or relations among groups (e.g., grouping malware by family subgroups). It’s deterministic (no random initialization issues). A key advantage is the dendrogram, which provides insight into the data’s clustering structure at all scales – security analysts can decide an appropriate cutoff to identify meaningful clusters. However, it is computationally expensive (typically $O(n^2)$ time or worse for naive implementations) and not feasible for very large datasets. It’s also a greedy procedure – once a merge or split is done, it can’t be undone, which may lead to suboptimal clusters if a mistake happens early. Outliers can also affect some linkage strategies (single-link can cause the “chaining” effect where clusters link via outliers).
 
-**Example -- Agglomerative Clustering of Events
-**
+<details>
+<summary>Example -- Agglomerative Clustering of Events
+</summary>
 
 We’ll reuse the synthetic data from the K-Means example (3 normal clusters + 1 attack cluster) and apply agglomerative clustering. We then illustrate how to obtain a dendrogram and cluster labels.
 
@@ -99,7 +101,7 @@ clusters_3 = AgglomerativeClustering(n_clusters=3, linkage='ward').fit_predict(X
 print(f"Labels with 3 clusters: {np.unique(clusters_3)}")
 print(f"Cluster sizes for 3 clusters: {np.bincount(clusters_3)}")
 ```
-```
+</details>
 
 ### DBSCAN (Density-Based Spatial Clustering of Applications with Noise)
 
@@ -125,8 +127,9 @@ Clustering proceeds by picking an unvisited core point, marking it as a new clus
 
 **Limitations**: DBSCAN’s performance depends on choosing appropriate ε and MinPts values. It may struggle with data that has varying densities – a single ε cannot accommodate both dense and sparse clusters. If ε is too small, it labels most points as noise; too large, and clusters may merge incorrectly. Also, DBSCAN can be inefficient on very large datasets (naively $O(n^2)$, though spatial indexing can help). In high-dimensional feature spaces, the concept of “distance within ε” may become less meaningful (the curse of dimensionality), and DBSCAN may need careful parameter tuning or may fail to find intuitive clusters. Despite these, extensions like HDBSCAN address some issues (like varying density).
 
-**Example -- Clustering with Noise
-**
+<details>
+<summary>Example -- Clustering with Noise
+</summary>
 
 ```python
 from sklearn.cluster import DBSCAN
@@ -149,9 +152,10 @@ num_noise = np.sum(labels == -1)
 print(f"DBSCAN found {num_clusters} clusters and {num_noise} noise points")
 print("Cluster labels for first 10 points:", labels[:10])
 ```
-```
+
 In this snippet, we tuned `eps` and `min_samples` to suit our data scale (15.0 in feature units, and requiring 5 points to form a cluster). DBSCAN should find 2 clusters (the normal traffic clusters) and flag the 5 injected outliers as noise. We output the number of clusters vs. noise points to verify this. In a real setting, one might iterate over ε (using a k-distance graph heuristic to choose ε) and MinPts (often set to around the data dimensionality + 1 as a rule of thumb) to find stable clustering results. The ability to explicitly label noise helps separate potential attack data for further analysis.
 
+</details>
 
 ### Principal Component Analysis (PCA)
 
@@ -199,8 +203,9 @@ Let's explain this with an example. Imagine you have a dataset with a lot of gre
 
 PCA assumes that **principal axes of variance are meaningful** – it’s a linear method, so it captures linear correlations in data. It’s unsupervised since it uses only the feature covariance. Advantages of PCA include noise reduction (small-variance components often correspond to noise) and decorrelation of features. It is computationally efficient for moderately high dimensions and often a useful preprocessing step for other algorithms (to mitigate curse of dimensionality). One limitation is that PCA is limited to linear relationships – it won’t capture complex nonlinear structure (whereas autoencoders or t-SNE might). Also, PCA components can be hard to interpret in terms of original features (they are combinations of original features). In cybersecurity, one must be cautious: an attack that only causes a subtle change in a low-variance feature might not show up in top PCs (since PCA prioritizes variance, not necessarily “interestingness”).
 
-**Example -- Reducing Dimensions of Network Data
-**
+<details>
+<summary>Example -- Reducing Dimensions of Network Data
+</summary>
 
 Suppose we have network connection logs with multiple features (e.g., durations, bytes, counts). We will generate a synthetic 4-dimensional dataset (with some correlation between features) and use PCA to reduce it to 2 dimensions for visualization or further analysis.
 
@@ -223,10 +228,10 @@ print("Original shape:", data_4d.shape, "Reduced shape:", data_2d.shape)
 # We can examine a few transformed points
 print("First 5 data points in PCA space:\n", data_2d[:5])
 ```
-```
+
 Here we took the earlier normal traffic clusters and extended each data point with two additional features (packets and errors) that correlate with bytes and duration. PCA is then used to compress the 4 features into 2 principal components. We print the explained variance ratio, which might show that, say, >95% of variance is captured by 2 components (meaning little information loss). The output also shows the data shape reducing from (1500, 4) to (1500, 2). The first few points in PCA space are given as an example. In practice, one could plot data_2d to visually check if the clusters are distinguishable. If an anomaly was present, one might see it as a point lying away from the main cluster in PCA-space. PCA thus helps distill complex data into a manageable form for human interpretation or as input to other algorithms.
 
-
+</details>
 
 ### Gaussian Mixture Models (GMM)
 
@@ -263,8 +268,9 @@ GMM is a generalization of K-Means that incorporates covariance, so clusters can
 On the downside, GMM requires specifying the number of components K (though one can use criteria like BIC/AIC to select it). EM can sometimes converge slowly or to a local optimum, so initialization is important (often run EM multiple times). If the data doesn’t actually follow a mixture of Gaussians, the model may be a poor fit. There’s also a risk of one Gaussian shrinking to cover just an outlier (though regularization or minimum covariance bounds can mitigate that).
 
 
-**Example --  Soft Clustering & Anomaly Scores
-**
+<details>
+<summary>Example --  Soft Clustering & Anomaly Scores
+</summary>
 
 ```python
 from sklearn.mixture import GaussianMixture
@@ -284,8 +290,9 @@ log_likelihood = gmm.score_samples(sample_attack)
 print("Cluster membership probabilities for sample attack:", probs)
 print("Log-likelihood of sample attack under GMM:", log_likelihood)
 ```
-```
+
 In this code, we train a GMM with 3 Gaussians on the normal traffic (assuming we know 3 profiles of legitimate traffic). The means and covariances printed describe these clusters (for instance, one mean might be around [50,500] corresponding to one cluster’s center, etc.). We then test a suspicious connection [duration=200, bytes=800]. The predict_proba gives the probability of this point belonging to each of the 3 clusters – we’d expect these probabilities to be very low or highly skewed since [200,800] lies far from the normal clusters. The overall score_samples (log-likelihood) is printed; a very low value indicates the point doesn’t fit the model well, flagging it as an anomaly. In practice, one could set a threshold on the log-likelihood (or on the max probability) to decide if a point is sufficiently unlikely to be considered malicious. GMM thus provides a principled way to do anomaly detection and also yields soft clusters that acknowledge uncertainty.
+</details>
 
 ### Isolation Forest
 
@@ -302,8 +309,9 @@ Anomaly detection is performed by observing the path length of each point in the
 
 **Limitations**: Because of its random nature, results can vary slightly between runs (though with sufficiently many trees this is minor). If the data has a lot of irrelevant features or if anomalies don’t strongly differentiate in any feature, the isolation might not be effective (random splits could isolate normal points by chance – however averaging many trees mitigates this). Also, Isolation Forest generally assumes anomalies are a small minority (which is usually true in cybersecurity scenarios).
 
-**Example --  Detecting Outliers in Network Logs
-**
+<details>
+<summary>Example --  Detecting Outliers in Network Logs
+</summary>
 
 We’ll use the earlier test dataset (which contains normal and some attack points) and run an Isolation Forest to see if it can separate the attacks. We’ll assume we expect ~15% of data to be anomalous (for demonstration).
 
@@ -322,10 +330,11 @@ print("Isolation Forest predicted labels (first 20):", preds[:20])
 print("Number of anomalies detected:", np.sum(preds == -1))
 print("Example anomaly scores (lower means more anomalous):", anomaly_scores[:5])
 ```
-```
+
 In this code, we instantiate `IsolationForest` with 100 trees and set `contamination=0.15` (meaning we expect about 15% anomalies; the model will set its score threshold so that ~15% of points are flagged). We fit it on `X_test_if` which contains a mix of normal and attack points (note: normally you would fit on training data and then use predict on new data, but here for illustration we fit and predict on the same set to directly observe results).
 
 The output shows the predicted labels for the first 20 points (where -1 indicates anomaly). We also print how many anomalies were detected in total and some example anomaly scores. We would expect roughly 18 out of 120 points to be labeled -1 (since contamination was 15%). If our 20 attack samples are truly the most outlying, most of them should appear in those -1 predictions. The anomaly score (Isolation Forest’s decision function) is higher for normal points and lower (more negative) for anomalies – we print a few values to see the separation. In practice, one might sort the data by score to see the top outliers and investigate them. Isolation Forest thus provides an efficient way to sift through large unlabeled security data and pick out the most irregular instances for human analysis or further automated scrutiny.
+</details>
 
 
 ### t-SNE (t-Distributed Stochastic Neighbor Embedding)
@@ -349,8 +358,9 @@ t-SNE is great for visual discovery of patterns. It can reveal clusters, subclus
 
 However, t-SNE is computationally heavier (approximately $O(n^2)$) so it may require sampling for very large datasets. It also has hyperparameters (perplexity, learning rate, iterations) which can affect the output – e.g., different perplexity values might reveal clusters at different scales. t-SNE plots can sometimes be misinterpreted – distances in the map are not directly meaningful globally (it focuses on local neighborhood, sometimes clusters can appear artificially well-separated). Also, t-SNE is mainly for visualization; it doesn’t provide a straightforward way to project new data points without recomputing, and it’s not meant to be used as a preprocessing for predictive modeling (UMAP is an alternative that addresses some of these issues with faster speed).
 
-**Example -- Visualizing Network Connections
-**
+<details>
+<summary>Example -- Visualizing Network Connections
+</summary>
 
 We’ll use t-SNE to reduce a multi-feature dataset to 2D. For illustration, let’s take the earlier 4D data (which had 3 natural clusters of normal traffic) and add a few anomaly points. We then run t-SNE and (conceptually) visualize the results.
 
@@ -436,9 +446,10 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 ```
-```
+
 Here we combined our previous 4D normal dataset with a handful of extreme outliers (the outliers have one feature (“duration”) set very high, etc., to simulate an odd pattern). We run t-SNE with a typical perplexity of 30. The output data_2d has shape (1505, 2). We won’t actually plot in this text, but if we did, we’d expect to see perhaps three tight clusters corresponding to the 3 normal clusters, and the 5 outliers appearing as isolated points far from those clusters. In an interactive workflow, we could color the points by their label (normal or which cluster, vs anomaly) to verify this structure. Even without labels, an analyst might notice those 5 points sitting in empty space on the 2D plot and flag them. This shows how t-SNE can be a powerful aid to visual anomaly detection and cluster inspection in cybersecurity data, complementing the automated algorithms above.
 
+</details>
 
 
 ### HDBSCAN (Hierarchical Density-Based Spatial Clustering of Applications with Noise)
@@ -452,8 +463,8 @@ Here we combined our previous 4D normal dataset with a handful of extreme outlie
 > [!TIP]
 > *Use cases in cybersecurity:* HDBSCAN is very popular in modern threat-hunting pipelines – you will often see it inside notebook-based hunting playbooks shipped with commercial XDR suites.  One practical recipe is to cluster HTTP beaconing traffic during IR: user-agent, interval and URI length often form several tight groups of legitimate software updaters while C2 beacons remain as tiny low-density clusters or as pure noise.
 
-**Example – Finding beaconing C2 channels**
-
+<details>
+<summary>Example – Finding beaconing C2 channels</summary>
 
 ```python
 import pandas as pd
@@ -478,7 +489,8 @@ df["cluster"] = labels
 suspects = df[df["cluster"] == -1]
 print("Suspect beacon count:", len(suspects))
 ```
-```
+
+</details>
 
 ---
 
@@ -507,8 +519,8 @@ Mitigations that are gaining traction:
 * **Anomalib v1.5** (Feb 2025) focuses on vision but also contains a generic **PatchCore** implementation – handy for screenshot-based phishing page detection.
 * **scikit-learn 1.5** (Nov 2024) finally exposes `score_samples` for *HDBSCAN* via the new `cluster.HDBSCAN` wrapper, so you do not need the external contrib package when on Python 3.12.
 
-**Quick PyOD example – ECOD \+ Isolation Forest ensemble**
-
+<details>
+<summary>Quick PyOD example – ECOD + Isolation Forest ensemble</summary>
 
 ```python
 from pyod.models import ECOD, IForest
@@ -526,12 +538,11 @@ anomaly_scores = sum(m.fit(X_train).decision_function(X_test) for m in models) /
 
 evaluate_print("Ensemble", y_test, anomaly_scores)
 ```
-```
+
+</details>
 
 ## References
 
-- [[https://github.com/scikit-learn-contrib/hdbscan|HDBSCAN – Hierarchical density-based clustering]]
+- [HDBSCAN – Hierarchical density-based clustering](https://github.com/scikit-learn-contrib/hdbscan)
 - Chen, X. *et al.* “On the Vulnerability of Unsupervised Anomaly Detection to Data Poisoning.” *IEEE Symposium on Security and Privacy*, 2024.
-
-
 

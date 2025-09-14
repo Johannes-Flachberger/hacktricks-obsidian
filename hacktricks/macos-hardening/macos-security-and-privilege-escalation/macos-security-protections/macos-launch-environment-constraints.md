@@ -1,6 +1,5 @@
 # macOS Launch/Environment Constraints & Trust Cache
 
-
 ## Basic Information
 
 Launch constraints in macOS were introduced to enhance security by **regulating how, who, and from where a process can be initiated**. Initiated in macOS Ventura, they provide a framework that categorizes **each system binary into distinct constraint categories**, which are defined within the **trust cache**, a list containing system binaries and their respective hashes​. These constraints extend to every executable binary within the system, entailing a set of **rules** delineating the requirements for **launching a particular binary**. The rules encompass self constraints that a binary must satisfy, parent constraints required to be met by its parent process, and responsible constraints to be adhered to by other relevant entities​.
@@ -24,7 +23,7 @@ If when loading a library any part of the **library constraint isn’t true**, y
 
 A LC as composed by **facts** and **logical operations** (and, or..) that combines facts.
 
-The[[https://developer.apple.com/documentation/security/defining_launch_environment_and_library_constraints| **facts that a LC can use are documented**]]. For example:
+The[ **facts that a LC can use are documented**](https://developer.apple.com/documentation/security/defining_launch_environment_and_library_constraints). For example:
 
 - is-init-proc: A Boolean value that indicates whether the executable must be the operating system’s initialization process (`launchd`).
 - is-sip-protected: A Boolean value that indicates whether the executable must be a file protected by System Integrity Protection (SIP).
@@ -37,8 +36,8 @@ The[[https://developer.apple.com/documentation/security/defining_launch_environm
 
 When an Apple binary is signed it **assigns it to a LC category** inside the **trust cache**.
 
-- **iOS 16 LC categories** were [[https://gist.github.com/LinusHenze/4cd5d7ef057a144cda7234e2c247c056|**reversed and documented in here**]].
-- Current **LC categories (macOS 14** - Somona) have been reversed and their [[https://gist.github.com/theevilbit/a6fef1e0397425a334d064f7b6e1be53|**descriptions can be found here**]].
+- **iOS 16 LC categories** were [**reversed and documented in here**](https://gist.github.com/LinusHenze/4cd5d7ef057a144cda7234e2c247c056).
+- Current **LC categories (macOS 14** - Somona) have been reversed and their [**descriptions can be found here**](https://gist.github.com/theevilbit/a6fef1e0397425a334d064f7b6e1be53).
 
 For example Category 1 is:
 
@@ -47,7 +46,7 @@ Category 1:
         Self Constraint: (on-authorized-authapfs-volume || on-system-volume) && launch-type == 1 && validation-category == 1
         Parent Constraint: is-init-proc
 ```
-```
+
 - `(on-authorized-authapfs-volume || on-system-volume)`: Must be in System or Cryptexes volume.
 - `launch-type == 1`: Must be a system service (plist in LaunchDaemons).
 - `validation-category == 1`: An operating system executable.
@@ -55,7 +54,7 @@ Category 1:
 
 ### Reversing LC Categories
 
-You have more information [[https://theevilbit.github.io/posts/launch_constraints_deep_dive/#reversing-constraints), but basically, They are defined in **AMFI (AppleMobileFileIntegrity|**about it in here**]]**, so you need to download the Kernel Development Kit to get the **KEXT**. The symbols starting with **`kConstraintCategory`** are the **interesting** ones. Extracting them you will get a DER (ASN.1) encoded stream that you will need to decode with [[https://holtstrom.com/michael/tools/asn1decoder.php|ASN.1 Decoder]] or the python-asn1 library and its `dump.py` script, [[https://github.com/andrivet/python-asn1/tree/master|andrivet/python-asn1]] which will give you a more understandable string.
+You have more information [**about it in here**](https://theevilbit.github.io/posts/launch_constraints_deep_dive/#reversing-constraints), but basically, They are defined in **AMFI (AppleMobileFileIntegrity)**, so you need to download the Kernel Development Kit to get the **KEXT**. The symbols starting with **`kConstraintCategory`** are the **interesting** ones. Extracting them you will get a DER (ASN.1) encoded stream that you will need to decode with [ASN.1 Decoder](https://holtstrom.com/michael/tools/asn1decoder.php) or the python-asn1 library and its `dump.py` script, [andrivet/python-asn1](https://github.com/andrivet/python-asn1/tree/master) which will give you a more understandable string.
 
 ## Environment Constraints
 
@@ -66,7 +65,7 @@ It's possible to enumerate the Environment Constraints of an application with:
 ```bash
 codesign -d -vvvv app.app
 ```
-```
+
 ## Trust Caches
 
 In **macOS** there are a few trust caches:
@@ -84,7 +83,7 @@ And in iOS it looks like it's in **`/usr/standalone/firmware/FUD/StaticTrustCach
 
 The previous trust cache files are in format **IMG4** and **IM4P**, being IM4P the payload section of a IMG4 format.
 
-You can use [[https://github.com/m1stadev/PyIMG4|**pyimg4**]] to extract the payload of databases:
+You can use [**pyimg4**](https://github.com/m1stadev/PyIMG4) to extract the payload of databases:
 
 ```bash
 # Installation
@@ -101,10 +100,10 @@ pyimg4 im4p extract -i /tmp/StaticTrustCache.im4p -o /tmp/StaticTrustCache.data
 
 pyimg4 im4p extract -i /System/Library/Security/OSLaunchPolicyData -o /tmp/OSLaunchPolicyData.data
 ```
-```
-(Another option could be to use the tool [[https://github.com/tihmstar/img4tool), which will run even in M1 even if the release is old and for x86_64 if you install it in the proper locations|**img4tool**]].
 
-Now you can use the tool [[https://github.com/CRKatri/trustcache|**trustcache**]] to get the information in a readable format:
+(Another option could be to use the tool [**img4tool**](https://github.com/tihmstar/img4tool), which will run even in M1 even if the release is old and for x86_64 if you install it in the proper locations).
+
+Now you can use the tool [**trustcache**](https://github.com/CRKatri/trustcache) to get the information in a readable format:
 
 ```bash
 # Install
@@ -129,7 +128,7 @@ entry count = 969
 01e6934cb8833314ea29640c3f633d740fc187f2 [none] [2] [2]
 020bf8c388deaef2740d98223f3d2238b08bab56 [none] [2] [3]
 ```
-```
+
 The trust cache follows the following structure, so The **LC category is the 4th column**
 
 ```c
@@ -141,10 +140,10 @@ struct trust_cache_entry2 {
 	uint8_t reserved0;
 } __attribute__((__packed__));
 ```
-```
-Then, you could use a script such as [[https://gist.github.com/xpn/66dc3597acd48a4c31f5f77c3cc62f30|**this one**]] to extract data.
 
-From that data you can check the Apps with a **launch constraints value of `0`** , which are the ones that aren't constrained ([[https://gist.github.com/LinusHenze/4cd5d7ef057a144cda7234e2c247c056) for what each value is|**check here**]].
+Then, you could use a script such as [**this one**](https://gist.github.com/xpn/66dc3597acd48a4c31f5f77c3cc62f30) to extract data.
+
+From that data you can check the Apps with a **launch constraints value of `0`** , which are the ones that aren't constrained ([**check here**](https://gist.github.com/LinusHenze/4cd5d7ef057a144cda7234e2c247c056) for what each value is).
 
 ## Attack Mitigations
 
@@ -169,10 +168,8 @@ Even if it's required that the application has to be **opened by LaunchService**
 
 ## References
 
-- [[https://youtu.be/f1HA5QhLQ7Y?t=24146|https://youtu.be/f1HA5QhLQ7Y?t=24146]]
-- [[https://theevilbit.github.io/posts/launch_constraints_deep_dive/|https://theevilbit.github.io/posts/launch_constraints_deep_dive/]]
-- [[https://eclecticlight.co/2023/06/13/why-wont-a-system-app-or-command-tool-run-launch-constraints-and-trust-caches/|https://eclecticlight.co/2023/06/13/why-wont-a-system-app-or-command-tool-run-launch-constraints-and-trust-caches/]]
-- [[https://developer.apple.com/videos/play/wwdc2023/10266/|https://developer.apple.com/videos/play/wwdc2023/10266/]]
-
-
+- [https://youtu.be/f1HA5QhLQ7Y?t=24146](https://youtu.be/f1HA5QhLQ7Y?t=24146)
+- [https://theevilbit.github.io/posts/launch_constraints_deep_dive/](https://theevilbit.github.io/posts/launch_constraints_deep_dive/)
+- [https://eclecticlight.co/2023/06/13/why-wont-a-system-app-or-command-tool-run-launch-constraints-and-trust-caches/](https://eclecticlight.co/2023/06/13/why-wont-a-system-app-or-command-tool-run-launch-constraints-and-trust-caches/)
+- [https://developer.apple.com/videos/play/wwdc2023/10266/](https://developer.apple.com/videos/play/wwdc2023/10266/)
 

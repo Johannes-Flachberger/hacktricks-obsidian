@@ -1,6 +1,5 @@
 # AD Certificates
 
-
 ## Introduction
 
 ### Components of a Certificate
@@ -81,7 +80,7 @@ Windows users can also request certificates via the GUI (`certmgr.msc` or `certl
 # Example of requesting a certificate using PowerShell
 Get-Certificate -Template "User" -CertStoreLocation "cert:\\CurrentUser\\My"
 ```
-```
+
 ## Certificate Authentication
 
 Active Directory (AD) supports certificate authentication, primarily utilizing **Kerberos** and **Secure Channel (Schannel)** protocols.
@@ -93,7 +92,7 @@ In the Kerberos authentication process, a user's request for a Ticket Granting T
 ```bash
 CN=NTAuthCertificates,CN=Public Key Services,CN=Services,CN=Configuration,DC=<domain>,DC=<com>
 ```
-```
+
 is central to establishing trust for certificate authentication.
 
 ### Secure Channel (Schannel) Authentication
@@ -102,7 +101,7 @@ Schannel facilitates secure TLS/SSL connections, where during a handshake, the c
 
 ### AD Certificate Services Enumeration
 
-AD's certificate services can be enumerated through LDAP queries, revealing information about **Enterprise Certificate Authorities (CAs)** and their configurations. This is accessible by any domain-authenticated user without special privileges. Tools like **[[https://github.com/GhostPack/Certify)** and **[Certipy](https://github.com/ly4k/Certipy|Certify]]** are used for enumeration and vulnerability assessment in AD CS environments.
+AD's certificate services can be enumerated through LDAP queries, revealing information about **Enterprise Certificate Authorities (CAs)** and their configurations. This is accessible by any domain-authenticated user without special privileges. Tools like **[Certify](https://github.com/GhostPack/Certify)** and **[Certipy](https://github.com/ly4k/Certipy)** are used for enumeration and vulnerability assessment in AD CS environments.
 
 Commands for using these tools include:
 
@@ -122,7 +121,7 @@ certipy req -web -target ca.corp.local -template WebServer -upn john@corp.local 
 certutil.exe -TCAInfo
 certutil -v -dstemplate
 ```
-```
+
 ---
 
 ## Recent Vulnerabilities & Security Updates (2022-2025)
@@ -156,8 +155,8 @@ Microsoft introduced a three-phase rollout (Compatibility → Audit → Enforcem
 
 ## References
 
-- [[https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf|https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf]]
-- [[https://comodosslstore.com/blog/what-is-ssl-tls-client-authentication-how-does-it-work.html|https://comodosslstore.com/blog/what-is-ssl-tls-client-authentication-how-does-it-work.html]]
-- [[https://support.microsoft.com/en-us/topic/kb5014754-certificate-based-authentication-changes-on-windows-domain-controllers-ad2c23b0-15d8-4340-a468-4d4f3b188f16|https://support.microsoft.com/en-us/topic/kb5014754-certificate-based-authentication-changes-on-windows-domain-controllers-ad2c23b0-15d8-4340-a468-4d4f3b188f16]]
-- [[https://advisory.eventussecurity.com/advisory/critical-vulnerability-in-ad-cs-allows-privilege-escalation/|https://advisory.eventussecurity.com/advisory/critical-vulnerability-in-ad-cs-allows-privilege-escalation/]]
+- [https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf](https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf)
+- [https://comodosslstore.com/blog/what-is-ssl-tls-client-authentication-how-does-it-work.html](https://comodosslstore.com/blog/what-is-ssl-tls-client-authentication-how-does-it-work.html)
+- [https://support.microsoft.com/en-us/topic/kb5014754-certificate-based-authentication-changes-on-windows-domain-controllers-ad2c23b0-15d8-4340-a468-4d4f3b188f16](https://support.microsoft.com/en-us/topic/kb5014754-certificate-based-authentication-changes-on-windows-domain-controllers-ad2c23b0-15d8-4340-a468-4d4f3b188f16)
+- [https://advisory.eventussecurity.com/advisory/critical-vulnerability-in-ad-cs-allows-privilege-escalation/](https://advisory.eventussecurity.com/advisory/critical-vulnerability-in-ad-cs-allows-privilege-escalation/)
 

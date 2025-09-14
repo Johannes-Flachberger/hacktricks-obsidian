@@ -1,6 +1,5 @@
 # PID Namespace
 
-
 ## Basic Information
 
 The PID (Process IDentifier) namespace is a feature in the Linux kernel that provides process isolation by enabling a group of processes to have their own set of unique PIDs, separate from the PIDs in other namespaces. This is particularly useful in containerization, where process isolation is essential for security and resource management.
@@ -25,10 +24,10 @@ From the perspective of a process within a PID namespace, it can only see other 
 ```bash
 sudo unshare -pf --mount-proc /bin/bash
 ```
-```
+
+<details>
 
 **Error: bash: fork: Cannot allocate memory**
-
 
 When `unshare` is executed without the `-f` option, an error is encountered due to the way Linux handles new PID (Process ID) namespaces. The key details and the solution are outlined below:
 
@@ -48,6 +47,7 @@ When `unshare` is executed without the `-f` option, an error is encountered due 
 
 By ensuring that `unshare` runs with the `-f` flag, the new PID namespace is correctly maintained, allowing `/bin/bash` and its sub-processes to operate without encountering the memory allocation error.
 
+</details>
 
 By mounting a new instance of the `/proc` filesystem if you use the param `--mount-proc`, you ensure that the new mount namespace has an **accurate and isolated view of the process information specific to that namespace**.
 
@@ -56,20 +56,20 @@ By mounting a new instance of the `/proc` filesystem if you use the param `--mou
 ```bash
 docker run -ti --name ubuntu1 -v /usr:/ubuntu1 ubuntu bash
 ```
-```
+
 ### Check which namespace are your process in
 
 ```bash
 ls -l /proc/self/ns/pid
 lrwxrwxrwx 1 root root 0 Apr  3 18:45 /proc/self/ns/pid -> 'pid:[4026532412]'
 ```
-```
+
 ### Find all PID namespaces
 
 ```bash
 sudo find /proc -maxdepth 3 -type l -name pid -exec readlink {} \; 2>/dev/null | sort -u
 ```
-```
+
 Note that the root use from the initial (default) PID namespace can see all the processes, even the ones in new PID names paces, thats why we can see all the PID namespaces.
 
 ### Enter inside a PID namespace
@@ -77,14 +77,12 @@ Note that the root use from the initial (default) PID namespace can see all the 
 ```bash
 nsenter -t TARGET_PID --pid /bin/bash
 ```
-```
+
 When you enter inside a PID namespace from the default namespace, you will still be able to see all the processes. And the process from that PID ns will be able to see the new bash on the PID ns.
 
 Also, you can only **enter in another process PID namespace if you are root**. And you **cannot** **enter** in other namespace **without a descriptor** pointing to it (like `/proc/self/ns/pid`)
 
 ## References
 
-- [[https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory|https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory]]
-
-
+- [https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory](https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory)
 

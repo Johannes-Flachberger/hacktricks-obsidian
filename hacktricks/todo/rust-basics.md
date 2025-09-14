@@ -1,6 +1,5 @@
 # Rust Basics
 
-
 ### Generic Types
 
 Create a struct where 1 of their values could be any type
@@ -19,7 +18,7 @@ impl<T> Wrapper<T> {
 Wrapper::new(42).value
 Wrapper::new("Foo").value, "Foo"
 ```
-```
+
 ### Option, Some & None
 
 The Option type means that the value might by of type Some (there is something) or None:
@@ -30,7 +29,7 @@ pub enum Option<T> {
     Some(T),
 }
 ```
-```
+
 You can use functions such as `is_some()` or `is_none()` to check the value of the Option.
 
 ### Macros
@@ -61,7 +60,7 @@ mod macros {
     }
 }
 ```
-```
+
 ### Iterate
 
 ```rust
@@ -80,7 +79,7 @@ for (key, hashvalue) in &*map {
 for key in map.keys() {
 for value in map.values() {
 ```
-```
+
 ### Recursive Box
 
 ```rust
@@ -91,7 +90,7 @@ enum List {
 
 let list = Cons(1, Cons(2, Cons(3, Nil)));
 ```
-```
+
 ### Conditionals
 
 #### if
@@ -106,7 +105,7 @@ if n < 0 {
     print!("{} is zero", n);
 }
 ```
-```
+
 #### match
 
 ```rust
@@ -131,7 +130,7 @@ let binary = match boolean {
     // TODO ^ Try commenting out one of these arms
 };
 ```
-```
+
 #### loop (infinite)
 
 ```rust
@@ -148,7 +147,7 @@ loop {
     }
 }
 ```
-```
+
 #### while
 
 ```rust
@@ -164,7 +163,7 @@ while n < 101 {
     n += 1;
 }
 ```
-```
+
 #### for
 
 ```rust
@@ -214,7 +213,7 @@ for name in names.iter_mut() {
     }
 }
 ```
-```
+
 #### if let
 
 ```rust
@@ -225,26 +224,26 @@ if let word = optional_word {
     println!("The optional word doesn't contain anything");
 }
 ```
-```
+
 #### while let
 
 ```rust
 let mut optional = Some(0);
-// This reads: "while `let` destructures `optional into
-// `Some(i)`, evaluate the block (`{}`). Else `break.
+// This reads: "while `let` destructures `optional` into
+// `Some(i)`, evaluate the block (`{}`). Else `break`.
 while let Some(i) = optional {
     if i > 9 {
         println!("Greater than 9, quit!");
         optional = None;
     } else {
-        println!("`i` is `{:?}. Try again.", i);
+        println!("`i` is `{:?}`. Try again.", i);
         optional = Some(i + 1);
     }
     // ^ Less rightward drift and doesn't require
     // explicitly handling the failing case.
 }
 ```
-```
+
 ### Traits
 
 Create a new method for a type
@@ -264,7 +263,7 @@ let s = String::from("Foo");
 let s = s.append_bar();
 println!("s: {}", s);
 ```
-```
+
 ### Tests
 
 ```rust
@@ -278,7 +277,7 @@ mod tests {
     }
 }
 ```
-```
+
 ### Threading
 
 #### Arc
@@ -295,7 +294,7 @@ for _ in 0..10 {
     });
 }
 ```
-```
+
 #### Threads
 
 In this case we will pass the thread a variable it will be able to modify
@@ -316,7 +315,6 @@ fn main() {
         thread::sleep(Duration::from_millis(500));
     }
 }
-```
 ```
 
 ### Security Essentials
@@ -345,12 +343,12 @@ fn vuln_copy(src: &[u8]) -> Vec<u8> {
     dst
 }
 ```
-```Running Miri is an inexpensive way to detect UB at test time:
+Running Miri is an inexpensive way to detect UB at test time:
 ```bash
 rustup component add miri
 cargo miri test  # hunts for OOB / UAF during unit tests
 ```
-```
+
 #### Auditing dependencies with RustSec / cargo-audit
 
 Most real-world Rust vulns live in third-party crates. The RustSec advisory DB (community-powered) can be queried locally:
@@ -358,7 +356,7 @@ Most real-world Rust vulns live in third-party crates. The RustSec advisory DB (
 cargo install cargo-audit
 cargo audit              # flags vulnerable versions listed in Cargo.lock
 ```
-```Integrate it in CI and fail on `--deny warnings`.
+Integrate it in CI and fail on `--deny warnings`.
 
 `cargo deny check advisories` offers similar functionality plus licence and ban-list checks.
 
@@ -370,7 +368,7 @@ cargo install cargo-vet
 cargo vet init      # generates vet.toml
 cargo vet --locked  # verifies packages referenced in Cargo.lock
 ```
-```The tool is being adopted by the Rust project infrastructure and a growing number of orgs to mitigate poisoned-package attacks.
+The tool is being adopted by the Rust project infrastructure and a growing number of orgs to mitigate poisoned-package attacks.
 
 #### Fuzzing your API surface (cargo-fuzz)
 
@@ -380,7 +378,7 @@ cargo install cargo-fuzz
 cargo fuzz init              # creates fuzz_targets/
 cargo fuzz run fuzz_target_1 # builds with libFuzzer & runs continuously
 ```
-```Add the fuzz target to your repo and run it in your pipeline.
+Add the fuzz target to your repo and run it in your pipeline.
 
 ## References
 

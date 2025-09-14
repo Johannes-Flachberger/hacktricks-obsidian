@@ -1,6 +1,5 @@
 # AD Certificates
 
-
 ## Introduction
 
 ### Components of a Certificate
@@ -81,7 +80,7 @@ Windows users can also request certificates via the GUI (`certmgr.msc` or `certl
 # Example of requesting a certificate using PowerShell
 Get-Certificate -Template "User" -CertStoreLocation "cert:\\CurrentUser\\My"
 ```
-```
+
 ## Certificate Authentication
 
 Active Directory (AD) supports certificate authentication, primarily utilizing **Kerberos** and **Secure Channel (Schannel)** protocols.
@@ -93,7 +92,7 @@ In the Kerberos authentication process, a user's request for a Ticket Granting T
 ```bash
 CN=NTAuthCertificates,CN=Public Key Services,CN=Services,CN=Configuration,DC=<domain>,DC=<com>
 ```
-```
+
 is central to establishing trust for certificate authentication.
 
 ### Secure Channel (Schannel) Authentication
@@ -102,7 +101,7 @@ Schannel facilitates secure TLS/SSL connections, where during a handshake, the c
 
 ### AD Certificate Services Enumeration
 
-AD's certificate services can be enumerated through LDAP queries, revealing information about **Enterprise Certificate Authorities (CAs)** and their configurations. This is accessible by any domain-authenticated user without special privileges. Tools like **[[https://github.com/GhostPack/Certify)** and **[Certipy](https://github.com/ly4k/Certipy|Certify]]** are used for enumeration and vulnerability assessment in AD CS environments.
+AD's certificate services can be enumerated through LDAP queries, revealing information about **Enterprise Certificate Authorities (CAs)** and their configurations. This is accessible by any domain-authenticated user without special privileges. Tools like **[Certify](https://github.com/GhostPack/Certify)** and **[Certipy](https://github.com/ly4k/Certipy)** are used for enumeration and vulnerability assessment in AD CS environments.
 
 Commands for using these tools include:
 
@@ -129,11 +128,11 @@ certipy find -vulnerable -u john@corp.local -p Passw0rd -dc-ip 172.16.126.128
 certutil.exe -TCAInfo
 certutil -v -dstemplate
 ```
-```
+
 ## References
 
-- [[https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf|https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf]]
-- [[https://comodosslstore.com/blog/what-is-ssl-tls-client-authentication-how-does-it-work.html|https://comodosslstore.com/blog/what-is-ssl-tls-client-authentication-how-does-it-work.html]]
-- [[https://github.com/GhostPack/Certify|GhostPack/Certify]]
-- [[https://github.com/GhostPack/Rubeus|GhostPack/Rubeus]]
+- [https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf](https://www.specterops.io/assets/resources/Certified_Pre-Owned.pdf)
+- [https://comodosslstore.com/blog/what-is-ssl-tls-client-authentication-how-does-it-work.html](https://comodosslstore.com/blog/what-is-ssl-tls-client-authentication-how-does-it-work.html)
+- [GhostPack/Certify](https://github.com/GhostPack/Certify)
+- [GhostPack/Rubeus](https://github.com/GhostPack/Rubeus)
 

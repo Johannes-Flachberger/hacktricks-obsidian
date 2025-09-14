@@ -1,7 +1,6 @@
 # Checklist - Local Windows Privilege Escalation
 
-
-### **Best tool to look for Windows local privilege escalation vectors:** [[https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS|**WinPEAS**]]
+### **Best tool to look for Windows local privilege escalation vectors:** [**WinPEAS**](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/winPEAS)
 
 ### [[windows-local-privilege-escalation/README.md#System Info|System Info]]
 
@@ -14,7 +13,7 @@
 - [ ] Interesting info in [[windows-local-privilege-escalation/README.md#Internet Settings|Internet settings]]?
 - [ ] [[windows-local-privilege-escalation/README.md#Drives|Drives]]?
 - [ ] [[windows-local-privilege-escalation/README.md#Wsus|WSUS exploit]]?
-- [ ] [[windows-local-privilege-escalation/abusing-auto-updaters-and-ipc.md|**Third-party agent auto-updaters / IPC abuse**]]
+- [ ] [**Third-party agent auto-updaters / IPC abuse**](windows-local-privilege-escalation/abusing-auto-updaters-and-ipc.md)
 - [ ] [[windows-local-privilege-escalation/README.md#Alwaysinstallelevated|AlwaysInstallElevated]]?
 
 ### [[windows-local-privilege-escalation/README.md#Enumeration|Logging/AV enumeration]]
@@ -25,9 +24,9 @@
 - [ ] [[windows-local-privilege-escalation/README.md#Lsa Protection|LSA Protection]]?
 - [ ] [[windows-local-privilege-escalation/README.md#Credentials Guard|Credentials Guard]][[windows-local-privilege-escalation/README.md#Cached Credentials|?]]
 - [ ] [[windows-local-privilege-escalation/README.md#Cached Credentials|Cached Credentials]]?
-- [ ] Check if any [[https://github.com/carlospolop/hacktricks/blob/master/windows-hardening/windows-av-bypass/README.md|**AV**]]
-- [ ] [[https://github.com/carlospolop/hacktricks/blob/master/windows-hardening/authentication-credentials-uac-and-efs/README.md#applocker-policy|**AppLocker Policy**]]?
-- [ ] [[https://github.com/carlospolop/hacktricks/blob/master/windows-hardening/authentication-credentials-uac-and-efs/uac-user-account-control/README.md|**UAC**]]
+- [ ] Check if any [**AV**](https://github.com/carlospolop/hacktricks/blob/master/windows-hardening/windows-av-bypass/README.md)
+- [ ] [**AppLocker Policy**](https://github.com/carlospolop/hacktricks/blob/master/windows-hardening/authentication-credentials-uac-and-efs/README.md#applocker-policy)?
+- [ ] [**UAC**](https://github.com/carlospolop/hacktricks/blob/master/windows-hardening/authentication-credentials-uac-and-efs/uac-user-account-control/README.md)
 - [ ] [[windows-local-privilege-escalation/README.md#Users And Groups|User Privileges]]
 - [ ] Check [[windows-local-privilege-escalation/README.md#Users And Groups|current user privileges]]
 - [ ] Are you [[windows-local-privilege-escalation/README.md#Privileged Groups|member of any privileged group]]?
@@ -110,6 +109,4 @@
 ### [[windows-local-privilege-escalation/README.md#Named Pipe Client Impersonation|Pipe Client Impersonation]]
 
 - [ ] Check if you can abuse it
-
-
 

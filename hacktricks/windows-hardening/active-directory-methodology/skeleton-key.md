@@ -1,11 +1,10 @@
 # Skeleton Key
 
-
 ## Skeleton Key Attack
 
 The **Skeleton Key attack** is a sophisticated technique that allows attackers to **bypass Active Directory authentication** by **injecting a master password** into the domain controller. This enables the attacker to **authenticate as any user** without their password, effectively **granting them unrestricted access** to the domain.
 
-It can be performed using [[https://github.com/gentilkiwi/mimikatz|Mimikatz]]. To carry out this attack, **Domain Admin rights are prerequisite**, and the attacker must target each domain controller to ensure a comprehensive breach. However, the attack's effect is temporary, as **restarting the domain controller eradicates the malware**, necessitating a reimplementation for sustained access.
+It can be performed using [Mimikatz](https://github.com/gentilkiwi/mimikatz). To carry out this attack, **Domain Admin rights are prerequisite**, and the attacker must target each domain controller to ensure a comprehensive breach. However, the attack's effect is temporary, as **restarting the domain controller eradicates the malware**, necessitating a reimplementation for sustained access.
 
 **Executing the attack** requires a single command: `misc::skeleton`.
 
@@ -25,7 +24,5 @@ Verification after a system reboot is crucial to ensure that the protective meas
 
 ## References
 
-- [[https://blog.netwrix.com/2022/11/29/skeleton-key-attack-active-directory/|https://blog.netwrix.com/2022/11/29/skeleton-key-attack-active-directory/]]
-
-
+- [https://blog.netwrix.com/2022/11/29/skeleton-key-attack-active-directory/](https://blog.netwrix.com/2022/11/29/skeleton-key-attack-active-directory/)
 

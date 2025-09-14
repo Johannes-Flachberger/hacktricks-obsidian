@@ -1,6 +1,5 @@
 # Side Channel Analysis Attacks 
 
-
 Side-channel attacks recover secrets by observing physical or micro-architectural "leakage" that is *correlated* with internal state but is *not* part of the logical interface of the device.  Examples range from measuring the instantaneous current drawn by a smart-card to abusing CPU power-management effects over a network.
 
 ---
@@ -33,14 +32,14 @@ cw.capture.init()
 trace = cw.capture.capture_trace()
 print(trace.wave)  # numpy array of power samples
 ```
-```
+
 ### Differential/Correlation Power Analysis (DPA/CPA)
 Acquire *N > 1 000* traces, hypothesise key byte `k`, compute HW/HD model and correlate with leakage.
 ```python
 import numpy as np
 corr = np.corrcoef(leakage_model(k), traces[:,sample])
 ```
-```CPA remains state-of-the-art but machine-learning variants (MLA, deep-learning SCA) now dominate competitions such as ASCAD-v2 (2023).
+CPA remains state-of-the-art but machine-learning variants (MLA, deep-learning SCA) now dominate competitions such as ASCAD-v2 (2023).
 
 ---
 
@@ -99,6 +98,6 @@ Combining faults with side-channel leakage shortcuts key search (e.g. 1-trace AE
 
 ## References
 
-* [[https://chipwhisperer.readthedocs.io/en/latest/|ChipWhisperer Documentation]]
-* [[https://www.hertzbleed.com/|Hertzbleed Attack Paper]]
+* [ChipWhisperer Documentation](https://chipwhisperer.readthedocs.io/en/latest/)
+* [Hertzbleed Attack Paper](https://www.hertzbleed.com/)
 

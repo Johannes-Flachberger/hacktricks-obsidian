@@ -1,6 +1,5 @@
 # Docker --privileged
 
-
 ## What Affects
 
 When you run a container as privileged these are the protections you are disabling:
@@ -17,7 +16,6 @@ ls /dev
 console  fd       mqueue   ptmx     random   stderr   stdout   urandom
 core     full     null     pts      shm      stdin    tty      zero
 ```
-```
 
 **Inside Privileged Container**
 
@@ -30,8 +28,6 @@ core             mqueue           ptmx             stdin            tty26       
 cpu              nbd0             pts              stdout           tty27            tty47            ttyS0
 [...]
 ```
-```
-
 
 ### Read-only kernel file systems
 
@@ -47,7 +43,6 @@ cpuset on /sys/fs/cgroup/cpuset type cgroup (ro,nosuid,nodev,noexec,relatime,cpu
 cpu on /sys/fs/cgroup/cpu type cgroup (ro,nosuid,nodev,noexec,relatime,cpu)
 cpuacct on /sys/fs/cgroup/cpuacct type cgroup (ro,nosuid,nodev,noexec,relatime,cpuacct)
 ```
-```
 
 **Inside Privileged Container**
 
@@ -55,8 +50,6 @@ cpuacct on /sys/fs/cgroup/cpuacct type cgroup (ro,nosuid,nodev,noexec,relatime,c
 # docker run --rm --privileged -it alpine sh
 mount  | grep '(ro'
 ```
-```
-
 
 ### Masking over kernel file systems
 
@@ -73,7 +66,6 @@ tmpfs on /proc/acpi type tmpfs (ro,relatime)
 tmpfs on /proc/kcore type tmpfs (rw,nosuid,size=65536k,mode=755)
 tmpfs on /proc/keys type tmpfs (rw,nosuid,size=65536k,mode=755)
 ```
-```
 
 **Inside Privileged Container**
 
@@ -81,8 +73,6 @@ tmpfs on /proc/keys type tmpfs (rw,nosuid,size=65536k,mode=755)
 # docker run --rm --privileged -it alpine sh
 mount  | grep /proc.*tmpfs
 ```
-```
-
 
 ### Linux capabilities
 
@@ -100,7 +90,6 @@ Current: cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,ca
 Bounding set =cap_chown,cap_dac_override,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_net_bind_service,cap_net_raw,cap_sys_chroot,cap_mknod,cap_audit_write,cap_setfcap
 [...]
 ```
-```
 
 **Inside Privileged Container**
 
@@ -112,8 +101,6 @@ Current: =eip cap_perfmon,cap_bpf,cap_checkpoint_restore-eip
 Bounding set =cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_fsetid,cap_kill,cap_setgid,cap_setuid,cap_setpcap,cap_linux_immutable,cap_net_bind_service,cap_net_broadcast,cap_net_admin,cap_net_raw,cap_ipc_lock,cap_ipc_owner,cap_sys_module,cap_sys_rawio,cap_sys_chroot,cap_sys_ptrace,cap_sys_pacct,cap_sys_admin,cap_sys_boot,cap_sys_nice,cap_sys_resource,cap_sys_time,cap_sys_tty_config,cap_mknod,cap_lease,cap_audit_write,cap_audit_control,cap_setfcap,cap_mac_override,cap_mac_admin,cap_syslog,cap_wake_alarm,cap_block_suspend,cap_audit_read
 [...]
 ```
-```
-
 
 You can manipulate the capabilities available to a container without running in `--privileged` mode by using the `--cap-add` and `--cap-drop` flags.
 
@@ -131,7 +118,6 @@ grep Seccomp /proc/1/status
 Seccomp:	2
 Seccomp_filters:	1
 ```
-```
 
 **Inside Privileged Container**
 
@@ -141,14 +127,12 @@ grep Seccomp /proc/1/status
 Seccomp:	0
 Seccomp_filters:	0
 ```
-```
-
 
 ```bash
 # You can manually disable seccomp in docker with
 --security-opt seccomp=unconfined
 ```
-```
+
 Also, note that when Docker (or other CRIs) are used in a **Kubernetes** cluster, the **seccomp filter is disabled by default**
 
 ### AppArmor
@@ -161,7 +145,7 @@ Also, note that when Docker (or other CRIs) are used in a **Kubernetes** cluster
 # You can manually disable seccomp in docker with
 --security-opt apparmor=unconfined
 ```
-```
+
 ### SELinux
 
 Running a container with the `--privileged` flag disables **SELinux labels**, causing it to inherit the label of the container engine, typically `unconfined`, granting full access similar to the container engine. In rootless mode, it uses `container_runtime_t`, while in root mode, `spc_t` is applied.
@@ -172,7 +156,7 @@ Running a container with the `--privileged` flag disables **SELinux labels**, ca
 # You can manually disable selinux in docker with
 --security-opt label:disable
 ```
-```
+
 ## What Doesn't Affect
 
 ### Namespaces
@@ -188,7 +172,6 @@ PID   USER     TIME  COMMAND
     1 root      0:00 sh
    18 root      0:00 ps -ef
 ```
-```
 
 **Inside --pid=host Container**
 
@@ -201,8 +184,6 @@ PID   USER     TIME  COMMAND
     3 root      0:00 [rcu_gp]ount | grep /proc.*tmpfs
 [...]
 ```
-```
-
 
 ### User namespace
 
@@ -210,7 +191,5 @@ PID   USER     TIME  COMMAND
 
 ## References
 
-- [[https://www.redhat.com/sysadmin/privileged-flag-container-engines|https://www.redhat.com/sysadmin/privileged-flag-container-engines]]
-
-
+- [https://www.redhat.com/sysadmin/privileged-flag-container-engines](https://www.redhat.com/sysadmin/privileged-flag-container-engines)
 

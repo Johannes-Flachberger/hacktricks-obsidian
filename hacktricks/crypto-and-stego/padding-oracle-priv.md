@@ -1,15 +1,14 @@
 # Padding Oracle
 
-
 ## CBC - Cipher Block Chaining
 
 In CBC mode the **previous encrypted block is used as IV** to XOR with the next block:
 
-![[https://defuse.ca/images/cbc_encryption.png|https://defuse.ca/images/cbc_encryption.png]]
+![https://defuse.ca/images/cbc_encryption.png](https://defuse.ca/images/cbc_encryption.png)
 
 To decrypt CBC the **opposite** **operations** are done:
 
-![[https://defuse.ca/images/cbc_decryption.png|https://defuse.ca/images/cbc_decryption.png]]
+![https://defuse.ca/images/cbc_decryption.png](https://defuse.ca/images/cbc_decryption.png)
 
 Notice how it's needed to use an **encryption** **key** and an **IV**.
 
@@ -37,18 +36,18 @@ If you detect this behaviour, you can **decrypt the encrypted data** and even **
 
 ### How to exploit
 
-You could use [[https://github.com/AonCyberLabs/PadBuster|https://github.com/AonCyberLabs/PadBuster]] to exploit this kind of vulnerability or just do
+You could use [https://github.com/AonCyberLabs/PadBuster](https://github.com/AonCyberLabs/PadBuster) to exploit this kind of vulnerability or just do
 
 ```
 sudo apt-get install padbuster
 ```
-```
+
 In order to test if the cookie of a site is vulnerable you could try:
 
 ```bash
 perl ./padBuster.pl http://10.10.10.10/index.php "RVJDQrwUdTRWJUVUeBKkEA==" 8 -encoding 0 -cookies "login=RVJDQrwUdTRWJUVUeBKkEA=="
 ```
-```
+
 **Encoding 0** means that **base64** is used (but others are available, check the help menu).
 
 You could also **abuse this vulnerability to encrypt new data. For example, imagine that the content of the cookie is "**_**user=MyUsername**_**", then you may change it to "\_user=administrator\_" and escalate privileges inside the application. You could also do it using `paduster`specifying the -plaintext** parameter:
@@ -56,18 +55,18 @@ You could also **abuse this vulnerability to encrypt new data. For example, imag
 ```bash
 perl ./padBuster.pl http://10.10.10.10/index.php "RVJDQrwUdTRWJUVUeBKkEA==" 8 -encoding 0 -cookies "login=RVJDQrwUdTRWJUVUeBKkEA==" -plaintext "user=administrator"
 ```
-```
+
 If the site is vulnerable `padbuster`will automatically try to find when the padding error occurs, but you can also indicating the error message it using the **-error** parameter.
 
 ```bash
 perl ./padBuster.pl http://10.10.10.10/index.php "" 8 -encoding 0 -cookies "hcon=RVJDQrwUdTRWJUVUeBKkEA==" -error "Invalid padding"
 ```
-```
+
 ### The theory
 
 In **summary**, you can start decrypting the encrypted data by guessing the correct values that can be used to create all the **different paddings**. Then, the padding oracle attack will start decrypting bytes from the end to the start by guessing which will be the correct value that **creates a padding of 1, 2, 3, etc**.
 
-![[<../images/image (561).png>|]]
+![[../images/image (561).png]]
 
 Imagine you have some encrypted text that occupies **2 blocks** formed by the bytes from **E0 to E15**.\
 In order to **decrypt** the **last** **block** (**E8** to **E15**), the whole block passes through the "block cipher decryption" generating the **intermediary bytes I0 to I15**.\
@@ -102,8 +101,5 @@ But if you BF the padding (using padbuster for example) you manage to get anothe
 
 ### References
 
-- [[https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation|https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation]]
-
-
-
+- [https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation)
 

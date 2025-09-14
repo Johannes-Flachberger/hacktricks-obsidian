@@ -1,6 +1,5 @@
 # Information in Printers
 
-
 There are several blogs in the Internet which **highlight the dangers of leaving printers configured with LDAP with default/weak** logon credentials.  \
 This is because an attacker could **trick the printer to authenticate against a rogue LDAP server** (typically a `nc -vv -l -p 389` or `slapd -d 2` is enough) and capture the printer **credentials in clear-text**.
 
@@ -10,8 +9,8 @@ All this **sensitive information** and the common **lack of security** makes pri
 
 Some introductory blogs about the topic:
 
-- [[https://www.ceos3c.com/hacking/obtaining-domain-credentials-printer-netcat/|https://www.ceos3c.com/hacking/obtaining-domain-credentials-printer-netcat/]]
-- [[https://medium.com/@nickvangilder/exploiting-multifunction-printers-during-a-penetration-test-engagement-28d3840d8856|https://medium.com/@nickvangilder/exploiting-multifunction-printers-during-a-penetration-test-engagement-28d3840d8856]]
+- [https://www.ceos3c.com/hacking/obtaining-domain-credentials-printer-netcat/](https://www.ceos3c.com/hacking/obtaining-domain-credentials-printer-netcat/)
+- [https://medium.com/@nickvangilder/exploiting-multifunction-printers-during-a-penetration-test-engagement-28d3840d8856](https://medium.com/@nickvangilder/exploiting-multifunction-printers-during-a-penetration-test-engagement-28d3840d8856)
 
 ---
 ## Printer Configuration
@@ -28,7 +27,7 @@ Some introductory blogs about the topic:
 ```bash
 sudo nc -k -v -l -p 389     # LDAPS → 636 (or 3269)
 ```
-```
+
 Small/old MFPs may send a simple *simple-bind* in clear-text that netcat can capture. Modern devices usually perform an anonymous query first and then attempt the bind, so results vary.
 
 ### Method 2 – Full Rogue LDAP server (recommended)
@@ -43,7 +42,7 @@ sudo dpkg-reconfigure slapd   # set any base-DN – it will not be validated
 # run slapd in foreground / debug 2
 slapd -d 2 -h "ldap:///"      # only LDAP, no LDAPS
 ```
-```
+
 When the printer performs its lookup you will see the clear-text credentials in the debug output.
 
 > 💡  You can also use `impacket/examples/ldapd.py` (Python rogue LDAP) or `Responder -w -r -f` to harvest NTLMv2 hashes over LDAP/SMB.
@@ -65,7 +64,7 @@ A simple listener such as:
 ```bash
 sudo nc -k -v -l -p 389     # capture LDAP bind
 ```
-```
+
 or a rogue SMB server (`impacket-smbserver`) is enough to harvest the credentials.  
 
 ### Canon imageRUNNER / imageCLASS – Advisory 20 May 2025
@@ -102,7 +101,7 @@ The vendor guidance explicitly recommends:
 ---
 ## References
 
-- [[https://grimhacker.com/2018/03/09/just-a-printer/|https://grimhacker.com/2018/03/09/just-a-printer/]]
+- [https://grimhacker.com/2018/03/09/just-a-printer/](https://grimhacker.com/2018/03/09/just-a-printer/)
 - Rapid7. “Xerox VersaLink C7025 MFP Pass-Back Attack Vulnerabilities.” February 2025.  
 - Canon PSIRT. “Vulnerability Mitigation Against SMTP/LDAP Passback for Laser Printers and Small Office Multifunction Printers.” May 2025.
 

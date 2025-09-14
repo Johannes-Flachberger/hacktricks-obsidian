@@ -1,6 +1,5 @@
 # Integrity Levels
 
-
 ## Integrity Levels
 
 In Windows Vista and later versions, all protected items come with an **integrity level** tag. This setup mostly assigns a "medium" integrity level to files and registry keys, except for certain folders and files that Internet Explorer 7 can write to at a low integrity level. The default behavior is for processes initiated by standard users to have a medium integrity level, whereas services typically operate at a system integrity level. A high-integrity label safeguards the root directory.
@@ -16,11 +15,11 @@ A key rule is that objects can't be modified by processes with a lower integrity
 
 You can get the integrity level of a process using **Process Explorer** from **Sysinternals**, accessing the **properties** of the process and viewing the "**Security**" tab:
 
-![[<../../images/image (824).png>|]]
+![[../../images/image (824).png]]
 
 You can also get your **current integrity level** using `whoami /groups`
 
-![[<../../images/image (325).png>|]]
+![[../../images/image (325).png]]
 
 ### Integrity Levels in File-system
 
@@ -37,7 +36,7 @@ asd.txt BUILTIN\Administrators:(I)(F)
         NT AUTHORITY\SERVICE:(I)(M,DC)
         NT AUTHORITY\BATCH:(I)(M,DC)
 ```
-```
+
 Now, lets assign a minimum integrity level of **High** to the file. This **must be done from a console** running as **administrator** as a **regular console** will be running in Medium Integrity level and **won't be allowed** to assign High Integrity level to an object:
 
 ```
@@ -54,7 +53,7 @@ asd.txt BUILTIN\Administrators:(I)(F)
         NT AUTHORITY\BATCH:(I)(M,DC)
         Mandatory Label\High Mandatory Level:(NW)
 ```
-```
+
 This is where things get interesting. You can see that the user `DESKTOP-IDJHTKP\user` has **FULL privileges** over the file (indeed this was the user that created the file), however, due to the minimum integrity level implemented he won't be able to modify the file anymore unless he is running inside a High Integrity Level (note that he will be able to read it):
 
 ```
@@ -65,7 +64,7 @@ del asd.txt
 C:\Users\Public\asd.txt
 Access is denied.
 ```
-```
+
 > [!TIP]
 > **Therefore, when a file has a minimum integrity level, in order to modify it you need to be running at least in that integrity level.**
 
@@ -82,10 +81,10 @@ C:\Windows\System32\cmd-low.exe NT AUTHORITY\SYSTEM:(I)(F)
                                 APPLICATION PACKAGE AUTHORITY\ALL RESTRICTED APP PACKAGES:(I)(RX)
                                 Mandatory Label\Low Mandatory Level:(NW)
 ```
-```
+
 Now, when I run `cmd-low.exe` it will **run under a low-integrity level** instead of a medium one:
 
-![[<../../images/image (313).png>|]]
+![[../../images/image (313).png]]
 
 For curious people, if you assign high integrity level to a binary (`icacls C:\Windows\System32\cmd-high.exe /setintegritylevel high`) it won't run with high integrity level automatically (if you invoke it from a medium integrity level --by default-- it will run under a medium integrity level).
 
@@ -94,6 +93,4 @@ For curious people, if you assign high integrity level to a binary (`icacls C:\W
 Not all files and folders have a minimum integrity level, **but all processes are running under an integrity level**. And similar to what happened with the file-system, **if a process wants to write inside another process it must have at least the same integrity level**. This means that a process with low integrity level can’t open a handle with full access to a process with medium integrity level.
 
 Due to the restrictions commented in this and the previous section, from a security point of view, it's always **recommended to run a process in the lower level of integrity possible**.
-
-
 

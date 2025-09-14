@@ -1,9 +1,8 @@
 # Proxmark 3
 
-
 ## Attacking RFID Systems with Proxmark3
 
-The first thing you need to do is to have a [[https://proxmark.com) and [**install the software and it's dependencie**](https://github.com/Proxmark/proxmark3/wiki/Kali-Linux)[**s**](https://github.com/Proxmark/proxmark3/wiki/Kali-Linux|**Proxmark3**]].
+The first thing you need to do is to have a [**Proxmark3**](https://proxmark.com) and [**install the software and it's dependencie**](https://github.com/Proxmark/proxmark3/wiki/Kali-Linux)[**s**](https://github.com/Proxmark/proxmark3/wiki/Kali-Linux).
 
 ### Attacking MIFARE Classic 1KB
 
@@ -31,7 +30,7 @@ proxmark3> hf mf eset 01 000102030405060708090a0b0c0d0e0f # Write those bytes to
 proxmark3> hf mf eget 01 # Read block 1
 proxmark3> hf mf wrbl 01 B FFFFFFFFFFFF 000102030405060708090a0b0c0d0e0f # Write to the card
 ```
-```
+
 The Proxmark3 allows to perform other actions like **eavesdropping** a **Tag to Reader communication** to try to find sensitive data. In this card you could just sniff the communication with and calculate the used key because the **cryptographic operations used are weak** and knowing the plain and cipher text you can calculate it (`mfkey64` tool).
 
 ### Raw Commands
@@ -47,7 +46,7 @@ TYPE : NXP MIFARE CLASSIC 1k | Plus 2k SL1
   Prng detection: WEAK
   Valid ISO14443A Tag Found - Quiting Search
 ```
-```
+
 With this information you could try to search information about the card and about the way to communicate with it. Proxmark3 allows to send raw commands like: `hf 14a raw -p -b 7 26`
 
 ### Scripts
@@ -57,8 +56,6 @@ The Proxmark3 software comes with a preloaded list of **automation scripts** tha
 ```
 proxmark3> script run mfkeys
 ```
-```
+
 You can create a script to **fuzz tag readers**, so copying the data of a **valid card** just write a **Lua script** that **randomize** one or more random **bytes** and check if the **reader crashes** with any iteration.
-
-
 

@@ -1,6 +1,5 @@
 # macOS Security Protections
 
-
 ## Gatekeeper
 
 Gatekeeper is usually used to refer to the combination of **Quarantine + Gatekeeper + XProtect**, 3 macOS security modules that will try to **prevent users from executing potentially malicious software downloaded**.
@@ -52,8 +51,7 @@ The MRT application is located in **`/Library/Apple/System/Library/CoreServices/
 
 **macOS** now **alerts** every time a tool uses a well known **technique to persist code execution** (such as Login Items, Daemons...), so the user knows better **which software is persisting**.
 
-![[../../../images/image (1183).png|]]
-
+![](../../../images/image (1183).png)
 
 This runs with a **daemon** located in `/System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Versions/A/Resources/backgroundtaskmanagementd` and the **agent** in `/System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Support/BackgroundTaskManagementAgent.app`
 
@@ -76,7 +74,7 @@ Moreover, there is a plist file that contains **well known applications** that f
   }
 [...]
 ```
-```
+
 ### Enumeration
 
 It's possible to **enumerate all** the configured background items running the Apple cli tool:
@@ -85,8 +83,8 @@ It's possible to **enumerate all** the configured background items running the A
 # The tool will always ask for the users password
 sfltool dumpbtm
 ```
-```
-Moreover, it's also possible to list this information with [[https://github.com/objective-see/DumpBTM|**DumpBTM**]].
+
+Moreover, it's also possible to list this information with [**DumpBTM**](https://github.com/objective-see/DumpBTM).
 
 ```bash
 # You need to grant the Terminal Full Disk Access for this to work
@@ -94,7 +92,7 @@ chmod +x dumpBTM
 xattr -rc dumpBTM # Remove quarantine attr
 ./dumpBTM
 ```
-```
+
 This information is being stored in **`/private/var/db/com.apple.backgroundtaskmanagement/BackgroundItems-v4.btm`** and the Terminal needs FDA.
 
 ### Messing with BTM
@@ -108,7 +106,7 @@ When a new persistence is found an event of type **`ES_EVENT_TYPE_NOTIFY_BTM_LAU
 # Reset the database
 sfltool resettbtm
 ```
-```
+
 - **Stop the Agent**: It's possible to send a stop signal to the agent so it **won't be alerting the user** when new detections are found.
 
 ```bash
@@ -123,14 +121,12 @@ kill -SIGSTOP 1011
 ps -o state 1011
 T
 ```
-```
+
 - **Bug**: If the **process that created the persistence exists fast right after it**, the daemon will try to **get information** about it, **fail**, and **won't be able to send the event** indicating that a new thing is persisting.
 
 References and **more information about BTM**:
 
-- [[https://youtu.be/9hjUmT031tc?t=26481|https://youtu.be/9hjUmT031tc?t=26481]]
-- [[https://www.patreon.com/posts/new-developer-77420730?l=fr|https://www.patreon.com/posts/new-developer-77420730?l=fr]]
-- [[https://support.apple.com/en-gb/guide/deployment/depdca572563/web|https://support.apple.com/en-gb/guide/deployment/depdca572563/web]]
-
-
+- [https://youtu.be/9hjUmT031tc?t=26481](https://youtu.be/9hjUmT031tc?t=26481)
+- [https://www.patreon.com/posts/new-developer-77420730?l=fr](https://www.patreon.com/posts/new-developer-77420730?l=fr)
+- [https://support.apple.com/en-gb/guide/deployment/depdca572563/web](https://support.apple.com/en-gb/guide/deployment/depdca572563/web)
 

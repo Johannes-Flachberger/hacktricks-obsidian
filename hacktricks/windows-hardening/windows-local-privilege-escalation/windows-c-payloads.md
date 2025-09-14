@@ -1,6 +1,5 @@
 # Windows C Payloads
 
-
 This page collects **small, self-contained C snippets** that are handy during Windows Local Privilege Escalation or post-exploitation.  Each payload is designed to be **copy-paste friendly**, requires only the Windows API / C runtime, and can be compiled with `i686-w64-mingw32-gcc` (x86) or `x86_64-w64-mingw32-gcc` (x64).
 
 > ⚠️  These payloads assume that the process already has the minimum privileges necessary to perform the action (e.g. `SeDebugPrivilege`, `SeImpersonatePrivilege`, or medium-integrity context for a UAC bypass).  They are intended for **red-team or CTF settings** where exploiting a vulnerability has landed arbitrary native code execution.
@@ -18,7 +17,7 @@ int main(void) {
     return 0;
 }
 ```
-```
+
 ---
 
 ## UAC Bypass – `fodhelper.exe` Registry Hijack (Medium → High integrity)
@@ -28,7 +27,7 @@ When the trusted binary **`fodhelper.exe`** is executed, it queries the registry
 ```
 HKCU\Software\Classes\ms-settings\Shell\Open\command
 ```
-```A minimal PoC that pops an elevated `cmd.exe`:
+A minimal PoC that pops an elevated `cmd.exe`:
 
 ```c
 // x86_64-w64-mingw32-gcc -municode -s -O2 -o uac_fodhelper.exe uac_fodhelper.c
@@ -63,7 +62,7 @@ int main(void) {
     return 0;
 }
 ```
-```*Tested on Windows 10 22H2 and Windows 11 23H2 (July 2025 patches). The bypass still works because Microsoft has not fixed the missing integrity check in the `DelegateExecute` path.*
+*Tested on Windows 10 22H2 and Windows 11 23H2 (July 2025 patches). The bypass still works because Microsoft has not fixed the missing integrity check in the `DelegateExecute` path.*
 
 ---
 
@@ -117,7 +116,7 @@ int wmain(void) {
     return 0;
 }
 ```
-```For a deeper explanation of how that works see:
+For a deeper explanation of how that works see:
 
 [[sedebug-+-seimpersonate-copy-token.md]]
 
@@ -152,7 +151,7 @@ int main(void) {
     return 0;
 }
 ```
-```*The patch above is process-local; spawning a new PowerShell after running it will execute without AMSI/ETW inspection.*
+*The patch above is process-local; spawning a new PowerShell after running it will execute without AMSI/ETW inspection.*
 
 ---
 
@@ -190,7 +189,7 @@ int wmain(void) {
     return 0;
 }
 ```
-```
+
 Levels used most commonly:
 - `PROTECTION_LEVEL_WINDOWS_LIGHT` (2)
 - `PROTECTION_LEVEL_ANTIMALWARE_LIGHT` (3)

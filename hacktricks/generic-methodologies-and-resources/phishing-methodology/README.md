@@ -1,6 +1,5 @@
 # Phishing Methodology
 
-
 ## Methodology
 
 1. Recon the victim
@@ -37,14 +36,14 @@
 
 **Automatic Tools**
 
-- [[https://github.com/elceef/dnstwist|**dnstwist**]]
-- [[https://github.com/urbanadventurer/urlcrazy|**urlcrazy**]]
+- [**dnstwist**](https://github.com/elceef/dnstwist)
+- [**urlcrazy**](https://github.com/urbanadventurer/urlcrazy)
 
 **Websites**
 
-- [[https://dnstwist.it|https://dnstwist.it/]]
-- [[https://dnstwister.report|https://dnstwister.report/]]
-- [[https://www.internetmarketingninjas.com/tools/free-tools/domain-typo-generator/|https://www.internetmarketingninjas.com/tools/free-tools/domain-typo-generator/]]
+- [https://dnstwist.it/](https://dnstwist.it)
+- [https://dnstwister.report/](https://dnstwister.report)
+- [https://www.internetmarketingninjas.com/tools/free-tools/domain-typo-generator/](https://www.internetmarketingninjas.com/tools/free-tools/domain-typo-generator/)
 
 ### Bitflipping
 
@@ -56,32 +55,32 @@ For example, a single bit modification in the domain "windows.com" can change it
 
 Attackers may **take advantage of this by registering multiple bit-flipping domains** that are similar to the victim's domain. Their intention is to redirect legitimate users to their own infrastructure.
 
-For more information read [[https://www.bleepingcomputer.com/news/security/hijacking-traffic-to-microsoft-s-windowscom-with-bitflipping/|https://www.bleepingcomputer.com/news/security/hijacking-traffic-to-microsoft-s-windowscom-with-bitflipping/]]
+For more information read [https://www.bleepingcomputer.com/news/security/hijacking-traffic-to-microsoft-s-windowscom-with-bitflipping/](https://www.bleepingcomputer.com/news/security/hijacking-traffic-to-microsoft-s-windowscom-with-bitflipping/)
 
 ### Buy a trusted domain
 
-You can search in [[https://www.expireddomains.net|https://www.expireddomains.net/]] for a expired domain that you could use.\
+You can search in [https://www.expireddomains.net/](https://www.expireddomains.net) for a expired domain that you could use.\
 In order to make sure that the expired domain that you are going to buy **has already a good SEO** you could search how is it categorized in:
 
-- [[http://www.fortiguard.com/webfilter|http://www.fortiguard.com/webfilter]]
-- [[https://urlfiltering.paloaltonetworks.com/query/|https://urlfiltering.paloaltonetworks.com/query/]]
+- [http://www.fortiguard.com/webfilter](http://www.fortiguard.com/webfilter)
+- [https://urlfiltering.paloaltonetworks.com/query/](https://urlfiltering.paloaltonetworks.com/query/)
 
 ## Discovering Emails
 
-- [[https://github.com/laramies/theHarvester) (100% free|https://github.com/laramies/theHarvester]]
-- [[https://phonebook.cz) (100% free|https://phonebook.cz/]]
-- [[https://maildb.io|https://maildb.io/]]
-- [[https://hunter.io|https://hunter.io/]]
-- [[https://anymailfinder.com|https://anymailfinder.com/]]
+- [https://github.com/laramies/theHarvester](https://github.com/laramies/theHarvester) (100% free)
+- [https://phonebook.cz/](https://phonebook.cz) (100% free)
+- [https://maildb.io/](https://maildb.io)
+- [https://hunter.io/](https://hunter.io)
+- [https://anymailfinder.com/](https://anymailfinder.com)
 
-In order to **discover more** valid email addresses or **verify the ones** you have already discovered you can check if you can brute-force them smtp servers of the victim. [[../../network-services-pentesting/pentesting-smtp/index.html#username-bruteforce-enumeration|Learn how to verify/discover email address here]].\
+In order to **discover more** valid email addresses or **verify the ones** you have already discovered you can check if you can brute-force them smtp servers of the victim. [Learn how to verify/discover email address here](../../network-services-pentesting/pentesting-smtp/index.html#username-bruteforce-enumeration).\
 Moreover, don't forget that if the users use **any web portal to access their mails**, you can check if it's vulnerable to **username brute force**, and exploit the vulnerability if possible.
 
 ## Configuring GoPhish
 
 ### Installation
 
-You can download it from [[https://github.com/gophish/gophish/releases/tag/v0.11.0|https://github.com/gophish/gophish/releases/tag/v0.11.0]]
+You can download it from [https://github.com/gophish/gophish/releases/tag/v0.11.0](https://github.com/gophish/gophish/releases/tag/v0.11.0)
 
 Download and decompress it inside `/opt/gophish` and execute `/opt/gophish/gophish`\
 You will be given a password for the admin user in port 3333 in the output. Therefore, access that port and use those credentials to change the admin password. You may need to tunnel that port to local:
@@ -89,7 +88,7 @@ You will be given a password for the admin user in port 3333 in the output. Ther
 ```bash
 ssh -L 3333:127.0.0.1:3333 <user>@<ip>
 ```
-```
+
 ### Configuration
 
 **TLS certificate configuration**
@@ -111,7 +110,7 @@ mkdir /opt/gophish/ssl_keys
 cp "/etc/letsencrypt/live/$DOMAIN/privkey.pem" /opt/gophish/ssl_keys/key.pem
 cp "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" /opt/gophish/ssl_keys/key.crt​
 ```
-```
+
 **Mail configuration**
 
 Start installing: `apt-get install postfix`
@@ -137,7 +136,7 @@ Now lets test to send an email:
 apt install mailutils
 echo "This is the body of the email" | mail -s "This is the subject line" test@email.com
 ```
-```
+
 **Gophish configuration**
 
 Stop the execution of gophish and lets configure it.\
@@ -167,7 +166,7 @@ Modify `/opt/gophish/config.json` to the following (note the use of https):
         }
 }
 ```
-```
+
 **Configure gophish service**
 
 In order to create the gophish service so it can be started automatically and managed a service you can create the file `/etc/init.d/gophish` with the following content:
@@ -218,7 +217,7 @@ case $1 in
     start|stop|status) "$1" ;;
 esac
 ```
-```
+
 Finish configuring the service and checking it doing:
 
 ```bash
@@ -231,7 +230,7 @@ service gophish status
 ss -l | grep "3333\|443"
 service gophish stop
 ```
-```
+
 ## Configuring mail server and domain
 
 ### Wait & be legit
@@ -246,33 +245,33 @@ Set a rDNS (PTR) record that resolves the IP address of the VPS to the domain na
 
 ### Sender Policy Framework (SPF) Record
 
-You must **configure a SPF record for the new domain**. If you don't know what is a SPF record [[../../network-services-pentesting/pentesting-smtp/index.html#spf|**read this page**]].
+You must **configure a SPF record for the new domain**. If you don't know what is a SPF record [**read this page**](../../network-services-pentesting/pentesting-smtp/index.html#spf).
 
-You can use [[https://www.spfwizard.net) to generate your SPF policy (use the IP of the VPS machine|https://www.spfwizard.net/]]
+You can use [https://www.spfwizard.net/](https://www.spfwizard.net) to generate your SPF policy (use the IP of the VPS machine)
 
-![[<../../images/image (1037).png>|]]
+![[../../images/image (1037).png]]
 
 This is the content that must be set inside a TXT record inside the domain:
 
 ```bash
 v=spf1 mx a ip4:ip.ip.ip.ip ?all
 ```
-```
+
 ### Domain-based Message Authentication, Reporting & Conformance (DMARC) Record
 
-You must **configure a DMARC record for the new domain**. If you don't know what is a DMARC record [[../../network-services-pentesting/pentesting-smtp/index.html#dmarc|**read this page**]].
+You must **configure a DMARC record for the new domain**. If you don't know what is a DMARC record [**read this page**](../../network-services-pentesting/pentesting-smtp/index.html#dmarc).
 
 You have to create a new DNS TXT record pointing the hostname `_dmarc.<domain>` with the following content:
 
 ```bash
 v=DMARC1; p=none
 ```
-```
+
 ### DomainKeys Identified Mail (DKIM)
 
-You must **configure a DKIM for the new domain**. If you don't know what is a DMARC record [[../../network-services-pentesting/pentesting-smtp/index.html#dkim|**read this page**]].
+You must **configure a DKIM for the new domain**. If you don't know what is a DMARC record [**read this page**](../../network-services-pentesting/pentesting-smtp/index.html#dkim).
 
-This tutorial is based on: [[https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy|https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy]]
+This tutorial is based on: [https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy)
 
 > [!TIP]
 > You need to concatenate both B64 values that the DKIM key generates:
@@ -283,13 +282,13 @@ This tutorial is based on: [[https://www.digitalocean.com/community/tutorials/ho
 
 ### Test your email configuration score
 
-You can do that using [[https://www.mail-tester.com|https://www.mail-tester.com/]]\
+You can do that using [https://www.mail-tester.com/](https://www.mail-tester.com)\
 Just access the page and send an email to the address they give you:
 
 ```bash
 echo "This is the body of the email" | mail -s "This is the subject line" test-iimosa79z@srv1.mail-tester.com
 ```
-```
+
 You can also **check your email configuration** sending an email to `check-auth@verifier.port25.com` and **reading the response** (for this you will need to **open** port **25** and see the response in the file _/var/mail/root_ if you send the email a as root).\
 Check that you pass all the tests:
 
@@ -303,7 +302,7 @@ DKIM check:         pass
 Sender-ID check:    pass
 SpamAssassin check: ham
 ```
-```
+
 You could also send **message to a Gmail under your control**, and check the **email’s headers** in your Gmail inbox, `dkim=pass` should be present in the `Authentication-Results` header field.
 
 ```
@@ -311,14 +310,14 @@ Authentication-Results: mx.google.com;
        spf=pass (google.com: domain of contact@example.com designates --- as permitted sender) smtp.mail=contact@example.com;
        dkim=pass header.i=@example.com;
 ```
-```
+
 ### ​Removing from Spamhouse Blacklist
 
-The page [[https://www.mail-tester.com) can indicate you if you your domain is being blocked by spamhouse. You can request your domain/IP to be removed at: ​[https://www.spamhaus.org/lookup/](https://www.spamhaus.org/lookup/|www.mail-tester.com]]
+The page [www.mail-tester.com](https://www.mail-tester.com) can indicate you if you your domain is being blocked by spamhouse. You can request your domain/IP to be removed at: ​[https://www.spamhaus.org/lookup/](https://www.spamhaus.org/lookup/)
 
 ### Removing from Microsoft Blacklist
 
-​​You can request your domain/IP to be removed at [[https://sender.office.com|https://sender.office.com/]].
+​​You can request your domain/IP to be removed at [https://sender.office.com/](https://sender.office.com).
 
 ## Create & Launch GoPhish Campaign
 
@@ -328,7 +327,7 @@ The page [[https://www.mail-tester.com) can indicate you if you your domain is b
 - Decide from which account are you going to send the phishing emails. Suggestions: _noreply, support, servicedesk, salesforce..._
 - You can leave blank the username and password, but make sure to check the Ignore Certificate Errors
 
-![[<../../images/image (253) (1) (2) (1) (1) (2) (2) (3) (3) (5) (3) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (10) (15) (2).png>|]]
+![](<../../images/image (253) (1) (2) (1) (1) (2) (2) (3) (3) (5) (3) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (10) (15) (2).png>)
 
 > [!TIP]
 > It's recommended to use the "**Send Test Email**" functionality to test that everything is working.\
@@ -364,17 +363,17 @@ WRITE HERE SOME SIGNATURE OF SOMEONE FROM THE COMPANY
 </body>
 </html>
 ```
-```
+
 Note that **in order to increase the credibility of the email**, it's recommended to use some signature from an email from the client. Suggestions:
 
 - Send an email to a **non existent address** and check if the response has any signature.
 - Search for **public emails** like info@ex.com or press@ex.com or public@ex.com and send them an email and wait for the response.
 - Try to contact **some valid discovered** email and wait for the response
 
-![[<../../images/image (80).png>|]]
+![](<../../images/image (80).png>)
 
 > [!TIP]
-> The Email Template also allows to **attach files to send**. If you would also like to steal NTLM challenges using some specially crafted files/documents [[../../windows-hardening/ntlm/places-to-steal-ntlm-creds.md|read this page]].
+> The Email Template also allows to **attach files to send**. If you would also like to steal NTLM challenges using some specially crafted files/documents [read this page](../../windows-hardening/ntlm/places-to-steal-ntlm-creds.md).
 
 ### Landing Page
 
@@ -383,21 +382,21 @@ Note that **in order to increase the credibility of the email**, it's recommende
 - Mark **Capture Submitted Data** and **Capture Passwords**
 - Set a **redirection**
 
-![[<../../images/image (826).png>|]]
+![](<../../images/image (826).png>)
 
 > [!TIP]
 > Usually you will need to modify the HTML code of the page and make some tests in local (maybe using some Apache server) **until you like the results.** Then, write that HTML code in the box.\
 > Note that if you need to **use some static resources** for the HTML (maybe some CSS and JS pages) you can save them in _**/opt/gophish/static/endpoint**_ and then access them from _**/static/\<filename>**_
 
 > [!TIP]
-> For the redirection you could **redirect the users to the legit main web page** of the victim, or redirect them to _/static/migration.html_ for example, put some **spinning wheel (**[[https://loading.io)**|**https://loading.io/**]] for 5 seconds and then indicate that the process was successful**.
+> For the redirection you could **redirect the users to the legit main web page** of the victim, or redirect them to _/static/migration.html_ for example, put some **spinning wheel (**[**https://loading.io/**](https://loading.io)**) for 5 seconds and then indicate that the process was successful**.
 
 ### Users & Groups
 
 - Set a name
 - **Import the data** (note that in order to use the template for the example you need the firstname, last name and email address of each user)
 
-![[<../../images/image (163).png>|]]
+![](<../../images/image (163).png>)
 
 ### Campaign
 
@@ -405,7 +404,7 @@ Finally, create a campaign selecting a name, the email template, the landing pag
 
 Note that the **Sending Profile allow to send a test email to see how will the final phishing email looks like**:
 
-![[<../../images/image (192).png>|]]
+![](<../../images/image (192).png>)
 
 > [!TIP]
 > I would recommend to **send the test emails to 10min mails addresses** in order to avoid getting blacklisted making tests.
@@ -416,14 +415,20 @@ Once everything is ready, just launch the campaign!
 
 If for any reason you want to clone the website check the following page:
 
-[[clone-a-website.md]]
+
+{{#ref}}
+clone-a-website.md
+{{#endref}}
 
 ## Backdoored Documents & Files
 
 In some phishing assessments (mainly for Red Teams) you will want to also **send files containing some kind of backdoor** (maybe a C2 or maybe just something that will trigger an authentication).\
 Check out the following page for some examples:
 
-[[phishing-documents.md]]
+
+{{#ref}}
+phishing-documents.md
+{{#endref}}
 
 ## Phishing MFA
 
@@ -431,7 +436,7 @@ Check out the following page for some examples:
 
 The previous attack is pretty clever as you are faking a real website and gathering the information set by the user. Unfortunately, if the user didn't put the correct password or if the application you faked is configured with 2FA, **this information won't allow you to impersonate the tricked user**.
 
-This is where tools like [[https://github.com/kgretzky/evilginx2)**,** [**CredSniper**](https://github.com/ustayready/CredSniper) and [**muraena**](https://github.com/muraenateam/muraena|**evilginx2**]] are useful. This tool will allow you to generate a MitM like attack. Basically, the attacks works in the following way:
+This is where tools like [**evilginx2**](https://github.com/kgretzky/evilginx2)**,** [**CredSniper**](https://github.com/ustayready/CredSniper) and [**muraena**](https://github.com/muraenateam/muraena) are useful. This tool will allow you to generate a MitM like attack. Basically, the attacks works in the following way:
 
 1. You **impersonate the login** form of the real webpage.
 2. The user **send** his **credentials** to your fake page and the tool send those to the real webpage, **checking if the credentials work**.
@@ -441,22 +446,25 @@ This is where tools like [[https://github.com/kgretzky/evilginx2)**,** [**CredSn
 ### Via VNC
 
 What if instead of **sending the victim to a malicious page** with the same looks as the original one, you send him to a **VNC session with a browser connected to the real web page**? You will be able to see what he does, steal the password, the MFA used, the cookies...\
-You can do this with [[https://github.com/JoelGMSec/EvilnoVNC|**EvilnVNC**]]
+You can do this with [**EvilnVNC**](https://github.com/JoelGMSec/EvilnoVNC)
 
 ## Detecting the detection
 
 Obviously one of the best ways to know if you have been busted is to **search your domain inside blacklists**. If it appears listed, somehow your domain was detected as suspicions.\
-One easy way to check if you domain appears in any blacklist is to use [[https://malwareworld.com|https://malwareworld.com/]]
+One easy way to check if you domain appears in any blacklist is to use [https://malwareworld.com/](https://malwareworld.com)
 
 However, there are other ways to know if the victim is **actively looking for suspicions phishing activity in the wild** as explained in:
 
-[[detecting-phising.md]]
+
+{{#ref}}
+detecting-phising.md
+{{#endref}}
 
 You can **buy a domain with a very similar name** to the victims domain **and/or generate a certificate** for a **subdomain** of a domain controlled by you **containing** the **keyword** of the victim's domain. If the **victim** perform any kind of **DNS or HTTP interaction** with them, you will know that **he is actively looking** for suspicious domains and you will need to be very stealth.
 
 ### Evaluate the phishing
 
-Use [[https://github.com/Rices/Phishious|**Phishious** ]]to evaluate if your email is going to end in the spam folder or if it's going to be blocked or successful.
+Use [**Phishious** ](https://github.com/Rices/Phishious)to evaluate if your email is going to end in the spam folder or if it's going to be blocked or successful.
 
 ## High-Touch Identity Compromise (Help-Desk MFA Reset)
 
@@ -544,9 +552,8 @@ Besides classic push-bombing, operators simply **force a new MFA registration** 
 [Help-Desk] →  AzureAD: ‘Delete existing methods’ → sends registration e-mail
 [Attacker]  →  Completes new TOTP enrolment on their own device
 ```
-```
-Monitor for AzureAD/AWS/Okta events where **`deleteMFA` + `addMFA`** occur **within minutes from the same IP**.
 
+Monitor for AzureAD/AWS/Okta events where **`deleteMFA` + `addMFA`** occur **within minutes from the same IP**.
 
 ## Clipboard Hijacking / Pastejacking
 
@@ -560,10 +567,9 @@ Attackers can silently copy malicious commands into the victim’s clipboard fro
 
 ## References
 
-- [[https://zeltser.com/domain-name-variations-in-phishing/|https://zeltser.com/domain-name-variations-in-phishing/]]
-- [[https://0xpatrik.com/phishing-domains/|https://0xpatrik.com/phishing-domains/]]
-- [[https://darkbyte.net/robando-sesiones-y-bypasseando-2fa-con-evilnovnc/|https://darkbyte.net/robando-sesiones-y-bypasseando-2fa-con-evilnovnc/]]
-- [[https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy|https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy]]
-- [[https://unit42.paloaltonetworks.com/2025-unit-42-global-incident-response-report-social-engineering-edition/|2025 Unit 42 Global Incident Response Report – Social Engineering Edition]]
-
+- [https://zeltser.com/domain-name-variations-in-phishing/](https://zeltser.com/domain-name-variations-in-phishing/)
+- [https://0xpatrik.com/phishing-domains/](https://0xpatrik.com/phishing-domains/)
+- [https://darkbyte.net/robando-sesiones-y-bypasseando-2fa-con-evilnovnc/](https://darkbyte.net/robando-sesiones-y-bypasseando-2fa-con-evilnovnc/)
+- [https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy)
+- [2025 Unit 42 Global Incident Response Report – Social Engineering Edition](https://unit42.paloaltonetworks.com/2025-unit-42-global-incident-response-report-social-engineering-edition/)
 

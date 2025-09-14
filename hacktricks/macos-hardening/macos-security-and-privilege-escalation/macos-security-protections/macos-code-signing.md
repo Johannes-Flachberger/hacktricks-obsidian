@@ -1,15 +1,13 @@
 # macOS Code Signing
 
-
 ## Basic Information
 
 Mach-o binaries contains a load command called **`LC_CODE_SIGNATURE`** that indicates the **offset** and **size** of the signatures inside the binary. Actually, using the GUI tool MachOView, it's possible to find at the end of the binary a section called **Code Signature** with this information:
 
 ![[../../../images/image (1) (1) (1) (1).png]]
 
-
 The magic header of the Code Signature is **`0xFADE0CC0`**. Then you have information such as the length and the number of blobs of the superBlob that contains them.\
-It's possible to find this information in the [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/osfmk/kern/cs_blobs.h#L276|source code here]]:
+It's possible to find this information in the [source code here](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/osfmk/kern/cs_blobs.h#L276):
 
 ```c
 /*
@@ -39,7 +37,7 @@ typedef struct __SC_GenericBlob {
 } CS_GenericBlob
 __attribute__ ((aligned(1)));
 ```
-```
+
 Common blobs contained are Code Directory, Requirements and Entitlements and a Cryptographic Message Syntax (CMS).\
 Moreover, note how the data encoded in the blobs is encoded in **Big Endian.**
 
@@ -47,7 +45,7 @@ Moreover, signatures cloud be detached from the binaries and stored in `/var/db/
 
 ## Code Directory Blob
 
-It's possible to find the declaration of the [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/osfmk/kern/cs_blobs.h#L104|Code Directory Blob in the code]]:
+It's possible to find the declaration of the [Code Directory Blob in the code](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/osfmk/kern/cs_blobs.h#L104):
 
 ```c
 typedef struct __CodeDirectory {
@@ -104,7 +102,7 @@ typedef struct __CodeDirectory {
 } CS_CodeDirectory
 __attribute__ ((aligned(1)));
 ```
-```
+
 Note that there are different versions of this struct where old ones might contain less information.
 
 ## Signing Code Pages
@@ -139,15 +137,15 @@ Page size=4096
 
 # Calculate the hasehs of each page manually
 BINARY=/bin/ps
-SIZE=`stat -f "%Z" $BINARY
+SIZE=`stat -f "%Z" $BINARY`
 PAGESIZE=4096 # From the previous output
-PAGES=`expr $SIZE / $PAGESIZE
-for i in `seq 0 $PAGES; do
-    dd if=$BINARY of=/tmp/`basename $BINARY.page.$i bs=$PAGESIZE skip=$i count=1
+PAGES=`expr $SIZE / $PAGESIZE`
+for i in `seq 0 $PAGES`; do
+    dd if=$BINARY of=/tmp/`basename $BINARY`.page.$i bs=$PAGESIZE skip=$i count=1
 done
 openssl sha256 /tmp/*.page.*
 ```
-```
+
 ## Entitlements Blob
 
 Note that applications might also contain an **entitlement blob** where all the entitlements are defined. Moreover, some iOS binaries might have their entitlements specific in the special slot -7 (instead of in the -5 entitlements special slot).
@@ -168,7 +166,7 @@ Actually, it's possible to see in the Code Directory structs a parameter called 
 
 ## Code Signing Flags
 
-Every process has related a bitmask known as the `status` which is started by the kernel and some of them can be overridden by the **code signature**. These flags that can be included in the code signing are [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/osfmk/kern/cs_blobs.h#L36|defined in the code]]:
+Every process has related a bitmask known as the `status` which is started by the kernel and some of them can be overridden by the **code signature**. These flags that can be included in the code signing are [defined in the code](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/osfmk/kern/cs_blobs.h#L36):
 
 ```c
 /* code signing attributes of a process */
@@ -214,8 +212,8 @@ Every process has related a bitmask known as the `status` which is started by th
 
 #define CS_ENTITLEMENT_FLAGS        (CS_GET_TASK_ALLOW | CS_INSTALLER | CS_DATAVAULT_CONTROLLER | CS_NVRAM_UNRESTRICTED)
 ```
-```
-Note that the function [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/kern/kern_exec.c#L1420|**exec_mach_imgact**]] can also add the `CS_EXEC_*` flags dynamically when starting the execution.
+
+Note that the function [**exec_mach_imgact**](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/kern/kern_exec.c#L1420) can also add the `CS_EXEC_*` flags dynamically when starting the execution.
 
 ## Code Signature Requirements
 
@@ -234,7 +232,7 @@ codesign -d -r- /Applications/Signal.app/
 Executable=/Applications/Signal.app/Contents/MacOS/Signal
 designated => identifier "org.whispersystems.signal-desktop" and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = U68MSDN6DR
 ```
-```
+
 > [!TIP]
 > Note how this signatures can check things like certification information, TeamID, IDs, entitlements and many other data.
 
@@ -251,7 +249,7 @@ od -A x -t x1 /tmp/output.csreq
 0000020    00  00  00  21  6f  72  67  2e  77  68  69  73  70  65  72  73
 [...]
 ```
-```
+
 It's possible to access this information and create or modify requirements with some APIs from the `Security.framework` like:
 
 #### **Checking Validity**
@@ -302,7 +300,7 @@ The **kernel** is the one that **checks the code signature** before allowing the
 
 ## `cs_blobs` & `cs_blob`
 
-[[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/sys/ubc_internal.h#L106|**cs_blob**]] struct contains the information about the entitlement of the running process on it. `csb_platform_binary` also informs if the application is a platform binary (which is checked in different moments by the OS to apply security mechanisms like to protect the SEND rights to the task ports of these processes).
+[**cs_blob**](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/sys/ubc_internal.h#L106) struct contains the information about the entitlement of the running process on it. `csb_platform_binary` also informs if the application is a platform binary (which is checked in different moments by the OS to apply security mechanisms like to protect the SEND rights to the task ports of these processes).
 
 ```c
 struct cs_blob {
@@ -362,10 +360,8 @@ struct cs_blob {
 #endif
 };
 ```
-```
+
 ## References
 
-- [[https://newosxbook.com/home.html|**\*OS Internals Volume III**]]
-
-
+- [**\*OS Internals Volume III**](https://newosxbook.com/home.html)
 

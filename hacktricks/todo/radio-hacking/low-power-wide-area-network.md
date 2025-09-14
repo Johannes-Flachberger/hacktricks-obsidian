@@ -1,6 +1,5 @@
 # Low-Power Wide Area Network
 
-
 ## Introduction
 
 **Low-Power Wide Area Network** (LPWAN) is a group of wireless, low-power, wide-area network technologies designed for **long-range communications** at a low bit rate.
@@ -51,7 +50,7 @@ python3 lorattack/sniffer.py \
 # Bruteforce AppKey from captured OTAA join-request/accept pairs
 python3 lorapwn/bruteforce_join.py --pcap smartcity.pcap --wordlist top1m.txt
 ```
-```
+
 ### 2. OTAA join-replay (DevNonce reuse)
 
 1. Capture a legitimate **JoinRequest**.
@@ -89,9 +88,8 @@ Force SF12/125 kHz to increase airtime → exhaust duty-cycle of gateway (denial
 6. Keep gateways updated; Kerlink/Dragino provide 2024-patched images.
 7. Implement **traffic anomaly detection** (e.g., LAF analyzer) – flag counter resets, duplicate joins, sudden ADR changes.
 
-
 ## References
 
-* LoRaWAN Auditing Framework (LAF) – [[https://github.com/IOActive/laf|https://github.com/IOActive/laf]]
-* Trend Micro LoRaPWN overview – [[https://www.hackster.io/news/trend-micro-finds-lorawan-security-lacking-develops-lorapwn-python-utility-bba60c27d57a|https://www.hackster.io/news/trend-micro-finds-lorawan-security-lacking-develops-lorapwn-python-utility-bba60c27d57a]]
+* LoRaWAN Auditing Framework (LAF) – [https://github.com/IOActive/laf](https://github.com/IOActive/laf)
+* Trend Micro LoRaPWN overview – [https://www.hackster.io/news/trend-micro-finds-lorawan-security-lacking-develops-lorapwn-python-utility-bba60c27d57a](https://www.hackster.io/news/trend-micro-finds-lorawan-security-lacking-develops-lorapwn-python-utility-bba60c27d57a)
 

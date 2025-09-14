@@ -1,11 +1,10 @@
 # Objects in memory
 
-
 ## CFRuntimeClass
 
 CF* objects come from CoreFoundation, which provides more than 50 classes of objects like `CFString`, `CFNumber` or `CFAllocator`.
 
-All these classes are instances of the class `CFRuntimeClass`, which when called it returns an index to the `__CFRuntimeClassTable`. The CFRuntimeClass is defined in [[https://opensource.apple.com/source/CF/CF-1153.18/CFRuntime.h.auto.html|**CFRuntime.h**]]:
+All these classes are instances of the class `CFRuntimeClass`, which when called it returns an index to the `__CFRuntimeClassTable`. The CFRuntimeClass is defined in [**CFRuntime.h**](https://opensource.apple.com/source/CF/CF-1153.18/CFRuntime.h.auto.html):
 
 ```objectivec
 // Some comments were added to the original code
@@ -53,7 +52,7 @@ typedef struct __CFRuntimeClass {
 
 } CFRuntimeClass;
 ```
-```
+
 ## Objective-C
 
 ### Memory sections used
@@ -103,7 +102,7 @@ Objective‑C uses mangling to encode selector and variable types of simple and 
 ```objectivec
 - (NSString *)processString:(id)input withOptions:(char *)options andError:(id)error;
 ```
-```
+
 The selector would be `processString:withOptions:andError:`
 
 #### Type Encoding
@@ -116,7 +115,7 @@ The complete type encoding for the method is:
 ```less
 @24@0:8@16*20^@24
 ```
-```
+
 #### Detailed Breakdown
 
 1. Return Type (`NSString *`): Encoded as `@` with length 24
@@ -130,7 +129,7 @@ With the selector + the encoding you can reconstruct the method.
 
 ### Classes
 
-Classes in Objective‑C are C structs with properties, method pointers, etc. It's possible to find the struct `objc_class` in the [[https://opensource.apple.com/source/objc4/objc4-756.2/runtime/objc-runtime-new.h.auto.html|**source code**]]:
+Classes in Objective‑C are C structs with properties, method pointers, etc. It's possible to find the struct `objc_class` in the [**source code**](https://opensource.apple.com/source/objc4/objc4-756.2/runtime/objc-runtime-new.h.auto.html):
 
 ```objectivec
 struct objc_class : objc_object {
@@ -152,7 +151,7 @@ struct objc_class : objc_object {
     }
 [...]
 ```
-```
+
 This class uses some bits of the `isa` field to indicate information about the class.
 
 Then, the struct has a pointer to the struct `class_ro_t` stored on disk which contains attributes of the class like its name, base methods, properties and instance variables. During runtime an additional structure `class_rw_t` is used containing pointers which can be altered such as methods, protocols, properties.
@@ -199,7 +198,7 @@ swift-inspect dump-arrays <pid-or-name>
 # On Darwin additionally:
 swift-inspect dump-concurrency <pid-or-name>
 ```
-```
+
 This is very useful to map Swift heap objects and protocol conformances when reversing mixed Swift/ObjC apps.
 
 ---
@@ -214,7 +213,7 @@ This is very useful to map Swift heap objects and protocol conformances when rev
 (lldb) expr -l objc++ -O -- (id)0x0000000101234560
 (lldb) expr -l objc++ -O -- (Class)object_getClass((id)0x0000000101234560)
 ```
-```
+
 - Inspect Objective‑C class from a pointer to an object method’s `self` in a breakpoint:
 
 ```lldb
@@ -224,7 +223,7 @@ This is very useful to map Swift heap objects and protocol conformances when rev
 (lldb) po (id)$x0                 # self
 (lldb) expr -l objc++ -O -- (Class)object_getClass((id)$x0)
 ```
-```
+
 - Dump sections that carry Objective‑C metadata (note: many are now in `__DATA_CONST` / `__AUTH_CONST`):
 
 ```lldb
@@ -232,14 +231,14 @@ This is very useful to map Swift heap objects and protocol conformances when rev
 (lldb) image dump section --section __DATA_CONST.__objc_selrefs
 (lldb) image dump section --section __AUTH_CONST.__auth_got
 ```
-```
+
 - Read memory for a known class object to pivot to `class_ro_t` / `class_rw_t` when reversing method lists:
 
 ```lldb
 (lldb) image lookup -r -n _OBJC_CLASS_$_NSFileManager
 (lldb) memory read -fx -s8 0xADDRESS_OF_CLASS_OBJECT
 ```
-```
+
 ### Frida (Objective‑C and Swift)
 
 Frida provides high‑level runtime bridges that are very handy to discover and instrument live objects without symbols:
@@ -263,7 +262,7 @@ if (ObjC.available) {
   });
 }
 ```
-```
+
 - Swift bridge: enumerate Swift types and interact with Swift instances (requires recent Frida; very useful on Apple Silicon targets).
 
 ---

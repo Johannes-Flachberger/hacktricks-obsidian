@@ -1,6 +1,5 @@
 # Infrared
 
-
 ## How the Infrared Works 
 
 **Infrared light is invisible to humans**. IR wavelength is from **0.7 to 1000 microns**. Household remotes use an IR signal for data transmission and operate in the wavelength range of 0.75..1.4 microns. A microcontroller in the remote makes an infrared LED blink with a specific frequency, turning the digital signal into an IR signal.
@@ -21,22 +20,19 @@ IR protocols differ in 3 factors:
 
 Bits are encoded by modulating the duration of the space between pulses. The width of the pulse itself is constant.
 
-![[../../images/image (295).png|]]
-
+![](../../images/image (295).png)
 
 **2. Pulse Width Encoding**
 
 Bits are encoded by modulation of the pulse width. The width of space after pulse burst is constant.
 
-![[../../images/image (282).png|]]
-
+![](../../images/image (282).png)
 
 **3. Phase Encoding**
 
 It is also known as Manchester encoding. The logical value is defined by the polarity of the transition between pulse burst and space. "Space to pulse burst" denotes logic "0", "pulse burst to space" denotes logic "1".
 
-![[../../images/image (634).png|]]
-
+![](../../images/image (634).png)
 
 **4. Combination of previous ones and other exotics**
 
@@ -49,8 +45,7 @@ It is also known as Manchester encoding. The logical value is defined by the pol
 
 The most reliable way to see how the remote IR signal looks like is to use an oscilloscope. It does not demodulate or invert the received signal, it is just displayed "as is". This is useful for testing and debugging. I will show the expected signal on the example of the NEC IR protocol.
 
-![[../../images/image (235).png|]]
-
+![](../../images/image (235).png)
 
 Usually, there is a preamble at the beginning of an encoded packet. This allows the receiver to determine the level of gain and background. There are also protocols without preamble, for example, Sharp.
 
@@ -136,6 +131,6 @@ Firmware 1.0 (September 2024) added **dozens of extra IR protocols and optional 
 
 ## References
 
-- [[https://blog.flipperzero.one/infrared/|Flipper Zero Infrared blog post]]
+- [Flipper Zero Infrared blog post](https://blog.flipperzero.one/infrared/)
 - EvilScreen: Smart TV hijacking via remote control mimicry (arXiv 2210.03014)
 

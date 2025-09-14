@@ -1,6 +1,5 @@
 # macOS XPC
 
-
 ## Basic Information
 
 XPC, which stands for XNU (the kernel used by macOS) inter-Process Communication, is a framework for **communication between processes** on macOS and iOS. XPC provides a mechanism for making **safe, asynchronous method calls between different processes** on the system. It's a part of Apple's security paradigm, allowing for the **creation of privilege-separated applications** where each **component** runs with **only the permissions it needs** to do its job, thereby limiting the potential damage from a compromised process.
@@ -19,7 +18,7 @@ The only **drawback** is that **separating an application in several processes**
 
 The XPC components of an application are **inside the application itself.** For example, in Safari you can find them in **`/Applications/Safari.app/Contents/XPCServices`**. They have extension **`.xpc`** (like **`com.apple.Safari.SandboxBroker.xpc`**) and are **also bundles** with the main binary inside of it: `/Applications/Safari.app/Contents/XPCServices/com.apple.Safari.SandboxBroker.xpc/Contents/MacOS/com.apple.Safari.SandboxBroker` and an `Info.plist: /Applications/Safari.app/Contents/XPCServices/com.apple.Safari.SandboxBroker.xpc/Contents/Info.plist`
 
-As you might be thinking a **XPC component will have different entitlements and privileges** than the other XPC components or the main app binary. EXCEPT if a XPC service is configured with [[https://developer.apple.com/documentation/bundleresources/information_property_list/xpcservice/joinexistingsession|**JoinExistingSession**]] set to “True” in its **Info.plist** file. In this case, the XPC service will run in the **same security session as the application** that called it.
+As you might be thinking a **XPC component will have different entitlements and privileges** than the other XPC components or the main app binary. EXCEPT if a XPC service is configured with [**JoinExistingSession**](https://developer.apple.com/documentation/bundleresources/information_property_list/xpcservice/joinexistingsession) set to “True” in its **Info.plist** file. In this case, the XPC service will run in the **same security session as the application** that called it.
 
 XPC services are **started** by **launchd** when required and **shut down** once all tasks are **complete** to free system resources. **Application-specific XPC components can only be utilized by the application**, thereby reducing the risk associated with potential vulnerabilities.
 
@@ -36,33 +35,33 @@ cat /Library/LaunchDaemons/com.jamf.management.daemon.plist
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	Program
-	/Library/Application Support/JAMF/Jamf.app/Contents/MacOS/JamfDaemon.app/Contents/MacOS/JamfDaemon
-	AbandonProcessGroup
-	
-	KeepAlive
-	
-	Label
-	com.jamf.management.daemon
-	MachServices
+	<key>Program</key>
+	<string>/Library/Application Support/JAMF/Jamf.app/Contents/MacOS/JamfDaemon.app/Contents/MacOS/JamfDaemon</string>
+	<key>AbandonProcessGroup</key>
+	<true/>
+	<key>KeepAlive</key>
+	<true/>
+	<key>Label</key>
+	<string>com.jamf.management.daemon</string>
+	<key>MachServices</key>
 	<dict>
-		com.jamf.management.daemon.aad
-		
-		com.jamf.management.daemon.agent
-		
-		com.jamf.management.daemon.binary
-		
-		com.jamf.management.daemon.selfservice
-		
-		com.jamf.management.daemon.service
-		
+		<key>com.jamf.management.daemon.aad</key>
+		<true/>
+		<key>com.jamf.management.daemon.agent</key>
+		<true/>
+		<key>com.jamf.management.daemon.binary</key>
+		<true/>
+		<key>com.jamf.management.daemon.selfservice</key>
+		<true/>
+		<key>com.jamf.management.daemon.service</key>
+		<true/>
 	</dict>
-	RunAtLoad
-	
+	<key>RunAtLoad</key>
+	<true/>
 </dict>
 </plist>
 ```
-```
+
 The ones in **`LaunchDameons`** are run by root. So if an unprivileged process can talk with one of these it could be able to escalate privileges.
 
 ## XPC Objects
@@ -113,7 +112,7 @@ It's possible to trace the actions of `xpcproxy` using:
 ```bash
 supraudit S -C -o /tmp/output /dev/auditpipe
 ```
-```
+
 The XPC library use `kdebug` to log actions calling `xpc_ktrace_pid0` and `xpc_ktrace_pid1`. The codes it uses are undocumented so it's needed to add the into `/usr/share/misc/trace.codes`. They have the prefix `0x29` and for example one is `0x29000004`: `XPC_serializer_pack`.\
 The utility `xpcproxy` uses the prefix `0x22`, for example: `0x2200001c: xpcproxy:will_do_preexec`.
 
@@ -135,7 +134,7 @@ Apple also allows apps to **configure some rights and how to get them** so if th
 
 ## XPC Sniffer
 
-To sniff the XPC messages you could use [[https://github.com/hot3eed/xpcspy|**xpcspy**]] which uses **Frida**.
+To sniff the XPC messages you could use [**xpcspy**](https://github.com/hot3eed/xpcspy) which uses **Frida**.
 
 ```bash
 # Install
@@ -147,8 +146,8 @@ xpcspy -U -r -W <bundle-id>
 ## Using filters (i: for input, o: for output)
 xpcspy -U <prog-name> -t 'i:com.apple.*' -t 'o:com.apple.*' -r
 ```
-```
-Another possible tool to use is [[https://newosxbook.com/tools/XPoCe2.html|**XPoCe2**]].
+
+Another possible tool to use is [**XPoCe2**](https://newosxbook.com/tools/XPoCe2.html).
 
 ## XPC Communication C Code Example
 
@@ -207,7 +206,6 @@ int main(int argc, const char *argv[]) {
     return 0;
 }
 ```
-```
 
 **xpc_client.c**
 
@@ -239,7 +237,6 @@ int main(int argc, const char *argv[]) {
     return 0;
 }
 ```
-```
 
 **xyz.hacktricks.service.plist**
 
@@ -247,24 +244,22 @@ int main(int argc, const char *argv[]) {
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"> <plist version="1.0">
 <dict>
-Label
-xyz.hacktricks.service
-MachServices
+<key>Label</key>
+<string>xyz.hacktricks.service</string>
+<key>MachServices</key>
     <dict>
-        xyz.hacktricks.service
-        
+        <key>xyz.hacktricks.service</key>
+        <true/>
     </dict>
-Program
-    /tmp/xpc\_server
-    ProgramArguments
+<key>Program</key>
+    <string>/tmp/xpc_server</string>
+    <key>ProgramArguments</key>
     <array>
-        /tmp/xpc\_server
+        <string>/tmp/xpc_server</string>
     </array>
 </dict>
 </plist>
 ```
-```
-
 
 ```bash
 # Compile the server & client
@@ -285,7 +280,7 @@ sudo launchctl load /Library/LaunchDaemons/xyz.hacktricks.service.plist
 sudo launchctl unload /Library/LaunchDaemons/xyz.hacktricks.service.plist
 sudo rm /Library/LaunchDaemons/xyz.hacktricks.service.plist /tmp/xpc_server
 ```
-```
+
 ## XPC Communication Objective-C Code Example
 
 **oc_xpc_server.m**
@@ -301,6 +296,7 @@ sudo rm /Library/LaunchDaemons/xyz.hacktricks.service.plist /tmp/xpc_server
 @interface MyXPCObject : NSObject <MyXPCProtocol>
 @end
 
+
 @implementation MyXPCObject
 - (void)sayHello:(NSString *)some_string withReply:(void (^)(NSString *))reply {
     NSLog(@"Received message: %@", some_string);
@@ -311,6 +307,7 @@ sudo rm /Library/LaunchDaemons/xyz.hacktricks.service.plist /tmp/xpc_server
 
 @interface MyDelegate : NSObject <NSXPCListenerDelegate>
 @end
+
 
 @implementation MyDelegate
 
@@ -337,7 +334,6 @@ int main(void) {
     sleep(10); // Fake something is done and then it ends
 }
 ```
-```
 
 **oc_xpc_client.m**
 
@@ -363,7 +359,6 @@ int main(void) {
     return 0;
 }
 ```
-```
 
 **xyz.hacktricks.svcoc.plist**
 
@@ -371,24 +366,22 @@ int main(void) {
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"> <plist version="1.0">
 <dict>
-Label
-xyz.hacktricks.svcoc
-MachServices
+<key>Label</key>
+<string>xyz.hacktricks.svcoc</string>
+<key>MachServices</key>
     <dict>
-        xyz.hacktricks.svcoc
-        
+        <key>xyz.hacktricks.svcoc</key>
+        <true/>
     </dict>
-Program
-    /tmp/oc\_xpc\_server
-    ProgramArguments
+<key>Program</key>
+    <string>/tmp/oc_xpc_server</string>
+    <key>ProgramArguments</key>
     <array>
-        /tmp/oc\_xpc\_server
+        <string>/tmp/oc_xpc_server</string>
     </array>
 </dict>
 </plist>
 ```
-```
-
 
 ```bash
 # Compile the server & client
@@ -409,7 +402,7 @@ sudo launchctl load /Library/LaunchDaemons/xyz.hacktricks.svcoc.plist
 sudo launchctl unload /Library/LaunchDaemons/xyz.hacktricks.svcoc.plist
 sudo rm /Library/LaunchDaemons/xyz.hacktricks.svcoc.plist /tmp/oc_xpc_server
 ```
-```
+
 ## Client inside a Dylb code
 
 ```objectivec
@@ -445,7 +438,7 @@ static void customConstructor(int argc, const char **argv)
     return;
 }
 ```
-```
+
 ## Remote XPC
 
 This functionality provided by `RemoteXPC.framework` (from `libxpc`) allows to communicate via XPC through different hosts.\
@@ -464,9 +457,7 @@ It's possible to get information about remote services using the cli tool `/usr/
 /usr/libexec/remotectl [netcat|relay] ... # Expose a service in a port
 ...
 ```
-```
+
 The communication between BridgeOS and the host occurs through a dedicated IPv6 interface. The `MultiverseSupport.framework` allows to establish sockets whose `fd` will be used for communicating.\
 It's possible to find thee communications using `netstat`, `nettop` or the open source option, `netbottom`.
-
-
 

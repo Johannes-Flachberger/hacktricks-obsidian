@@ -1,6 +1,5 @@
 # Windows Artifacts
 
-
 ## Generic Windows Artifacts
 
 ### Windows 10 Notifications
@@ -13,7 +12,7 @@ Inside this SQLite database, you can find the `Notification` table with all the 
 
 Timeline is a Windows characteristic that provides **chronological history** of web pages visited, edited documents, and executed applications.
 
-The database resides in the path `\Users\<username>\AppData\Local\ConnectedDevicesPlatform\<id>\ActivitiesCache.db`. This database can be opened with an SQLite tool or with the tool [[https://github.com/EricZimmerman/WxTCmd) **which generates 2 files that can be opened with the tool** [**TimeLine Explorer**](https://ericzimmerman.github.io/#!index.md|**WxTCmd**]].
+The database resides in the path `\Users\<username>\AppData\Local\ConnectedDevicesPlatform\<id>\ActivitiesCache.db`. This database can be opened with an SQLite tool or with the tool [**WxTCmd**](https://github.com/EricZimmerman/WxTCmd) **which generates 2 files that can be opened with the tool** [**TimeLine Explorer**](https://ericzimmerman.github.io/#!index.md).
 
 ### ADS (Alternate Data Streams)
 
@@ -29,15 +28,15 @@ When a file is deleted in this folder 2 specific files are created:
 - `$I{id}`: File information (date of when it was deleted}
 - `$R{id}`: Content of the file
 
-![[<../../../images/image (1029).png>|]]
+![[../../../images/image (1029).png]]
 
-Having these files you can use the tool [[https://github.com/abelcheung/rifiuti2|**Rifiuti**]] to get the original address of the deleted files and the date it was deleted (use `rifiuti-vista.exe` for Vista – Win10).
+Having these files you can use the tool [**Rifiuti**](https://github.com/abelcheung/rifiuti2) to get the original address of the deleted files and the date it was deleted (use `rifiuti-vista.exe` for Vista – Win10).
 
 ```
 .\rifiuti-vista.exe C:\Users\student\Desktop\Recycle
 ```
-```
-![[<../../../images/image (495) (1) (1) (1).png>|]]
+
+![[../../../images/image (495) (1) (1) (1).png]]
 
 ### Volume Shadow Copies
 
@@ -45,15 +44,15 @@ Shadow Copy is a technology included in Microsoft Windows that can create **back
 
 These backups are usually located in the `\System Volume Information` from the root of the file system and the name is composed of **UIDs** shown in the following image:
 
-![[<../../../images/image (94).png>|]]
+![[../../../images/image (94).png]]
 
-Mounting the forensics image with the **ArsenalImageMounter**, the tool [[https://www.nirsoft.net/utils/shadow_copy_view.html|**ShadowCopyView**]] can be used to inspect a shadow copy and even **extract the files** from the shadow copy backups.
+Mounting the forensics image with the **ArsenalImageMounter**, the tool [**ShadowCopyView**](https://www.nirsoft.net/utils/shadow_copy_view.html) can be used to inspect a shadow copy and even **extract the files** from the shadow copy backups.
 
-![[<../../../images/image (576).png>|]]
+![[../../../images/image (576).png]]
 
 The registry entry `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\BackupRestore` contains the files and keys **to not backup**:
 
-![[<../../../images/image (254).png>|]]
+![[../../../images/image (254).png]]
 
 The registry `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\VSS` also contains configuration information about the `Volume Shadow Copies`.
 
@@ -78,7 +77,7 @@ These automatically created link files **contain information about the origin** 
 
 Also, the **date created of the link** file is the first **time** the original file was **first** **used** and the **date** **modified** of the link file is the **last** **time** the origin file was used.
 
-To inspect these files you can use [[http://4discovery.com/our-tools/|**LinkParser**]].
+To inspect these files you can use [**LinkParser**](http://4discovery.com/our-tools/).
 
 In this tools you will find **2 sets** of timestamps:
 
@@ -93,12 +92,12 @@ In this tools you will find **2 sets** of timestamps:
 
 The first set of timestamp references the **timestamps of the file itself**. The second set references the **timestamps of the linked file**.
 
-You can get the same information running the Windows CLI tool: [[https://github.com/EricZimmerman/LECmd|**LECmd.exe**]]
+You can get the same information running the Windows CLI tool: [**LECmd.exe**](https://github.com/EricZimmerman/LECmd)
 
 ```
 LECmd.exe -d C:\Users\student\Desktop\LNKs --csv C:\Users\student\Desktop\LNKs
 ```
-```
+
 In this case, the information is going to be saved inside a CSV file.
 
 ### Jumplists
@@ -111,15 +110,15 @@ The custom jumplists are stored in `C:\Users\{username}\AppData\Roaming\Microsof
 
 The **created time** of any jumplist indicates the **the first time the file was accessed** and the **modified time the last time**.
 
-You can inspect the jumplists using [[https://ericzimmerman.github.io/#!index.md|**JumplistExplorer**]].
+You can inspect the jumplists using [**JumplistExplorer**](https://ericzimmerman.github.io/#!index.md).
 
-![[<../../../images/image (168).png>|]]
+![[../../../images/image (168).png]]
 
 (_Note that the timestamps provided by JumplistExplorer are related to the jumplist file itself_)
 
 ### Shellbags
 
-[[interesting-windows-registry-keys.md#shellbags|**Follow this link to learn what are the shellbags.**]]
+[**Follow this link to learn what are the shellbags.**](interesting-windows-registry-keys.md#shellbags)
 
 ## Use of Windows USBs
 
@@ -131,25 +130,25 @@ It's possible to identify that a USB device was used thanks to the creation of:
 
 Note that some LNK file instead of pointing to the original path, points to the WPDNSE folder:
 
-![[<../../../images/image (218).png>|]]
+![[../../../images/image (218).png]]
 
 The files in the folder WPDNSE are a copy of the original ones, then won't survive a restart of the PC and the GUID is taken from a shellbag.
 
 ### Registry Information
 
-[[interesting-windows-registry-keys.md#usb-information|Check this page to learn]] which registry keys contain interesting information about USB connected devices.
+[Check this page to learn](interesting-windows-registry-keys.md#usb-information) which registry keys contain interesting information about USB connected devices.
 
 ### setupapi
 
 Check the file `C:\Windows\inf\setupapi.dev.log` to get the timestamps about when the USB connection was produced (search for `Section start`).
 
-![[<../../../images/image (477) (2) (2) (2) (2) (2) (2) (2) (3) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (10) (14) (2).png>|]]
+![[../../../images/image (477) (2) (2) (2) (2) (2) (2) (2) (3) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (1) (10) (14) (2).png]]
 
 ### USB Detective
 
-[[https://usbdetective.com|**USBDetective**]] can be used to obtain information about the USB devices that have been connected to an image.
+[**USBDetective**](https://usbdetective.com) can be used to obtain information about the USB devices that have been connected to an image.
 
-![[<../../../images/image (452).png>|]]
+![[../../../images/image (452).png]]
 
 ### Plug and Play Cleanup
 
@@ -157,7 +156,7 @@ The scheduled task known as 'Plug and Play Cleanup' is primarily designed for th
 
 The task is located at the following path: `C:\Windows\System32\Tasks\Microsoft\Windows\Plug and Play\Plug and Play Cleanup`.
 
-A screenshot depicting the task's content is provided: ![[https://2.bp.blogspot.com/-wqYubtuR_W8/W19bV5S9XyI/AAAAAAAANhU/OHsBDEvjqmg9ayzdNwJ4y2DKZnhCdwSMgCLcBGAs/s1600/xml.png|]]
+A screenshot depicting the task's content is provided: ![](https://2.bp.blogspot.com/-wqYubtuR_W8/W19bV5S9XyI/AAAAAAAANhU/OHsBDEvjqmg9ayzdNwJ4y2DKZnhCdwSMgCLcBGAs/s1600/xml.png)
 
 **Key Components and Settings of the Task:**
 
@@ -169,7 +168,7 @@ A screenshot depicting the task's content is provided: ![[https://2.bp.blogspot.
 
 This configuration ensures regular maintenance and cleanup of drivers, with provisions for reattempting the task in case of consecutive failures.
 
-**For more information check:** [[https://blog.1234n6.com/2018/07/windows-plug-and-play-cleanup.html|**https://blog.1234n6.com/2018/07/windows-plug-and-play-cleanup.html**]]
+**For more information check:** [**https://blog.1234n6.com/2018/07/windows-plug-and-play-cleanup.html**](https://blog.1234n6.com/2018/07/windows-plug-and-play-cleanup.html)
 
 ## Emails
 
@@ -180,7 +179,7 @@ Emails contain **2 interesting parts: The headers and the content** of the email
 
 Also, inside the `References` and `In-Reply-To` headers you can find the ID of the messages:
 
-![[<../../../images/image (593).png>|]]
+![[../../../images/image (593).png]]
 
 ### Windows Mail App
 
@@ -188,7 +187,7 @@ This application saves emails in HTML or text. You can find the emails inside su
 
 The **metadata** of the emails and the **contacts** can be found inside the **EDB database**: `\Users\<username>\AppData\Local\Comms\UnistoreDB\store.vol`
 
-**Change the extension** of the file from `.vol` to `.edb` and you can use the tool [[https://www.nirsoft.net/utils/ese_database_view.html|ESEDatabaseView]] to open it. Inside the `Message` table you can see the emails.
+**Change the extension** of the file from `.vol` to `.edb` and you can use the tool [ESEDatabaseView](https://www.nirsoft.net/utils/ese_database_view.html) to open it. Inside the `Message` table you can see the emails.
 
 ### Microsoft Outlook
 
@@ -206,13 +205,13 @@ In the Microsoft Outlook client, all the sent/received messages, contacts data, 
 
 The registry path `HKEY_CURRENT_USER\Software\Microsoft\WindowsNT\CurrentVersion\Windows Messaging Subsystem\Profiles\Outlook` indicates the file that is being used.
 
-You can open the PST file using the tool [[https://www.nucleustechnologies.com/es/visor-de-pst.html|**Kernel PST Viewer**]].
+You can open the PST file using the tool [**Kernel PST Viewer**](https://www.nucleustechnologies.com/es/visor-de-pst.html).
 
-![[<../../../images/image (498).png>|]]
+![[../../../images/image (498).png]]
 
 ### Microsoft Outlook OST Files
 
-An **OST file** is generated by Microsoft Outlook when it's configured with **IMAP** or an **Exchange** server, storing similar information to a PST file. This file is synchronized with the server, retaining data for **the last 12 months** up to a **maximum size of 50GB**, and is located in the same directory as the PST file. To view an OST file, the [[https://www.nucleustechnologies.com/ost-viewer.html|**Kernel OST viewer**]] can be utilized.
+An **OST file** is generated by Microsoft Outlook when it's configured with **IMAP** or an **Exchange** server, storing similar information to a PST file. This file is synchronized with the server, retaining data for **the last 12 months** up to a **maximum size of 50GB**, and is located in the same directory as the PST file. To view an OST file, the [**Kernel OST viewer**](https://www.nucleustechnologies.com/ost-viewer.html) can be utilized.
 
 ### Retrieving Attachments
 
@@ -229,7 +228,7 @@ Lost attachments might be recoverable from:
 
 - **Windows XP and 8-8.1**: Accessing a folder with thumbnails generates a `thumbs.db` file storing image previews, even after deletion.
 - **Windows 7/10**: `thumbs.db` is created when accessed over a network via UNC path.
-- **Windows Vista and newer**: Thumbnail previews are centralized in `%userprofile%\AppData\Local\Microsoft\Windows\Explorer` with files named **thumbcache_xxx.db**. [[https://thumbsviewer.github.io) and [**ThumbCache Viewer**](https://thumbcacheviewer.github.io|**Thumbsviewer**]] are tools for viewing these files.
+- **Windows Vista and newer**: Thumbnail previews are centralized in `%userprofile%\AppData\Local\Microsoft\Windows\Explorer` with files named **thumbcache_xxx.db**. [**Thumbsviewer**](https://thumbsviewer.github.io) and [**ThumbCache Viewer**](https://thumbcacheviewer.github.io) are tools for viewing these files.
 
 ### Windows Registry Information
 
@@ -245,9 +244,9 @@ The Windows Registry, storing extensive system and user activity data, is contai
 Some tools are useful to analyze the registry files:
 
 - **Registry Editor**: It's installed in Windows. It's a GUI to navigate through the Windows registry of the current session.
-- [[https://ericzimmerman.github.io/#!index.md|**Registry Explorer**]]: It allows you to load the registry file and navigate through them with a GUI. It also contains Bookmarks highlighting keys with interesting information.
-- [[https://github.com/keydet89/RegRipper3.0|**RegRipper**]]: Again, it has a GUI that allows to navigate through the loaded registry and also contains plugins that highlight interesting information inside the loaded registry.
-- [[https://www.mitec.cz/wrr.html|**Windows Registry Recovery**]]: Another GUI application capable of extracting the important information from the registry loaded.
+- [**Registry Explorer**](https://ericzimmerman.github.io/#!index.md): It allows you to load the registry file and navigate through them with a GUI. It also contains Bookmarks highlighting keys with interesting information.
+- [**RegRipper**](https://github.com/keydet89/RegRipper3.0): Again, it has a GUI that allows to navigate through the loaded registry and also contains plugins that highlight interesting information inside the loaded registry.
+- [**Windows Registry Recovery**](https://www.mitec.cz/wrr.html): Another GUI application capable of extracting the important information from the registry loaded.
 
 ### Recovering Deleted Element
 
@@ -271,7 +270,7 @@ In `SAM\Domains\Account\Users` you can obtain the username, the RID, last login,
 
 ### Basic Windows Processes
 
-In [[https://jonahacks.medium.com/investigating-common-windows-processes-18dee5f97c1d|this post]] you can learn about the common Windows processes to detect suspicious behaviours.
+In [this post](https://jonahacks.medium.com/investigating-common-windows-processes-18dee5f97c1d) you can learn about the common Windows processes to detect suspicious behaviours.
 
 ### Windows Recent APPs
 
@@ -291,13 +290,13 @@ The file name is created as `{program_name}-{hash}.pf` (the hash is based on the
 
 The file `C:\Windows\Prefetch\Layout.ini` contains the **names of the folders of the files that are prefetched**. This file contains **information about the number of the executions**, **dates** of the execution and **files** **open** by the program.
 
-To inspect these files you can use the tool [[https://github.com/EricZimmerman/PECmd|**PEcmd.exe**]]:
+To inspect these files you can use the tool [**PEcmd.exe**](https://github.com/EricZimmerman/PECmd):
 
 ```bash
 .\PECmd.exe -d C:\Users\student\Desktop\Prefetch --html "C:\Users\student\Desktop\out_folder"
 ```
-```
-![[<../../../images/image (315).png>|]]
+
+![[../../../images/image (315).png]]
 
 ### Superprefetch
 
@@ -306,7 +305,7 @@ This service will generate database files in `C:\Windows\Prefetch\Ag*.db`.
 
 In these databases you can find the **name** of the **program**, **number** of **executions**, **files** **opened**, **volume** **accessed**, **complete** **path**, **timeframes** and **timestamps**.
 
-You can access this information using the tool [[https://www.crowdstrike.com/resources/community-tools/crowdresponse/|**CrowdResponse**]].
+You can access this information using the tool [**CrowdResponse**](https://www.crowdstrike.com/resources/community-tools/crowdresponse/).
 
 ### SRUM
 
@@ -324,12 +323,12 @@ It gives the following information:
 
 This information is updated every 60 mins.
 
-You can obtain the date from this file using the tool [[https://github.com/MarkBaggett/srum-dump|**srum_dump**]].
+You can obtain the date from this file using the tool [**srum_dump**](https://github.com/MarkBaggett/srum-dump).
 
 ```bash
 .\srum_dump.exe -i C:\Users\student\Desktop\SRUDB.dat -t SRUM_TEMPLATE.xlsx -o C:\Users\student\Desktop\srum
 ```
-```
+
 ### AppCompatCache (ShimCache)
 
 The **AppCompatCache**, also known as **ShimCache**, forms a part of the **Application Compatibility Database** developed by **Microsoft** to tackle application compatibility issues. This system component records various pieces of file metadata, which include:
@@ -345,9 +344,9 @@ Such data is stored within the registry at specific locations based on the versi
 - For XP, the data is stored under `SYSTEM\CurrentControlSet\Control\SessionManager\Appcompatibility\AppcompatCache` with a capacity for 96 entries.
 - For Server 2003, as well as for Windows versions 2008, 2012, 2016, 7, 8, and 10, the storage path is `SYSTEM\CurrentControlSet\Control\SessionManager\AppcompatCache\AppCompatCache`, accommodating 512 and 1024 entries, respectively.
 
-To parse the stored information, the [[https://github.com/EricZimmerman/AppCompatCacheParser|**AppCompatCacheParser** tool]] is recommended for use.
+To parse the stored information, the [**AppCompatCacheParser** tool](https://github.com/EricZimmerman/AppCompatCacheParser) is recommended for use.
 
-![[<../../../images/image (75).png>|]]
+![[../../../images/image (75).png]]
 
 ### Amcache
 
@@ -355,12 +354,12 @@ The **Amcache.hve** file is essentially a registry hive that logs details about 
 
 This file is notable for storing records of recently executed processes, including the paths to the executable files and their SHA1 hashes. This information is invaluable for tracking the activity of applications on a system.
 
-To extract and analyze the data from **Amcache.hve**, the [[https://github.com/EricZimmerman/AmcacheParser|**AmcacheParser**]] tool can be used. The following command is an example of how to use AmcacheParser to parse the contents of the **Amcache.hve** file and output the results in CSV format:
+To extract and analyze the data from **Amcache.hve**, the [**AmcacheParser**](https://github.com/EricZimmerman/AmcacheParser) tool can be used. The following command is an example of how to use AmcacheParser to parse the contents of the **Amcache.hve** file and output the results in CSV format:
 
 ```bash
 AmcacheParser.exe -f C:\Users\genericUser\Desktop\Amcache.hve --csv C:\Users\genericUser\Desktop\outputFolder
 ```
-```
+
 Among the generated CSV files, the `Amcache_Unassociated file entries` is particularly noteworthy due to the rich information it provides about unassociated file entries.
 
 The most interesting CVS file generated is the `Amcache_Unassociated file entries`.
@@ -369,7 +368,7 @@ The most interesting CVS file generated is the `Amcache_Unassociated file entrie
 
 This artifact can only be found in W7 in `C:\Windows\AppCompat\Programs\RecentFileCache.bcf` and it contains information about the recent execution of some binaries.
 
-You can use the tool [[https://github.com/EricZimmerman/RecentFileCacheParser|**RecentFileCacheParse**]] to parse the file.
+You can use the tool [**RecentFileCacheParse**](https://github.com/EricZimmerman/RecentFileCacheParser) to parse the file.
 
 ### Scheduled tasks
 
@@ -403,7 +402,7 @@ The logs are located in `C:\Windows\System32\config` before Windows Vista and in
 
 The location of the event files can be found in the SYSTEM registry in **`HKLM\SYSTEM\CurrentControlSet\services\EventLog\{Application|System|Security}`**
 
-They can be visualized from the Windows Event Viewer (**`eventvwr.msc`**) or with other tools like [[https://eventlogxp.com) **or** [**Evtx Explorer/EvtxECmd**](https://ericzimmerman.github.io/#!index.md|**Event Log Explorer**]]**.**
+They can be visualized from the Windows Event Viewer (**`eventvwr.msc`**) or with other tools like [**Event Log Explorer**](https://eventlogxp.com) **or** [**Evtx Explorer/EvtxECmd**](https://ericzimmerman.github.io/#!index.md)**.**
 
 ## Understanding Windows Security Event Logging
 
@@ -464,7 +463,7 @@ Access events are recorded in the security configuration file located at `C:\Win
 - **10100**: USB driver update.
 - **EventID 112**: Time of USB device insertion.
 
-For practical examples on simulating these login types and credential dumping opportunities, refer to [[https://www.alteredsecurity.com/post/fantastic-windows-logon-types-and-where-to-find-credentials-in-them|Altered Security's detailed guide]].
+For practical examples on simulating these login types and credential dumping opportunities, refer to [Altered Security's detailed guide](https://www.alteredsecurity.com/post/fantastic-windows-logon-types-and-where-to-find-credentials-in-them).
 
 Event details, including status and sub-status codes, provide further insights into event causes, particularly notable in Event ID 4625.
 
@@ -474,7 +473,7 @@ To enhance the chances of recovering deleted Windows Events, it's advisable to p
 
 ### Identifying Common Attacks via Windows Events
 
-For a comprehensive guide on utilizing Windows Event IDs in identifying common cyber attacks, visit [[https://redteamrecipe.com/event-codes/|Red Team Recipe]].
+For a comprehensive guide on utilizing Windows Event IDs in identifying common cyber attacks, visit [Red Team Recipe](https://redteamrecipe.com/event-codes/).
 
 #### Brute Force Attacks
 
@@ -495,6 +494,4 @@ EventID 6005 indicates system startup, while EventID 6006 marks shutdown.
 #### Log Deletion
 
 Security EventID 1102 signals the deletion of logs, a critical event for forensic analysis.
-
-
 

@@ -1,7 +1,6 @@
 # Checklist - Linux Privilege Escalation
 
-
-### **Best tool to look for Linux local privilege escalation vectors:** [[https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS|**LinPEAS**]]
+### **Best tool to look for Linux local privilege escalation vectors:** [**LinPEAS**](https://github.com/carlospolop/privilege-escalation-awesome-scripts-suite/tree/master/linPEAS)
 
 ### [[privilege-escalation/README.md#System Information|System Information]]
 
@@ -82,8 +81,8 @@
 
 ### [[privilege-escalation/README.md#Sudo And Suid|SUDO and SUID commands]]
 
-- [ ] Can you execute **any command with sudo**? Can you use it to READ, WRITE or EXECUTE anything as root? ([[https://gtfobins.github.io)|**GTFOBins**]]
-- [ ] Is any **exploitable SUID binary**? ([[https://gtfobins.github.io)|**GTFOBins**]]
+- [ ] Can you execute **any command with sudo**? Can you use it to READ, WRITE or EXECUTE anything as root? ([**GTFOBins**](https://gtfobins.github.io))
+- [ ] Is any **exploitable SUID binary**? ([**GTFOBins**](https://gtfobins.github.io))
 - [ ] Are [[privilege-escalation/README.md#Sudo Execution Bypassing Paths|sudo commands limited by path? can you bypass the restrictions]]?
 - [ ] [[privilege-escalation/README.md#Sudo Command Suid Binary Without Command Path|Sudo/SUID binary without path indicated]]?
 - [ ] [[privilege-escalation/README.md#Suid Binary With Command Path|SUID binary specifying path]]? Bypass
@@ -138,6 +137,4 @@
 
 - [ ] Can you [[privilege-escalation/README.md#Nfs Privilege Escalation|abuse NFS to escalate privileges]]?
 - [ ] Do you need to [[privilege-escalation/README.md#Escaping From Restricted Shells|escape from a restrictive shell]]?
-
-
 

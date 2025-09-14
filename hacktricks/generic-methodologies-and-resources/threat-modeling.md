@@ -1,6 +1,5 @@
 # Threat Modeling
 
-
 ## Threat Modeling
 
 Welcome to HackTricks' comprehensive guide on Threat Modeling! Embark on an exploration of this critical aspect of cybersecurity, where we identify, understand, and strategize against potential vulnerabilities in a system. This thread serves as a step-by-step guide packed with real-world examples, helpful software, and easy-to-understand explanations. Ideal for both novices and experienced practitioners looking to fortify their cybersecurity defenses.
@@ -37,7 +36,7 @@ The CIA Triad is a widely recognized model in the field of information security,
 
 There are several tools and software solutions available that can **assist** with the creation and management of threat models. Here are a few you might consider.
 
-### [[https://github.com/3nock/SpiderSuite|SpiderSuite]]
+### [SpiderSuite](https://github.com/3nock/SpiderSuite)
 
 An advance cross-platform and multi-feature GUI web spider/crawler for cyber security professionals. Spider Suite can be used for attack surface mapping and analysis.
 
@@ -45,15 +44,13 @@ An advance cross-platform and multi-feature GUI web spider/crawler for cyber sec
 
 1. Pick a URL and Crawl
 
-![[../images/threatmodel_spidersuite_1.png|]]
-
+![](../images/threatmodel_spidersuite_1.png)
 
 2. View Graph
 
-![[../images/threatmodel_spidersuite_2.png|]]
+![](../images/threatmodel_spidersuite_2.png)
 
-
-### [[https://github.com/OWASP/threat-dragon/releases|OWASP Threat Dragon]]
+### [OWASP Threat Dragon](https://github.com/OWASP/threat-dragon/releases)
 
 An open-source project from OWASP, Threat Dragon is both a web and desktop application that includes system diagramming as well as a rule engine to auto-generate threats/mitigations.
 
@@ -61,30 +58,25 @@ An open-source project from OWASP, Threat Dragon is both a web and desktop appli
 
 1. Create New Project
 
-![[../images/create_new_project_1.jpg|]]
-
+![](../images/create_new_project_1.jpg)
 
 Sometimes it could look like this:
 
-![[../images/1_threatmodel_create_project.jpg|]]
-
+![](../images/1_threatmodel_create_project.jpg)
 
 2. Launch New Project
 
-![[../images/launch_new_project_2.jpg|]]
-
+![](../images/launch_new_project_2.jpg)
 
 3. Save The New Project
 
-![[../images/save_new_project.jpg|]]
-
+![](../images/save_new_project.jpg)
 
 4. Create your model
 
 You can use tools like SpiderSuite Crawler to give you inspiration, a basic model would look something like this
 
-![[../images/0_basic_threat_model.jpg|]]
-
+![](../images/0_basic_threat_model.jpg)
 
 Just a little bit of explanation about the entities:
 
@@ -98,28 +90,23 @@ Just a little bit of explanation about the entities:
 
 First you have to pick the layer you wish to add a threat to
 
-![[../images/3_threatmodel_chose-threat-layer.jpg|]]
-
+![](../images/3_threatmodel_chose-threat-layer.jpg)
 
 Now you can create the threat
 
-![[../images/4_threatmodel_create-threat.jpg|]]
-
+![](../images/4_threatmodel_create-threat.jpg)
 
 Keep in mind that there is a difference between Actor Threats and Process Threats. If you would add a threat to an Actor then you will only be able to choose "Spoofing" and "Repudiation. However in our example we add threat to a Process entity so we will see this in the threat creation box:
 
-![[../images/2_threatmodel_type-option.jpg|]]
-
+![](../images/2_threatmodel_type-option.jpg)
 
 6. Done
 
 Now your finished model should look something like this. And this is how you make a simple threat model with OWASP Threat Dragon.
 
-![[../images/threat_model_finished.jpg|]]
+![](../images/threat_model_finished.jpg)
 
-
-### [[https://aka.ms/threatmodelingtool|Microsoft Threat Modeling Tool]]
+### [Microsoft Threat Modeling Tool](https://aka.ms/threatmodelingtool)
 
 This is a free tool from Microsoft that helps in finding threats in the design phase of software projects. It uses the STRIDE methodology and is particularly suitable for those developing on Microsoft's stack.
-
 

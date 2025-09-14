@@ -1,12 +1,11 @@
 # Enrolling Devices in Other Organisations
 
-
 ## Intro
 
-As [[#what-is-mdm-mobile-device-management)**,** in order to try to enrol a device into an organization **only a Serial Number belonging to that Organization is needed**. Once the device is enrolled, several organizations will install sensitive data on the new device: certificates, applications, WiFi passwords, VPN configurations [and so on](https://developer.apple.com/enterprise/documentation/Configuration-Profile-Reference.pdf|**previously commented**]].\
+As [**previously commented**](#what-is-mdm-mobile-device-management)**,** in order to try to enrol a device into an organization **only a Serial Number belonging to that Organization is needed**. Once the device is enrolled, several organizations will install sensitive data on the new device: certificates, applications, WiFi passwords, VPN configurations [and so on](https://developer.apple.com/enterprise/documentation/Configuration-Profile-Reference.pdf).\
 Therefore, this could be a dangerous entrypoint for attackers if the enrolment process isn't correctly protected.
 
-**The following is a summary of the research [[https://duo.com/labs/research/mdm-me-maybe|https://duo.com/labs/research/mdm-me-maybe]]. Check it for further technical details!**
+**The following is a summary of the research [https://duo.com/labs/research/mdm-me-maybe](https://duo.com/labs/research/mdm-me-maybe). Check it for further technical details!**
 
 ## Overview of DEP and MDM Binary Analysis
 
@@ -48,6 +47,4 @@ The exploitation process was automated using Python with the LLDB API, making it
 The research highlighted significant security concerns:
 
 1. **Information Disclosure**: By providing a DEP-registered serial number, sensitive organizational information contained in the DEP profile can be retrieved.
-
-
 

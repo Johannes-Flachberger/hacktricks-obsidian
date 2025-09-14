@@ -1,6 +1,5 @@
 # IPC Namespace
 
-
 ## Basic Information
 
 An IPC (Inter-Process Communication) namespace is a Linux kernel feature that provides **isolation** of System V IPC objects, such as message queues, shared memory segments, and semaphores. This isolation ensures that processes in **different IPC namespaces cannot directly access or modify each other's IPC objects**, providing an additional layer of security and privacy between process groups.
@@ -20,12 +19,12 @@ An IPC (Inter-Process Communication) namespace is a Linux kernel feature that pr
 ```bash
 sudo unshare -i [--mount-proc] /bin/bash
 ```
-```
+
 By mounting a new instance of the `/proc` filesystem if you use the param `--mount-proc`, you ensure that the new mount namespace has an **accurate and isolated view of the process information specific to that namespace**.
 
+<details>
 
 **Error: bash: fork: Cannot allocate memory**
-
 
 When `unshare` is executed without the `-f` option, an error is encountered due to the way Linux handles new PID (Process ID) namespaces. The key details and the solution are outlined below:
 
@@ -45,20 +44,21 @@ When `unshare` is executed without the `-f` option, an error is encountered due 
 
 By ensuring that `unshare` runs with the `-f` flag, the new PID namespace is correctly maintained, allowing `/bin/bash` and its sub-processes to operate without encountering the memory allocation error.
 
+</details>
 
 #### Docker
 
 ```bash
 docker run -ti --name ubuntu1 -v /usr:/ubuntu1 ubuntu bash
 ```
-```
+
 ### Check which namespace is your process in
 
 ```bash
 ls -l /proc/self/ns/ipc
 lrwxrwxrwx 1 root root 0 Apr  4 20:37 /proc/self/ns/ipc -> 'ipc:[4026531839]'
 ```
-```
+
 ### Find all IPC namespaces
 
 ```bash
@@ -66,13 +66,13 @@ sudo find /proc -maxdepth 3 -type l -name ipc -exec readlink {} \; 2>/dev/null |
 # Find the processes with an specific namespace
 sudo find /proc -maxdepth 3 -type l -name ipc -exec ls -l  {} \; 2>/dev/null | grep <ns-number>
 ```
-```
+
 ### Enter inside an IPC namespace
 
 ```bash
 nsenter -i TARGET_PID --pid /bin/bash
 ```
-```
+
 Also, you can only **enter in another process namespace if you are root**. And you **cannot** **enter** in other namespace **without a descriptor** pointing to it (like `/proc/self/ns/net`).
 
 ### Create IPC object
@@ -91,10 +91,8 @@ key        shmid      owner      perms      bytes      nattch     status
 # From the host
 ipcs -m # Nothing is seen
 ```
-```
+
 ## References
 
-- [[https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory|https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory]]
-
-
+- [https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory](https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory)
 

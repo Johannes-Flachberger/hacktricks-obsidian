@@ -1,6 +1,5 @@
 # Windows kernel EoP: Token stealing with arbitrary kernel R/W
 
-
 ## Overview
 
 If a vulnerable driver exposes an IOCTL that gives an attacker arbitrary kernel read and/or write primitives, elevating to NT AUTHORITY\SYSTEM can often be achieved by stealing a SYSTEM access token. The technique copies the Token pointer from a SYSTEM process’ EPROCESS into the current process’ EPROCESS.
@@ -105,7 +104,7 @@ int main(void) {
     return 0;
 }
 ```
-```
+
 Notes:
 - Offsets: Use WinDbg’s `dt nt!_EPROCESS` with the target’s PDBs, or a runtime symbol loader, to get correct offsets. Do not hardcode blindly.
 - Mask: On x64 the token is an EX_FAST_REF; low 3 bits are reference count bits. Keeping the original low bits from your token avoids immediate refcount inconsistencies.
@@ -117,6 +116,6 @@ Notes:
 - EDR can watch for suspicious IOCTL sequences that implement arbitrary read/write and for token swaps.
 
 ## References
-- [[https://0xdf.gitlab.io/2025/08/26/htb-reaper.html|HTB Reaper: Format-string leak + stack BOF → VirtualAlloc ROP (RCE) and kernel token theft]]
-- [[https://www.fuzzysecurity.com/tutorials/expDev/17.html|FuzzySecurity – Windows Kernel ExploitDev (token stealing examples)]]
+- [HTB Reaper: Format-string leak + stack BOF → VirtualAlloc ROP (RCE) and kernel token theft](https://0xdf.gitlab.io/2025/08/26/htb-reaper.html)
+- [FuzzySecurity – Windows Kernel ExploitDev (token stealing examples)](https://www.fuzzysecurity.com/tutorials/expDev/17.html)
 

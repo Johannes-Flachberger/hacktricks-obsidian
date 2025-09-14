@@ -1,6 +1,5 @@
 # Cobalt Strike
 
-
 ### Listeners
 
 ### C2 Listeners
@@ -37,7 +36,7 @@ If you already has the file you want to host in a web sever just go to `Attacks 
 
 ### Beacon Options
 
-_# Execute local .NET binary
+<pre class="language-bash"><code class="lang-bash"># Execute local .NET binary
 execute-assembly </path/to/executable.exe>
 # Note that to load assemblies larger than 1MB, the 'tasks_max_size' property of the malleable profile needs to be modified.
 
@@ -180,7 +179,7 @@ shinject <pid> x64 C:\Payloads\msf.bin #Inject metasploit shellcode in a x64 pro
 beacon> socks 1080
 
 # SSH connection
-beacon> ssh 10.10.17.12:22 username password```
+beacon> ssh 10.10.17.12:22 username password</code></pre>
 
 ## Opsec
 
@@ -188,10 +187,10 @@ beacon> ssh 10.10.17.12:22 username password```
 
 The **`execute-assembly`** uses a **sacrificial process** using remote process injection to execute the indicated program. This is very noisy as to inject inside a process certain Win APIs are used that every EDR is checking. However, there are some custom tools that can be used to load something in the same process:
 
-- [[https://github.com/anthemtotheego/InlineExecute-Assembly|https://github.com/anthemtotheego/InlineExecute-Assembly]]
-- [[https://github.com/kyleavery/inject-assembly|https://github.com/kyleavery/inject-assembly]]
-- In Cobalt Strike you can also use BOF (Beacon Object Files): [[https://github.com/CCob/BOF.NET|https://github.com/CCob/BOF.NET]]
-- [[https://github.com/kyleavery/inject-assembly|https://github.com/kyleavery/inject-assembly]]
+- [https://github.com/anthemtotheego/InlineExecute-Assembly](https://github.com/anthemtotheego/InlineExecute-Assembly)
+- [https://github.com/kyleavery/inject-assembly](https://github.com/kyleavery/inject-assembly)
+- In Cobalt Strike you can also use BOF (Beacon Object Files): [https://github.com/CCob/BOF.NET](https://github.com/CCob/BOF.NET)
+- [https://github.com/kyleavery/inject-assembly](https://github.com/kyleavery/inject-assembly)
 
 The agressor script `https://github.com/outflanknl/HelpColor` will create the `helpx` command in Cobalt Strike which will put colors in commands indicating if they are BOFs (green), if they are Frok&Run (yellow) and similar, or if they are ProcessExecution, injection or similar (red). Which helps to know which commands are more stealthy.
 
@@ -233,7 +232,7 @@ When moving laterally, usually is better to **steal a token than to generate a n
 
 Cobalt Strike has a feature called **Guardrails** that helps to prevent the use of certain commands or actions that could be detected by defenders. Guardrails can be configured to block specific commands, such as `make_token`, `jump`, `remote-exec`, and others that are commonly used for lateral movement or privilege escalation.
 
-Moreover, the repo [[https://github.com/Arvanaghi/CheckPlease/wiki/System-Related-Checks|https://github.com/Arvanaghi/CheckPlease/wiki/System-Related-Checks]] also contains some checks and ideas you could consider before executing a payload.
+Moreover, the repo [https://github.com/Arvanaghi/CheckPlease/wiki/System-Related-Checks](https://github.com/Arvanaghi/CheckPlease/wiki/System-Related-Checks) also contains some checks and ideas you could consider before executing a payload.
 
 ### Tickets encryption
 
@@ -263,7 +262,7 @@ Some ERDs scan memory for some know malware signatures. Coblat Strike allows to 
 
 ### Noisy proc injections
 
-When injecting code into a process this is usually very noisy, this is because **no regular process usually performs this action and because the ways to do this are very limited**. Tehrefore, it' could be detected by behaviour-based detection systems. Moroever, it could also be detected by EDRs scanning the network for **threads containing code that is not in disk** (although processes such as browsers using JIT have this commonly). Example: [[https://gist.github.com/jaredcatkinson/23905d34537ce4b5b1818c3e6405c1d2|https://gist.github.com/jaredcatkinson/23905d34537ce4b5b1818c3e6405c1d2]]
+When injecting code into a process this is usually very noisy, this is because **no regular process usually performs this action and because the ways to do this are very limited**. Tehrefore, it' could be detected by behaviour-based detection systems. Moroever, it could also be detected by EDRs scanning the network for **threads containing code that is not in disk** (although processes such as browsers using JIT have this commonly). Example: [https://gist.github.com/jaredcatkinson/23905d34537ce4b5b1818c3e6405c1d2](https://gist.github.com/jaredcatkinson/23905d34537ce4b5b1818c3e6405c1d2)
 
 ### Spawnas | PID and PPID relationships
 
@@ -276,7 +275,7 @@ With the following Cobalt Strike command, you can specify a different process to
 ```bash
 spawnto x86 svchost.exe
 ```
-```
+
 You can aso change this setting **`spawnto_x86` and `spawnto_x64`** in a profile.
 
 ### Proxying attackers traffic
@@ -295,47 +294,52 @@ However, you need to be **careful with the generated traffic**, as you might be 
 
 Check the page:
 
-[[av-bypass.md]]
+
+{{#ref}}
+av-bypass.md
+{{#endref}}
+
 
 #### Artifact Kit
 
-Usually in `/opt/cobaltstrike/artifact-kit` you can find the code and pre-compiled templates (in `/src-common) of the payloads that cobalt strike is going to use to generate the binary beacons.
+Usually in `/opt/cobaltstrike/artifact-kit` you can find the code and pre-compiled templates (in `/src-common`) of the payloads that cobalt strike is going to use to generate the binary beacons.
 
-Using [[https://github.com/rasta-mouse/ThreatCheck) with the generated backdoor (or just with the compiled template|ThreatCheck]] you can find what is making defender trigger. It's usually a string. Therefore you can just modify the code that is generating the backdoor so that string doesn't appear in the final binary.
+Using [ThreatCheck](https://github.com/rasta-mouse/ThreatCheck) with the generated backdoor (or just with the compiled template) you can find what is making defender trigger. It's usually a string. Therefore you can just modify the code that is generating the backdoor so that string doesn't appear in the final binary.
 
-After modifying the code just run `./build.sh` from the same directory and copy the `dist-pipe/` folder into the Windows client in `C:\Tools\cobaltstrike\ArtifactKit.
+After modifying the code just run `./build.sh` from the same directory and copy the `dist-pipe/` folder into the Windows client in `C:\Tools\cobaltstrike\ArtifactKit`.
 
 ```
-```pscp -r root@kali:/opt/cobaltstrike/artifact-kit/dist-pipe .
+pscp -r root@kali:/opt/cobaltstrike/artifact-kit/dist-pipe .
 ```
 
-Don't forget to load the aggressive script `dist-pipe\artifact.cna to indicate Cobalt Strike to use the resources from disk that we want and not the ones loaded.
+Don't forget to load the aggressive script `dist-pipe\artifact.cna` to indicate Cobalt Strike to use the resources from disk that we want and not the ones loaded.
 
 #### Resource Kit
 
 The ResourceKit folder contains the templates for Cobalt Strike's script-based payloads including PowerShell, VBA and HTA.
 
-Using [[https://github.com/rasta-mouse/ThreatCheck) with the templates you can find what is defender (AMSI in this case|ThreatCheck]] not liking and modify it:
+Using [ThreatCheck](https://github.com/rasta-mouse/ThreatCheck) with the templates you can find what is defender (AMSI in this case) not liking and modify it:
 
 ```
-```.\ThreatCheck.exe -e AMSI -f .\cobaltstrike\ResourceKit\template.x64.ps1
+.\ThreatCheck.exe -e AMSI -f .\cobaltstrike\ResourceKit\template.x64.ps1
 ```
 
 Modifying the detected lines one can generate a template that won't be caught.
 
-Don't forget to load the aggressive script `ResourceKit\resources.cna to indicate Cobalt Strike to luse the resources from disk that we want and not the ones loaded.
+Don't forget to load the aggressive script `ResourceKit\resources.cna` to indicate Cobalt Strike to luse the resources from disk that we want and not the ones loaded.
 
 #### Function hooks | Syscall
 
-Function hooking is a very common method of ERDs to detect malicious activity. Cobalt Strike allows you to bypass these hooks by using **syscalls** instead of the standard Windows API calls using the **`None`** config, or use the `Nt*` version of a function with the **`Direct`** setting, or just jumping over the `Nt*` function with the **`Indirect** option in the malleable profile. Depending on the system, an optino might be more stealth then the other.
+Function hooking is a very common method of ERDs to detect malicious activity. Cobalt Strike allows you to bypass these hooks by using **syscalls** instead of the standard Windows API calls using the **`None`** config, or use the `Nt*` version of a function with the **`Direct`** setting, or just jumping over the `Nt*` function with the **`Indirect`** option in the malleable profile. Depending on the system, an optino might be more stealth then the other.
 
-This can be set in the profile or suing the command **`syscall-method**
+This can be set in the profile or suing the command **`syscall-method`**
 
  However, this could also be noisy.
 
-Some option granted by Cobalt Strike to bypass function hooks is to remove those hooks with: [[https://github.com/Cobalt-Strike/unhook-bof|**unhook-bof**]].
+Some option granted by Cobalt Strike to bypass function hooks is to remove those hooks with: [**unhook-bof**](https://github.com/Cobalt-Strike/unhook-bof).
 
-You could also check with functions are hooked with [[https://github.com/Mr-Un1k0d3r/EDRs) or [**https://github.com/matterpreter/OffensiveCSharp/tree/master/HookDetector**](https://github.com/matterpreter/OffensiveCSharp/tree/master/HookDetector|**https://github.com/Mr-Un1k0d3r/EDRs**]]
+You could also check with functions are hooked with [**https://github.com/Mr-Un1k0d3r/EDRs**](https://github.com/Mr-Un1k0d3r/EDRs) or [**https://github.com/matterpreter/OffensiveCSharp/tree/master/HookDetector**](https://github.com/matterpreter/OffensiveCSharp/tree/master/HookDetector)
+
 
 
 
@@ -344,7 +348,6 @@ cd C:\Tools\neo4j\bin
 neo4j.bat console
 http://localhost:7474/ --> Change password
 execute-assembly C:\Tools\SharpHound3\SharpHound3\bin\Debug\SharpHound.exe -c All -d DOMAIN.LOCAL
-
 
 # Change powershell
 C:\Tools\cobaltstrike\ResourceKit
@@ -357,6 +360,5 @@ cobalt strike --> script manager --> Load --> Cargar C:\Tools\cobaltstrike\Resou
 cd  C:\Tools\cobaltstrike\ArtifactKit
 pscp -r root@kali:/opt/cobaltstrike/artifact-kit/dist-pipe .
 
-```
 ```
 

@@ -1,6 +1,5 @@
 # macOS Network Services & Protocols
 
-
 ## Remote Access Services
 
 These are the common macOS services to access them remotely.\
@@ -22,10 +21,10 @@ rAE=$(netstat -na | grep LISTEN | egrep 'tcp4|tcp6' | grep "*.3031" | wc -l);
 bmM=$(netstat -na | grep LISTEN | egrep 'tcp4|tcp6' | grep "*.4488" | wc -l);
 printf "\nThe following services are OFF if '0', or ON otherwise:\nScreen Sharing: %s\nFile Sharing: %s\nRemote Login: %s\nRemote Mgmt: %s\nRemote Apple Events: %s\nBack to My Mac: %s\n\n" "$scrShrng" "$flShrng" "$rLgn" "$rmMgmt" "$rAE" "$bmM";
 ```
-```
+
 ### Pentesting ARD
 
-Apple Remote Desktop (ARD) is an enhanced version of [[https://en.wikipedia.org/wiki/Virtual_Network_Computing) tailored for macOS, offering additional features. A notable vulnerability in ARD is its authentication method for the control screen password, which only uses the first 8 characters of the password, making it prone to [brute force attacks](https://thudinh.blogspot.com/2017/09/brute-forcing-passwords-with-thc-hydra.html) with tools like Hydra or [GoRedShell](https://github.com/ahhh/GoRedShell/|Virtual Network Computing (VNC)]], as there are no default rate limits.
+Apple Remote Desktop (ARD) is an enhanced version of [Virtual Network Computing (VNC)](https://en.wikipedia.org/wiki/Virtual_Network_Computing) tailored for macOS, offering additional features. A notable vulnerability in ARD is its authentication method for the control screen password, which only uses the first 8 characters of the password, making it prone to [brute force attacks](https://thudinh.blogspot.com/2017/09/brute-forcing-passwords-with-thc-hydra.html) with tools like Hydra or [GoRedShell](https://github.com/ahhh/GoRedShell/), as there are no default rate limits.
 
 Vulnerable instances can be identified using **nmap**'s `vnc-info` script. Services supporting `VNC Authentication (2)` are especially susceptible to brute force attacks due to the 8-character password truncation.
 
@@ -34,7 +33,7 @@ To enable ARD for various administrative tasks like privilege escalation, GUI ac
 ```bash
 sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -allowAccessFor -allUsers -privs -all -clientopts -setmenuextra -menuextra yes
 ```
-```
+
 ARD provides versatile control levels, including observation, shared control, and full control, with sessions persisting even after user password changes. It allows sending Unix commands directly, executing them as root for administrative users. Task scheduling and Remote Spotlight search are notable features, facilitating remote, low-impact searches for sensitive files across multiple machines.
 
 #### Recent Screen-Sharing / ARD vulnerabilities (2023-2025)
@@ -86,7 +85,7 @@ To search for SSH services on the network, the following command is used:
 ```bash
 dns-sd -B _ssh._tcp
 ```
-```
+
 This command initiates browsing for \_ssh.\_tcp services and outputs details such as timestamp, flags, interface, domain, service type, and instance name.
 
 ### Advertising an HTTP Service
@@ -96,7 +95,7 @@ To advertise an HTTP service, you can use:
 ```bash
 dns-sd -R "Index" _http._tcp . 80 path=/index.html
 ```
-```
+
 This command registers an HTTP service named "Index" on port 80 with a path of `/index.html`.
 
 To then search for HTTP services on the network:
@@ -104,12 +103,12 @@ To then search for HTTP services on the network:
 ```bash
 dns-sd -B _http._tcp
 ```
-```
+
 When a service starts, it announces its availability to all devices on the subnet by multicasting its presence. Devices interested in these services don't need to send requests but simply listen for these announcements.
 
 For a more user-friendly interface, the **Discovery - DNS-SD Browser** app available on the Apple App Store can visualize the services offered on your local network.
 
-Alternatively, custom scripts can be written to browse and discover services using the `python-zeroconf` library. The [[https://github.com/jstasiak/python-zeroconf|**python-zeroconf**]] script demonstrates creating a service browser for `_http._tcp.local.` services, printing added or removed services:
+Alternatively, custom scripts can be written to browse and discover services using the `python-zeroconf` library. The [**python-zeroconf**](https://github.com/jstasiak/python-zeroconf) script demonstrates creating a service browser for `_http._tcp.local.` services, printing added or removed services:
 
 ```python
 from zeroconf import ServiceBrowser, Zeroconf
@@ -131,7 +130,7 @@ try:
 finally:
     zeroconf.close()
 ```
-```
+
 ### Enumerating Bonjour over the network
 
 * **Nmap NSE** – discover services advertised by a single host:
@@ -176,12 +175,12 @@ If there are concerns about security or other reasons to disable Bonjour, it can
 ```bash
 sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.mDNSResponder.plist
 ```
-```
+
 ## References
 
-- [[https://www.amazon.com/-/es/Charlie-Miller-ebook-dp-B004U7MUMU/dp/B004U7MUMU/ref=mt_other?_encoding=UTF8&me=&qid=|**The Mac Hacker's Handbook**]]
-- [[https://taomm.org/vol1/analysis.html|**https://taomm.org/vol1/analysis.html**]]
-- [[https://lockboxx.blogspot.com/2019/07/macos-red-teaming-206-ard-apple-remote.html|**https://lockboxx.blogspot.com/2019/07/macos-red-teaming-206-ard-apple-remote.html**]]
-- [[https://nvd.nist.gov/vuln/detail/CVE-2023-42940|**NVD – CVE-2023-42940**]]
-- [[https://nvd.nist.gov/vuln/detail/CVE-2024-44183|**NVD – CVE-2024-44183**]]
+- [**The Mac Hacker's Handbook**](https://www.amazon.com/-/es/Charlie-Miller-ebook-dp-B004U7MUMU/dp/B004U7MUMU/ref=mt_other?_encoding=UTF8&me=&qid=)
+- [**https://taomm.org/vol1/analysis.html**](https://taomm.org/vol1/analysis.html)
+- [**https://lockboxx.blogspot.com/2019/07/macos-red-teaming-206-ard-apple-remote.html**](https://lockboxx.blogspot.com/2019/07/macos-red-teaming-206-ard-apple-remote.html)
+- [**NVD – CVE-2023-42940**](https://nvd.nist.gov/vuln/detail/CVE-2023-42940)
+- [**NVD – CVE-2024-44183**](https://nvd.nist.gov/vuln/detail/CVE-2024-44183)
 

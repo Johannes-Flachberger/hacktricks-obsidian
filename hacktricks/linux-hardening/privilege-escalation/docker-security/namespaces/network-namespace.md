@@ -1,6 +1,5 @@
 # Network Namespace
 
-
 ## Basic Information
 
 A network namespace is a Linux kernel feature that provides isolation of the network stack, allowing **each network namespace to have its own independent network configuration**, interfaces, IP addresses, routing tables, and firewall rules. This isolation is useful in various scenarios, such as containerization, where each container should have its own network configuration, independent of other containers and the host system.
@@ -22,12 +21,12 @@ A network namespace is a Linux kernel feature that provides isolation of the net
 sudo unshare -n [--mount-proc] /bin/bash
 # Run ifconfig or ip -a
 ```
-```
+
 By mounting a new instance of the `/proc` filesystem if you use the param `--mount-proc`, you ensure that the new mount namespace has an **accurate and isolated view of the process information specific to that namespace**.
 
+<details>
 
 **Error: bash: fork: Cannot allocate memory**
-
 
 When `unshare` is executed without the `-f` option, an error is encountered due to the way Linux handles new PID (Process ID) namespaces. The key details and the solution are outlined below:
 
@@ -47,6 +46,7 @@ When `unshare` is executed without the `-f` option, an error is encountered due 
 
 By ensuring that `unshare` runs with the `-f` flag, the new PID namespace is correctly maintained, allowing `/bin/bash` and its sub-processes to operate without encountering the memory allocation error.
 
+</details>
 
 #### Docker
 
@@ -54,14 +54,14 @@ By ensuring that `unshare` runs with the `-f` flag, the new PID namespace is cor
 docker run -ti --name ubuntu1 -v /usr:/ubuntu1 ubuntu bash
 # Run ifconfig or ip -a
 ```
-```
+
 ### Check which namespace is your process in
 
 ```bash
 ls -l /proc/self/ns/net
 lrwxrwxrwx 1 root root 0 Apr  4 20:30 /proc/self/ns/net -> 'net:[4026531840]'
 ```
-```
+
 ### Find all Network namespaces
 
 ```bash
@@ -69,18 +69,16 @@ sudo find /proc -maxdepth 3 -type l -name net -exec readlink {} \; 2>/dev/null |
 # Find the processes with an specific namespace
 sudo find /proc -maxdepth 3 -type l -name net -exec ls -l  {} \; 2>/dev/null | grep <ns-number>
 ```
-```
+
 ### Enter inside a Network namespace
 
 ```bash
 nsenter -n TARGET_PID --pid /bin/bash
 ```
-```
+
 Also, you can only **enter in another process namespace if you are root**. And you **cannot** **enter** in other namespace **without a descriptor** pointing to it (like `/proc/self/ns/net`).
 
 ## References
 
-- [[https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory|https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory]]
-
-
+- [https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory](https://stackoverflow.com/questions/44666700/unshare-pid-bin-bash-fork-cannot-allocate-memory)
 

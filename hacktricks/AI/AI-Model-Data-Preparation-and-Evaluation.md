@@ -1,6 +1,5 @@
 # Model Data Preparation & Evaluation
 
-
 Model data preparation is a crucial step in the machine learning pipeline, as it involves transforming raw data into a format suitable for training machine learning models. This process includes several key steps:
 
 1. **Data Collection**: Gathering data from various sources, such as databases, APIs, or files. The data can be structured (e.g., tables) or unstructured (e.g., text, images).
@@ -49,6 +48,7 @@ invalid_days = data[~data['days'].astype(str).apply(is_valid_positive_int)]
 data = data.drop(invalid_days.index, errors='ignore')
 
 
+
 # Set "NaN" values to a specific value
 ## For example, setting NaN values in the 'days' column to 0
 data['days'] = pd.to_numeric(data['days'], errors='coerce')
@@ -78,6 +78,7 @@ knn_imputer = KNNImputer(n_neighbors=5)
 df[numeric_cols] = knn_imputer.fit_transform(df[numeric_cols])
 
 
+
 # Filling missing values
 data.fillna(data.mean(), inplace=True)
 
@@ -88,7 +89,7 @@ from scipy import stats
 z_scores = stats.zscore(data.select_dtypes(include=['float64', 'int64']))
 data = data[(z_scores < 3).all(axis=1)]
 ```
-```
+
 ## Data Transformation
 
 Data transformation involves converting the data into a format suitable for modeling. This step may include:
@@ -140,7 +141,7 @@ Accuracy is the proportion of correctly predicted instances out of the total ins
 ```plaintext
 Accuracy = (Number of Correct Predictions) / (Total Number of Predictions)
 ```
-```
+
 > [!TIP]
 > Accuracy is a simple and intuitive metric, but it may not be suitable for imbalanced datasets where one class dominates the others as it can give a misleading impression of model performance. For example, if 90% of the data belongs to class A and the model predicts all instances as class A, it will achieve 90% accuracy, but it won't be useful for predicting class B.
 
@@ -150,7 +151,7 @@ Precision is the proportion of true positive predictions out of all positive pre
 ```plaintext
 Precision = (True Positives) / (True Positives + False Positives)
 ```
-```
+
 > [!TIP]
 > Precision is particularly important in scenarios where false positives are costly or undesirable, such as in medical diagnoses or fraud detection. For example, if a model predicts 100 instances as positive, but only 80 of them are actually positive, the precision would be 0.8 (80%).
 
@@ -160,7 +161,7 @@ Recall, also known as sensitivity or true positive rate, is the proportion of tr
 ```plaintext
 Recall = (True Positives) / (True Positives + False Negatives)
 ```
-```
+
 > [!TIP]
 > Recall is crucial in scenarios where false negatives are costly or undesirable, such as in disease detection or spam filtering. For example, if a model identifies 80 out of 100 actual positive instances, the recall would be 0.8 (80%).
 
@@ -170,7 +171,7 @@ The F1 score is the harmonic mean of precision and recall, providing a balance b
 ```plaintext
 F1 Score = 2 * (Precision * Recall) / (Precision + Recall)
 ```
-```
+
 > [!TIP]
 > The F1 score is particularly useful when dealing with imbalanced datasets, as it considers both false positives and false negatives. It provides a single metric that captures the trade-off between precision and recall. For example, if a model has a precision of 0.8 and a recall of 0.6, the F1 score would be approximately 0.69.
 
@@ -187,7 +188,7 @@ Specificity, also known as true negative rate, is the proportion of true negativ
 ```plaintext
 Specificity = (True Negatives) / (True Negatives + False Positives)
 ```
-```
+
 > [!TIP]
 > Specificity is important in scenarios where false positives are costly or undesirable, such as in medical testing or fraud detection. It helps assess how well the model identifies negative instances. For example, if a model correctly identifies 90 out of 100 actual negative instances, the specificity would be 0.9 (90%).
 
@@ -196,7 +197,7 @@ The Matthews Correlation Coefficient (MCC) is a measure of the quality of binary
 ```plaintext
 MCC = (TP * TN - FP * FN) / sqrt((TP + FP) * (TP + FN) * (TN + FP) * (TN + FN))
 ```
-```where:
+where:
 - **TP**: True Positives
 - **TN**: True Negatives
 - **FP**: False Positives
@@ -210,7 +211,7 @@ Mean Absolute Error (MAE) is a regression metric that measures the average absol
 ```plaintext
 MAE = (1/n) * Σ|y_i - ŷ_i|
 ```
-```where:
+where:
 - **n**: Number of instances
 - **y_i**: Actual value for instance i
 - **ŷ_i**: Predicted value for instance i
@@ -233,6 +234,4 @@ The confusion matrix is a table that summarizes the performance of a classificat
 - **False Negative (FN)**: The model incorrectly predicted the negative class (Type II error).
 
 The confusion matrix can be used to calculate various evaluation metrics, such as accuracy, precision, recall, and F1 score.
-
-
 

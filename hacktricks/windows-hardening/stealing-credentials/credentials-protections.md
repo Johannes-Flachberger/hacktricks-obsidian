@@ -1,20 +1,19 @@
 # Windows Credentials Protections
 
-
 ## WDigest
 
-The [[<https://technet.microsoft.com/pt-pt/library/cc778868(v=ws.10).aspx?f=255&MSPPError=-2147217396>) protocol, introduced with Windows XP, is designed for authentication via the HTTP Protocol and is **enabled by default on Windows XP through Windows 8.0 and Windows Server 2003 to Windows Server 2012**. This default setting results in **plain-text password storage in LSASS** (Local Security Authority Subsystem Service|WDigest]]. An attacker can use Mimikatz to **extract these credentials** by executing:
+The [WDigest](<https://technet.microsoft.com/pt-pt/library/cc778868(v=ws.10).aspx?f=255&MSPPError=-2147217396>) protocol, introduced with Windows XP, is designed for authentication via the HTTP Protocol and is **enabled by default on Windows XP through Windows 8.0 and Windows Server 2003 to Windows Server 2012**. This default setting results in **plain-text password storage in LSASS** (Local Security Authority Subsystem Service). An attacker can use Mimikatz to **extract these credentials** by executing:
 
 ```bash
 sekurlsa::wdigest
 ```
-```
+
 To **toggle this feature off or on**, the _**UseLogonCredential**_ and _**Negotiate**_ registry keys within _**HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\SecurityProviders\WDigest**_ must be set to "1". If these keys are **absent or set to "0"**, WDigest is **disabled**:
 
 ```bash
 reg query HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest /v UseLogonCredential
 ```
-```
+
 ## LSA Protection (PP & PPL protected processes)
 
 **Protected Process (PP)** and **Protected Process Light (PPL)** are **Windows kernel-level protections** designed to prevent unauthorized access to sensitive processes like **LSASS**. Introduced in **Windows Vista**, the **PP model** was originally created for **DRM** enforcement and only allowed binaries signed with a **special media certificate** to be protected. A process marked as **PP** can only be accessed by other processes that are **also PP** and have an **equal or higher protection level**, and even then, **only with limited access rights** unless specifically allowed.
@@ -84,7 +83,7 @@ int wmain(int argc, wchar_t **argv) {
     return 0;
 }
 ```
-```
+
 Notes and constraints:
 - Use `STARTUPINFOEX` with `InitializeProcThreadAttributeList` and `UpdateProcThreadAttribute(PROC_THREAD_ATTRIBUTE_PROTECTION_LEVEL, ...)`, then pass `EXTENDED_STARTUPINFO_PRESENT` to `CreateProcess*`.
 - The protection `DWORD` can be set to constants such as `PROTECTION_LEVEL_WINTCB_LIGHT`, `PROTECTION_LEVEL_WINDOWS`, `PROTECTION_LEVEL_WINDOWS_LIGHT`, `PROTECTION_LEVEL_ANTIMALWARE_LIGHT`, or `PROTECTION_LEVEL_LSA_LIGHT`.
@@ -100,21 +99,21 @@ Example CLI using a minimal loader:
 If you want to dump LSASS despite PPL, you have 3 main options:
 1. **Use a signed kernel driver (e.g., Mimikatz + mimidrv.sys)** to **remove LSASS’s protection flag**:
 
-![[../../images/mimidrv.png|]]
+![](../../images/mimidrv.png)
 
 2. **Bring Your Own Vulnerable Driver (BYOVD)** to run custom kernel code and disable the protection. Tools like **PPLKiller**, **gdrv-loader**, or **kdmapper** make this feasible.
 3. **Steal an existing LSASS handle** from another process that has it open (e.g., an AV process), then **duplicate it** into your process. This is the basis of the `pypykatz live lsa --method handledup` technique.
-4. **Abuse some privileged process** that will allow you to load arbitrary code into its address space or inside another privileged process, effectively bypassing the PPL restrictions. You can check an example of this in [[https://blog.scrt.ch/2021/04/22/bypassing-lsa-protection-in-userland/) or [https://github.com/itm4n/PPLdump](https://github.com/itm4n/PPLdump|bypassing-lsa-protection-in-userland]].
+4. **Abuse some privileged process** that will allow you to load arbitrary code into its address space or inside another privileged process, effectively bypassing the PPL restrictions. You can check an example of this in [bypassing-lsa-protection-in-userland](https://blog.scrt.ch/2021/04/22/bypassing-lsa-protection-in-userland/) or [https://github.com/itm4n/PPLdump](https://github.com/itm4n/PPLdump).
 
 **Check current status of LSA protection (PPL/PP) for LSASS**:
 
 ```bash
 reg query HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\LSA /v RunAsPPL
 ```
-```
+
 When you running **`mimikatz privilege::debug sekurlsa::logonpasswords`** it'll probably fail with the error code `0x00000005` becasue of this.
 
-- For more information about this check [[https://itm4n.github.io/lsass-runasppl/|https://itm4n.github.io/lsass-runasppl/]]
+- For more information about this check [https://itm4n.github.io/lsass-runasppl/](https://itm4n.github.io/lsass-runasppl/)
 
 ## Credential Guard
 
@@ -127,14 +126,14 @@ To verify **Credential Guard**'s activation status, the registry key _**LsaCfgFl
 ```bash
 reg query HKLM\System\CurrentControlSet\Control\LSA /v LsaCfgFlags
 ```
-```
-For a comprehensive understanding and instructions on enabling **Credential Guard** in Windows 10 and its automatic activation in compatible systems of **Windows 11 Enterprise and Education (version 22H2)**, visit [[https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard-manage|Microsoft's documentation]].
 
-Further details on implementing custom SSPs for credential capture are provided in [[../active-directory-methodology/custom-ssp.md|this guide]].
+For a comprehensive understanding and instructions on enabling **Credential Guard** in Windows 10 and its automatic activation in compatible systems of **Windows 11 Enterprise and Education (version 22H2)**, visit [Microsoft's documentation](https://docs.microsoft.com/en-us/windows/security/identity-protection/credential-guard/credential-guard-manage).
+
+Further details on implementing custom SSPs for credential capture are provided in [this guide](../active-directory-methodology/custom-ssp.md).
 
 ## RDP RestrictedAdmin Mode
 
-**Windows 8.1 and Windows Server 2012 R2** introduced several new security features, including the _**Restricted Admin mode for RDP**_. This mode was designed to enhance security by mitigating the risks associated with [[https://blog.ahasayen.com/pass-the-hash/|**pass the hash**]] attacks.
+**Windows 8.1 and Windows Server 2012 R2** introduced several new security features, including the _**Restricted Admin mode for RDP**_. This mode was designed to enhance security by mitigating the risks associated with [**pass the hash**](https://blog.ahasayen.com/pass-the-hash/) attacks.
 
 Traditionally, when connecting to a remote computer via RDP, your credentials are stored on the target machine. This poses a significant security risk, especially when using accounts with elevated privileges. However, with the introduction of _**Restricted Admin mode**_, this risk is substantially reduced.
 
@@ -144,9 +143,9 @@ It's important to note that in **Restricted Admin mode**, attempts to access net
 
 This feature marks a significant step forward in securing remote desktop connections and protecting sensitive information from being exposed in case of a security breach.
 
-![[../../images/RAM.png|]]
+![](../../images/RAM.png)
 
-For more detailed information on visit [[https://blog.ahasayen.com/restricted-admin-mode-for-rdp/|this resource]].
+For more detailed information on visit [this resource](https://blog.ahasayen.com/restricted-admin-mode-for-rdp/).
 
 ## Cached Credentials
 
@@ -157,12 +156,12 @@ The number of cached logins is adjustable via a specific **registry key or group
 ```bash
 reg query "HKEY_LOCAL_MACHINE\SOFTWARE\MICROSOFT\WINDOWS NT\CURRENTVERSION\WINLOGON" /v CACHEDLOGONSCOUNT
 ```
-```
+
 Access to these cached credentials is tightly controlled, with only the **SYSTEM** account having the necessary permissions to view them. Administrators needing to access this information must do so with SYSTEM user privileges. The credentials are stored at: `HKEY_LOCAL_MACHINE\SECURITY\Cache`
 
 **Mimikatz** can be employed to extract these cached credentials using the command `lsadump::cache`.
 
-For further details, the original [[http://juggernaut.wikidot.com/cached-credentials|source]] provides comprehensive information.
+For further details, the original [source](http://juggernaut.wikidot.com/cached-credentials) provides comprehensive information.
 
 ## Protected Users
 
@@ -176,9 +175,9 @@ Membership in the **Protected Users group** introduces several security enhancem
 
 These protections are activated the moment a user, who is a member of the **Protected Users group**, signs into the device. This ensures that critical security measures are in place to safeguard against various methods of credential compromise.
 
-For more detailed information, consult the official [[https://docs.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/protected-users-security-group|documentation]].
+For more detailed information, consult the official [documentation](https://docs.microsoft.com/en-us/windows-server/security/credentials-protection-and-management/protected-users-security-group).
 
-**Table from** [[https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-c--protected-accounts-and-groups-in-active-directory|**the docs**]]**.**
+**Table from** [**the docs**](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-c--protected-accounts-and-groups-in-active-directory)**.**
 
 | Windows Server 2003 RTM | Windows Server 2003 SP1+ | Windows Server 2012,  
 Windows Server 2008 R2,  
@@ -205,9 +204,9 @@ Windows Server 2008
 
 ## References
 
-- [[https://github.com/2x7EQ13/CreateProcessAsPPL|CreateProcessAsPPL – minimal PPL process launcher]]
-- [[https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-startupinfoexw|STARTUPINFOEX structure (Win32 API)]]
-- [[https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-initializeprocthreadattributelist|InitializeProcThreadAttributeList (Win32 API)]]
-- [[https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute|UpdateProcThreadAttribute (Win32 API)]]
-- [[https://itm4n.github.io/lsass-runasppl/|LSASS RunAsPPL – background and internals]]
+- [CreateProcessAsPPL – minimal PPL process launcher](https://github.com/2x7EQ13/CreateProcessAsPPL)
+- [STARTUPINFOEX structure (Win32 API)](https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-startupinfoexw)
+- [InitializeProcThreadAttributeList (Win32 API)](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-initializeprocthreadattributelist)
+- [UpdateProcThreadAttribute (Win32 API)](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-updateprocthreadattribute)
+- [LSASS RunAsPPL – background and internals](https://itm4n.github.io/lsass-runasppl/)
 

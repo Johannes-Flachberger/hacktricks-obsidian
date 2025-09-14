@@ -1,6 +1,5 @@
 # Blockchain and Crypto Currencies
 
-
 ## Basic Concepts
 
 - **Smart Contracts** are defined as programs that execute on a blockchain when certain conditions are met, automating agreement executions without intermediaries.
@@ -76,7 +75,7 @@ This heuristic is based on analyzing transactions with multiple inputs and outpu
 2 btc --> 4 btc
 3 btc     1 btc
 ```
-```
+
 If adding more inputs makes the change output larger than any single input, it can confuse the heuristic.
 
 ## **Forced Address Reuse**
@@ -100,7 +99,7 @@ By monitoring network traffic, attackers can potentially link transactions or bl
 
 ## More
 
-For a comprehensive list of privacy attacks and defenses, visit [[https://en.bitcoin.it/wiki/Privacy|Bitcoin Privacy on Bitcoin Wiki]].
+For a comprehensive list of privacy attacks and defenses, visit [Bitcoin Privacy on Bitcoin Wiki](https://en.bitcoin.it/wiki/Privacy).
 
 # Anonymous Bitcoin Transactions
 
@@ -108,7 +107,7 @@ For a comprehensive list of privacy attacks and defenses, visit [[https://en.bit
 
 - **Cash Transactions**: Acquiring bitcoin through cash.
 - **Cash Alternatives**: Purchasing gift cards and exchanging them online for bitcoin.
-- **Mining**: The most private method to earn bitcoins is through mining, especially when done alone because mining pools may know the miner's IP address. [[https://en.bitcoin.it/wiki/Pooled_mining|Mining Pools Information]]
+- **Mining**: The most private method to earn bitcoins is through mining, especially when done alone because mining pools may know the miner's IP address. [Mining Pools Information](https://en.bitcoin.it/wiki/Pooled_mining)
 - **Theft**: Theoretically, stealing bitcoin could be another method to acquire it anonymously, although it's illegal and not recommended.
 
 ## Mixing Services
@@ -121,7 +120,7 @@ By using a mixing service, a user can **send bitcoins** and receive **different 
 
 Example transactions that may have used CoinJoin include `402d3e1df685d1fdf82f36b220079c1bf44db227df2d676625ebcbee3f6cb22a` and `85378815f6ee170aa8c26694ee2df42b99cff7fa9357f073c1192fff1f540238`.
 
-For more information, visit [[https://coinjoin.io/en). For a similar service on Ethereum, check out [Tornado Cash](https://tornado.cash|CoinJoin]], which anonymizes transactions with funds from miners.
+For more information, visit [CoinJoin](https://coinjoin.io/en). For a similar service on Ethereum, check out [Tornado Cash](https://tornado.cash), which anonymizes transactions with funds from miners.
 
 ## PayJoin
 
@@ -131,7 +130,7 @@ A variant of CoinJoin, **PayJoin** (or P2EP), disguises the transaction among tw
 2 btc --> 3 btc
 5 btc     4 btc
 ```
-```
+
 Transactions like the above could be PayJoin, enhancing privacy while remaining indistinguishable from standard bitcoin transactions.
 
 **The utilization of PayJoin could significantly disrupt traditional surveillance methods**, making it a promising development in the pursuit of transactional privacy.
@@ -177,12 +176,10 @@ These practices and mechanisms are foundational for anyone looking to engage wit
 
 ## References
 
-- [[https://en.wikipedia.org/wiki/Proof_of_stake|https://en.wikipedia.org/wiki/Proof_of_stake]]
-- [[https://www.mycryptopedia.com/public-key-private-key-explained/|https://www.mycryptopedia.com/public-key-private-key-explained/]]
-- [[https://bitcoin.stackexchange.com/questions/3718/what-are-multi-signature-transactions|https://bitcoin.stackexchange.com/questions/3718/what-are-multi-signature-transactions]]
-- [[https://ethereum.org/en/developers/docs/transactions/|https://ethereum.org/en/developers/docs/transactions/]]
-- [[https://ethereum.org/en/developers/docs/gas/|https://ethereum.org/en/developers/docs/gas/]]
-- [[https://en.bitcoin.it/wiki/Privacy#Forced_address_reuse|https://en.bitcoin.it/wiki/Privacy]]
-
-
+- [https://en.wikipedia.org/wiki/Proof_of_stake](https://en.wikipedia.org/wiki/Proof_of_stake)
+- [https://www.mycryptopedia.com/public-key-private-key-explained/](https://www.mycryptopedia.com/public-key-private-key-explained/)
+- [https://bitcoin.stackexchange.com/questions/3718/what-are-multi-signature-transactions](https://bitcoin.stackexchange.com/questions/3718/what-are-multi-signature-transactions)
+- [https://ethereum.org/en/developers/docs/transactions/](https://ethereum.org/en/developers/docs/transactions/)
+- [https://ethereum.org/en/developers/docs/gas/](https://ethereum.org/en/developers/docs/gas/)
+- [https://en.bitcoin.it/wiki/Privacy](https://en.bitcoin.it/wiki/Privacy#Forced_address_reuse)
 

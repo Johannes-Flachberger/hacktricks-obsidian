@@ -1,6 +1,5 @@
 # Detecting Phishing
 
-
 ## Introduction
 
 To detect a phishing attempt it's important to **understand the phishing techniques that are being used nowadays**. On the parent page of this post, you can find this information, so if you aren't aware of which techniques are being used today I recommend you to go to the parent page and read at least that section.
@@ -16,12 +15,12 @@ It's enough to **generate a list of the most probable phishing names** that an a
 
 For this purpose, you can use any of the following tools. Note that these tolls will also perform DNS requests automatically to check if the domain has any IP assigned to it:
 
-- [[https://github.com/elceef/dnstwist|**dnstwist**]]
-- [[https://github.com/urbanadventurer/urlcrazy|**urlcrazy**]]
+- [**dnstwist**](https://github.com/elceef/dnstwist)
+- [**urlcrazy**](https://github.com/urbanadventurer/urlcrazy)
 
 ### Bitflipping
 
-**You can find a short the explanation of this technique in the parent page. Or read the original research in** [[https://www.bleepingcomputer.com/news/security/hijacking-traffic-to-microsoft-s-windowscom-with-bitflipping/|**https://www.bleepingcomputer.com/news/security/hijacking-traffic-to-microsoft-s-windowscom-with-bitflipping/**]]
+**You can find a short the explanation of this technique in the parent page. Or read the original research in** [**https://www.bleepingcomputer.com/news/security/hijacking-traffic-to-microsoft-s-windowscom-with-bitflipping/**](https://www.bleepingcomputer.com/news/security/hijacking-traffic-to-microsoft-s-windowscom-with-bitflipping/)
 
 For example, a 1 bit modification in the domain microsoft.com can transform it into _windnws.com._\
 **Attackers may register as many bit-flipping domains as possible related to the victim to redirect legitimate users to their infrastructure**.
@@ -47,23 +46,21 @@ The parent page also mentions a domain name variation technique that consists of
 
 ### Certificate Transparency
 
-It's not possible to take the previous "Brute-Force" approach but it's actually **possible to uncover such phishing attempts** also thanks to certificate transparency. Every time a certificate is emitted by a CA, the details are made public. This means that by reading the certificate transparency or even monitoring it, it's **possible to find domains that are using a keyword inside its name** For example, if an attacker generates a certificate of [[https://paypal-financial.com|https://paypal-financial.com]], seeing the certificate it's possible to find the keyword "paypal" and know that suspicious email is being used.
+It's not possible to take the previous "Brute-Force" approach but it's actually **possible to uncover such phishing attempts** also thanks to certificate transparency. Every time a certificate is emitted by a CA, the details are made public. This means that by reading the certificate transparency or even monitoring it, it's **possible to find domains that are using a keyword inside its name** For example, if an attacker generates a certificate of [https://paypal-financial.com](https://paypal-financial.com), seeing the certificate it's possible to find the keyword "paypal" and know that suspicious email is being used.
 
-The post [[https://0xpatrik.com/phishing-domains/) suggests that you can use Censys to search for certificates affecting a specific keyword and filter by date (only "new" certificates|https://0xpatrik.com/phishing-domains/]] and by the CA issuer "Let's Encrypt":
+The post [https://0xpatrik.com/phishing-domains/](https://0xpatrik.com/phishing-domains/) suggests that you can use Censys to search for certificates affecting a specific keyword and filter by date (only "new" certificates) and by the CA issuer "Let's Encrypt":
 
-![[<../../images/image (1115).png>|https://0xpatrik.com/content/images/2018/07/cert_listing.png]]
+![https://0xpatrik.com/content/images/2018/07/cert_listing.png](<../../images/image (1115).png>)
 
-However, you can do "the same" using the free web [[https://crt.sh|**crt.sh**]]. You can **search for the keyword** and the **filter** the results **by date and CA** if you wish.
+However, you can do "the same" using the free web [**crt.sh**](https://crt.sh). You can **search for the keyword** and the **filter** the results **by date and CA** if you wish.
 
-![[<../../images/image (519).png>|]]
+![[../../images/image (519).png]]
 
 Using this last option you can even use the field Matching Identities to see if any identity from the real domain matches any of the suspicious domains (note that a suspicious domain can be a false positive).
 
-**Another alternative** is the fantastic project called [[https://medium.com/cali-dog-security/introducing-certstream-3fc13bb98067). CertStream provides a real-time stream of newly generated certificates which you can use to detect specified keywords in (near) real-time. In fact, there is a project called [**phishing_catcher**](https://github.com/x0rz/phishing_catcher|**CertStream**]] that does just that.
+**Another alternative** is the fantastic project called [**CertStream**](https://medium.com/cali-dog-security/introducing-certstream-3fc13bb98067). CertStream provides a real-time stream of newly generated certificates which you can use to detect specified keywords in (near) real-time. In fact, there is a project called [**phishing_catcher**](https://github.com/x0rz/phishing_catcher) that does just that.
 
 ### **New domains**
 
-**One last alternative** is to gather a list of **newly registered domains** for some TLDs ([[https://www.whoxy.com/newly-registered-domains/) provides such service|Whoxy]] and **check the keywords in these domains**. However, long domains usually use one or more subdomains, therefore the keyword won't appear inside the FLD and you won't be able to find the phishing subdomain.
-
-
+**One last alternative** is to gather a list of **newly registered domains** for some TLDs ([Whoxy](https://www.whoxy.com/newly-registered-domains/) provides such service) and **check the keywords in these domains**. However, long domains usually use one or more subdomains, therefore the keyword won't appear inside the FLD and you won't be able to find the phishing subdomain.
 

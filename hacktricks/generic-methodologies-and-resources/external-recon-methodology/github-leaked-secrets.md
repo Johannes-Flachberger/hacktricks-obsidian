@@ -1,23 +1,21 @@
 # Github Dorks & Leaks
 
-
-
 ### Tools to find secrets in git repos and file system
 
-- [[https://github.com/dxa4481/truffleHog|https://github.com/dxa4481/truffleHog]]
-- [[https://github.com/gitleaks/gitleaks|https://github.com/gitleaks/gitleaks]]
-- [[https://github.com/praetorian-inc/noseyparker|https://github.com/praetorian-inc/noseyparker]]
-- [[https://github.com/GitGuardian/ggshield|https://github.com/GitGuardian/ggshield]]
-- [[https://github.com/JaimePolop/RExpository|https://github.com/JaimePolop/RExpository]]
-- [[https://github.com/Yelp/detect-secrets|https://github.com/Yelp/detect-secrets]]
-- [[https://github.com/hisxo/gitGraber|https://github.com/hisxo/gitGraber]]
-- [[https://github.com/eth0izzle/shhgit|https://github.com/eth0izzle/shhgit]]
-- [[https://github.com/techgaun/github-dorks|https://github.com/techgaun/github-dorks]]
-- [[https://github.com/michenriksen/gitrob|https://github.com/michenriksen/gitrob]]
-- [[https://github.com/anshumanbh/git-all-secrets|https://github.com/anshumanbh/git-all-secrets]]
-- [[https://github.com/awslabs/git-secrets|https://github.com/awslabs/git-secrets]]
-- [[https://github.com/kootenpv/gittyleaks|https://github.com/kootenpv/gittyleaks]]
-- [[https://github.com/obheda12/GitDorker|https://github.com/obheda12/GitDorker]]
+- [https://github.com/dxa4481/truffleHog](https://github.com/dxa4481/truffleHog)
+- [https://github.com/gitleaks/gitleaks](https://github.com/gitleaks/gitleaks)
+- [https://github.com/praetorian-inc/noseyparker](https://github.com/praetorian-inc/noseyparker)
+- [https://github.com/GitGuardian/ggshield](https://github.com/GitGuardian/ggshield)
+- [https://github.com/JaimePolop/RExpository](https://github.com/JaimePolop/RExpository)
+- [https://github.com/Yelp/detect-secrets](https://github.com/Yelp/detect-secrets)
+- [https://github.com/hisxo/gitGraber](https://github.com/hisxo/gitGraber)
+- [https://github.com/eth0izzle/shhgit](https://github.com/eth0izzle/shhgit)
+- [https://github.com/techgaun/github-dorks](https://github.com/techgaun/github-dorks)
+- [https://github.com/michenriksen/gitrob](https://github.com/michenriksen/gitrob)
+- [https://github.com/anshumanbh/git-all-secrets](https://github.com/anshumanbh/git-all-secrets)
+- [https://github.com/awslabs/git-secrets](https://github.com/awslabs/git-secrets)
+- [https://github.com/kootenpv/gittyleaks](https://github.com/kootenpv/gittyleaks)
+- [https://github.com/obheda12/GitDorker](https://github.com/obheda12/GitDorker)
 
 ### **Dorks**
 
@@ -302,7 +300,4 @@ GCP SECRET
 AWS SECRET
 "private" extension:pgp
 ```
-```
-
-
 

@@ -1,6 +1,5 @@
 # Firmware Integrity
 
-
 The **custom firmware and/or compiled binaries can be uploaded to exploit integrity or signature verification flaws**. The following steps can be followed for backdoor bind shell compilation:
 
 1. The firmware can be extracted using firmware-mod-kit (FMK).
@@ -22,6 +21,4 @@ If a root shell has already been obtained through dynamic analysis, bootloader m
 3. The payload can be transferred to the compromised device and ensured that it has execution permissions.
 4. Metasploit can be prepared to handle incoming requests by starting msfconsole and configuring the settings according to the payload.
 5. The meterpreter reverse shell can be executed on the compromised device.
-
-
 

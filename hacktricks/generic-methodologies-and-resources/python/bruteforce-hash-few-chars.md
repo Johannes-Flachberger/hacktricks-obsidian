@@ -1,6 +1,5 @@
 # Bruteforce Hash Few Chars
 
-
 ```python
 import hashlib
 
@@ -14,11 +13,12 @@ while True:
         break
     candidate = candidate + 1
 ```
-```
+
 ```python
 #From isHaacK
 import hashlib
 from multiprocessing import Process, Queue, cpu_count
+
 
 def loose_comparison(queue, num):
 	target = '0e'
@@ -50,7 +50,4 @@ def main():
 
 main()
 ```
-```
-
-
 

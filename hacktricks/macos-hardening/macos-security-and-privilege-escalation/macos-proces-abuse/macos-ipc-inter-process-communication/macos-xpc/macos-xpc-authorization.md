@@ -1,6 +1,5 @@
 # macOS XPC Authorization
 
-
 ## XPC Authorization
 
 Apple also proposes another way to authenticate if the connecting process has **permissions to call the an exposed XPC method**.
@@ -9,7 +8,7 @@ When an application needs to **execute actions as a privileged user**, instead o
 
 ### ShouldAcceptNewConnection always YES
 
-An example could be found in [[https://github.com/brenwell/EvenBetterAuthorizationSample|EvenBetterAuthorizationSample]]. In `App/AppDelegate.m` it tries to **connect** to the **HelperTool**. And in `HelperTool/HelperTool.m` the function **`shouldAcceptNewConnection`** **won't check** any of the requirements indicated previously. It'll always return YES:
+An example could be found in [EvenBetterAuthorizationSample](https://github.com/brenwell/EvenBetterAuthorizationSample). In `App/AppDelegate.m` it tries to **connect** to the **HelperTool**. And in `HelperTool/HelperTool.m` the function **`shouldAcceptNewConnection`** **won't check** any of the requirements indicated previously. It'll always return YES:
 
 ```objectivec
 - (BOOL)listener:(NSXPCListener *)listener shouldAcceptNewConnection:(NSXPCConnection *)newConnection
@@ -27,7 +26,7 @@ An example could be found in [[https://github.com/brenwell/EvenBetterAuthorizati
     return YES;
 }
 ```
-```
+
 For more information about how to properly configure this check:
 
 [[macos-xpc-connecting-process-check/]]
@@ -62,7 +61,7 @@ Then, it will try to **add some rights** to that authorization reference calling
     [self.window makeKeyAndOrderFront:self];
 }
 ```
-```
+
 The function `setupAuthorizationRights` from `Common/Common.m` will store in the auth database `/var/db/auth.db` the rights of the application. Note how it will only add the rights that aren't yet in the database:
 
 ```objectivec
@@ -96,7 +95,7 @@ The function `setupAuthorizationRights` from `Common/Common.m` will store in the
     }];
 }
 ```
-```
+
 The function `enumerateRightsUsingBlock` is the one used to get applications permissions, which are defined in `commandInfo`:
 
 ```objectivec
@@ -176,11 +175,10 @@ static NSString * kCommandKeyAuthRightDesc    = @"authRightDescription";
     }];
 }
 ```
-```
+
 This means that at the end of this process, the permissions declared inside `commandInfo` will be stored in `/var/db/auth.db`. Note how there you can find for **each method** that will r**equire authentication**, **permission name** and the **`kCommandKeyAuthRightDefault`**. The later one **indicates who can get this right**.
 
-There are different scopes to indicate who can access a right. Some of them are defined in [[https://github.com/aosm/Security/blob/master/Security/libsecurity_authorization/lib/AuthorizationDB.h) (you can find [all of them in here](https://www.dssw.co.uk/reference/authorization-rights/)|AuthorizationDB.h]], but as summary:
-
+There are different scopes to indicate who can access a right. Some of them are defined in [AuthorizationDB.h](https://github.com/aosm/Security/blob/master/Security/libsecurity_authorization/lib/AuthorizationDB.h) (you can find [all of them in here](https://www.dssw.co.uk/reference/authorization-rights/)), but as summary:
 
 | Name | Value | Description |
 | --- | --- | --- |
@@ -191,7 +189,6 @@ There are different scopes to indicate who can access a right. Some of them are 
 | kAuthorizationRuleAuthenticateAsAdmin | authenticate\-admin | Ask user to authenticate. He needs to be an admin (inside admin group) |
 | kAuthorizationRightRule | rule | Specify rules |
 | kAuthorizationComment | comment | Specify some extra comments on the right |
-
 
 ### Rights Verification
 
@@ -244,7 +241,7 @@ In `HelperTool/HelperTool.m` the function **`readLicenseKeyAuthorization`** chec
     return error;
 }
 ```
-```
+
 Note that to **check the requirements to get the right** to call that method the function `authorizationRightForCommand` will just check the previously comment object **`commandInfo`**. Then, it will call **`AuthorizationCopyRights`** to check **if it has the rights** to call the function (note that the flags allow interaction with the user).
 
 In this case, to call the function `readLicenseKeyAuthorization` the `kCommandKeyAuthRightDefault` is defined to `@kAuthorizationRuleClassAllow`. So **anyone can call it**.
@@ -258,16 +255,16 @@ sudo sqlite3 /var/db/auth.db
 SELECT name FROM rules;
 SELECT name FROM rules WHERE name LIKE '%safari%';
 ```
-```
+
 Then, you can read who can access the right with:
 
 ```bash
 security authorizationdb read com.apple.safaridriver.allow
 ```
-```
+
 ### Permissive rights
 
-You can find **all the permissions configurations** [[https://www.dssw.co.uk/reference/authorization-rights/|**in here**]], but the combinations that won't require user interaction would be:
+You can find **all the permissions configurations** [**in here**](https://www.dssw.co.uk/reference/authorization-rights/), but the combinations that won't require user interaction would be:
 
 1. **'authenticate-user': 'false'**
    - This is the most direct key. If set to `false`, it specifies that a user does not need to provide authentication to gain this right.
@@ -279,7 +276,7 @@ You can find **all the permissions configurations** [[https://www.dssw.co.uk/ref
 4. **'shared': 'true'**
    - This key doesn't grant rights without authentication. Instead, if set to `true`, it means that once the right has been authenticated, it can be shared among multiple processes without each one needing to re-authenticate. But the initial granting of the right would still require authentication unless combined with other keys like `'authenticate-user': 'false'`.
 
-You can [[https://gist.github.com/carlospolop/96ecb9e385a4667b9e40b24e878652f9|**use this script**]] to get the interesting rights:
+You can [**use this script**](https://gist.github.com/carlospolop/96ecb9e385a4667b9e40b24e878652f9) to get the interesting rights:
 
 ```bash
 Rights with 'authenticate-user': 'false':
@@ -291,17 +288,16 @@ com-apple-aosnotification-findmymac-remove, com-apple-diskmanagement-reservekek,
 Rights with 'session-owner': 'true':
 authenticate-session-owner, authenticate-session-owner-or-admin, authenticate-session-user, com-apple-safari-allow-apple-events-to-run-javascript, com-apple-safari-allow-javascript-in-smart-search-field, com-apple-safari-allow-unsigned-app-extensions, com-apple-safari-install-ephemeral-extensions, com-apple-safari-show-credit-card-numbers, com-apple-safari-show-passwords, com-apple-icloud-passwordreset, com-apple-icloud-passwordreset, is-session-owner, system-identity-write-self, use-login-window-ui
 ```
-```
+
 ## Reversing Authorization
 
 ### Checking if EvenBetterAuthorization is used
 
 If you find the function: **`[HelperTool checkAuthorization:command:]`** it's probably the the process is using the previously mentioned schema for authorization:
 
-![[../../../../../images/image (42).png|]]
+![](../../../../../images/image (42).png)
 
-
-Thisn, if this function is calling functions such as `AuthorizationCreateFromExternalForm`, `authorizationRightForCommand`, `AuthorizationCopyRights`, `AuhtorizationFree`, it's using [[https://github.com/brenwell/EvenBetterAuthorizationSample/blob/e1052a1855d3a5e56db71df5f04e790bfd4389c4/HelperTool/HelperTool.m#L101-L154|**EvenBetterAuthorizationSample**]].
+Thisn, if this function is calling functions such as `AuthorizationCreateFromExternalForm`, `authorizationRightForCommand`, `AuthorizationCopyRights`, `AuhtorizationFree`, it's using [**EvenBetterAuthorizationSample**](https://github.com/brenwell/EvenBetterAuthorizationSample/blob/e1052a1855d3a5e56db71df5f04e790bfd4389c4/HelperTool/HelperTool.m#L101-L154).
 
 Check the **`/var/db/auth.db`** to see if it's possible to get permissions to call some privileged action without user interaction.
 
@@ -311,10 +307,9 @@ Then, you need to find the protocol schema in order to be able to establish a co
 
 The function **`shouldAcceptNewConnection`** indicates the protocol being exported:
 
-![[../../../../../images/image (44).png|]]
+![](../../../../../images/image (44).png)
 
-
-In this case, we have the same as in EvenBetterAuthorizationSample, [[https://github.com/brenwell/EvenBetterAuthorizationSample/blob/e1052a1855d3a5e56db71df5f04e790bfd4389c4/HelperTool/HelperTool.m#L94|**check this line**]].
+In this case, we have the same as in EvenBetterAuthorizationSample, [**check this line**](https://github.com/brenwell/EvenBetterAuthorizationSample/blob/e1052a1855d3a5e56db71df5f04e790bfd4389c4/HelperTool/HelperTool.m#L94).
 
 Knowing, the name of the used protocol, it's possible to **dump its header definition** with:
 
@@ -331,13 +326,12 @@ class-dump /Library/PrivilegedHelperTools/com.example.HelperTool
 @end
 [...]
 ```
-```
+
 Lastly, we just need to know the **name of the exposed Mach Service** in order to stablish a communication with it. There are several ways to find this:
 
 - In the **`[HelperTool init]`** where you can see the Mach Service being used:
 
-![[../../../../../images/image (41).png|]]
-
+![](../../../../../images/image (41).png)
 
 - In the launchd plist:
 
@@ -346,14 +340,14 @@ cat /Library/LaunchDaemons/com.example.HelperTool.plist
 
 [...]
 
-	MachServices
+	<key>MachServices</key>
 	<dict>
-		com.example.HelperTool
-		
+		<key>com.example.HelperTool</key>
+		<true/>
 	</dict>
 [...]
 ```
-```
+
 ### Exploit Example
 
 In this example is created:
@@ -440,14 +434,12 @@ int main(void) {
     NSLog(@"Finished!");
 }
 ```
-```
+
 ## Other XPC privilege helpers abused
 
-- [[https://blog.securelayer7.net/applied-endpointsecurity-framework-previlege-escalation/?utm_source=pocket_shared|https://blog.securelayer7.net/applied-endpointsecurity-framework-previlege-escalation/?utm_source=pocket_shared]]
+- [https://blog.securelayer7.net/applied-endpointsecurity-framework-previlege-escalation/?utm_source=pocket_shared](https://blog.securelayer7.net/applied-endpointsecurity-framework-previlege-escalation/?utm_source=pocket_shared)
 
 ## References
 
-- [[https://theevilbit.github.io/posts/secure_coding_xpc_part1/|https://theevilbit.github.io/posts/secure_coding_xpc_part1/]]
-
-
+- [https://theevilbit.github.io/posts/secure_coding_xpc_part1/](https://theevilbit.github.io/posts/secure_coding_xpc_part1/)
 

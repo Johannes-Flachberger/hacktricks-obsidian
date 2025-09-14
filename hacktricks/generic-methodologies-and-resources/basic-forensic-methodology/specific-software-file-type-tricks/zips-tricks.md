@@ -1,17 +1,16 @@
 # ZIPs tricks
 
-
 **Command-line tools** for managing **zip files** are essential for diagnosing, repairing, and cracking zip files. Here are some key utilities:
 
 - **`unzip`**: Reveals why a zip file may not decompress.
 - **`zipdetails -v`**: Offers detailed analysis of zip file format fields.
 - **`zipinfo`**: Lists contents of a zip file without extracting them.
 - **`zip -F input.zip --out output.zip`** and **`zip -FF input.zip --out output.zip`**: Try to repair corrupted zip files.
-- **[[https://github.com/hyc/fcrackzip|fcrackzip]]**: A tool for brute-force cracking of zip passwords, effective for passwords up to around 7 characters.
+- **[fcrackzip](https://github.com/hyc/fcrackzip)**: A tool for brute-force cracking of zip passwords, effective for passwords up to around 7 characters.
 
-The [[https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT|Zip file format specification]] provides comprehensive details on the structure and standards of zip files.
+The [Zip file format specification](https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT) provides comprehensive details on the structure and standards of zip files.
 
-It's crucial to note that password-protected zip files **do not encrypt filenames or file sizes** within, a security flaw not shared with RAR or 7z files which encrypt this information. Furthermore, zip files encrypted with the older ZipCrypto method are vulnerable to a **plaintext attack** if an unencrypted copy of a compressed file is available. This attack leverages the known content to crack the zip's password, a vulnerability detailed in [[https://www.hackthis.co.uk/articles/known-plaintext-attack-cracking-zip-files) and further explained in [this academic paper](https://www.cs.auckland.ac.nz/~mike/zipattacks.pdf|HackThis's article]]. However, zip files secured with **AES-256** encryption are immune to this plaintext attack, showcasing the importance of choosing secure encryption methods for sensitive data.
+It's crucial to note that password-protected zip files **do not encrypt filenames or file sizes** within, a security flaw not shared with RAR or 7z files which encrypt this information. Furthermore, zip files encrypted with the older ZipCrypto method are vulnerable to a **plaintext attack** if an unencrypted copy of a compressed file is available. This attack leverages the known content to crack the zip's password, a vulnerability detailed in [HackThis's article](https://www.hackthis.co.uk/articles/known-plaintext-attack-cracking-zip-files) and further explained in [this academic paper](https://www.cs.auckland.ac.nz/~mike/zipattacks.pdf). However, zip files secured with **AES-256** encryption are immune to this plaintext attack, showcasing the importance of choosing secure encryption methods for sensitive data.
 
 ---
 
@@ -47,7 +46,7 @@ Detection with zipdetails:
 ```bash
 zipdetails -v sample.apk | less
 ```
-```
+
 Look at the General Purpose Bit Flag for local and central headers. A telltale value is bit 0 set (Encryption) even for core entries:
 
 ```
@@ -58,7 +57,7 @@ General Purpose Flag  0A09
   [Bit 3]   1 'Streamed'
   [Bit 11]  1 'Language Encoding'
 ```
-```
+
 Heuristic: If an APK installs and runs on-device but core entries appear "encrypted" to tools, the GPBF was tampered with.
 
 Fix by clearing GPBF bit 0 in both Local File Headers (LFH) and Central Directory (CD) entries. Minimal byte-patcher:
@@ -93,14 +92,14 @@ if __name__ == '__main__':
     open(outp, 'wb').write(data)
     print(f'Patched: LFH={p_lfh}, CDH={p_cdh}')
 ```
-```
+
 Usage:
 
 ```bash
 python3 gpbf_clear.py obfuscated.apk normalized.apk
 zipdetails -v normalized.apk | grep -A2 "General Purpose Flag"
 ```
-```
+
 You should now see `General Purpose Flag  0000` on core entries and tools will parse the APK again.
 
 ### 2) Large/custom Extra fields to break parsers
@@ -112,7 +111,7 @@ Inspection:
 ```bash
 zipdetails -v sample.apk | sed -n '/Extra ID/,+4p' | head -n 50
 ```
-```
+
 Examples observed: unknown IDs like `0xCAFE` ("Java Executable") or `0x414A` ("JA:") carrying large payloads.
 
 DFIR heuristics:
@@ -126,7 +125,7 @@ mkdir /tmp/apk
 unzip -qq normalized.apk -d /tmp/apk
 (cd /tmp/apk && zip -qr ../clean.apk .)
 ```
-```
+
 ### 3) File/Directory name collisions (hiding real artifacts)
 
 A ZIP can contain both a file `X` and a directory `X/`. Some extractors and decompilers get confused and may overlay or hide the real file with a directory entry. This has been observed with entries colliding with core APK names like `classes.dex`.
@@ -143,7 +142,7 @@ unzip normalized.apk -d outdir
 # replace outdir/classes.dex? [y]es/[n]o/[A]ll/[N]one/[r]ename: r
 # new name: unk_classes.dex
 ```
-```
+
 Programmatic detection post-fix:
 
 ```python
@@ -162,7 +161,7 @@ for base, variants in collisions.items():
     if len(variants) > 1:
         print('COLLISION', base, '->', variants)
 ```
-```
+
 Blue-team detection ideas:
 - Flag APKs whose local headers mark encryption (GPBF bit 0 = 1) yet install/run.
 - Flag large/unknown Extra fields on core entries (look for markers like `JADXBLOCK`).
@@ -172,8 +171,8 @@ Blue-team detection ideas:
 
 ## References
 
-- [[https://michael-myers.github.io/blog/categories/ctf/|https://michael-myers.github.io/blog/categories/ctf/]]
-- [[https://shindan.io/blog/godfather-part-1-a-multistage-dropper|GodFather – Part 1 – A multistage dropper (APK ZIP anti-reversing)]]
-- [[https://metacpan.org/pod/distribution/Archive-Zip/scripts/zipdetails|zipdetails (Archive::Zip script)]]
-- [[https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT|ZIP File Format Specification (PKWARE APPNOTE.TXT)]]
+- [https://michael-myers.github.io/blog/categories/ctf/](https://michael-myers.github.io/blog/categories/ctf/)
+- [GodFather – Part 1 – A multistage dropper (APK ZIP anti-reversing)](https://shindan.io/blog/godfather-part-1-a-multistage-dropper)
+- [zipdetails (Archive::Zip script)](https://metacpan.org/pod/distribution/Archive-Zip/scripts/zipdetails)
+- [ZIP File Format Specification (PKWARE APPNOTE.TXT)](https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT)
 

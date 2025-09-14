@@ -1,6 +1,5 @@
 # Hash Length Extension Attack
 
-
 ## Summary of the attack
 
 Imagine a server which is **signing** some **data** by **appending** a **secret** to some known clear text data and then hashing that data. If you know:
@@ -32,5 +31,5 @@ If an attacker wants to append the string "append" he can:
 
 ### References
 
-You can find this attack good explained in [[https://blog.skullsecurity.org/2012/everything-you-need-to-know-about-hash-length-extension-attacks|https://blog.skullsecurity.org/2012/everything-you-need-to-know-about-hash-length-extension-attacks]]
+You can find this attack good explained in [https://blog.skullsecurity.org/2012/everything-you-need-to-know-about-hash-length-extension-attacks](https://blog.skullsecurity.org/2012/everything-you-need-to-know-about-hash-length-extension-attacks)
 

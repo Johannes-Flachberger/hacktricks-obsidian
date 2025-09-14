@@ -1,7 +1,5 @@
 # FZ - 125kHz RFID
 
-
-
 ## Intro
 
 For more info about how 125kHz tags work check:
@@ -10,7 +8,7 @@ For more info about how 125kHz tags work check:
 
 ## Actions
 
-For more info about these types of tags [[../pentesting-rfid.md#low-frequency-rfid-tags-125khz|**read this intro**]].
+For more info about these types of tags [**read this intro**](../pentesting-rfid.md#low-frequency-rfid-tags-125khz).
 
 ### Read
 
@@ -32,15 +30,13 @@ Some times, when you get a card you will find the ID (or part) of it written in 
 For example in this EM-Marin card in the physical card is possible to **read the last 3 of 5 bytes in clear**.\
 The other 2 can be brute-forced if you cannot read them from the card.
 
-![[../../../images/image (104).png|]]
-
+![](../../../images/image (104).png)
 
 - **HID**
 
 Same happens in this HID card where only 2 out of 3 bytes can be found printed in the card
 
-![[../../../images/image (1014).png|]]
-
+![](../../../images/image (1014).png)
 
 ### Emulate/Write
 
@@ -48,7 +44,5 @@ After **copying** a card or **entering** the ID **manually** it's possible to **
 
 ## References
 
-- [[https://blog.flipperzero.one/rfid/|https://blog.flipperzero.one/rfid/]]
-
-
+- [https://blog.flipperzero.one/rfid/](https://blog.flipperzero.one/rfid/)
 

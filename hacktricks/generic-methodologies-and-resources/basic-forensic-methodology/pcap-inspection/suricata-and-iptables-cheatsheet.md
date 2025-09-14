@@ -1,6 +1,5 @@
 # Suricata & Iptables cheatsheet
 
-
 ## Iptables
 
 ### Chains
@@ -37,6 +36,7 @@ iptables -P INPUT DROP # Default to drop
 iptables -I INPUT -p tcp --dport 8000 -j ACCEPT
 iptables -I INPUT -p tcp --dport 443 -j ACCEPT
 
+
 # Persist Iptables
 ## Debian/Ubuntu:
 apt-get install iptables-persistent
@@ -48,7 +48,7 @@ iptables-save > /etc/sysconfig/iptables
 ip6tables-save > /etc/sysconfig/ip6tables
 iptables-restore < /etc/sysconfig/iptables
 ```
-```
+
 ## Suricata
 
 ### Install & Config
@@ -85,6 +85,7 @@ rule-files:
 systemctl suricata start
 suricata -c /etc/suricata/suricata.yaml -i eth0
 
+
 # Reload rules
 suricatasc -c ruleset-reload-nonblocking
 ## or set the follogin in /etc/suricata/suricata.yaml
@@ -117,10 +118,10 @@ Type=simple
 
 systemctl daemon-reload
 ```
-```
+
 ### Rules Definitions
 
-[[https://github.com/OISF/suricata/blob/master/doc/userguide/rules/intro.rst|From the docs:]] A rule/signature consists of the following:
+[From the docs:](https://github.com/OISF/suricata/blob/master/doc/userguide/rules/intro.rst) A rule/signature consists of the following:
 
 - The **action**, determines what happens when the signature matches.
 - The **header**, defines the protocol, IP addresses, ports and direction of the rule.
@@ -129,7 +130,7 @@ systemctl daemon-reload
 ```bash
 alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"HTTP GET Request Containing Rule in URI"; flow:established,to_server; http.method; content:"GET"; http.uri; content:"rule"; fast_pattern; classtype:bad-unknown; sid:123; rev:1;)
 ```
-```
+
 #### **Valid actions are**
 
 - alert - generate an alert
@@ -146,7 +147,7 @@ alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"HTTP GET Request Containing 
 - udp
 - icmp
 - ip (ip stands for ‘all’ or ‘any’)
-- _layer7 protocols_: http, ftp, tls, smb, dns, ssh... (more in the [[https://suricata.readthedocs.io/en/suricata-6.0.0/rules/intro.html)|**docs**]]
+- _layer7 protocols_: http, ftp, tls, smb, dns, ssh... (more in the [**docs**](https://suricata.readthedocs.io/en/suricata-6.0.0/rules/intro.html))
 
 #### Source and Destination Addresses
 
@@ -182,10 +183,10 @@ It's possible to indicate the direction of the communication rule being applied:
 source -> destination
 source <> destination  (both directions)
 ```
-```
+
 #### Keywords
 
-There are **hundreds of options** available in Suricata to search for the **specific packet** you are looking for, here it will be mentioned if something interesting is found. Check the [[https://suricata.readthedocs.io/en/suricata-6.0.0/rules/index.html|**documentation** ]]for more!
+There are **hundreds of options** available in Suricata to search for the **specific packet** you are looking for, here it will be mentioned if something interesting is found. Check the [**documentation** ](https://suricata.readthedocs.io/en/suricata-6.0.0/rules/index.html)for more!
 
 ```bash
 # Meta Keywords
@@ -227,7 +228,4 @@ drop tcp any any -> any any (msg:"regex"; pcre:"/CTF\{[\w]{3}/i"; sid:10001;)
 ## Drop by port
 drop tcp any any -> any 8000 (msg:"8000 port"; sid:1000;)
 ```
-```
-
-
 

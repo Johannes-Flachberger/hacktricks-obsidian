@@ -1,6 +1,5 @@
 # Abusing Tokens
 
-
 ## Tokens
 
 If you **don't know what are Windows Access Tokens** read this page before continuing:
@@ -11,7 +10,7 @@ If you **don't know what are Windows Access Tokens** read this page before conti
 
 ### SeImpersonatePrivilege
 
-This is privilege that is held by any process allows the impersonation (but not creation) of any token, given that a handle to it can be obtained. A privileged token can be acquired from a Windows service (DCOM) by inducing it to perform NTLM authentication against an exploit, subsequently enabling the execution of a process with SYSTEM privileges. This vulnerability can be exploited using various tools, such as [[https://github.com/ohpe/juicy-potato), [RogueWinRM](https://github.com/antonioCoco/RogueWinRM) (which requires winrm to be disabled), [SweetPotato](https://github.com/CCob/SweetPotato), and [PrintSpoofer](https://github.com/itm4n/PrintSpoofer|juicy-potato]].
+This is privilege that is held by any process allows the impersonation (but not creation) of any token, given that a handle to it can be obtained. A privileged token can be acquired from a Windows service (DCOM) by inducing it to perform NTLM authentication against an exploit, subsequently enabling the execution of a process with SYSTEM privileges. This vulnerability can be exploited using various tools, such as [juicy-potato](https://github.com/ohpe/juicy-potato), [RogueWinRM](https://github.com/antonioCoco/RogueWinRM) (which requires winrm to be disabled), [SweetPotato](https://github.com/CCob/SweetPotato), and [PrintSpoofer](https://github.com/itm4n/PrintSpoofer).
 
 [[roguepotato-and-printspoofer.md]]
 
@@ -32,9 +31,9 @@ If you have enabled this token you can use **KERB_S4U_LOGON** to get an **impers
 The system is caused to **grant all read access** control to any file (limited to read operations) by this privilege. It is utilized for **reading the password hashes of local Administrator** accounts from the registry, following which, tools like "**psexec**" or "**wmiexec**" can be used with the hash (Pass-the-Hash technique). However, this technique fails under two conditions: when the Local Administrator account is disabled, or when a policy is in place that removes administrative rights from Local Administrators connecting remotely.\
 You can **abuse this privilege** with:
 
-- [[https://github.com/Hackplayers/PsCabesha-tools/blob/master/Privesc/Acl-FullControl.ps1|https://github.com/Hackplayers/PsCabesha-tools/blob/master/Privesc/Acl-FullControl.ps1]]
-- [[https://github.com/giuliano108/SeBackupPrivilege/tree/master/SeBackupPrivilegeCmdLets/bin/Debug|https://github.com/giuliano108/SeBackupPrivilege/tree/master/SeBackupPrivilegeCmdLets/bin/Debug]]
-- following **IppSec** in [[https://www.youtube.com/watch?v=IfCysW0Od8w&t=2610&ab_channel=IppSec|https://www.youtube.com/watch?v=IfCysW0Od8w\&t=2610\&ab_channel=IppSec]]
+- [https://github.com/Hackplayers/PsCabesha-tools/blob/master/Privesc/Acl-FullControl.ps1](https://github.com/Hackplayers/PsCabesha-tools/blob/master/Privesc/Acl-FullControl.ps1)
+- [https://github.com/giuliano108/SeBackupPrivilege/tree/master/SeBackupPrivilegeCmdLets/bin/Debug](https://github.com/giuliano108/SeBackupPrivilege/tree/master/SeBackupPrivilegeCmdLets/bin/Debug)
+- following **IppSec** in [https://www.youtube.com/watch?v=IfCysW0Od8w\&t=2610\&ab_channel=IppSec](https://www.youtube.com/watch?v=IfCysW0Od8w&t=2610&ab_channel=IppSec)
 - Or as explained in the **escalating privileges with Backup Operators** section of:
 
 [[../active-directory-methodology/privileged-groups-and-token-privileges.md]]
@@ -80,8 +79,8 @@ reg.SetValueEx(key, "ImagePath", 0, reg.REG_SZ, "path_to_binary")
 reg.SetValueEx(key, "Type", 0, reg.REG_DWORD, 0x00000001)
 reg.CloseKey(key)
 ```
-```
-More ways to abuse this privilege in [[https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges#seloaddriverprivilege|https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges#seloaddriverprivilege]]
+
+More ways to abuse this privilege in [https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges#seloaddriverprivilege](https://www.ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges#seloaddriverprivilege)
 
 ### SeTakeOwnershipPrivilege
 
@@ -102,14 +101,14 @@ icacls 'C:\some\file.txt' /grant <your_username>:F #Now you have full access
 %WINDIR%\system32\config\default.sav
 c:\inetpub\wwwwroot\web.config
 ```
-```
+
 ### SeDebugPrivilege
 
 This privilege permits the **debug other processes**, including to read and write in the memore. Various strategies for memory injection, capable of evading most antivirus and host intrusion prevention solutions, can be employed with this privilege.
 
 #### Dump memory
 
-You could use [[https://docs.microsoft.com/en-us/sysinternals/downloads/procdump) from the [SysInternals Suite](https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite) to **capture the memory of a process**. Specifically, this can apply to the **Local Security Authority Subsystem Service (**[**LSASS**](https://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service)**|ProcDump]]** process, which is responsible for storing user credentials once a user has successfully logged into a system.
+You could use [ProcDump](https://docs.microsoft.com/en-us/sysinternals/downloads/procdump) from the [SysInternals Suite](https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite) to **capture the memory of a process**. Specifically, this can apply to the **Local Security Authority Subsystem Service (**[**LSASS**](https://en.wikipedia.org/wiki/Local_Security_Authority_Subsystem_Service)**)** process, which is responsible for storing user credentials once a user has successfully logged into a system.
 
 You can then load this dump in mimikatz to obtain passwords:
 
@@ -119,46 +118,46 @@ mimikatz # log
 mimikatz # sekurlsa::minidump lsass.dmp
 mimikatz # sekurlsa::logonpasswords
 ```
-```
+
 #### RCE
 
 If you want to get a `NT SYSTEM` shell you could use:
 
-- [[https://github.com/bruno-1337/SeDebugPrivilege-Exploit|**SeDebugPrivilege-Exploit (C++)**]]
-- [[https://github.com/daem0nc0re/PrivFu/tree/main/PrivilegedOperations/SeDebugPrivilegePoC|**SeDebugPrivilegePoC (C#)**]]
-- [[https://raw.githubusercontent.com/decoder-it/psgetsystem/master/psgetsys.ps1|**psgetsys.ps1 (Powershell Script)**]]
+- [**SeDebugPrivilege-Exploit (C++)**](https://github.com/bruno-1337/SeDebugPrivilege-Exploit)
+- [**SeDebugPrivilegePoC (C#)**](https://github.com/daem0nc0re/PrivFu/tree/main/PrivilegedOperations/SeDebugPrivilegePoC)
+- [**psgetsys.ps1 (Powershell Script)**](https://raw.githubusercontent.com/decoder-it/psgetsystem/master/psgetsys.ps1)
 
 ```bash
 # Get the PID of a process running as NT SYSTEM
 import-module psgetsys.ps1; [MyProcess]::CreateProcessFromParent(<system_pid>,<command_to_execute>)
 ```
-```
+
 ## Check privileges
 
 ```
 whoami /priv
 ```
-```
+
 The **tokens that appear as Disabled** can be enable, you you actually can abuse _Enabled_ and _Disabled_ tokens.
 
 ### Enable All the tokens
 
-If you have tokens disables, you can use the script [[https://raw.githubusercontent.com/fashionproof/EnableAllTokenPrivs/master/EnableAllTokenPrivs.ps1|**EnableAllTokenPrivs.ps1**]] to enable all the tokens:
+If you have tokens disables, you can use the script [**EnableAllTokenPrivs.ps1**](https://raw.githubusercontent.com/fashionproof/EnableAllTokenPrivs/master/EnableAllTokenPrivs.ps1) to enable all the tokens:
 
 ```bash
 .\EnableAllTokenPrivs.ps1
 whoami /priv
 ```
-```
-Or the **script** embed in this [[https://www.leeholmes.com/adjusting-token-privileges-in-powershell/|**post**]].
+
+Or the **script** embed in this [**post**](https://www.leeholmes.com/adjusting-token-privileges-in-powershell/).
 
 ## Table
 
-Full token privileges cheatsheet at [[https://github.com/gtworek/Priv2Admin|https://github.com/gtworek/Priv2Admin]], summary below will only list direct ways to exploit the privilege to obtain an admin session or read sensitive files.
+Full token privileges cheatsheet at [https://github.com/gtworek/Priv2Admin](https://github.com/gtworek/Priv2Admin), summary below will only list direct ways to exploit the privilege to obtain an admin session or read sensitive files.
 
 | Privilege                  | Impact      | Tool                    | Execution path                                                                                                                                                                                                                                                                                                                                     | Remarks                                                                                                                                                                                                                                                                                                                        |
 | -------------------------- | ----------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`SeAssignPrimaryToken`** | _**Admin**_ | 3rd party tool          | _"It would allow a user to impersonate tokens and privesc to nt system using tools such as potato.exe, rottenpotato.exe and juicypotato.exe"_                                                                                                                                                                                                      | Thank you [[https://twitter.com/Defte_|Aurélien Chalot]] for the update. I will try to re-phrase it to something more recipe-like soon.                                                                                                                                                                                         |
+| **`SeAssignPrimaryToken`** | _**Admin**_ | 3rd party tool          | _"It would allow a user to impersonate tokens and privesc to nt system using tools such as potato.exe, rottenpotato.exe and juicypotato.exe"_                                                                                                                                                                                                      | Thank you [Aurélien Chalot](https://twitter.com/Defte_) for the update. I will try to re-phrase it to something more recipe-like soon.                                                                                                                                                                                         |
 | **`SeBackup`**             | **Threat**  | _**Built-in commands**_ | Read sensitve files with `robocopy /b`                                                                                                                                                                                                                                                                                                             | \- May be more interesting if you can read %WINDIR%\\MEMORY.DMP  
   
 \- `SeBackupPrivilege` (and robocopy) is not helpful when it comes to open files.  
@@ -167,18 +166,18 @@ Full token privileges cheatsheet at [[https://github.com/gtworek/Priv2Admin|http
 
                                                                       |
 | **`SeCreateToken`**        | _**Admin**_ | 3rd party tool          | Create arbitrary token including local admin rights with `NtCreateToken`.                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                                                                                |
-| **`SeDebug`**              | _**Admin**_ | **PowerShell**          | Duplicate the `lsass.exe` token.                                                                                                                                                                                                                                                                                                                   | Script to be found at [[https://github.com/FuzzySecurity/PowerShell-Suite/blob/master/Conjure-LSASS.ps1|FuzzySecurity]]                                                                                                                                                                                                         |
+| **`SeDebug`**              | _**Admin**_ | **PowerShell**          | Duplicate the `lsass.exe` token.                                                                                                                                                                                                                                                                                                                   | Script to be found at [FuzzySecurity](https://github.com/FuzzySecurity/PowerShell-Suite/blob/master/Conjure-LSASS.ps1)                                                                                                                                                                                                         |
 | **`SeLoadDriver`**         | _**Admin**_ | 3rd party tool          | 1\. Load buggy kernel driver such as `szkg64.sys`  
 2\. Exploit the driver vulnerability  
   
 Alternatively, the privilege may be used to unload security\-related drivers with `ftlMC` builtin command. i.e.: `fltMC sysmondrv`
 
-                                                                           | 1\. The `szkg64` vulnerability is listed as [[https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-15732|CVE\-2018\-15732]]  
-2\. The `szkg64` [[https://www.greyhathacker.net/?p=1025) was created by [Parvez Anwar](https://twitter.com/parvezghh|exploit code]]
+                                                                           | 1\. The `szkg64` vulnerability is listed as [CVE\-2018\-15732](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-15732)  
+2\. The `szkg64` [exploit code](https://www.greyhathacker.net/?p=1025) was created by [Parvez Anwar](https://twitter.com/parvezghh)
 
  |
 | **`SeRestore`**            | _**Admin**_ | **PowerShell**          | 1\. Launch PowerShell/ISE with the SeRestore privilege present.  
-2\. Enable the privilege with [[https://github.com/gtworek/PSBits/blob/master/Misc/EnableSeRestorePrivilege.ps1)|Enable\-SeRestorePrivilege]].  
+2\. Enable the privilege with [Enable\-SeRestorePrivilege](https://github.com/gtworek/PSBits/blob/master/Misc/EnableSeRestorePrivilege.ps1)).  
 3\. Rename utilman.exe to utilman.old  
 4\. Rename cmd.exe to utilman.exe  
 5\. Lock the console and press Win\+U
@@ -206,8 +205,6 @@ To be verified.
 
 ## Reference
 
-- Take a look to this table defining Windows tokens: [[https://github.com/gtworek/Priv2Admin|https://github.com/gtworek/Priv2Admin]]
-- Take a look to [[https://github.com/hatRiot/token-priv/blob/master/abusing_token_eop_1.0.txt|**this paper**]] about privesc with tokens.
-
-
+- Take a look to this table defining Windows tokens: [https://github.com/gtworek/Priv2Admin](https://github.com/gtworek/Priv2Admin)
+- Take a look to [**this paper**](https://github.com/hatRiot/token-priv/blob/master/abusing_token_eop_1.0.txt) about privesc with tokens.
 

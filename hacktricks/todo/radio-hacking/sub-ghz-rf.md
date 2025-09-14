@@ -1,6 +1,5 @@
 # Sub-GHz RF
 
-
 ## Garage Doors
 
 Garage door openers typically operate at frequencies in the 300-190 MHz range, with the most common frequencies being 300 MHz, 310 MHz, 315 MHz, and 390 MHz. This frequency range is commonly used for garage door openers because it is less crowded than other frequency bands and is less likely to experience interference from other devices.
@@ -12,22 +11,19 @@ In Europe 433.92MHz is commonly used and in U.S. and Japan it's the 315MHz.
 
 ## **Brute-force Attack**
 
-![[../../images/image (1084).png|]]
-
+![](../../images/image (1084).png)
 
 If instead of sending each code 5 times (sent like this to make sure the receiver gets it) so just send it once, the time is reduced to 6mins:
 
-![[../../images/image (622).png|]]
-
+![](../../images/image (622).png)
 
 and if you **remove the 2 ms waiting** period between signals you can **reduce the time to 3minutes.**
 
 Moreover, by using the De Bruijn Sequence (a way to reduce the number of bits needed to send all the potential binary numbers to burteforce) this **time is reduced just to 8 seconds**:
 
-![[../../images/image (583).png|]]
+![](../../images/image (583).png)
 
-
-Example of this attack was implemented in [[https://github.com/samyk/opensesame|https://github.com/samyk/opensesame]]
+Example of this attack was implemented in [https://github.com/samyk/opensesame](https://github.com/samyk/opensesame)
 
 Requiring **a preamble will avoid the De Bruijn Sequence** optimization and **rolling codes will prevent this attack** (supposing the code is long enough to not be bruteforceable).
 
@@ -79,10 +75,8 @@ Testing against an aftermarket rolling code system installed on a car, **sending
 
 ## References
 
-- [[https://www.americanradioarchives.com/what-radio-frequency-does-car-key-fobs-run-on/|https://www.americanradioarchives.com/what-radio-frequency-does-car-key-fobs-run-on/]]
-- [[https://www.andrewmohawk.com/2016/02/05/bypassing-rolling-code-systems/|https://www.andrewmohawk.com/2016/02/05/bypassing-rolling-code-systems/]]
-- [[https://samy.pl/defcon2015/|https://samy.pl/defcon2015/]]
-- [[https://hackaday.io/project/164566-how-to-hack-a-car/details|https://hackaday.io/project/164566-how-to-hack-a-car/details]]
-
-
+- [https://www.americanradioarchives.com/what-radio-frequency-does-car-key-fobs-run-on/](https://www.americanradioarchives.com/what-radio-frequency-does-car-key-fobs-run-on/)
+- [https://www.andrewmohawk.com/2016/02/05/bypassing-rolling-code-systems/](https://www.andrewmohawk.com/2016/02/05/bypassing-rolling-code-systems/)
+- [https://samy.pl/defcon2015/](https://samy.pl/defcon2015/)
+- [https://hackaday.io/project/164566-how-to-hack-a-car/details](https://hackaday.io/project/164566-how-to-hack-a-car/details)
 

@@ -1,6 +1,5 @@
 # Burp Suite
 
-
 ## Basic Payloads
 
 - **Simple List:** Just a list containing an entry in each line
@@ -9,9 +8,9 @@
 - **Numbers:** Generate numbers from X to Y using Z step or randomly.
 - **Brute Forcer:** Character set, min & max length.
 
-[[https://github.com/0xC01DF00D/Collabfiltrator|https://github.com/0xC01DF00D/Collabfiltrator]] : Payload to execute commands and grab the output via DNS requests to burpcollab.
+[https://github.com/0xC01DF00D/Collabfiltrator](https://github.com/0xC01DF00D/Collabfiltrator) : Payload to execute commands and grab the output via DNS requests to burpcollab.
 
 [[https://medium.com/@ArtsSEC/burp-suite-exporter-462531be24e]]
 
-[[https://github.com/h3xstream/http-script-generator|https://github.com/h3xstream/http-script-generator]]
+[https://github.com/h3xstream/http-script-generator](https://github.com/h3xstream/http-script-generator)
 

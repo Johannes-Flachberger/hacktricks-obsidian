@@ -1,15 +1,14 @@
 # SeImpersonate from High To System
 
-
 ### Code
 
-The following code from [[https://medium.com/@seemant.bisht24/understanding-and-abusing-access-tokens-part-ii-b9069f432962|here]]. It allows to **indicate a Process ID as argument** and a CMD **running as the user** of the indicated process will be run.\
+The following code from [here](https://medium.com/@seemant.bisht24/understanding-and-abusing-access-tokens-part-ii-b9069f432962). It allows to **indicate a Process ID as argument** and a CMD **running as the user** of the indicated process will be run.\
 Running in a High Integrity process you can **indicate the PID of a process running as System** (like winlogon, wininit) and execute a cmd.exe as system.
 
 ```cpp
 impersonateuser.exe 1234
 ```
-```
+
 ```cpp:impersonateuser.cpp
 // From https://securitytimes.medium.com/understanding-and-abusing-access-tokens-part-ii-b9069f432962
 
@@ -140,7 +139,7 @@ int main(int argc, char** argv) {
 	return 0;
 }
 ```
-```
+
 ### Error
 
 On some occasions you may try to impersonate System and it won't work showing an output like the following:
@@ -155,7 +154,7 @@ On some occasions you may try to impersonate System and it won't work showing an
 [-] CreateProcessWithTokenW Return Code: 0
 [-] CreateProcessWithTokenW Error: 1326
 ```
-```
+
 This means that even if you are running on a High Integrity level **you don't have enough permissions**.\
 Let's check current Administrator permissions over `svchost.exe` processes with **processes explorer** (or you can also use process hacker):
 
@@ -166,15 +165,13 @@ Let's check current Administrator permissions over `svchost.exe` processes with 
 5. Select "Administrators" and click on "Edit"
 6. Click on "Show advanced permissions"
 
-![[<../../images/image (437).png>|]]
+![[../../images/image (437).png]]
 
 The previous image contains all the privileges that "Administrators" have over the selected process (as you can see in case of `svchost.exe` they only have "Query" privileges)
 
 See the privileges "Administrators" have over `winlogon.exe`:
 
-![[<../../images/image (1102).png>|]]
+![[../../images/image (1102).png]]
 
 Inside that process "Administrators" can "Read Memory" and "Read Permissions" which probably allows Administrators to impersonate the token used by this process.
-
-
 

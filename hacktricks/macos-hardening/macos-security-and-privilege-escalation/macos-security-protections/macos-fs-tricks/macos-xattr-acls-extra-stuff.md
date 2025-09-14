@@ -1,6 +1,5 @@
 # macOS xattr-acls extra stuff
 
-
 ```bash
 rm -rf /tmp/test*
 echo test >/tmp/test
@@ -12,10 +11,10 @@ group:ABCDEFAB-CDEF-ABCD-EFAB-CDEF0000000C:everyone:12:deny:write,writeattr,writ
 
 ACL in hex: \x21\x23\x61\x63\x6c\x20\x31\x0a\x67\x72\x6f\x75\x70\x3a\x41\x42\x43\x44\x45\x46\x41\x42\x2d\x43\x44\x45\x46\x2d\x41\x42\x43\x44\x2d\x45\x46\x41\x42\x2d\x43\x44\x45\x46\x30\x30\x30\x30\x30\x30\x30\x43\x3a\x65\x76\x65\x72\x79\x6f\x6e\x65\x3a\x31\x32\x3a\x64\x65\x6e\x79\x3a\x77\x72\x69\x74\x65\x2c\x77\x72\x69\x74\x65\x61\x74\x74\x72\x2c\x77\x72\x69\x74\x65\x65\x78\x74\x61\x74\x74\x72\x2c\x77\x72\x69\x74\x65\x73\x65\x63\x75\x72\x69\x74\x79\x2c\x63\x68\x6f\x77\x6e\x0a
 ```
-```
+
+<details>
 
 **Code of get\_acls**
-
 
 ```c
 // gcc -o get_acls get_acls
@@ -57,8 +56,8 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 ```
-```
 
+</details>
 
 ```bash
 # Lets add the xattr com.apple.xxx.xxxx with the acls
@@ -67,10 +66,10 @@ mkdir start/protected
 ./set_xattr start/protected
 echo something > start/protected/something
 ```
-```
+
+<details>
 
 **Code of set\_xattr**
-
 
 ```c
 // gcc -o set_xattr set_xattr.c
@@ -79,6 +78,7 @@ echo something > start/protected/something
 #include <string.h>
 #include <sys/xattr.h>
 #include <sys/acl.h>
+
 
 void print_xattrs(const char *filepath) {
     ssize_t buflen = listxattr(filepath, NULL, 0, XATTR_NOFOLLOW);
@@ -130,6 +130,7 @@ void print_xattrs(const char *filepath) {
     free(buf);
 }
 
+
 int main(int argc, char *argv[]) {
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <filepath>\n", argv[0]);
@@ -152,8 +153,8 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 ```
-```
 
+</details>
 
 ```bash
 # Create appledoublefile with the xattr entitlement
@@ -169,13 +170,10 @@ zip -r protected.zip protected ._protected
 rm -rf protected
 rm ._*
 ```
-```
+
 ```bash
 # Check if it worked
 ditto -x -k --rsrc protected.zip .
 xattr -l protected
 ```
-```
-
-
 

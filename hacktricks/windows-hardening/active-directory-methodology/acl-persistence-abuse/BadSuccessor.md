@@ -1,6 +1,5 @@
 # Abusing Active Directory ACLs/ACEs
 
-
 ## Overview
 
 Delegated Managed Service Accounts (**dMSAs**) are a brand‑new AD principal type introduced with **Windows Server 2025**. They are designed to replace legacy service accounts by allowing a one‑click “migration” that automatically copies the old account’s Service Principal Names (SPNs), group memberships, delegation settings, and even cryptographic keys into the new dMSA, giving applications a seamless cut‑over and eliminating Kerberoasting risk.
@@ -55,12 +54,11 @@ Therefore, mass‑linking thousands of users lets an attacker dump hashes “at 
 
 ## Tools
 
-- [[https://github.com/akamai/BadSuccessor|https://github.com/akamai/BadSuccessor]]
-- [[https://github.com/logangoins/SharpSuccessor|https://github.com/logangoins/SharpSuccessor]]
-- [[https://github.com/LuemmelSec/Pentest-Tools-Collection/blob/main/tools/ActiveDirectory/BadSuccessor.ps1|https://github.com/LuemmelSec/Pentest-Tools-Collection/blob/main/tools/ActiveDirectory/BadSuccessor.ps1]]
+- [https://github.com/akamai/BadSuccessor](https://github.com/akamai/BadSuccessor)
+- [https://github.com/logangoins/SharpSuccessor](https://github.com/logangoins/SharpSuccessor)
+- [https://github.com/LuemmelSec/Pentest-Tools-Collection/blob/main/tools/ActiveDirectory/BadSuccessor.ps1](https://github.com/LuemmelSec/Pentest-Tools-Collection/blob/main/tools/ActiveDirectory/BadSuccessor.ps1)
 
 ## References
 
-- [[https://www.akamai.com/blog/security-research/abusing-dmsa-for-privilege-escalation-in-active-directory|https://www.akamai.com/blog/security-research/abusing-dmsa-for-privilege-escalation-in-active-directory]]
-
+- [https://www.akamai.com/blog/security-research/abusing-dmsa-for-privilege-escalation-in-active-directory](https://www.akamai.com/blog/security-research/abusing-dmsa-for-privilege-escalation-in-active-directory)
 

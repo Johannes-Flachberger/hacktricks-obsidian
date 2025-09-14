@@ -1,6 +1,5 @@
 # macOS Security & Privilege Escalation
 
-
 ## Basic MacOS
 
 If you are not familiar with macOS, you should start learning the basics of macOS:
@@ -25,8 +24,8 @@ If you are not familiar with macOS, you should start learning the basics of macO
 
 [[macos-protocols.md]]
 
-- **Opensource** macOS: [[https://opensource.apple.com/|https://opensource.apple.com/]]
-  - To download a `tar.gz` change a URL such as [[https://opensource.apple.com/source/dyld/) to [https://opensource.apple.com/**tarballs**/dyld/**dyld-852.2.tar.gz**](https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz|https://opensource.apple.com/**source**/dyld/]]
+- **Opensource** macOS: [https://opensource.apple.com/](https://opensource.apple.com/)
+  - To download a `tar.gz` change a URL such as [https://opensource.apple.com/**source**/dyld/](https://opensource.apple.com/source/dyld/) to [https://opensource.apple.com/**tarballs**/dyld/**dyld-852.2.tar.gz**](https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz)
 
 ### MacOS MDM
 
@@ -74,7 +73,7 @@ Therefore, an attacker that wants to successfully compromise a macOS machine wil
 
 These privileges are usually given in the form of **entitlements** the application is signed with, or the application might requested some accesses and after the **user approving them** they can be found in the **TCC databases**. Another way a process can obtain these privileges is by being a **child of a process** with those **privileges** as they are usually **inherited**.
 
-Follow these links to find different was to [[macos-security-protections/macos-tcc/README.md#Tcc Privesc And Bypasses|escalate privileges in TCC]], to [[macos-security-protections/macos-tcc/macos-tcc-bypasses/README.md|bypass TCC]] and how in the past [[macos-security-protections/macos-sip.md#sip-bypasses|**SIP has been bypassed**]].
+Follow these links to find different was to [[macos-security-protections/macos-tcc/README.md#Tcc Privesc And Bypasses|escalate privileges in TCC]], to [[macos-security-protections/macos-tcc/macos-tcc-bypasses/README.md|bypass TCC]] and how in the past [**SIP has been bypassed**](macos-security-protections/macos-sip.md#sip-bypasses).
 
 ## macOS Traditional Privilege Escalation
 
@@ -84,15 +83,13 @@ Of course from a red teams perspective you should be also interested in escalati
 
 ## macOS Compliance
 
-- [[https://github.com/usnistgov/macos_security|https://github.com/usnistgov/macos_security]]
+- [https://github.com/usnistgov/macos_security](https://github.com/usnistgov/macos_security)
 
 ## References
 
-- [[https://www.amazon.com/OS-Incident-Response-Scripting-Analysis-ebook/dp/B01FHOHHVS|**OS X Incident Response: Scripting and Analysis**]]
-- [[https://taomm.org/vol1/analysis.html|**https://taomm.org/vol1/analysis.html**]]
-- [[https://github.com/NicolasGrimonpont/Cheatsheet|**https://github.com/NicolasGrimonpont/Cheatsheet**]]
-- [[https://assets.sentinelone.com/c/sentinal-one-mac-os-?x=FvGtLJ|**https://assets.sentinelone.com/c/sentinal-one-mac-os-?x=FvGtLJ**]]
-- [[https://www.youtube.com/watch?v=vMGiplQtjTY|**https://www.youtube.com/watch?v=vMGiplQtjTY**]]
-
-
+- [**OS X Incident Response: Scripting and Analysis**](https://www.amazon.com/OS-Incident-Response-Scripting-Analysis-ebook/dp/B01FHOHHVS)
+- [**https://taomm.org/vol1/analysis.html**](https://taomm.org/vol1/analysis.html)
+- [**https://github.com/NicolasGrimonpont/Cheatsheet**](https://github.com/NicolasGrimonpont/Cheatsheet)
+- [**https://assets.sentinelone.com/c/sentinal-one-mac-os-?x=FvGtLJ**](https://assets.sentinelone.com/c/sentinal-one-mac-os-?x=FvGtLJ)
+- [**https://www.youtube.com/watch?v=vMGiplQtjTY**](https://www.youtube.com/watch?v=vMGiplQtjTY)
 

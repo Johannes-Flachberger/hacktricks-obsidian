@@ -1,6 +1,5 @@
 # macOS Serial Number
 
-
 ## Basic Information
 
 Apple devices post-2010 have serial numbers consisting of **12 alphanumeric characters**, each segment conveying specific information:
@@ -35,6 +34,4 @@ This character varies from 'C' (representing the first half of 2010) to 'Z' (sec
 ### **Week of Manufacturing (5th Character)**
 
 Digits 1-9 correspond to weeks 1-9. Letters C-Y (excluding vowels and 'S') represent weeks 10-27. For the second half of the year, 26 is added to this number.
-
-
 

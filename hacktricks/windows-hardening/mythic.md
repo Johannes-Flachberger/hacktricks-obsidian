@@ -1,19 +1,18 @@
 # Mythic
 
-
 ## What is Mythic?
 
 Mythic is an open-source, modular command and control (C2) framework designed for red teaming . It allows security professionals to manage and deploy various agents (payloads) across different operating systems, including Windows, Linux, and macOS. Mythic provides a user-friendly web interface for managing agents, executing commands, and collecting results, making it a powerful tool for simulating real-world attacks in a controlled environment.
 
 ### Installation
 
-To install Mythic, follow the instructions on the official **[[https://github.com/its-a-feature/Mythic|Mythic repo]]**.
+To install Mythic, follow the instructions on the official **[Mythic repo](https://github.com/its-a-feature/Mythic)**.
 
 ### Agents
 
 Mythic supports multiple agents, which are the **payloads that perform tasks on the compromised systems**. Each agent can be tailored to specific needs and can run on different operating systems.
 
-By default Mythic doesn't have any agents installed. However, it offers some open source agent in [[https://github.com/MythicAgents|**https://github.com/MythicAgents**]].
+By default Mythic doesn't have any agents installed. However, it offers some open source agent in [**https://github.com/MythicAgents**](https://github.com/MythicAgents).
 
 To install an agent from that repo you just need to run:
 
@@ -21,21 +20,21 @@ To install an agent from that repo you just need to run:
 sudo ./mythic-cli install github https://github.com/MythicAgents/<agent-name>
 sudo ./mythic-cli install github https://github.com/MythicAgents/apfell
 ```
-```
+
 You can add new agents with the previous command even if Mythic is already running.
 
 ### C2 Profiles
 
 C2 profiles in Mythic define **how agents communicate with the Mythic server**. They specify the communication protocol, encryption methods, and other settings. You can create and manage C2 profiles through the Mythic web interface.
 
-By default Mythic is installed with no profiles, however, it's possible to download some profiles from the repo [[https://github.com/MythicC2Profiles|**https://github.com/MythicC2Profiles**]] running:
+By default Mythic is installed with no profiles, however, it's possible to download some profiles from the repo [**https://github.com/MythicC2Profiles**](https://github.com/MythicC2Profiles) running:
 
 ```bash
 sudo ./mythic-cli install github https://github.com/MythicC2Profiles/<c2-profile>>
 sudo ./mythic-cli install github https://github.com/MythicC2Profiles/http
 ```
-```
-## [[https://github.com/MythicAgents/Apollo|Apollo Agent]]
+
+## [Apollo Agent](https://github.com/MythicAgents/Apollo)
 
 Apollo is a Windows agent written in C# using the 4.0 .NET Framework designed to be used in SpecterOps training offerings.
 
@@ -44,7 +43,7 @@ Install it with:
 ```bash
 ./mythic-cli install github https://github.com/MythicAgents/Apollo.git
 ```
-```
+
 This agent has a lot of commands that makes it very similar to Cobalt Strike's Beacon with some extras. Among them, it supports:
 
 ### Common actions
@@ -98,7 +97,7 @@ Start installing them with:
 ```bash
 ./mythic-cli install github https://github.com/MythicAgents/forge.git
 ```
-```
+
 Then, use `forge_collections` to show the a COFF/BOF modules from the Mythic Forge to be able to select and load them into the agent's memory for execution. By default, the following 2 collections are added in Apollo: 
 
 - `forge_collections {"collectionName":"SharpCollection"}`
@@ -131,14 +130,14 @@ After one module is loaded, it'll appear in the list as another command like `fo
 - `help`: Displays detailed information about specific commands or general information about all available commands in the agent.
 - `clear`: Marks tasks as 'cleared' so they can't be picked up by agents. You can specify `all` to clear all tasks or `task Num` to clear a specific task.  
 
-## [[https://github.com/MythicAgents/Poseidon|Poseidon Agent]]
+## [Poseidon Agent](https://github.com/MythicAgents/Poseidon)
 
 Poseidon is a Golang agent that compiles into **Linux and macOS** executables.
 
 ```bash
 ./mythic-cli install github https://github.com/MythicAgents/Poseidon.git
 ```
-```
+
 When user over linux it has some interesting commands:
 
 ### Common actions
@@ -173,5 +172,4 @@ When user over linux it has some interesting commands:
 - `shell`: Execute a single shell command via /bin/sh, allowing for direct execution of commands on the target system.
 - `run`: Execute a command from disk with arguments, allowing for the execution of binaries or scripts on the target system.
 - `pty`: Open up an interactive PTY, allowing for direct interaction with the shell on the target system.
-
 

@@ -1,12 +1,11 @@
 # SeDebug + SeImpersonate - Copy Token
 
-
 The following code **exploits the privileges SeDebug and SeImpersonate** to copy the token from a **process running as SYSTEM** and with **all the token privileges**. \
 In this case, this code can be compiled and used as a **Windows service binary** to check that it's working.\
 However, the main part of the **code where the elevation occurs** is inside the **`Exploit`** **function**.\
 Inside of that function you can see that the **process **_**lsass.exe**_** is searched**, then it's **token is copied**, and finally that token is used to spawn a new _**cmd.exe**_ with all the privileges of the copied token.
 
-**Other processes** running as SYSTEM with all or most of the token privileges are: **services.exe**, **svhost.exe** (on of the firsts ones), **wininit.exe**, **csrss.exe**... (_remember that you won't be able to copy a token from a Protected process_). Moreover, you can use the tool [[https://processhacker.sourceforge.io/downloads.php|Process Hacker]] running as administrator to see the tokens of a process.
+**Other processes** running as SYSTEM with all or most of the token privileges are: **services.exe**, **svhost.exe** (on of the firsts ones), **wininit.exe**, **csrss.exe**... (_remember that you won't be able to copy a token from a Protected process_). Moreover, you can use the tool [Process Hacker](https://processhacker.sourceforge.io/downloads.php) running as administrator to see the tokens of a process.
 
 ```c
 // From https://cboard.cprogramming.com/windows-programming/106768-running-my-program-service.html
@@ -49,6 +48,7 @@ int FindTarget(const char *procname) {
 	return pid;
 }
 
+
 int Exploit(void) {
 
     HANDLE hSystemToken, hSystemProcess;
@@ -57,6 +57,7 @@ int Exploit(void) {
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
 	int pid = 0;
+
 
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
@@ -83,6 +84,7 @@ int Exploit(void) {
 
     return 0;
 }
+
 
 void WINAPI ServiceControlHandler( DWORD controlCode ) {
 	switch ( controlCode ) {
@@ -152,6 +154,7 @@ void WINAPI ServiceMain( DWORD argc, TCHAR* argv[] ) {
 	}
 }
 
+
 void InstallService() {
 	SC_HANDLE serviceControlManager = OpenSCManager( 0, 0, SC_MANAGER_CREATE_SERVICE );
 
@@ -208,7 +211,4 @@ int _tmain( int argc, TCHAR* argv[] )
 	return 0;
 }
 ```
-```
-
-
 

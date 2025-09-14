@@ -1,11 +1,10 @@
 # Certificates
 
-
 ## What is a Certificate
 
 A **public key certificate** is a digital ID used in cryptography to prove someone owns a public key. It includes the key's details, the owner's identity (the subject), and a digital signature from a trusted authority (the issuer). If the software trusts the issuer and the signature is valid, secure communication with the key's owner is possible.
 
-Certificates are mostly issued by [[https://en.wikipedia.org/wiki/Certificate_authority) (CAs) in a [public-key infrastructure](https://en.wikipedia.org/wiki/Public-key_infrastructure) (PKI) setup. Another method is the [web of trust](https://en.wikipedia.org/wiki/Web_of_trust), where users directly verify each other’s keys. The common format for certificates is [X.509](https://en.wikipedia.org/wiki/X.509|certificate authorities]], which can be adapted for specific needs as outlined in RFC 5280.
+Certificates are mostly issued by [certificate authorities](https://en.wikipedia.org/wiki/Certificate_authority) (CAs) in a [public-key infrastructure](https://en.wikipedia.org/wiki/Public-key_infrastructure) (PKI) setup. Another method is the [web of trust](https://en.wikipedia.org/wiki/Web_of_trust), where users directly verify each other’s keys. The common format for certificates is [X.509](https://en.wikipedia.org/wiki/X.509), which can be adapted for specific needs as outlined in RFC 5280.
 
 ## x509 Common Fields
 
@@ -54,10 +53,10 @@ print(f"Issuer: {issuer}")
 print(f"Subject: {subject}")
 print(f"Public Key: {public_key}")
 ```
-```
+
 ### **Difference between OCSP and CRL Distribution Points**
 
-**OCSP** (**RFC 2560**) involves a client and a responder working together to check if a digital public-key certificate has been revoked, without needing to download the full **CRL**. This method is more efficient than the traditional **CRL**, which provides a list of revoked certificate serial numbers but requires downloading a potentially large file. CRLs can include up to 512 entries. More details are available [[https://www.arubanetworks.com/techdocs/ArubaOS%206_3_1_Web_Help/Content/ArubaFrameStyles/CertRevocation/About_OCSP_and_CRL.htm|here]].
+**OCSP** (**RFC 2560**) involves a client and a responder working together to check if a digital public-key certificate has been revoked, without needing to download the full **CRL**. This method is more efficient than the traditional **CRL**, which provides a list of revoked certificate serial numbers but requires downloading a potentially large file. CRLs can include up to 512 entries. More details are available [here](https://www.arubanetworks.com/techdocs/ArubaOS%206_3_1_Web_Help/Content/ArubaFrameStyles/CertRevocation/About_OCSP_and_CRL.htm).
 
 ### **What is Certificate Transparency**
 
@@ -73,7 +72,7 @@ Certificate logs are publicly auditable, append-only records of certificates, ma
 
 #### **Query**
 
-To explore Certificate Transparency logs for any domain, visit [[https://crt.sh|https://crt.sh/]].
+To explore Certificate Transparency logs for any domain, visit [https://crt.sh/](https://crt.sh).
 
 Different formats exist for storing certificates, each with its own use cases and compatibility. This summary covers the main formats and provides guidance on converting between them.
 
@@ -114,31 +113,31 @@ Different formats exist for storing certificates, each with its own use cases an
 ```bash
 openssl x509 -in certificatename.cer -outform PEM -out certificatename.pem
 ```
-```
+
 - **PEM to DER**
 
 ```bash
 openssl x509 -outform der -in certificatename.pem -out certificatename.der
 ```
-```
+
 - **DER to PEM**
 
 ```bash
 openssl x509 -inform der -in certificatename.der -out certificatename.pem
 ```
-```
+
 - **PEM to P7B**
 
 ```bash
 openssl crl2pkcs7 -nocrl -certfile certificatename.pem -out certificatename.p7b -certfile CACert.cer
 ```
-```
+
 - **PKCS7 to PEM**
 
 ```bash
 openssl pkcs7 -print_certs -in certificatename.p7b -out certificatename.pem
 ```
-```
+
 **PFX conversions** are crucial for managing certificates on Windows:
 
 - **PFX to PEM**
@@ -146,61 +145,59 @@ openssl pkcs7 -print_certs -in certificatename.p7b -out certificatename.pem
 ```bash
 openssl pkcs12 -in certificatename.pfx -out certificatename.pem
 ```
-```
+
 - **PFX to PKCS#8** involves two steps:
   1. Convert PFX to PEM
 
 ```bash
 openssl pkcs12 -in certificatename.pfx -nocerts -nodes -out certificatename.pem
 ```
-```
+
 2. Convert PEM to PKCS8
 
 ```bash
 openSSL pkcs8 -in certificatename.pem -topk8 -nocrypt -out certificatename.pk8
 ```
-```
+
 - **P7B to PFX** also requires two commands:
   1. Convert P7B to CER
 
 ```bash
 openssl pkcs7 -print_certs -in certificatename.p7b -out certificatename.cer
 ```
-```
+
 2. Convert CER and Private Key to PFX
 
 ```bash
 openssl pkcs12 -export -in certificatename.cer -inkey privateKey.key -out certificatename.pfx -certfile cacert.cer
 ```
-```
+
 - **ASN.1 (DER/PEM) editing** (works with certificates or almost any other ASN.1 structure):
-  1. Clone [[https://github.com/wllm-rbnt/asn1template/|asn1template]]
+  1. Clone [asn1template](https://github.com/wllm-rbnt/asn1template/)
 
 ```bash
 git clone https://github.com/wllm-rbnt/asn1template.git
 ```
-```
+
 2. Convert DER/PEM to OpenSSL's generation format
 
 ```bash
 asn1template/asn1template.pl certificatename.der > certificatename.tpl
 asn1template/asn1template.pl -p certificatename.pem > certificatename.tpl
 ```
-```
+
 3. Edit certificatename.tpl according to your requirements
 
 ```bash
 vim certificatename.tpl
 ```
-```
+
 4. Rebuild the modified certificate
 
 ```bash
 openssl asn1parse -genconf certificatename.tpl -out certificatename_new.der
 openssl asn1parse -genconf certificatename.tpl -outform PEM -out certificatename_new.pem
 ```
-```
+
 ---
-
-
 

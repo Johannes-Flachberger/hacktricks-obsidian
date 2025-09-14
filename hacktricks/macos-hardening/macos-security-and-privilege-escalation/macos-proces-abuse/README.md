@@ -1,6 +1,5 @@
 # macOS Process Abuse
 
-
 ## Processes Basic Information
 
 A process is an instance of a running executable, however processes doesn't run code, these are threads. Therefore **processes are just containers for running threads** providing the memory, descriptors, ports, permissions...
@@ -41,7 +40,7 @@ Each process with hold **credentials** that **identify its privileges** in the s
 It's also possible to change the user and group id if the binary has the `setuid/setgid` bit.\
 There are several functions to **set new uids/gids**.
 
-The syscall **`persona`** provides an **alternate** set of **credentials**. Adopting a persona assumes its uid, gid and group memberships **at one**. In the [[https://github.com/apple/darwin-xnu/blob/main/bsd/sys/persona.h|**source code**]] it's possible to find the struct:
+The syscall **`persona`** provides an **alternate** set of **credentials**. Adopting a persona assumes its uid, gid and group memberships **at one**. In the [**source code**](https://github.com/apple/darwin-xnu/blob/main/bsd/sys/persona.h) it's possible to find the struct:
 
 ```c
 struct kpersona_info { uint32_t persona_info_version;
@@ -56,7 +55,7 @@ struct kpersona_info { uint32_t persona_info_version;
     /* TODO: MAC policies?! */
 }
 ```
-```
+
 ## Threads Basic Information
 
 1. **POSIX Threads (pthreads):** macOS supports POSIX threads (`pthreads`), which are part of a standard threading API for C/C++. The implementation of pthreads in macOS is found in `/usr/lib/system/libsystem_pthread.dylib`, which comes from the publicly available `libpthread` project. This library provides the necessary functions to create and manage threads.
@@ -102,7 +101,7 @@ void main (int argc, char **argv){
     tlv_var = 10;
 }
 ```
-```
+
 This snippet defines `tlv_var` as a thread-local variable. Each thread running this code will have its own `tlv_var`, and changes one thread makes to `tlv_var` will not affect `tlv_var` in another thread.
 
 In the Mach-O binary, the data related to thread local variables is organized into specific sections:
@@ -235,7 +234,7 @@ Note that executables compiled with **`pyinstaller`** won't use these environmen
 
 ### Shield
 
-[[https://theevilbit.github.io/shield/) ([**Github**](https://github.com/theevilbit/Shield)|**Shield**]] is an open source application that can **detect and block process injection** actions:
+[**Shield**](https://theevilbit.github.io/shield/) ([**Github**](https://github.com/theevilbit/Shield)) is an open source application that can **detect and block process injection** actions:
 
 - Using **Environmental Variables**: It will monitor the presence of any of the following environmental variables: **`DYLD_INSERT_LIBRARIES`**, **`CFNETWORK_LIBRARY_PATH`**, **`RAWCAMERA_BUNDLE_PATH`** and **`ELECTRON_RUN_AS_NODE`**
 - Using **`task_for_pid`** calls: To find when one process wants to get the **task port of another** which allows to inject code in the process.
@@ -244,13 +243,12 @@ Note that executables compiled with **`pyinstaller`** won't use these environmen
 
 ### Calls made by other processes
 
-In [[https://knight.sc/reverse%20engineering/2019/04/15/detecting-task-modifications.html|**this blog post**]] you can find how it's possible to use the function **`task_name_for_pid`** to get information about other **processes injecting code in a process** and then getting information about that other process.
+In [**this blog post**](https://knight.sc/reverse%20engineering/2019/04/15/detecting-task-modifications.html) you can find how it's possible to use the function **`task_name_for_pid`** to get information about other **processes injecting code in a process** and then getting information about that other process.
 
 Note that to call that function you need to be **the same uid** as the one running the process or **root** (and it returns info about the process, not a way to inject code).
 
 ## References
 
-- [[https://theevilbit.github.io/shield/|https://theevilbit.github.io/shield/]]
-- [[https://medium.com/@metnew/why-electron-apps-cant-store-your-secrets-confidentially-inspect-option-a49950d6d51f|https://medium.com/@metnew/why-electron-apps-cant-store-your-secrets-confidentially-inspect-option-a49950d6d51f]]
-
+- [https://theevilbit.github.io/shield/](https://theevilbit.github.io/shield/)
+- [https://medium.com/@metnew/why-electron-apps-cant-store-your-secrets-confidentially-inspect-option-a49950d6d51f](https://medium.com/@metnew/why-electron-apps-cant-store-your-secrets-confidentially-inspect-option-a49950d6d51f)
 

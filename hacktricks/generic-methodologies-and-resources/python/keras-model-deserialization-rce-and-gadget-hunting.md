@@ -1,6 +1,5 @@
 # Keras Model Deserialization RCE and Gadget Hunting
 
-
 This page summarizes practical exploitation techniques against the Keras model deserialization pipeline, explains the native .keras format internals and attack surface, and provides a researcher toolkit for finding Model File Vulnerabilities (MFVs) and post-fix gadgets.
 
 ## .keras model format internals
@@ -31,7 +30,7 @@ Example snippet for a Dense layer object:
   }
 }
 ```
-```
+
 Deserialization performs:
 - Module import and symbol resolution from module/class_name keys
 - from_config(...) or constructor invocation with attacker-controlled kwargs
@@ -62,7 +61,7 @@ Exploit idea (simplified payload in config.json):
   }
 }
 ```
-```
+
 Mitigation:
 - Keras enforces safe_mode=True by default. Serialized Python functions in Lambda are blocked unless a user explicitly opts out with safe_mode=False.
 
@@ -84,7 +83,7 @@ Exploit idea:
   "config": {"arg": "val"}
 }
 ```
-```
+
 Security improvements (Keras ≥ 3.9):
 - Module allowlist: imports restricted to official ecosystem modules: keras, keras_hub, keras_cv, keras_nlp
 - Safe mode default: safe_mode=True blocks unsafe Lambda serialized-function loading
@@ -111,7 +110,7 @@ Gadget via Lambda that references an allowed function (not serialized Python byt
   }
 }
 ```
-```
+
 Important limitation:
 - Lambda.call() prepends the input tensor as the first positional argument when invoking the target callable. Chosen gadgets must tolerate an extra positional arg (or accept *args/**kwargs). This constrains which functions are viable.
 
@@ -168,7 +167,7 @@ for root in ALLOWLIST:
 
 print("\n".join(sorted(candidates)[:200]))
 ```
-```
+
 2) Direct deserialization testing (no .keras archive needed)
 
 Feed crafted dicts directly into Keras deserializers to learn accepted params and observe side effects.
@@ -188,7 +187,7 @@ cfg = {
 
 layer = layers.deserialize(cfg, safe_mode=True)  # Observe behavior
 ```
-```
+
 3) Cross-version probing and formats
 
 Keras exists in multiple codebases/eras with different guardrails and formats:
@@ -208,10 +207,10 @@ Repeat tests across codebases and formats (.keras vs legacy HDF5) to uncover reg
 
 ## References
 
-- [[https://blog.huntr.com/hunting-vulnerabilities-in-keras-model-deserialization|Hunting Vulnerabilities in Keras Model Deserialization (huntr blog)]]
-- [[https://github.com/keras-team/keras/pull/20751|Keras PR #20751 – Added checks to serialization]]
-- [[https://nvd.nist.gov/vuln/detail/CVE-2024-3660|CVE-2024-3660 – Keras Lambda deserialization RCE]]
-- [[https://nvd.nist.gov/vuln/detail/CVE-2025-1550|CVE-2025-1550 – Keras arbitrary module import (≤ 3.8)]]
-- [[https://huntr.com/bounties/135d5dcd-f05f-439f-8d8f-b21fdf171f3e|huntr report – arbitrary import #1]]
-- [[https://huntr.com/bounties/6fcca09c-8c98-4bc5-b32c-e883ab3e4ae3|huntr report – arbitrary import #2]]
+- [Hunting Vulnerabilities in Keras Model Deserialization (huntr blog)](https://blog.huntr.com/hunting-vulnerabilities-in-keras-model-deserialization)
+- [Keras PR #20751 – Added checks to serialization](https://github.com/keras-team/keras/pull/20751)
+- [CVE-2024-3660 – Keras Lambda deserialization RCE](https://nvd.nist.gov/vuln/detail/CVE-2024-3660)
+- [CVE-2025-1550 – Keras arbitrary module import (≤ 3.8)](https://nvd.nist.gov/vuln/detail/CVE-2025-1550)
+- [huntr report – arbitrary import #1](https://huntr.com/bounties/135d5dcd-f05f-439f-8d8f-b21fdf171f3e)
+- [huntr report – arbitrary import #2](https://huntr.com/bounties/6fcca09c-8c98-4bc5-b32c-e883ab3e4ae3)
 

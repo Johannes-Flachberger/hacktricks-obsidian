@@ -1,6 +1,5 @@
 # AI in Cybersecurity
 
-
 ## Main Machine Learning Algorithms
 
 The best starting point to learn about AI is to understand how the main machine learning algorithms work. This will help you to understand how AI works, how to use it and how to attack it:

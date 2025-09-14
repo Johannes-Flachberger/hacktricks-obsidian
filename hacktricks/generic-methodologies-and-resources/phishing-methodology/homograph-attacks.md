@@ -1,6 +1,5 @@
 # Homograph / Homoglyph Attacks in Phishing
 
-
 ## Overview
 
 A homograph (aka homoglyph) attack abuses the fact that many **Unicode code points from non-Latin scripts are visually identical or extremely similar to ASCII characters**. By replacing one or more Latin characters with their look-alike counterparts, an attacker can craft:
@@ -31,7 +30,7 @@ Because every glyph is identified internally by its **Unicode code point**, a si
 | Armenian | U+0530-058F | `օ` (U+0585) | Latin `o` |
 | Cherokee | U+13A0-13FF | `Ꭲ` (U+13A2) | Latin `T` |
 
-> Tip: Full Unicode charts are available at [[https://home.unicode.org/|unicode.org]].
+> Tip: Full Unicode charts are available at [unicode.org](https://home.unicode.org/).
 
 ## Detection Techniques
 
@@ -67,7 +66,7 @@ for field, value in SUSPECT_FIELDS.items():
     if len(blocks) > 1:
         print(f"[!] Mixed scripts in {field}: {dict(blocks)} -> {value}")
 ```
-```
+
 ### 2. Punycode Normalisation (Domains)
 
 Internationalised Domain Names (IDNs) are encoded with **punycode** (`xn--`). Converting every hostname to punycode and then back to Unicode allows matching against a whitelist or performing similarity checks (e.g., Levenshtein distance) **after** the string has been normalised.
@@ -78,7 +77,7 @@ hostname = "Ρаypal.com"   # Greek Rho + Cyrillic a
 puny = idna.encode(hostname).decode()
 print(puny)  # xn--yl8hpyal.com
 ```
-```
+
 ### 3. Homoglyph Dictionaries / Algorithms
 
 Tools such as **dnstwist** (`--homoglyph`) or **urlcrazy** can enumerate visually-similar domain permutations and are useful for proactive takedown / monitoring.
@@ -100,7 +99,7 @@ These samples originate from Unit 42 research (July 2025) and illustrate how hom
 
 ## References
 
-- [[https://unit42.paloaltonetworks.com/homograph-attacks/|The Homograph Illusion: Not Everything Is As It Seems]]
-- [[https://home.unicode.org/|Unicode Character Database]]  
-- [[https://github.com/elceef/dnstwist|dnstwist – domain permutation engine]]
+- [The Homograph Illusion: Not Everything Is As It Seems](https://unit42.paloaltonetworks.com/homograph-attacks/)
+- [Unicode Character Database](https://home.unicode.org/)  
+- [dnstwist – domain permutation engine](https://github.com/elceef/dnstwist)
 

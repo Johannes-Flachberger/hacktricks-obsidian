@@ -1,6 +1,5 @@
 # Named Pipe Client Impersonation
 
-
 Named Pipe client impersonation is a local privilege escalation primitive that lets a named-pipe server thread adopt the security context of a client that connects to it. In practice, an attacker who can run code with SeImpersonatePrivilege can coerce a privileged client (e.g., a SYSTEM service) to connect to an attacker-controlled pipe, call ImpersonateNamedPipeClient, duplicate the resulting token into a primary token, and spawn a process as the client (often NT AUTHORITY\SYSTEM).
 
 This page focuses on the core technique. For end-to-end exploit chains that coerce SYSTEM to your pipe, see the Potato family pages referenced below.
@@ -67,7 +66,7 @@ int main(void) {
     return 0;
 }
 ```
-```Notes:
+Notes:
 - If ImpersonateNamedPipeClient returns ERROR_CANNOT_IMPERSONATE (1368), ensure you read from the pipe first and that the client didn’t restrict impersonation to Identification level.
 - Prefer DuplicateTokenEx with SecurityImpersonation and TokenPrimary to create a primary token suitable for process creation.
 
@@ -92,7 +91,7 @@ class P {
   }
 }
 ```
-```
+
 ## Common triggers/coercions to get SYSTEM to your pipe
 These techniques coerce privileged services to connect to your named pipe so you can impersonate them:
 - Print Spooler RPC trigger (PrintSpoofer)

@@ -1,7 +1,6 @@
 # AppendData/AddSubdirectory Permission over Service Registry
 
-
-**The original post is** [[https://itm4n.github.io/windows-registry-rpceptmapper-eop/|**https://itm4n.github.io/windows-registry-rpceptmapper-eop/**]]
+**The original post is** [**https://itm4n.github.io/windows-registry-rpceptmapper-eop/**](https://itm4n.github.io/windows-registry-rpceptmapper-eop/)
 
 ## Summary
 
@@ -25,6 +24,4 @@ The goal was to coerce the **RPC Endpoint Mapper service** into loading the craf
 The persistence and potential implications of this vulnerability were underscored, highlighting its relevance for post-exploitation strategies, lateral movement, and evasion of antivirus/EDR systems.
 
 Although the vulnerability was initially disclosed unintentionally through the script, it was emphasized that its exploitation is constrained to outdated Windows versions (e.g., **Windows 7 / Server 2008 R2**) and requires local access.
-
-
 

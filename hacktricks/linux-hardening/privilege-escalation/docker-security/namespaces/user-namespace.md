@@ -1,6 +1,5 @@
 # User Namespace
 
-
 ## Basic Information
 
 A user namespace is a Linux kernel feature that **provides isolation of user and group ID mappings**, allowing each user namespace to have its **own set of user and group IDs**. This isolation enables processes running in different user namespaces to **have different privileges and ownership**, even if they share the same user and group IDs numerically.
@@ -23,12 +22,12 @@ User namespaces are particularly useful in containerization, where each containe
 ```bash
 sudo unshare -U [--mount-proc] /bin/bash
 ```
-```
+
 By mounting a new instance of the `/proc` filesystem if you use the param `--mount-proc`, you ensure that the new mount namespace has an **accurate and isolated view of the process information specific to that namespace**.
 
+<details>
 
 **Error: bash: fork: Cannot allocate memory**
-
 
 When `unshare` is executed without the `-f` option, an error is encountered due to the way Linux handles new PID (Process ID) namespaces. The key details and the solution are outlined below:
 
@@ -48,13 +47,14 @@ When `unshare` is executed without the `-f` option, an error is encountered due 
 
 By ensuring that `unshare` runs with the `-f` flag, the new PID namespace is correctly maintained, allowing `/bin/bash` and its sub-processes to operate without encountering the memory allocation error.
 
+</details>
 
 #### Docker
 
 ```bash
 docker run -ti --name ubuntu1 -v /usr:/ubuntu1 ubuntu bash
 ```
-```
+
 To use user namespace, Docker daemon needs to be started with **`--userns-remap=default`**(In ubuntu 14.04, this can be done by modifying `/etc/default/docker` and then executing `sudo service docker restart`)
 
 ### Check which namespace is your process in
@@ -63,7 +63,7 @@ To use user namespace, Docker daemon needs to be started with **`--userns-remap=
 ls -l /proc/self/ns/user
 lrwxrwxrwx 1 root root 0 Apr  4 20:57 /proc/self/ns/user -> 'user:[4026531837]'
 ```
-```
+
 It's possible to check the user map from the docker container with:
 
 ```bash
@@ -71,13 +71,13 @@ cat /proc/self/uid_map
          0          0 4294967295  --> Root is root in host
          0     231072      65536  --> Root is 231072 userid in host
 ```
-```
+
 Or from the host with:
 
 ```bash
 cat /proc/<pid>/uid_map
 ```
-```
+
 ### Find all User namespaces
 
 ```bash
@@ -85,13 +85,13 @@ sudo find /proc -maxdepth 3 -type l -name user -exec readlink {} \; 2>/dev/null 
 # Find the processes with an specific namespace
 sudo find /proc -maxdepth 3 -type l -name user -exec ls -l  {} \; 2>/dev/null | grep <ns-number>
 ```
-```
+
 ### Enter inside a User namespace
 
 ```bash
 nsenter -U TARGET_PID --pid /bin/bash
 ```
-```
+
 Also, you can only **enter in another process namespace if you are root**. And you **cannot** **enter** in other namespace **without a descriptor** pointing to it (like `/proc/self/ns/user`).
 
 ### Create new User namespace (with mappings)
@@ -99,7 +99,7 @@ Also, you can only **enter in another process namespace if you are root**. And y
 ```bash
 unshare -U [--map-user=<uid>|<name>] [--map-group=<gid>|<name>] [--map-root-user] [--map-current-user]
 ```
-```
+
 ```bash
 # Container
 sudo unshare -U /bin/bash
@@ -109,7 +109,7 @@ nobody@ip-172-31-28-169:/home/ubuntu$ #Check how the user is nobody
 ps -ef | grep bash # The user inside the host is still root, not nobody
 root       27756   27755  0 21:11 pts/10   00:00:00 /bin/bash
 ```
-```
+
 ### Recovering Capabilities
 
 In the case of user namespaces, **when a new user namespace is created, the process that enters the namespace is granted a full set of capabilities within that namespace**. These capabilities allow the process to perform privileged operations such as **mounting** **filesystems**, creating devices, or changing ownership of files, but **only within the context of its user namespace**.
@@ -142,7 +142,4 @@ Probando: 0x139 . . . Error
 Probando: 0x140 . . . Error
 Probando: 0x141 . . . Error
 ```
-```
-
-
 

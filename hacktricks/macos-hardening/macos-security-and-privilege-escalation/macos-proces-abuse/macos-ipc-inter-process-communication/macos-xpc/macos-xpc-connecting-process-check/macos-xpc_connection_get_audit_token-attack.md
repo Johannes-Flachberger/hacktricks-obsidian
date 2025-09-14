@@ -1,7 +1,6 @@
 # macOS xpc_connection_get_audit_token Attack
 
-
-**For further information check the original post:** [[https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/|**https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/**]]. This is a summary:
+**For further information check the original post:** [**https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/**](https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/). This is a summary:
 
 ## Mach Messages Basic Info
 
@@ -9,7 +8,7 @@ If you don't know what Mach Messages are start checking this page:
 
 [[../../]]
 
-For the moment remember that ([[https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing)|definition from here]]:\
+For the moment remember that ([definition from here](https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing)):\
 Mach messages are sent over a _mach port_, which is a **single receiver, multiple sender communication** channel built into the mach kernel. **Multiple processes can send messages** to a mach port, but at any point **only a single process can read from it**. Just like file descriptors and sockets, mach ports are allocated and managed by the kernel and processes only see an integer, which they can use to indicate to the kernel which of their mach ports they want to use.
 
 ## XPC Connection
@@ -26,7 +25,7 @@ What is interesting for you to know is that **XPC’s abstraction is a one-to-on
 - An XPC connection’s audit token is the audit token of **copied from the most recently received message**.
 - Obtaining the **audit token** of an XPC connection is critical to many **security checks**.
 
-Although the previous situation sounds promising there are some scenarios where this is not going to cause problems ([[https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing)|from here]]:
+Although the previous situation sounds promising there are some scenarios where this is not going to cause problems ([from here](https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing)):
 
 - Audit tokens are often used for an authorization check to decide whether to accept a connection. As this happens using a message to the service port, there is **no connection established yet**. More messages on this port will just be handled as additional connection requests. So any **checks before accepting a connection are not vulnerable** (this also means that within `-listener:shouldAcceptNewConnection:` the audit token is safe). We are therefore **looking for XPC connections that verify specific actions**.
 - XPC event handlers are handled synchronously. This means that the event handler for one message must be completed before calling it for the next one, even on concurrent dispatch queues. So inside an **XPC event handler the audit token can not be overwritten** by other normal (non-reply!) messages.
@@ -69,7 +68,7 @@ To perform the attack:
 2. Form a secondary **connection** to `diagnosticd`. Contrary to normal procedure, rather than creating and sending two new mach ports, the client port send right is substituted with a duplicate of the **send right** associated with the `smd` connection.
 3. As a result, XPC messages can be dispatched to `diagnosticd`, but responses from `diagnosticd` are rerouted to `smd`. To `smd`, it appears as though the messages from both the user and `diagnosticd` are originating from the same connection.
 
-![[https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/exploit.png|Image depicting the exploit process]]
+![Image depicting the exploit process](https://sector7.computest.nl/post/2023-10-xpc-audit-token-spoofing/exploit.png)
 
 4. The next step involves instructing `diagnosticd` to initiate monitoring of a chosen process (potentially the user's own). Concurrently, a flood of routine 1004 messages is sent to `smd`. The intent here is to install a tool with elevated privileges.
 5. This action triggers a race condition within the `handle_bless` function. The timing is critical: the `xpc_connection_get_pid` function call must return the PID of the user's process (as the privileged tool resides in the user's app bundle). However, the `xpc_connection_get_audit_token` function, specifically within the `connection_is_authorized` subroutine, must reference the audit token belonging to `diagnosticd`.
@@ -102,7 +101,6 @@ Below is a visual representation of the described attack scenario:
 
 ![[../../../../../../images/image (33).png]]
 
-
 ## Discovery Problems
 
 - **Difficulties in Locating Instances**: Searching for instances of `xpc_connection_get_audit_token` usage was challenging, both statically and dynamically.
@@ -117,6 +115,4 @@ Below is a visual representation of the described attack scenario:
 - **Nature of the Fix**: The `xpc_dictionary_get_audit_token` function is considered secure as it retrieves the audit token directly from the mach message tied to the received XPC message. However, it's not part of the public API, similar to `xpc_connection_get_audit_token`.
 - **Absence of a Broader Fix**: It remains unclear why Apple didn't implement a more comprehensive fix, such as discarding messages not aligning with the saved audit token of the connection. The possibility of legitimate audit token changes in certain scenarios (e.g., `setuid` usage) might be a factor.
 - **Current Status**: The issue persists in iOS 17 and macOS 14, posing a challenge for those seeking to identify and understand it.
-
-
 

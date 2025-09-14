@@ -1,6 +1,5 @@
 # Industrial Control Systems Hacking 
 
-
 ## About this Section
 
 This section contains all about Industrial Control Systems including concepts as well as methodologies to hack them with various security issues that persists in them. 
@@ -14,6 +13,4 @@ Since Industrial Control Systems are installed following set standards, knowing 
 Industrial Control Systems can be complicated at times and hence require a lot of patience to do anything. It's all about probing and reconnaissance before planning attacks and developing any exploits. 
 
 These techniques can also be used to protect against attacks and blue teaming for industrial control systems. 
-
-
 

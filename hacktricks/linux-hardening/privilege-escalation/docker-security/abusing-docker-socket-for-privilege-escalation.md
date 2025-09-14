@@ -1,6 +1,5 @@
 # Abusing Docker Socket for Privilege Escalation
 
-
 There are some occasions were you just have **access to the docker socket** and you want to use it to **escalate privileges**. Some actions might be very suspicious and you may want to avoid them, so here you can find different flags that can be useful to escalate privileges:
 
 ### Via mount
@@ -32,12 +31,10 @@ You could also **abuse a mount to escalate privileges** inside the container.
 
 ### Escaping from the container
 
-- **`--privileged`** -> With this flag you [[docker-privileged.md#what-affects|remove all the isolation from the container]]. Check techniques to [[docker-breakout-privilege-escalation/README.md#Automatic Enumeration And Escape|escape from privileged containers as root]].
-- **`--cap-add=<CAPABILITY/ALL> [--security-opt apparmor=unconfined] [--security-opt seccomp=unconfined] [-security-opt label:disable]`** -> To [[../linux-capabilities.md|escalate abusing capabilities]], **grant that capability to the container** and disable other protection methods that may prevent the exploit to work.
+- **`--privileged`** -> With this flag you [remove all the isolation from the container](docker-privileged.md#what-affects). Check techniques to [[docker-breakout-privilege-escalation/README.md#Automatic Enumeration And Escape|escape from privileged containers as root]].
+- **`--cap-add=<CAPABILITY/ALL> [--security-opt apparmor=unconfined] [--security-opt seccomp=unconfined] [-security-opt label:disable]`** -> To [escalate abusing capabilities](../linux-capabilities.md), **grant that capability to the container** and disable other protection methods that may prevent the exploit to work.
 
 ### Curl
 
 In this page we have discussed ways to escalate privileges using docker flags, you can find **ways to abuse these methods using curl** command in the page:
-
-
 

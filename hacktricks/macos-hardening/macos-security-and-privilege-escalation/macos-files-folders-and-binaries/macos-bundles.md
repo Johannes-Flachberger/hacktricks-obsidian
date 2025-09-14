@@ -1,6 +1,5 @@
 # macOS Bundles
 
-
 ## Basic Information
 
 Bundles in macOS serve as containers for a variety of resources including applications, libraries, and other necessary files, making them appear as single objects in Finder, such as the familiar `*.app` files. The most commonly encountered bundle is the `.app` bundle, though other types like `.framework`, `.systemextension`, and `.kext` are also prevalent.
@@ -13,7 +12,7 @@ Within a bundle, particularly within the `<application>.app/Contents/` directory
 ```bash
 openssl dgst -binary -sha1 /Applications/Safari.app/Contents/Resources/Assets.car | openssl base64
 ```
-```- **MacOS**: Contains the executable binary of the application that runs upon user interaction.
+- **MacOS**: Contains the executable binary of the application that runs upon user interaction.
 - **Resources**: A repository for the application's user interface components including images, documents, and interface descriptions (nib/xib files).
 - **Info.plist**: Acts as the application's main configuration file, crucial for the system to recognize and interact with the application appropriately.
 
@@ -41,7 +40,5 @@ Beyond the common directories, bundles may also include:
 
 This structure ensures that all necessary components are encapsulated within the bundle, facilitating a modular and secure application environment.
 
-For more detailed information on `Info.plist` keys and their meanings, the Apple developer documentation provides extensive resources: [[https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Introduction/Introduction.html|Apple Info.plist Key Reference]].
-
-
+For more detailed information on `Info.plist` keys and their meanings, the Apple developer documentation provides extensive resources: [Apple Info.plist Key Reference](https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Introduction/Introduction.html).
 

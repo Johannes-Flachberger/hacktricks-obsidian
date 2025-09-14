@@ -1,6 +1,5 @@
 # Access Tokens
 
-
 ## Access Tokens
 
 Each **user logged** onto the system **holds an access token with security information** for that logon session. The system creates an access token when the user logs on. **Every process executed** on behalf of the user **has a copy of the access token**. The token identifies the user, the user's groups, and the user's privileges. A token also contains a logon SID (Security Identifier) that identifies the current logon session.
@@ -16,6 +15,7 @@ USER INFORMATION
 User Name             SID
 ===================== ============================================
 desktop-rgfrdxl\cpolo S-1-5-21-3359511372-53430657-2078432294-1001
+
 
 GROUP INFORMATION
 -----------------
@@ -37,6 +37,7 @@ NT AUTHORITY\Local account                                    Well-known group S
 LOCAL                                                         Well-known group S-1-2-0                                                                                                       Mandatory group, Enabled by default, Enabled group
 NT AUTHORITY\Cloud Account Authentication                     Well-known group S-1-5-64-36                                                                                                   Mandatory group, Enabled by default, Enabled group
 
+
 PRIVILEGES INFORMATION
 ----------------------
 
@@ -48,15 +49,15 @@ SeUndockPrivilege             Remove computer from docking station Disabled
 SeIncreaseWorkingSetPrivilege Increase a process working set       Disabled
 SeTimeZonePrivilege           Change the time zone                 Disabled
 ```
-```
+
 or using _Process Explorer_ from Sysinternals (select process and access"Security" tab):
 
-![[<../../images/image (772).png>|]]
+![[../../images/image (772).png]]
 
 ### Local administrator
 
 When a local administrator logins, **two access tokens are created**: One with admin rights and other one with normal rights. **By default**, when this user executes a process the one with **regular** (non-administrator) **rights is used**. When this user tries to **execute** anything **as administrator** ("Run as Administrator" for example) the **UAC** will be used to ask for permission.\
-If you want to [[../authentication-credentials-uac-and-efs/index.html#uac|**learn more about the UAC read this page**]]**.**
+If you want to [**learn more about the UAC read this page**](../authentication-credentials-uac-and-efs/index.html#uac)**.**
 
 ### Credentials user impersonation
 
@@ -65,14 +66,14 @@ If you have **valid credentials of any other user**, you can **create** a **new 
 ```
 runas /user:domain\username cmd.exe
 ```
-```
+
 The **access token** has also a **reference** of the logon sessions inside the **LSASS**, this is useful if the process needs to access some objects of the network.\
 You can launch a process that **uses different credentials for accessing network services** using:
 
 ```
 runas /user:domain\username /netonly cmd.exe
 ```
-```
+
 This is useful if you have useful credentials to access objects in the network but those credentials aren't valid inside the current host as they are only going to be used in the network (in the current host your current user privileges will be used).
 
 ### Types of tokens
@@ -96,11 +97,9 @@ Learn which **token privileges can be abused to escalate privileges:**
 
 [[privilege-escalation-abusing-tokens.md]]
 
-Take a look to [[https://github.com/gtworek/Priv2Admin|**all the possible token privileges and some definitions on this external page**]].
+Take a look to [**all the possible token privileges and some definitions on this external page**](https://github.com/gtworek/Priv2Admin).
 
 ## References
 
-Learn more about tokens in this tutorials: [[https://medium.com/@seemant.bisht24/understanding-and-abusing-process-tokens-part-i-ee51671f2cfa) and [https://medium.com/@seemant.bisht24/understanding-and-abusing-access-tokens-part-ii-b9069f432962](https://medium.com/@seemant.bisht24/understanding-and-abusing-access-tokens-part-ii-b9069f432962|https://medium.com/@seemant.bisht24/understanding-and-abusing-process-tokens-part-i-ee51671f2cfa]]
-
-
+Learn more about tokens in this tutorials: [https://medium.com/@seemant.bisht24/understanding-and-abusing-process-tokens-part-i-ee51671f2cfa](https://medium.com/@seemant.bisht24/understanding-and-abusing-process-tokens-part-i-ee51671f2cfa) and [https://medium.com/@seemant.bisht24/understanding-and-abusing-access-tokens-part-ii-b9069f432962](https://medium.com/@seemant.bisht24/understanding-and-abusing-access-tokens-part-ii-b9069f432962)
 

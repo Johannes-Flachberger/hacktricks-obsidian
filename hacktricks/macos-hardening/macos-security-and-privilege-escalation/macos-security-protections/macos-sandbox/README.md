@@ -1,6 +1,5 @@
 # macOS Sandbox
 
-
 ## Basic Information
 
 MacOS Sandbox (initially called Seatbelt) **limits applications** running inside the sandbox to the **allowed actions specified in the Sandbox profile** the app is running with. This helps to ensure that **the application will be accessing only expected resources**.
@@ -30,7 +29,7 @@ drwx------@ 4 username  staff  128 Mar 25 14:14 com.apple.Accessibility-Settings
 drwx------@ 4 username  staff  128 Mar 25 14:10 com.apple.ActionKit.BundledIntentHandler
 [...]
 ```
-```
+
 Inside each bundle id folder you can find the **plist** and the **Data directory** of the App with a structure that mimics the Home folder:
 
 ```bash
@@ -55,7 +54,7 @@ lrwxr-xr-x   1 username  staff    20 Mar 24 18:02 Pictures -> ../../../../Pictur
 drwx------   2 username  staff    64 Mar 24 18:02 SystemData
 drwx------   2 username  staff    64 Mar 24 18:02 tmp
 ```
-```
+
 > [!CAUTION]
 > Note that even if the symlinks are there to "escape" from the Sandbox and access other folders, the App still needs to **have permissions** to access them. These permissions are inside the **`.plist`** in the `RedirectablePaths`.
 
@@ -67,55 +66,55 @@ The **`SandboxProfileData`** is the compiled sandbox profile CFData escaped to B
 plutil -convert xml1 .com.apple.containermanagerd.metadata.plist -o -
 
 # Binary sandbox profile
-SandboxProfileData
+<key>SandboxProfileData</key>
 <data>
 AAAhAboBAAAAAAgAAABZAO4B5AHjBMkEQAUPBSsGPwsgASABHgEgASABHwEf...
 
 # In this file you can find the entitlements:
-Entitlements
+<key>Entitlements</key>
 	<dict>
-		com.apple.MobileAsset.PhishingImageClassifier2
-		
-		com.apple.accounts.appleaccount.fullaccess
-		
-		com.apple.appattest.spi
-		
-		keychain\-access\-groups
+		<key>com.apple.MobileAsset.PhishingImageClassifier2</key>
+		<true/>
+		<key>com.apple.accounts.appleaccount.fullaccess</key>
+		<true/>
+		<key>com.apple.appattest.spi</key>
+		<true/>
+		<key>keychain-access-groups</key>
 		<array>
-			6N38VWS5BX.ru.keepcoder.Telegram
-			6N38VWS5BX.ru.keepcoder.TelegramShare
+			<string>6N38VWS5BX.ru.keepcoder.Telegram</string>
+			<string>6N38VWS5BX.ru.keepcoder.TelegramShare</string>
 		</array>
 [...]
 
 # Some parameters
-Parameters
+<key>Parameters</key>
 	<dict>
-		\_HOME
-		/Users/username
-		\_UID
-		501
-		\_USER
-		username
+		<key>_HOME</key>
+		<string>/Users/username</string>
+		<key>_UID</key>
+		<string>501</string>
+		<key>_USER</key>
+		<string>username</string>
 [...]
 
 # The paths it can access
-RedirectablePaths
+<key>RedirectablePaths</key>
 	<array>
-		/Users/username/Downloads
-		/Users/username/Documents
-		/Users/username/Library/Calendars
-		/Users/username/Desktop
-RedirectedPaths
-	
+		<string>/Users/username/Downloads</string>
+		<string>/Users/username/Documents</string>
+		<string>/Users/username/Library/Calendars</string>
+		<string>/Users/username/Desktop</string>
+<key>RedirectedPaths</key>
+	<array/>
 [...]
 ```
-```
+
 > [!WARNING]
 > Everything created/modified by a Sandboxed application will get the **quarantine attribut**e. This will prevent a sandbox space by triggering Gatekeeper if the sandbox app tries to execute something with **`open`**.
 
 ## Sandbox Profiles
 
-The Sandbox profiles are configuration files that indicate what is going to be **allowed/forbidden** in that **Sandbox**. It uses the **Sandbox Profile Language (SBPL)**, which uses the [[<https://en.wikipedia.org/wiki/Scheme_(programming_language)>|**Scheme**]] programming language.
+The Sandbox profiles are configuration files that indicate what is going to be **allowed/forbidden** in that **Sandbox**. It uses the **Sandbox Profile Language (SBPL)**, which uses the [**Scheme**](<https://en.wikipedia.org/wiki/Scheme_(programming_language)>) programming language.
 
 Here you can find an example:
 
@@ -136,9 +135,9 @@ Here you can find an example:
     (global-name "com.apple.analyticsd")
 )
 ```
-```
+
 > [!TIP]
-> Check this [[https://reverse.put.as/2011/09/14/apple-sandbox-guide-v1-0/|**research**]] **to check more actions that could be allowed or denied.**
+> Check this [**research**](https://reverse.put.as/2011/09/14/apple-sandbox-guide-v1-0/) **to check more actions that could be allowed or denied.**
 >
 > Note that in the compiled version of a profile the name of the operations are substituded by their entries in an array known by the dylib and the kext, making the compiled version shorter and more difficult to read.
 
@@ -146,7 +145,7 @@ Important **system services** also run inside their own custom **sandbox** such 
 
 - **`/usr/share/sandbox`**
 - **`/System/Library/Sandbox/Profiles`**
-- Other sandbox profiles can be checked in [[https://github.com/s7ephen/OSX-Sandbox--Seatbelt--Profiles|https://github.com/s7ephen/OSX-Sandbox--Seatbelt--Profiles]].
+- Other sandbox profiles can be checked in [https://github.com/s7ephen/OSX-Sandbox--Seatbelt--Profiles](https://github.com/s7ephen/OSX-Sandbox--Seatbelt--Profiles).
 
 **App Store** apps use the **profile** **`/System/Library/Sandbox/Profiles/application.sb`**. You can check in this profile how entitlements such as **`com.apple.security.network.server`** allows a process to use the network.
 
@@ -161,7 +160,6 @@ To start an application with an **specific sandbox profile** you can use:
 ```bash
 sandbox-exec -f example.sb /Path/To/The/Application
 ```
-```
 
 **touch**
 
@@ -170,7 +168,7 @@ sandbox-exec -f example.sb /Path/To/The/Application
 (deny default)
 (allow file* (literal "/tmp/hacktricks.txt"))
 ```
-```
+
 ```bash
 # This will fail because default is denied, so it cannot execute touch
 sandbox-exec -f touch.sb touch /tmp/hacktricks.txt
@@ -183,7 +181,7 @@ log show --style syslog --predicate 'eventMessage contains[c] "sandbox"' --last 
 2023-05-26 13:42:52.701382+0200  localhost kernel[0]: (Sandbox) 5 duplicate reports for Sandbox: sandbox-exec(41398) deny(1) file-read-metadata /var
 [...]
 ```
-```
+
 ```scheme:touch2.sb
 (version 1)
 (deny default)
@@ -197,7 +195,7 @@ log show --style syslog --predicate 'eventMessage contains[c] "sandbox"' --last 
 ; 2023-05-26 13:44:59.840050+0200  localhost kernel[0]: (Sandbox) Sandbox: touch(41575) deny(1) sysctl-read kern.bootargs
 ; 2023-05-26 13:44:59.840061+0200  localhost kernel[0]: (Sandbox) Sandbox: touch(41575) deny(1) file-read-data /
 ```
-```
+
 ```scheme:touch3.sb
 (version 1)
 (deny default)
@@ -206,16 +204,14 @@ log show --style syslog --predicate 'eventMessage contains[c] "sandbox"' --last 
 (allow file-read-data (literal "/"))
 ; This one will work
 ```
-```
-
 
 > [!TIP]
 > Note that the **Apple-authored** **software** that runs on **Windows** **doesn’t have additional security precautions**, such as application sandboxing.
 
 Bypasses examples:
 
-- [[https://lapcatsoftware.com/articles/sandbox-escape.html|https://lapcatsoftware.com/articles/sandbox-escape.html]]
-- [[https://desi-jarvis.medium.com/office365-macos-sandbox-escape-fcce4fa4123c|https://desi-jarvis.medium.com/office365-macos-sandbox-escape-fcce4fa4123c]] (they are able to write files outside the sandbox whose name starts with `~$`).
+- [https://lapcatsoftware.com/articles/sandbox-escape.html](https://lapcatsoftware.com/articles/sandbox-escape.html)
+- [https://desi-jarvis.medium.com/office365-macos-sandbox-escape-fcce4fa4123c](https://desi-jarvis.medium.com/office365-macos-sandbox-escape-fcce4fa4123c) (they are able to write files outside the sandbox whose name starts with `~$`).
 
 ### Sandbox Tracing
 
@@ -227,13 +223,13 @@ It's possible to trace all the checks sandbox performs every time an action is c
 (version 1)
 (trace /tmp/trace.out)
 ```
-```
+
 Ans then just execute something using that profile:
 
 ```bash
 sandbox-exec -f /tmp/trace.sb /bin/ls
 ```
-```
+
 In `/tmp/trace.out` you will be able to see each sandbox check performed every-time it was called (so, lots of duplicates).
 
 It's also possible to trace the sandbox using the **`-t`** parameter: `sandbox-exec -t /path/trace.out -p "(version 1)" /bin/ls`
@@ -268,14 +264,14 @@ It's possible to check the definition of this entitlement in **`/System/Library/
     (let* ((port (open-input-string string)) (sbpl (read port)))
       (with-transparent-redirection (eval sbpl)))))
 ```
-```
+
 This will **eval the string after this entitlement** as an Sandbox profile.
 
 ### Compiling & decompiling a Sandbox Profile
 
 The **`sandbox-exec`** tool uses the functions `sandbox_compile_*` from `libsandbox.dylib`. The main functions exported are: `sandbox_compile_file` (expects a file path, param `-f`), `sandbox_compile_string` (expects a string, param `-p`), `sandbox_compile_name` (expects a name of a container, param `-n`), `sandbox_compile_entitlements` (expects entitlements plist).
 
-This reversed and [[https://newosxbook.com/src.jl?tree=listings&file=/sandbox_exec.c|**open sourced version of the tool sandbox-exec**]] allows to make **`sandbox-exec`** write into a file the compiled sandbox profile.
+This reversed and [**open sourced version of the tool sandbox-exec**](https://newosxbook.com/src.jl?tree=listings&file=/sandbox_exec.c) allows to make **`sandbox-exec`** write into a file the compiled sandbox profile.
 
 Moreover, to confine a process inside a container it might call `sandbox_spawnattrs_set[container/profilename]` and pass a container or pre-existing profile.
 
@@ -308,9 +304,9 @@ Note that extensions are very related to entitlements also, so having certain en
 
 ### **Check PID Privileges**
 
-[[https://www.youtube.com/watch?v=mG715HcDgO8&t=3011s|**According to this**]], the **`sandbox_check`** functions (it's a `__mac_syscall`), can check **if an operation is allowed or not** by the sandbox in a certain PID, audit token or unique ID.
+[**According to this**](https://www.youtube.com/watch?v=mG715HcDgO8&t=3011s), the **`sandbox_check`** functions (it's a `__mac_syscall`), can check **if an operation is allowed or not** by the sandbox in a certain PID, audit token or unique ID.
 
-The [[http://newosxbook.com/src.jl?tree=listings&file=sbtool.c) (find it [compiled here](https://newosxbook.com/articles/hitsb.html)|**tool sbtool**]] can check if a PID can perform a certain actions:
+The [**tool sbtool**](http://newosxbook.com/src.jl?tree=listings&file=sbtool.c) (find it [compiled here](https://newosxbook.com/articles/hitsb.html)) can check if a PID can perform a certain actions:
 
 ```bash
 sbtool <pid> mach #Check mac-ports (got from launchd with an api)
@@ -318,7 +314,7 @@ sbtool <pid> file /tmp #Check file access
 sbtool <pid> inspect #Gives you an explanation of the sandbox profile and extensions
 sbtool <pid> all
 ```
-```
+
 ### \[un]suspend
 
 It's also possible to suspend and unsuspend the sandbox using the functions `sandbox_suspend` and `sandbox_unsuspend` from `libsystem_sandbox.dylib`.
@@ -392,7 +388,5 @@ Sandbox also has a user daemon running exposing the XPC Mach service `com.apple.
 
 ## References
 
-- [[https://newosxbook.com/home.html|**\*OS Internals Volume III**]]
-
-
+- [**\*OS Internals Volume III**](https://newosxbook.com/home.html)
 

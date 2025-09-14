@@ -1,6 +1,5 @@
 # macOS Kernel Extensions & Debugging
 
-
 ## Basic Information
 
 Kernel extensions (Kexts) are **packages** with a **`.kext`** extension that are **loaded directly into the macOS kernel space**, providing additional functionality to the main operating system.
@@ -22,14 +21,13 @@ Obviously, this is so powerful that it is **complicated to load a kernel extensi
 
 - When **entering recovery mode**, kernel **extensions must be allowed** to be loaded:
 
-![[../../../images/image (327).png|]]
-
+![](../../../images/image (327).png)
 
 - The kernel extension must be **signed with a kernel code signing certificate**, which can only be **granted by Apple**. Who will review in detail the company and the reasons why it is needed.
 - The kernel extension must also be **notarized**, Apple will be able to check it for malware.
 - Then, the **root** user is the one who can **load the kernel extension** and the files inside the package must **belong to root**.
 - During the upload process, the package must be prepared in a **protected non-root location**: `/Library/StagedExtensions` (requires the `com.apple.rootless.storage.KernelExtensionManagement` grant).
-- Finally, when attempting to load it, the user will [[https://developer.apple.com/library/archive/technotes/tn2459/_index.html|**receive a confirmation request**]] and, if accepted, the computer must be **restarted** to load it.
+- Finally, when attempting to load it, the user will [**receive a confirmation request**](https://developer.apple.com/library/archive/technotes/tn2459/_index.html) and, if accepted, the computer must be **restarted** to load it.
 
 ### Loading process
 
@@ -59,7 +57,7 @@ sudo kmutil showloaded --collection aux
 # Unload a specific bundle
 sudo kmutil unload -b com.example.mykext
 ```
-```
+
 Older syntax is still available for reference:
 
 ```bash
@@ -69,7 +67,7 @@ kextstat
 # (Deprecated) Get dependencies of the kext number 22
 kextstat | grep " 22 " | cut -c2-5,50- | cut -d '(' -f1
 ```
-```
+
 `kmutil inspect` can also be leveraged to **dump the contents of a Kernel Collection (KC)** or verify that a kext resolves all symbol dependencies:
 
 ```bash
@@ -79,7 +77,7 @@ kmutil inspect -B /System/Library/KernelCollections/BootKernelExtensions.kc --sh
 # Check undefined symbols of a 3rd party kext before loading
 kmutil libraries -p /Library/Extensions/FancyUSB.kext --undef-symbols
 ```
-```
+
 ## Kernelcache
 
 > [!CAUTION]
@@ -120,20 +118,20 @@ img4tool -e kernelcache.release.iphone14 -o kernelcache.release.iphone14.e
 # pyimg4 (https://github.com/m1stadev/PyIMG4)
 pyimg4 im4p extract -i kernelcache.release.iphone14 -o kernelcache.release.iphone14.e
 ```
-```
+
 ### Download
 
-- [[https://github.com/dortania/KdkSupportPkg/releases|**KernelDebugKit Github**]]
+- [**KernelDebugKit Github**](https://github.com/dortania/KdkSupportPkg/releases)
 
-In [[https://github.com/dortania/KdkSupportPkg/releases) it's possible to find all the kernel debug kits. You can download it, mount it, open it with [Suspicious Package](https://www.mothersruin.com/software/SuspiciousPackage/get.html|https://github.com/dortania/KdkSupportPkg/releases]] tool, access the **`.kext`** folder and **extract it**.
+In [https://github.com/dortania/KdkSupportPkg/releases](https://github.com/dortania/KdkSupportPkg/releases) it's possible to find all the kernel debug kits. You can download it, mount it, open it with [Suspicious Package](https://www.mothersruin.com/software/SuspiciousPackage/get.html) tool, access the **`.kext`** folder and **extract it**.
 
 Check it for symbols with:
 
 ```bash
 nm -a ~/Downloads/Sandbox.kext/Contents/MacOS/Sandbox | wc -l
 ```
-```
-- [[https://theapplewiki.com/wiki/Firmware/Mac/14.x)**,** [**ipsw.me**](https://ipsw.me/)**,** [**theiphonewiki.com**](https://www.theiphonewiki.com/|**theapplewiki.com**]]
+
+- [**theapplewiki.com**](https://theapplewiki.com/wiki/Firmware/Mac/14.x)**,** [**ipsw.me**](https://ipsw.me/)**,** [**theiphonewiki.com**](https://www.theiphonewiki.com/)
 
 Sometime Apple releases **kernelcache** with **symbols**. You can download some firmwares with symbols by following links on those pages. The firmwares will contain the **kernelcache** among other files.
 
@@ -141,18 +139,18 @@ To **extract** the files start by changing the extension from `.ipsw` to `.zip` 
 
 After extracting the firmware you will get a file like: **`kernelcache.release.iphone14`**. It's in **IMG4** format, you can extract the interesting info with:
 
-[[https://github.com/m1stadev/PyIMG4|**pyimg4**]]**:**
+[**pyimg4**](https://github.com/m1stadev/PyIMG4)**:**
 
 ```bash
 pyimg4 im4p extract -i kernelcache.release.iphone14 -o kernelcache.release.iphone14.e
 ```
-```
-[[https://github.com/tihmstar/img4tool|**img4tool**]]**:**
+
+[**img4tool**](https://github.com/tihmstar/img4tool)**:**
 
 ```bash
 img4tool -e kernelcache.release.iphone14 -o kernelcache.release.iphone14.e
 ```
-```
+
 ### Inspecting kernelcache
 
 Check if the kernelcache has symbols with
@@ -160,7 +158,7 @@ Check if the kernelcache has symbols with
 ```bash
 nm -a kernelcache.release.iphone14.e | wc -l
 ```
-```
+
 With this we can now **extract all the extensions** or the **one you are interested in:**
 
 ```bash
@@ -175,7 +173,7 @@ kextex_all kernelcache.release.iphone14.e
 # Check the extension for symbols
 nm -a binaries/com.apple.security.sandbox | wc -l
 ```
-```
+
 ## Recent vulnerabilities & exploitation techniques
 
 | Year | CVE | Summary |
@@ -203,7 +201,7 @@ Apple’s recommended workflow is to build a **Kernel Debug Kit (KDK)** that mat
 sudo kdpwrit dump latest.kcdata
 kmutil analyze-panic latest.kcdata -o ~/panic_report.txt
 ```
-```
+
 ### Live remote debugging from another Mac
 
 1. Download + install the exact **KDK** version for the target machine.
@@ -214,7 +212,7 @@ kmutil analyze-panic latest.kcdata -o ~/panic_report.txt
 sudo nvram boot-args="debug=0x100 kdp_match_name=macbook-target"
 reboot
 ```
-```
+
 4. On the **host**:
 
 ```bash
@@ -222,7 +220,7 @@ lldb
 (lldb) kdp-remote "udp://macbook-target"
 (lldb) bt  # get backtrace in kernel context
 ```
-```
+
 ### Attaching LLDB to a specific loaded kext
 
 ```bash
@@ -232,7 +230,7 @@ ADDR=$(kmutil showloaded --bundle-identifier com.example.driver | awk '{print $4
 # Attach
 sudo lldb -n kernel_task -o "target modules load --file /Library/Extensions/Example.kext/Contents/MacOS/Example --slide $ADDR"
 ```
-```
+
 > ℹ️  KDP only exposes a **read-only** interface. For dynamic instrumentation you will need to patch the binary on-disk, leverage **kernel function hooking** (e.g. `mach_override`) or migrate the driver to a **hypervisor** for full read/write.
 
 ## References

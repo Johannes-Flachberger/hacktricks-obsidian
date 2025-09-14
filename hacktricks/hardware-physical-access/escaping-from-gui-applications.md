@@ -1,6 +1,5 @@
 # Escaping from KIOSKs
 
-
 ---
 
 ## Check physical device
@@ -36,11 +35,11 @@ Maybe **using a `Open with`** option\*\* you can open/execute some kind of shell
 
 #### Windows
 
-For example _cmd.exe, command.com, Powershell/Powershell ISE, mmc.exe, at.exe, taskschd.msc..._ find more binaries that can be used to execute commands (and perform unexpected actions) here: [[https://lolbas-project.github.io|https://lolbas-project.github.io/]]
+For example _cmd.exe, command.com, Powershell/Powershell ISE, mmc.exe, at.exe, taskschd.msc..._ find more binaries that can be used to execute commands (and perform unexpected actions) here: [https://lolbas-project.github.io/](https://lolbas-project.github.io)
 
 #### \*NIX \_\_
 
-_bash, sh, zsh..._ More here: [[https://gtfobins.github.io|https://gtfobins.github.io/]]
+_bash, sh, zsh..._ More here: [https://gtfobins.github.io/](https://gtfobins.github.io)
 
 ## Windows
 
@@ -69,9 +68,9 @@ _bash, sh, zsh..._ More here: [[https://gtfobins.github.io|https://gtfobins.gith
 
 ### Download Your Binaries
 
-Console: [[https://sourceforge.net/projects/console/|https://sourceforge.net/projects/console/]]\
-Explorer: [[https://sourceforge.net/projects/explorerplus/files/Explorer%2B%2B/|https://sourceforge.net/projects/explorerplus/files/Explorer%2B%2B/]]\
-Registry editor: [[https://sourceforge.net/projects/uberregedit/|https://sourceforge.net/projects/uberregedit/]]
+Console: [https://sourceforge.net/projects/console/](https://sourceforge.net/projects/console/)\
+Explorer: [https://sourceforge.net/projects/explorerplus/files/Explorer%2B%2B/](https://sourceforge.net/projects/explorerplus/files/Explorer%2B%2B/)\
+Registry editor: [https://sourceforge.net/projects/uberregedit/](https://sourceforge.net/projects/uberregedit/)
 
 ### Accessing filesystem from the browser
 
@@ -153,14 +152,14 @@ Type this URLs to obtain an Explorer view:
 
 ### Show File Extensions
 
-Check this page for more information: [[https://www.howtohaven.com/system/show-file-extensions-in-windows-explorer.shtml|https://www.howtohaven.com/system/show-file-extensions-in-windows-explorer.shtml]]
+Check this page for more information: [https://www.howtohaven.com/system/show-file-extensions-in-windows-explorer.shtml](https://www.howtohaven.com/system/show-file-extensions-in-windows-explorer.shtml)
 
 ## Browsers tricks
 
 Backup iKat versions:
 
-[[http://swin.es/k/|http://swin.es/k/]]\
-[[http://www.ikat.kronicd.net|http://www.ikat.kronicd.net/]]
+[http://swin.es/k/](http://swin.es/k/)\
+[http://www.ikat.kronicd.net/](http://www.ikat.kronicd.net)
 
 Create a common dialog using JavaScript and access file explorer: `document.write('<input/type=file>')`\
 Source: https://medium.com/@Rend\_/give-me-a-browser-ill-give-you-a-shell-de19811defa0
@@ -272,10 +271,8 @@ These shortcuts are for the visual settings and sound settings, depending on the
 
 ## References
 
-- [[https://www.macworld.com/article/2975857/6-only-for-ipad-gestures-you-need-to-know.html|https://www.macworld.com/article/2975857/6-only-for-ipad-gestures-you-need-to-know.html]]
-- [[https://www.tomsguide.com/us/ipad-shortcuts,news-18205.html|https://www.tomsguide.com/us/ipad-shortcuts,news-18205.html]]
-- [[https://thesweetsetup.com/best-ipad-keyboard-shortcuts/|https://thesweetsetup.com/best-ipad-keyboard-shortcuts/]]
-- [[http://www.iphonehacks.com/2018/03/ipad-keyboard-shortcuts.html|http://www.iphonehacks.com/2018/03/ipad-keyboard-shortcuts.html]]
-
-
+- [https://www.macworld.com/article/2975857/6-only-for-ipad-gestures-you-need-to-know.html](https://www.macworld.com/article/2975857/6-only-for-ipad-gestures-you-need-to-know.html)
+- [https://www.tomsguide.com/us/ipad-shortcuts,news-18205.html](https://www.tomsguide.com/us/ipad-shortcuts,news-18205.html)
+- [https://thesweetsetup.com/best-ipad-keyboard-shortcuts/](https://thesweetsetup.com/best-ipad-keyboard-shortcuts/)
+- [http://www.iphonehacks.com/2018/03/ipad-keyboard-shortcuts.html](http://www.iphonehacks.com/2018/03/ipad-keyboard-shortcuts.html)
 

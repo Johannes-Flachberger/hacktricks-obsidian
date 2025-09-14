@@ -1,7 +1,5 @@
 # Web Requests
 
-
-
 ## Python Requests
 
 ```python
@@ -40,6 +38,7 @@ print(f"\rflag: {flag}{char}", end="")
 
 
 
+
 ##### Example Functions
 target = "http://10.10.10.10:8000"
 proxies = {}
@@ -55,7 +54,7 @@ def login(username, password):
 
 def get_info(name):
     resp = s.post(target + "/projects", data={"name":name, }, proxies=proxies, verify=0)
-    guid = re.match('[[\/info\/([^)', resp.text|' \+ name \+ ']][1]
+    guid = re.match('<a href="\/info\/([^"]*)">' + name + '</a>', resp.text)[1]
     return guid
 
 def upload(guid, filename, data):
@@ -70,7 +69,7 @@ def json_search(guid, search_string):
 def get_random_string(guid, path):
     return ''.join(random.choice(string.ascii_letters) for i in range(10))
 ```
-```
+
 ## Python cmd to exploit an RCE
 
 ```python
@@ -95,10 +94,8 @@ def RunCmd(cmd):
     else:
         return 1
 
+
 term = Terminal()
 term.cmdloop()
 ```
-```
-
-
 

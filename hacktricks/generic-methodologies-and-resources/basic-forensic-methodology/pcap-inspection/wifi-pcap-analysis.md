@@ -1,13 +1,12 @@
 # Wifi Pcap Analysis
 
-
 ## Check BSSIDs
 
 When you receive a capture whose principal traffic is Wifi using WireShark you can start investigating all the SSIDs of the capture with _Wireless --> WLAN Traffic_:
 
-![[<../../../images/image (106).png>|]]
+![[../../../images/image (106).png]]
 
-![[<../../../images/image (492).png>|]]
+![[../../../images/image (492).png]]
 
 ### Brute Force
 
@@ -16,7 +15,7 @@ One of the columns of that screen indicates if **any authentication was found in
 ```bash
 aircrack-ng -w pwds-file.txt -b <BSSID> file.pcap
 ```
-```
+
 For example it will retrieve the WPA passphrase protecting a PSK (pre shared-key), that will be required to decrypt the trafic later.
 
 ## Data in Beacons / Side Channel
@@ -37,7 +36,5 @@ Once you have detected **unknown MAC** addresses communicating inside the networ
 
 Edit --> Preferences --> Protocols --> IEEE 802.11--> Edit
 
-![[<../../../images/image (499).png>|]]
-
-
+![[../../../images/image (499).png]]
 

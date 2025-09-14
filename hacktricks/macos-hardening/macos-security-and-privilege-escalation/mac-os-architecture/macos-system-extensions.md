@@ -1,12 +1,10 @@
 # macOS System Extensions
 
-
 ## System Extensions / Endpoint Security Framework
 
 Unlike Kernel Extensions, **System Extensions run in user space** instead of kernel space, reducing the risk of a system crash due to extension malfunction.
 
-![[../../../images/image (606).png|https://knight.sc/images/system-extension-internals-1.png]]
-
+![https://knight.sc/images/system-extension-internals-1.png](../../../images/image (606).png)
 
 There are three types of system extensions: **DriverKit** Extensions, **Network** Extensions, and **Endpoint Security** Extensions.
 
@@ -46,8 +44,7 @@ The events that the Endpoint Security framework can monitor are categorized into
 
 ### Endpoint Security Framework Architecture
 
-![[../../../images/image (1068).png|https://www.youtube.com/watch?v=jaVkpM1UqOs]]
-
+![https://www.youtube.com/watch?v=jaVkpM1UqOs](../../../images/image (1068).png)
 
 **User-space communication** with the Endpoint Security framework happens through the IOUserClient class. Two different subclasses are used, depending on the type of caller:
 
@@ -71,15 +68,13 @@ The thing is that the security application needs to have **Full Disk Access perm
 ```bash
 tccutil reset All
 ```
-```
-For **more information** about this bypass and related ones check the talk [[https://www.youtube.com/watch?v=lQO7tvNCoTI|#OBTS v5.0: "The Achilles Heel of EndpointSecurity" - Fitzl Csaba]]
+
+For **more information** about this bypass and related ones check the talk [#OBTS v5.0: "The Achilles Heel of EndpointSecurity" - Fitzl Csaba](https://www.youtube.com/watch?v=lQO7tvNCoTI)
 
 At the end this was fixed by giving the new permission **`kTCCServiceEndpointSecurityClient`** to the security app managed by **`tccd`** so `tccutil` won't clear its permissions preventing it from running.
 
 ## References
 
-- [[https://www.youtube.com/watch?v=jaVkpM1UqOs|**OBTS v3.0: "Endpoint Security & Insecurity" - Scott Knight**]]
-- [[https://knight.sc/reverse%20engineering/2019/08/24/system-extension-internals.html|**https://knight.sc/reverse%20engineering/2019/08/24/system-extension-internals.html**]]
-
-
+- [**OBTS v3.0: "Endpoint Security & Insecurity" - Scott Knight**](https://www.youtube.com/watch?v=jaVkpM1UqOs)
+- [**https://knight.sc/reverse%20engineering/2019/08/24/system-extension-internals.html**](https://knight.sc/reverse%20engineering/2019/08/24/system-extension-internals.html)
 

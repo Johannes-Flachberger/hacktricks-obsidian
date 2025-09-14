@@ -1,6 +1,5 @@
 # Basic Python
 
-
 ## Python Basics
 
 ### Useful information
@@ -79,7 +78,7 @@ for i in range(0,100):
 for letter in "hola":
     #something with a letter in "hola"
 ```
-```
+
 ### Tuples
 
 t1 = (1,'2,'three')\
@@ -153,6 +152,7 @@ class Person(name):
 	def getAge(self):
 		return (date time.date.today() - self.birthday).days
 
+
 class MITPerson(Person):
 	nextIdNum = 0	# Attribute of the Class
 	def __init__(self, name):
@@ -163,7 +163,7 @@ class MITPerson(Person):
 	def __it__(self, other):
 		return self.idNum < other.idNum
 ```
-```
+
 ### map, zip, filter, lambda, sorted and one-liners
 
 **Map** is like: \[f(x) for x in iterable] --> map(tutple,\[a,b]) = \[(1,2,3),(4,5)]\
@@ -175,7 +175,7 @@ m = map(lambda x: x % 3 == 0, \[1, 2, 3, 4, 5, 6, 7, 8, 9]) --> \[False, False, 
 for f, b in zip(foo, bar):
     print(f, b)
 ```
-```
+
 **Lambda** is used to define a function\
 (lambda x,y: x+y)(5,3) = 8 --> Use lambda as simple **function**\
 **sorted**(range(-5,6), key=lambda x: x\*\* 2) = \[0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5] --> Use lambda to sort a list\
@@ -192,7 +192,7 @@ class Car:
 	crash = lambda self: print('Boom!')
 my_car = Car(); my_car.crash() = 'Boom!'
 ```
-```
+
 mult1 = \[x for x in \[1, 2, 3, 4, 5, 6, 7, 8, 9] if x%3 == 0 ]
 
 ### Exceptions
@@ -210,7 +210,7 @@ def divide(x,y):
 	finally
 		print “executing finally clause in any case”
 ```
-```
+
 ### Assert()
 
 If the condition is false the string will be printed in the screen
@@ -220,7 +220,7 @@ def avg(grades, weights):
 	assert not len(grades) == 0, 'no grades data'
 	assert len(grades) == 'wrong number grades'
 ```
-```
+
 ### Generators, yield
 
 A generator, instead of returning something, it "yields" something. When you access it, it will "return" the first value generated, then, you can access it again and it will return the next value generated. So, all the values are not generated at the same time and a lot of memory could be saved using this instead of a list with all the values.
@@ -230,7 +230,7 @@ def myGen(n):
 	yield n
 	yield n + 1
 ```
-```
+
 g = myGen(6) --> 6\
 next(g) --> 7\
 next(g) --> Error
@@ -284,7 +284,7 @@ print(list(**combinations_with_replacement**('1133',2))) = \[('1', '1'), ('1', '
 
 ### Decorators
 
-Decorator that size the time that a function needs to be executed (from [[https://towardsdatascience.com/decorating-functions-in-python-619cbbe82c74)|here]]:
+Decorator that size the time that a function needs to be executed (from [here](https://towardsdatascience.com/decorating-functions-in-python-619cbbe82c74)):
 
 ```python
 from functools import wraps
@@ -303,7 +303,7 @@ def timeme(func):
 def decorated_func():
   print("Decorated func!")
 ```
-```
+
 If you run it, you will see something like the following:
 
 ```
@@ -311,7 +311,4 @@ Let's call our decorated function
 Decorated func!
 Execution time: 4.792213439941406e-05 seconds
 ```
-```
-
-
 

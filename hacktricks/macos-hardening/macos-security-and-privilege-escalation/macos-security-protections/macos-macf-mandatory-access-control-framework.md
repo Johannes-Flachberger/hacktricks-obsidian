@@ -1,6 +1,5 @@
 # macOS MACF
 
-
 ## Basic Information
 
 **MACF** stands for **Mandatory Access Control Framework**, which is a security system built into the operating system to help protect your computer. It works by setting **strict rules about who or what can access certain parts of the system**, such as files, applications, and system resources. By enforcing these rules automatically, MACF ensures that only authorized users and processes can perform specific actions, reducing the risk of unauthorized access or malicious activities.
@@ -21,13 +20,13 @@ Note that MACF doesn't really make any decisions as it just **intercepts** actio
 
 ### Labels
 
-MACF use **labels** that then the policies checking if they should grant some access or not will use. The code of the labels struct declaration can be [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/_label.h|found here]], which is then used inside the **`struct ucred`** in [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/sys/ucred.h#L86|**here**]] in the **`cr_label`** part. The label contains flags and s number of **slots** that can be used by **MACF policies to allocate pointers**. For example Sanbox will point to the container profile
+MACF use **labels** that then the policies checking if they should grant some access or not will use. The code of the labels struct declaration can be [found here](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/_label.h), which is then used inside the **`struct ucred`** in [**here**](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/sys/ucred.h#L86) in the **`cr_label`** part. The label contains flags and s number of **slots** that can be used by **MACF policies to allocate pointers**. For example Sanbox will point to the container profile
 
 ## MACF Policies
 
 A MACF Policy defined **rule and conditions to be applied in certain kernel operations**.
 
-A kernel extension could configure a `mac_policy_conf` struct and then register it calling `mac_policy_register`. From [[https://opensource.apple.com/source/xnu/xnu-2050.18.24/security/mac_policy.h.auto.html|here]]:
+A kernel extension could configure a `mac_policy_conf` struct and then register it calling `mac_policy_register`. From [here](https://opensource.apple.com/source/xnu/xnu-2050.18.24/security/mac_policy.h.auto.html):
 
 ```c
  #define mpc_t	struct mac_policy_conf *
@@ -65,12 +64,12 @@ struct mac_policy_conf {
 	void			*mpc_data;		/** module data */
 };
 ```
-```
+
 It's easy to identify the kernel extensions configuring these policies by checking calls to `mac_policy_register`. Moreover, checking the disassemble of the extension it's also possible to find the used `mac_policy_conf` struct.
 
 Note that MACF policies can be registered and unregistered also **dynamically**.
 
-One of the main fields of the `mac_policy_conf` is the **`mpc_ops`**. This fied specifies which opreations the policy is interested in. Note that there are hundres of them, so it's possible to zero all of them and then select just the ones the policy is interested on. From [[https://opensource.apple.com/source/xnu/xnu-2050.18.24/security/mac_policy.h.auto.html|here]]:
+One of the main fields of the `mac_policy_conf` is the **`mpc_ops`**. This fied specifies which opreations the policy is interested in. Note that there are hundres of them, so it's possible to zero all of them and then select just the ones the policy is interested on. From [here](https://opensource.apple.com/source/xnu/xnu-2050.18.24/security/mac_policy.h.auto.html):
 
 ```c
 struct mac_policy_ops {
@@ -84,7 +83,7 @@ struct mac_policy_ops {
 	mpo_cred_check_label_update_t		*mpo_cred_check_label_update;
 [...]
 ```
-```
+
 Almost all the hooks will be called back by MACF when one of those operations are intercepted. However, **`mpo_policy_*`** hooks are an exception because `mpo_hook_policy_init()` is a callback called upon registration (so after `mac_policy_register()`) and `mpo_hook_policy_initbsd()` is called during late registration once the BSD subsystem has initialised properly.
 
 Moreover, the **`mpo_policy_syscall`** hook can be registered by any kext to expose a private **ioctl** style call **interface**. Then, a user client will be able to call `mac_syscall` (#381) specifying as parameters the **policy name** with an integer **code** and optional **arguments**.\
@@ -105,15 +104,15 @@ It's common to find callouts to MACF defined in code like: **`#if CONFIG_MAC`** 
 The object is one of the following: `bpfdesc`, `cred`, `file`, `proc`, `vnode`, `mount`, `devfs`, `ifnet`, `inpcb`, `mbuf`, `ipq`, `pipe`, `sysv[msg/msq/shm/sem]`, `posix[shm/sem]`, `socket`, `kext`.\
 The `opType` is usually check which will be used to allow or deny the action. However, it's also possible to find `notify`, which will allow the kext to react to the given action.
 
-You can find an example in [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/kern/kern_mman.c#L621|https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/kern/kern_mman.c#L621]]:
+You can find an example in [https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/kern/kern_mman.c#L621](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/kern/kern_mman.c#L621):
 
-_int
+<pre class="language-c"><code class="lang-c">int
 mmap(proc_t p, struct mmap_args *uap, user_addr_t *retval)
 {
 [...]
 #if CONFIG_MACF
-			error = mac_file_check_mmap(vfs_context_ucred(ctx),
-			    fp->fp_glob, prot, flags, file_pos + pageoff,
+<strong>			error = mac_file_check_mmap(vfs_context_ucred(ctx),
+</strong>			    fp->fp_glob, prot, flags, file_pos + pageoff,
 			    &maxprot);
 			if (error) {
 				(void)vnode_put(vp);
@@ -121,9 +120,9 @@ mmap(proc_t p, struct mmap_args *uap, user_addr_t *retval)
 			}
 #endif /* MAC */
 [...]
-```
+</code></pre>
 
-Then, it's possible to find the code of `mac_file_check_mmap` in [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_file.c#L174|https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_file.c#L174]]
+Then, it's possible to find the code of `mac_file_check_mmap` in [https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_file.c#L174](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_file.c#L174)
 
 ```c
 mac_file_check_mmap(struct ucred *cred, struct fileglob *fg, int prot,
@@ -141,8 +140,8 @@ mac_file_check_mmap(struct ucred *cred, struct fileglob *fg, int prot,
 	return error;
 }
 ```
-```
-Which is calling the `MAC_CHECK` macro, whose code can be found in [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_internal.h#L261|https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_internal.h#L261]]
+
+Which is calling the `MAC_CHECK` macro, whose code can be found in [https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_internal.h#L261](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_internal.h#L261)
 
 ```c
 /*
@@ -163,11 +162,11 @@ Which is calling the `MAC_CHECK` macro, whose code can be found in [[https://git
     });                                                             \
 } while (0)
 ```
-```
+
 Which will go over all the registered mac policies calling their functions and storing the output inside the error variable, which will only be overridable by `mac_error_select` by success codes so if any check fails the complete check will fail and the action won't be allowed.
 
 > [!TIP]
-> However, remember that not all MACF callouts are used only to deny actions. For example, `mac_priv_grant` calls the macro [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_internal.h#L274|**MAC_GRANT**]], which will grant the requested privilege if any policy answers with a 0:
+> However, remember that not all MACF callouts are used only to deny actions. For example, `mac_priv_grant` calls the macro [**MAC_GRANT**](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac_internal.h#L274), which will grant the requested privilege if any policy answers with a 0:
 >
 > ```c
 > /*
@@ -194,8 +193,8 @@ Which will go over all the registered mac policies calling their functions and s
 
 ### priv_check & priv_grant
 
-These callas are meant to check and provide (tens of) **privileges** defined in [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/sys/priv.h|**bsd/sys/priv.h**]].\
-Some kernel code would call `priv_check_cred()` from [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/kern/kern_priv.c|**bsd/kern/kern_priv.c**]] with the KAuth credentials of the process and one of the privileges code which will call `mac_priv_check` to see if any policy **denies** giving the privilege and then it calls `mac_priv_grant` to see if any policy grants the `privilege`.
+These callas are meant to check and provide (tens of) **privileges** defined in [**bsd/sys/priv.h**](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/sys/priv.h).\
+Some kernel code would call `priv_check_cred()` from [**bsd/kern/kern_priv.c**](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/bsd/kern/kern_priv.c) with the KAuth credentials of the process and one of the privileges code which will call `mac_priv_check` to see if any policy **denies** giving the privilege and then it calls `mac_priv_grant` to see if any policy grants the `privilege`.
 
 ### proc_check_syscall_unix
 
@@ -211,14 +210,14 @@ This hook allows to intercept all system calls. In `bsd/dev/[i386|arm]/systemcal
 	}
 #endif /* CONFIG_MACF */
 ```
-```
+
 Which will check in the calling process **bitmask** if the current syscall should call `mac_proc_check_syscall_unix`. This is because syscalls are called so frequently that it's interesting to avoid calling `mac_proc_check_syscall_unix` every time.
 
 Note that the function `proc_set_syscall_filter_mask()`, which set the bitmask syscalls in a process is called by Sandbox to set masks on sandboxed processes.
 
 ## Exposed MACF syscalls
 
-It's possible to interact with MACF through some syscalls defined in [[https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac.h#L151|security/mac.h]]:
+It's possible to interact with MACF through some syscalls defined in [security/mac.h](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/security/mac.h#L151):
 
 ```c
 /*
@@ -244,10 +243,8 @@ int      __mac_syscall(const char *_policyname, int _call, void *_arg);
 __END_DECLS
 #endif /*__APPLE_API_PRIVATE*/
 ```
-```
+
 ## References
 
-- [[https://newosxbook.com/home.html|**\*OS Internals Volume III**]]
-
-
+- [**\*OS Internals Volume III**](https://newosxbook.com/home.html)
 

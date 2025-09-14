@@ -1,6 +1,5 @@
 # Seccomp
 
-
 ## Basic Information
 
 **Seccomp**, standing for Secure Computing mode, is a security feature of the **Linux kernel designed to filter system calls**. It restricts processes to a limited set of system calls (`exit()`, `sigreturn()`, `read()`, and `write()` for already-open file descriptors). If a process tries to call anything else, it gets terminated by the kernel using SIGKILL or SIGSYS. This mechanism doesn't virtualize resources but isolates the process from them.
@@ -44,7 +43,7 @@ int main(int argc, char **argv)
     printf("You will not see this message--the process will be killed first\n");
 }
 ```
-```
+
 ### Seccomp-bpf
 
 This mode allows **filtering of system calls using a configurable policy** implemented using Berkeley Packet Filter rules.
@@ -96,10 +95,10 @@ void main(void) {
   printf("this process is %d\n", getpid());
 }
 ```
-```
+
 ## Seccomp in Docker
 
-**Seccomp-bpf** is supported by **Docker** to restrict the **syscalls** from the containers effectively decreasing the surface area. You can find the **syscalls blocked** by **default** in [[https://docs.docker.com/engine/security/seccomp/) and the **default seccomp profile** can be found here [https://github.com/moby/moby/blob/master/profiles/seccomp/default.json](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json|https://docs.docker.com/engine/security/seccomp/]].\
+**Seccomp-bpf** is supported by **Docker** to restrict the **syscalls** from the containers effectively decreasing the surface area. You can find the **syscalls blocked** by **default** in [https://docs.docker.com/engine/security/seccomp/](https://docs.docker.com/engine/security/seccomp/) and the **default seccomp profile** can be found here [https://github.com/moby/moby/blob/master/profiles/seccomp/default.json](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json).\
 You can run a docker container with a **different seccomp** policy with:
 
 ```bash
@@ -108,21 +107,21 @@ docker run --rm \
              --security-opt seccomp=/path/to/seccomp/profile.json \
              hello-world
 ```
-```
-If you want for example to **forbid** a container of executing some **syscall** like `uname` you could download the default profile from [[https://github.com/moby/moby/blob/master/profiles/seccomp/default.json|https://github.com/moby/moby/blob/master/profiles/seccomp/default.json]] and just **remove the `uname` string from the list**.\
+
+If you want for example to **forbid** a container of executing some **syscall** like `uname` you could download the default profile from [https://github.com/moby/moby/blob/master/profiles/seccomp/default.json](https://github.com/moby/moby/blob/master/profiles/seccomp/default.json) and just **remove the `uname` string from the list**.\
 If you want to make sure that **some binary doesn't work inside a a docker container** you could use strace to list the syscalls the binary is using and then forbid them.\
 In the following example the **syscalls** of `uname` are discovered:
 
 ```bash
 docker run -it --security-opt seccomp=default.json modified-ubuntu strace uname
 ```
-```
+
 > [!TIP]
 > If you are using **Docker just to launch an application**, you can **profile** it with **`strace`** and **just allow the syscalls** it needs
 
 ### Example Seccomp policy
 
-[[https://sreeninet.wordpress.com/2016/03/06/docker-security-part-2docker-engine/|Example from here]]
+[Example from here](https://sreeninet.wordpress.com/2016/03/06/docker-security-part-2docker-engine/)
 
 To illustrate Seccomp feature, let’s create a Seccomp profile disabling “chmod” system call as below.
 
@@ -137,7 +136,7 @@ To illustrate Seccomp feature, let’s create a Seccomp profile disabling “chm
   ]
 }
 ```
-```
+
 In the above profile, we have set default action to “allow” and created a black list to disable “chmod”. To be more secure, we can set default action to drop and create a white list to selectively enable system calls.\
 Following output shows the “chmod” call returning error because its disabled in the seccomp profile
 
@@ -145,7 +144,7 @@ Following output shows the “chmod” call returning error because its disabled
 $ docker run --rm -it --security-opt seccomp:/home/smakam14/seccomp/profile.json busybox chmod 400 /etc/hosts
 chmod: /etc/hosts: Operation not permitted
 ```
-```
+
 Following output shows the “docker inspect” displaying the profile:
 
 ```json
@@ -153,7 +152,4 @@ Following output shows the “docker inspect” displaying the profile:
   "seccomp:{\"defaultAction\":\"SCMP_ACT_ALLOW\",\"syscalls\":[{\"name\":\"chmod\",\"action\":\"SCMP_ACT_ERRNO\"}]}"
   ]
 ```
-```
-
-
 

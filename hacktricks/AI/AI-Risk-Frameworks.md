@@ -1,11 +1,10 @@
 # AI Risks
 
-
 ## OWASP Top 10 Machine Learning Vulnerabilities
 
 Owasp has identified the top 10 machine learning vulnerabilities that can affect AI systems. These vulnerabilities can lead to various security issues, including data poisoning, model inversion, and adversarial attacks. Understanding these vulnerabilities is crucial for building secure AI systems.
 
-For an updated and detailed list of the top 10 machine learning vulnerabilities, refer to the [[https://owasp.org/www-project-machine-learning-security-top-10/|OWASP Top 10 Machine Learning Vulnerabilities]] project.
+For an updated and detailed list of the top 10 machine learning vulnerabilities, refer to the [OWASP Top 10 Machine Learning Vulnerabilities](https://owasp.org/www-project-machine-learning-security-top-10/) project.
 
 - **Input Manipulation Attack**: An attacker adds tiny, often invisible changes to **incoming data** so the model makes the wrong decision.\
     *Example*: A few specks of paint on a stop‑sign fool a self‑driving car into "seeing" a speed‑limit sign.
@@ -39,7 +38,7 @@ For an updated and detailed list of the top 10 machine learning vulnerabilities,
 
 ## Google SAIF Risks
 
-Google's [[https://saif.google/secure-ai-framework/risks|SAIF (Security AI Framework)]] outlines various risks associated with AI systems:
+Google's [SAIF (Security AI Framework)](https://saif.google/secure-ai-framework/risks) outlines various risks associated with AI systems:
 
 - **Data Poisoning**: Malicious actors alter or inject training/tuning data to degrade accuracy, implant backdoors, or skew results, undermining model integrity across the entire data-lifecycle. 
 
@@ -73,6 +72,5 @@ Google's [[https://saif.google/secure-ai-framework/risks|SAIF (Security AI Frame
 
 ## Mitre AI ATLAS Matrix
 
-The [[https://atlas.mitre.org/matrices/ATLAS|MITRE AI ATLAS Matrix]] provides a comprehensive framework for understanding and mitigating risks associated with AI systems. It categorizes various attack techniques and tactics that adversaries may use against AI models and also how to use AI systems to perform different attacks.
-
+The [MITRE AI ATLAS Matrix](https://atlas.mitre.org/matrices/ATLAS) provides a comprehensive framework for understanding and mitigating risks associated with AI systems. It categorizes various attack techniques and tactics that adversaries may use against AI models and also how to use AI systems to perform different attacks.
 

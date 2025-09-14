@@ -1,6 +1,5 @@
 # Namespaces
 
-
 ### **PID namespace**
 
 [[pid-namespace.md]]
@@ -28,6 +27,4 @@
 ### User namespace
 
 [[user-namespace.md]]
-
-
 

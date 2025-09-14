@@ -1,9 +1,8 @@
 # Satisfiability Modulo Theories (SMT) - Z3
 
-
 Very basically, this tool will help us to find values for variables that need to satisfy some conditions and calculating them by hand will be so annoying. Therefore, you can indicate to Z3 the conditions the variables need to satisfy and it will find some values (if possible).
 
-**Some texts and examples are extracted from [[https://ericpony.github.io/z3py-tutorial/guide-examples.htm|https://ericpony.github.io/z3py-tutorial/guide-examples.htm]]**
+**Some texts and examples are extracted from [https://ericpony.github.io/z3py-tutorial/guide-examples.htm](https://ericpony.github.io/z3py-tutorial/guide-examples.htm)**
 
 ## Basic Operations
 
@@ -23,7 +22,7 @@ s.add(And(Or(x,y,Not(z)),y))
 s.check() #If response is "sat" then the model is satifable, if "unsat" something is wrong
 print(s.model()) #Print valid values to satisfy the model
 ```
-```
+
 ### Ints/Simplify/Reals
 
 ```python
@@ -45,7 +44,7 @@ print(solve(r1**2 + r2**2 == 3, r1**3 == 2))
 set_option(precision=30)
 print(solve(r1**2 + r2**2 == 3, r1**3 == 2))
 ```
-```
+
 ### Printing Model
 
 ```python
@@ -61,7 +60,7 @@ print ("x = %s" % m[x])
 for d in m.decls():
     print("%s = %s" % (d.name(), m[d]))
 ```
-```
+
 ## Machine Arithmetic
 
 Modern CPUs and main-stream programming languages use arithmetic over **fixed-size bit-vectors**. Machine arithmetic is available in Z3Py as **Bit-Vectors**.
@@ -80,7 +79,7 @@ a = BitVecVal(-1, 32)
 b = BitVecVal(65535, 32)
 print(simplify(a == b)) #This is False
 ```
-```
+
 ### Signed/Unsigned Numbers
 
 Z3 provides special signed versions of arithmetical operations where it makes a difference whether the **bit-vector is treated as signed or unsigned**. In Z3Py, the operators **<, <=, >, >=, /, % and >>** correspond to the **signed** versions. The corresponding **unsigned** operators are **ULT, ULE, UGT, UGE, UDiv, URem and LShR.**
@@ -102,7 +101,7 @@ solve(x < 0)
 # using unsigned version of <
 solve(ULT(x, 0))
 ```
-```
+
 ### Functions
 
 **Interpreted functio**ns such as arithmetic where the **function +** has a **fixed standard interpretation** (it adds two numbers). **Uninterpreted functions** and constants are **maximally flexible**; they allow **any interpretation** that is **consistent** with the **constraints** over the function or constant.
@@ -127,7 +126,7 @@ s.add(f(x) == 4) #Find the value that generates 4 as response
 s.check()
 print(m.model())
 ```
-```
+
 ## Examples
 
 ### Sudoku solver
@@ -181,10 +180,8 @@ if s.check() == sat:
 else:
     print "failed to solve"
 ```
-```
+
 ## References
 
-- [[https://ericpony.github.io/z3py-tutorial/guide-examples.htm|https://ericpony.github.io/z3py-tutorial/guide-examples.htm]]
-
-
+- [https://ericpony.github.io/z3py-tutorial/guide-examples.htm](https://ericpony.github.io/z3py-tutorial/guide-examples.htm)
 

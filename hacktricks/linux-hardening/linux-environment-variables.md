@@ -1,6 +1,5 @@
 # Linux Environment Variables
 
-
 ## Global variables
 
 The global variables **will be** inherited by **child processes**.
@@ -11,7 +10,7 @@ You can create a global variable for your current session doing:
 export MYGLOBAL="hello world"
 echo $MYGLOBAL #Prints: hello world
 ```
-```
+
 This variable will be accessible by your current sessions and its child processes.
 
 You can **remove** a variable doing:
@@ -19,7 +18,7 @@ You can **remove** a variable doing:
 ```bash
 unset MYGLOBAL
 ```
-```
+
 ## Local variables
 
 The **local variables** can only be **accessed** by the **current shell/script**.
@@ -29,7 +28,7 @@ LOCAL="my local"
 echo $LOCAL
 unset LOCAL
 ```
-```
+
 ## List current variables
 
 ```bash
@@ -37,12 +36,12 @@ set
 env
 printenv
 cat /proc/$$/environ
-cat /proc/`python -c "import os; print(os.getppid())"/environ
+cat /proc/`python -c "import os; print(os.getppid())"`/environ
 ```
-```
+
 ## Common variables
 
-From: [[https://geek-university.com/linux/common-environment-variables/|https://geek-university.com/linux/common-environment-variables/]]
+From: [https://geek-university.com/linux/common-environment-variables/](https://geek-university.com/linux/common-environment-variables/)
 
 - **DISPLAY** – the display used by **X**. This variable is usually set to **:0.0**, which means the first display on the current computer.
 - **EDITOR** – the user’s preferred text editor.
@@ -71,7 +70,7 @@ Change the **value of this variable to 0**, so when you **end your session** the
 ```bash
 export HISTFILESIZE=0
 ```
-```
+
 ### **HISTSIZE**
 
 Change the **value of this variable to 0**, so when you **end your session** any command will be added to the **history file** (\~/.bash_history).
@@ -79,7 +78,7 @@ Change the **value of this variable to 0**, so when you **end your session** any
 ```bash
 export HISTSIZE=0
 ```
-```
+
 ### http_proxy & https_proxy
 
 The processes will use the **proxy** declared here to connect to internet through **http or https**.
@@ -88,7 +87,7 @@ The processes will use the **proxy** declared here to connect to internet throug
 export http_proxy="http://10.10.10.10:8080"
 export https_proxy="http://10.10.10.10:8080"
 ```
-```
+
 ### SSL_CERT_FILE & SSL_CERT_DIR
 
 The processes will trust the certificates indicated in **these env variables**.
@@ -97,28 +96,26 @@ The processes will trust the certificates indicated in **these env variables**.
 export SSL_CERT_FILE=/path/to/ca-bundle.pem
 export SSL_CERT_DIR=/path/to/ca-certificates
 ```
-```
+
 ### PS1
 
 Change how your prompt looks.
 
-[[https://gist.github.com/carlospolop/43f7cd50f3deea972439af3222b68808|**This is an example**]]
+[**This is an example**](https://gist.github.com/carlospolop/43f7cd50f3deea972439af3222b68808)
 
 Root:
 
-![[<../images/image (897).png>|]]
+![[../images/image (897).png]]
 
 Regular user:
 
-![[<../images/image (740).png>|]]
+![[../images/image (740).png]]
 
 One, two and three backgrounded jobs:
 
-![[<../images/image (145).png>|]]
+![[../images/image (145).png]]
 
 One background job, one stopped and last command didn't finish correctly:
 
-![[<../images/image (715).png>|]]
-
-
+![[../images/image (715).png]]
 

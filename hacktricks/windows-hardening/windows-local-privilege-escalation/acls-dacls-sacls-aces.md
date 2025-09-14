@@ -1,6 +1,5 @@
 # ACLs - DACLs/SACLs/ACEs
 
-
 ## **Access Control List (ACL)**
 
 An Access Control List (ACL) consists of an ordered set of Access Control Entries (ACEs) that dictate the protections for an object and its properties. In essence, an ACL defines which actions by which security principals (users or groups) are permitted or denied on a given object.
@@ -42,7 +41,7 @@ Each ACE has **four critical components**:
 1. The **Security Identifier (SID)** of the user or group (or their principal name in a graphical representation).
 2. A **flag** that identifies the ACE type (access denied, allowed, or system audit).
 3. **Inheritance flags** that determine if child objects can inherit the ACE from their parent.
-4. An [[https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-dtyp/7a53f60e-e730-4dfe-bbe9-b21b62eb790b?redirectedfrom=MSDN|**access mask**]], a 32-bit value specifying the object's granted rights.
+4. An [**access mask**](https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-dtyp/7a53f60e-e730-4dfe-bbe9-b21b62eb790b?redirectedfrom=MSDN), a 32-bit value specifying the object's granted rights.
 
 Access determination is conducted by sequentially examining each ACE until:
 
@@ -67,29 +66,29 @@ This setup helps in two big ways:
 
 By doing things this way, the owner of a file or folder can be very precise about who gets access, making sure the right people can get in and the wrong ones can't.
 
-![[https://www.ntfs.com/images/screenshots/ACEs.gif|]]
+![](https://www.ntfs.com/images/screenshots/ACEs.gif)
 
 So, this **"canonical order"** is all about making sure the access rules are clear and work well, putting specific rules first and organizing everything in a smart way.
 
 ### GUI Example
 
-[[https://secureidentity.se/acl-dacl-sacl-and-the-ace/|**Example from here**]]
+[**Example from here**](https://secureidentity.se/acl-dacl-sacl-and-the-ace/)
 
 This is the classic security tab of a folder showing the ACL, DACL and ACEs:
 
-![[../../images/classicsectab.jpg|http://secureidentity.se/wp-content/uploads/2014/04/classicsectab.jpg]]
+![http://secureidentity.se/wp-content/uploads/2014/04/classicsectab.jpg](../../images/classicsectab.jpg)
 
 If we click the **Advanced button** we will get more options like inheritance:
 
-![[../../images/aceinheritance.jpg|http://secureidentity.se/wp-content/uploads/2014/04/aceinheritance.jpg]]
+![http://secureidentity.se/wp-content/uploads/2014/04/aceinheritance.jpg](../../images/aceinheritance.jpg)
 
 And if you add or edit a Security Principal:
 
-![[../../images/editseprincipalpointers1.jpg|http://secureidentity.se/wp-content/uploads/2014/04/editseprincipalpointers1.jpg]]
+![http://secureidentity.se/wp-content/uploads/2014/04/editseprincipalpointers1.jpg](../../images/editseprincipalpointers1.jpg)
 
 And last we have the SACL in the Auditing tab:
 
-![[../../images/audit-tab.jpg|http://secureidentity.se/wp-content/uploads/2014/04/audit-tab.jpg]]
+![http://secureidentity.se/wp-content/uploads/2014/04/audit-tab.jpg](../../images/audit-tab.jpg)
 
 ### Explaining Access Control in a Simplified Manner
 
@@ -144,10 +143,7 @@ In summary, ACLs and ACEs help define precise access controls, ensuring that onl
 
 ## References
 
-- [[https://www.ntfs.com/ntfs-permissions-acl-use.htm|https://www.ntfs.com/ntfs-permissions-acl-use.htm]]
-- [[https://secureidentity.se/acl-dacl-sacl-and-the-ace/|https://secureidentity.se/acl-dacl-sacl-and-the-ace/]]
-- [[https://www.coopware.in2.info/_ntfsacl_ht.htm|https://www.coopware.in2.info/\_ntfsacl_ht.htm]]
-
-
-
+- [https://www.ntfs.com/ntfs-permissions-acl-use.htm](https://www.ntfs.com/ntfs-permissions-acl-use.htm)
+- [https://secureidentity.se/acl-dacl-sacl-and-the-ace/](https://secureidentity.se/acl-dacl-sacl-and-the-ace/)
+- [https://www.coopware.in2.info/\_ntfsacl_ht.htm](https://www.coopware.in2.info/_ntfsacl_ht.htm)
 

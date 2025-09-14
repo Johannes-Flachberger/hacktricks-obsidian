@@ -1,6 +1,5 @@
 # macOS Apps - Inspecting, debugging and Fuzzing
 
-
 ## Static Analysis
 
 ### otool & objdump & nm
@@ -9,7 +8,7 @@
 otool -L /bin/ls #List dynamically linked libraries
 otool -tv /bin/ps #Decompile application
 ```
-```
+
 ```bash
 objdump -m --dylibs-used /bin/ls #List dynamically linked libraries
 objdump -m -h /bin/ls # Get headers information
@@ -18,14 +17,14 @@ objdump -m --full-contents /bin/ls # Dump every section
 objdump -d /bin/ls # Dissasemble the binary
 objdump --disassemble-symbols=_hello --x86-asm-syntax=intel toolsdemo #Disassemble a function using intel flavour
 ```
-```
+
 ```bash
 nm -m ./tccd # List of symbols
 ```
-```
+
 ### jtool2 & Disarm
 
-You can [[https://newosxbook.com/tools/disarm.html|**download disarm from here**]].
+You can [**download disarm from here**](https://newosxbook.com/tools/disarm.html).
 
 ```bash
 ARCH=arm64e disarm -c -i -I --signature /path/bin # Get bin info and signature
@@ -35,8 +34,8 @@ ARCH=arm64e disarm -c -S /path/bin # Get symbols (func names, strings...)
 ARCH=arm64e disarm -c -d /path/bin # Get disasembled
 jtool2 -d __DATA.__const myipc_server | grep MIG # Get MIG info
 ```
-```
-You can [[http://www.newosxbook.com/tools/jtool.html|**download jtool2 here**]] or install it with `brew`.
+
+You can [**download jtool2 here**](http://www.newosxbook.com/tools/jtool.html) or install it with `brew`.
 
 ```bash
 # Install
@@ -54,7 +53,7 @@ ARCH=x86_64 jtool2 --sig /System/Applications/Automator.app/Contents/MacOS/Autom
 # Get MIG information
 jtool2 -d __DATA.__const myipc_server | grep MIG
 ```
-```
+
 > [!CAUTION] > **jtool is deprecated in favour of disarm**
 
 ### Codesign / ldid
@@ -87,10 +86,10 @@ ldid -e <binary>
 ## /tmp/entl.xml is a XML file with the new entitlements to add
 ldid -S/tmp/entl.xml <binary>
 ```
-```
+
 ### SuspiciousPackage
 
-[[https://mothersruin.com/software/SuspiciousPackage/get.html) is a tool useful to inspect **.pkg** files (installers|**SuspiciousPackage**]] and see what is inside before installing it.\
+[**SuspiciousPackage**](https://mothersruin.com/software/SuspiciousPackage/get.html) is a tool useful to inspect **.pkg** files (installers) and see what is inside before installing it.\
 These installers have `preinstall` and `postinstall` bash scripts that malware authors usually abuse to **persist** **the** **malware**.
 
 ### hdiutil
@@ -100,7 +99,7 @@ This tool allows to **mount** Apple disk images (**.dmg**) files to inspect them
 ```bash
 hdiutil attach ~/Downloads/Firefox\ 58.0.2.dmg
 ```
-```
+
 It will be mounted in `/Volumes`
 
 ### Packed binaries
@@ -114,7 +113,7 @@ It will be mounted in `/Volumes`
 ### Metadata
 
 > [!CAUTION]
-> Note that programs written in Objective-C **retain** their class declarations **when** **compiled** into [[../macos-files-folders-and-binaries/universal-binaries-and-mach-o-format.md|Mach-O binaries]]. Such class declarations **include** the name and type of:
+> Note that programs written in Objective-C **retain** their class declarations **when** **compiled** into [Mach-O binaries](../macos-files-folders-and-binaries/universal-binaries-and-mach-o-format.md). Such class declarations **include** the name and type of:
 
 - The interfaces defined
 - The interface methods
@@ -127,7 +126,7 @@ Note that this names could be obfuscated to make the reversing of the binary mor
 
 When a function is called in a binary that uses objective-C, the compiled code instead of calling that function, it will call **`objc_msgSend`**. Which will be calling the final function:
 
-![[<../../../images/image (305).png>|]]
+![[../../../images/image (305).png]]
 
 The params this function expects are:
 
@@ -158,12 +157,12 @@ x64:
 
 ### Dynadump
 
-[[https://github.com/DerekSelander/dynadump|**Dynadump**]] is a tool to class-dump Objective-C binaries. The github specifies dylibs but this also works with executables.
+[**Dynadump**](https://github.com/DerekSelander/dynadump) is a tool to class-dump Objective-C binaries. The github specifies dylibs but this also works with executables.
 
 ```bash
 ./dynadump dump /path/to/bin
 ```
-```
+
 At the time of the writing, this is **currently the one that works the best**.
 
 #### Regular tools
@@ -173,16 +172,16 @@ nm --dyldinfo-only /path/to/bin
 otool -ov /path/to/bin
 objdump --macho --objc-meta-data /path/to/bin
 ```
-```
+
 #### class-dump
 
-[[https://github.com/nygard/class-dump/|**class-dump**]] is the original tool to generates declarations for the classes, categories and protocols in ObjetiveC formatted code.
+[**class-dump**](https://github.com/nygard/class-dump/) is the original tool to generates declarations for the classes, categories and protocols in ObjetiveC formatted code.
 
 It's old and unmaintained so it probably won't work properly.
 
 #### ICDump
 
-[[https://github.com/romainthomas/iCDump|**iCDump**]] is a modern and cross-platform Objective-C class dump. Compared to existing tools, iCDump can run independently from the Apple ecosystem and it exposes Python bindings.
+[**iCDump**](https://github.com/romainthomas/iCDump) is a modern and cross-platform Objective-C class dump. Compared to existing tools, iCDump can run independently from the Apple ecosystem and it exposes Python bindings.
 
 ```python
 import icdump
@@ -190,10 +189,10 @@ metadata = icdump.objc.parse("/path/to/bin")
 
 print(metadata.to_decl())
 ```
-```
+
 ## Static Swift analysis
 
-With Swift binaries, since there is Objective-C compatibility, sometimes you can extract declarations using [[https://github.com/nygard/class-dump/|class-dump]] but not always.
+With Swift binaries, since there is Objective-C compatibility, sometimes you can extract declarations using [class-dump](https://github.com/nygard/class-dump/) but not always.
 
 With the **`jtool -l`** or **`otool -l`** command lines it's possible ti find several sections that start with **`__swift5`** prefix:
 
@@ -208,8 +207,8 @@ LC 01: LC_SEGMENT_64              Mem: 0x100000000-0x100028000    __TEXT
     Mem: 0x1000274cc-0x100027608        __TEXT.__swift5_capture
     [...]
 ```
-```
-You can find further information about the [[https://knight.sc/reverse%20engineering/2019/07/17/swift-metadata.html|**information stored in these section in this blog post**]].
+
+You can find further information about the [**information stored in these section in this blog post**](https://knight.sc/reverse%20engineering/2019/07/17/swift-metadata.html).
 
 Moreover, **Swift binaries might have symbols** (for example libraries need to store symbols so its functions can be called). The **symbols usually have the info about the function name** and attr in a ugly way, so they are very useful and there are "**demanglers"** that can get the original name:
 
@@ -220,11 +219,11 @@ https://github.com/ghidraninja/ghidra_scripts/blob/master/swift_demangler.py
 # Swift cli
 swift demangle
 ```
-```
+
 ## Dynamic Analysis
 
 > [!WARNING]
-> Note that in order to debug binaries, **SIP needs to be disabled** (`csrutil disable` or `csrutil enable --without debug`) or to copy the binaries to a temporary folder and **remove the signature** with `codesign --remove-signature <binary-path>` or allow the debugging of the binary (you can use [[https://gist.github.com/carlospolop/a66b8d72bb8f43913c4b5ae45672578b)|this script]]
+> Note that in order to debug binaries, **SIP needs to be disabled** (`csrutil disable` or `csrutil enable --without debug`) or to copy the binaries to a temporary folder and **remove the signature** with `codesign --remove-signature <binary-path>` or allow the debugging of the binary (you can use [this script](https://gist.github.com/carlospolop/a66b8d72bb8f43913c4b5ae45672578b))
 
 > [!WARNING]
 > Note that in order to **instrument system binaries**, (such as `cloudconfigurationd`) on macOS, **SIP must be disabled** (just removing the signature won't work).
@@ -256,7 +255,7 @@ Its plist is located in `/System/Library/LaunchDaemons/com.apple.sysdiagnose.pli
 
 MacOS generates a lot of logs that can be very useful when running an application trying to understand **what is it doing**.
 
-Moreover, the are some logs that will contain the tag `<private>` to **hide** some **user** or **computer** **identifiable** information. However, it's possible to **install a certificate to disclose this information**. Follow the explanations from [[https://superuser.com/questions/1532031/how-to-show-private-data-in-macos-unified-log|**here**]].
+Moreover, the are some logs that will contain the tag `<private>` to **hide** some **user** or **computer** **identifiable** information. However, it's possible to **install a certificate to disclose this information**. Follow the explanations from [**here**](https://superuser.com/questions/1532031/how-to-show-private-data-in-macos-unified-log).
 
 ### Hopper
 
@@ -268,13 +267,11 @@ In the left panel of hopper it's possible to see the symbols (**Labels**) of the
 
 In the middle panel you can see the **dissasembled code**. And you can see it a **raw** disassemble, as **graph**, as **decompiled** and as **binary** by clicking on the respective icon:
 
-![[../../../images/image (343).png|]]
-
+![](../../../images/image (343).png)
 
 Right clicking in a code object you can see **references to/from that object** or even change its name (this doesn't work in decompiled pseudocode):
 
-![[../../../images/image (1117).png|]]
-
+![](../../../images/image (1117).png)
 
 Moreover, in the **middle down you can write python commands**.
 
@@ -304,12 +301,12 @@ dtrace -l | head
    43    profile                                                     profile-97
    44    profile                                                     profile-199
 ```
-```
+
 The probe name consists of four parts: the provider, module, function, and name (`fbt:mach_kernel:ptrace:entry`). If you not specifies some part of the name, Dtrace will apply that part as a wildcard.
 
 To configure DTrace to activate probes and to specify what actions to perform when they fire, we will need to use the D language.
 
-A more detailed explanation and more examples can be found in [[https://illumos.org/books/dtrace/chp-intro.html|https://illumos.org/books/dtrace/chp-intro.html]]
+A more detailed explanation and more examples can be found in [https://illumos.org/books/dtrace/chp-intro.html](https://illumos.org/books/dtrace/chp-intro.html)
 
 #### Examples
 
@@ -321,7 +318,7 @@ Run `man -k dtrace` to list the **DTrace scripts available**. Example: `sudo dtr
 #Count the number of syscalls of each running process
 sudo dtrace -n 'syscall:::entry {@[execname] = count()}'
 ```
-```
+
 - script
 
 ```bash
@@ -333,7 +330,7 @@ syscall:::entry
 #Log every syscall of a PID
 sudo dtrace -s script.d 1234
 ```
-```
+
 ```bash
 syscall::open:entry
 {
@@ -347,7 +344,7 @@ syscall::close:entry
 #Log files opened and closed by a process
 sudo dtrace -s b.d -c "cat /etc/hosts"
 ```
-```
+
 ```bash
 syscall:::entry
 {
@@ -361,14 +358,14 @@ syscall:::return
 #Log sys calls with values
 sudo dtrace -s syscalls_info.d -c "cat /etc/hosts"
 ```
-```
+
 ### dtruss
 
 ```bash
 dtruss -c ls #Get syscalls of ls
 dtruss -c -p 1000 #get syscalls of PID 1000
 ```
-```
+
 ### kdebug
 
 It's a kernel tracing facility. The documented codes can be found in **`/usr/share/misc/trace.codes`**.
@@ -387,7 +384,7 @@ To interact with kdebug with a custom client these are usually the steps:
 - Read the buffer calling KERN_KDREADTR
 - To match each thread with its process call KERN_KDTHRMAP.
 
-In order to get this information it's possible to use the Apple tool **`trace`** or the custom tool [[https://newosxbook.com/tools/kdv.html|kDebugView (kdv)]]**.**
+In order to get this information it's possible to use the Apple tool **`trace`** or the custom tool [kDebugView (kdv)](https://newosxbook.com/tools/kdv.html)**.**
 
 **Note that Kdebug is only available for 1 costumer at a time.** So only one k-debug powered tool can be executed at the same time.
 
@@ -402,7 +399,7 @@ You can use as clients the utility `ktrace`:
 ```bash
 ktrace trace -s -S -t c -c ls | grep "ls("
 ```
-```
+
 Or `tailspin`.
 
 ### kperf
@@ -417,29 +414,28 @@ Moreover, a subset of Kperfs functionality resides in `kpc`, which provides info
 
 ### ProcessMonitor
 
-[[https://objective-see.com/products/utilities.html#ProcessMonitor) is a very useful tool to check the process related actions a process is performing (for example, monitor which new processes a process is creating|**ProcessMonitor**]].
+[**ProcessMonitor**](https://objective-see.com/products/utilities.html#ProcessMonitor) is a very useful tool to check the process related actions a process is performing (for example, monitor which new processes a process is creating).
 
 ### SpriteTree
 
-[[https://themittenmac.com/tools/|**SpriteTree**]] is a tool to prints the relations between processes.\
+[**SpriteTree**](https://themittenmac.com/tools/) is a tool to prints the relations between processes.\
 You need to monitor your mac with a command like **`sudo eslogger fork exec rename create > cap.json`** (the terminal launching this required FDA). And then you can load the json in this tool to view all the relations:
 
 ![[../../../images/image (1182).png]]
 
-
 ### FileMonitor
 
-[[https://objective-see.com/products/utilities.html#FileMonitor) allows to monitor file events (such as creation, modifications, and deletions|**FileMonitor**]] providing detailed information about such events.
+[**FileMonitor**](https://objective-see.com/products/utilities.html#FileMonitor) allows to monitor file events (such as creation, modifications, and deletions) providing detailed information about such events.
 
 ### Crescendo
 
-[[https://github.com/SuprHackerSteve/Crescendo|**Crescendo**]] is a GUI tool with the look and feel Windows users may know from Microsoft Sysinternal’s _Procmon_. This tool allows the recording of various event types to be started and stopped, allows for the filtering of these events by categories such as file, process, network, etc., and provides the functionality to save the events recorded in a json format.
+[**Crescendo**](https://github.com/SuprHackerSteve/Crescendo) is a GUI tool with the look and feel Windows users may know from Microsoft Sysinternal’s _Procmon_. This tool allows the recording of various event types to be started and stopped, allows for the filtering of these events by categories such as file, process, network, etc., and provides the functionality to save the events recorded in a json format.
 
 ### Apple Instruments
 
-[[https://developer.apple.com/library/archive/documentation/Performance/Conceptual/CellularBestPractices/Appendix/Appendix.html|**Apple Instruments**]] are part of Xcode’s Developer tools – used for monitoring application performance, identifying memory leaks and tracking filesystem activity.
+[**Apple Instruments**](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/CellularBestPractices/Appendix/Appendix.html) are part of Xcode’s Developer tools – used for monitoring application performance, identifying memory leaks and tracking filesystem activity.
 
-![[<../../../images/image (1138).png>|]]
+![[../../../images/image (1138).png]]
 
 ### fs_usage
 
@@ -449,15 +445,15 @@ Allows to follow actions performed by processes:
 fs_usage -w -f filesys ls #This tracks filesystem actions of proccess names containing ls
 fs_usage -w -f network curl #This tracks network actions
 ```
-```
+
 ### TaskExplorer
 
-[[https://objective-see.com/products/taskexplorer.html|**Taskexplorer**]] is useful to see the **libraries** used by a binary, the **files** it's using and the **network** connections.\
+[**Taskexplorer**](https://objective-see.com/products/taskexplorer.html) is useful to see the **libraries** used by a binary, the **files** it's using and the **network** connections.\
 It also checks the binary processes against **virustotal** and show information about the binary.
 
 ## PT_DENY_ATTACH 
 
-In [[https://knight.sc/debugging/2019/06/03/debugging-apple-binaries-that-use-pt-deny-attach.html|**this blog post**]] you can find an example about how to **debug a running daemon** that used **`PT_DENY_ATTACH`** to prevent debugging even if SIP was disabled.
+In [**this blog post**](https://knight.sc/debugging/2019/06/03/debugging-apple-binaries-that-use-pt-deny-attach.html) you can find an example about how to **debug a running daemon** that used **`PT_DENY_ATTACH`** to prevent debugging even if SIP was disabled.
 
 ### lldb
 
@@ -469,16 +465,15 @@ lldb -p 1122
 lldb -n malware.bin
 lldb -n malware.bin --waitfor
 ```
-```
+
 You can set intel flavour when using lldb creating a file called **`.lldbinit`** in your home folder with the following line:
 
 ```bash
 settings set target.x86-disassembly-flavor intel
 ```
-```
+
 > [!WARNING]
 > Inside lldb, dump a process with `process save-core`
-
 
 |  |  |
 | --- | --- |
@@ -492,7 +487,7 @@ settings set target.x86-disassembly-flavor intel
 | **control \+ c** | Pause execution. If the process has been run (r) or continued (c), this will cause the process to halt ...wherever it is currently executing. |
 | **breakpoint (b)** | `b main` \#Any func called main`b main` \#Main func of the bin`b set -n main --shlib`  \#Main func of the indicated bin`breakpoint set -r '\[NSFileManager .*\]$'` \#Any NSFileManager method`breakpoint set -r '\[NSFileManager contentsOfDirectoryAtPath:.*\]$'``break set -r . -s libobjc.A.dylib` \# Break in all functions of that library`b -a 0x0000000100004bd9``br l` \#Breakpoint list`br e/dis`  \#Enable/Disable breakpointbreakpoint delete |
 | **help** | help breakpoint \#Get help of breakpoint commandhelp memory write \#Get help to write into the memory |
-| **reg** | reg readreg read $raxreg read $rax \-\-format \<[[https://lldb.llvm.org/use/variable.html#type-format|format]]\>reg write $rip 0x100035cc0 |
+| **reg** | reg readreg read $raxreg read $rax \-\-format \<[format](https://lldb.llvm.org/use/variable.html#type-format)\>reg write $rip 0x100035cc0 |
 | **x/s** | Display the memory as a null\-terminated string. |
 | **x/i** | Display the memory as assembly instruction. |
 | **x/b** | Display the memory as byte. |
@@ -502,7 +497,6 @@ settings set target.x86-disassembly-flavor intel
 | **parray** | parray 3 (char \*\*)$x1 \# Check array of 3 components in x1 reg |
 | **image dump sections** | Print map of the current process memory |
 | **image dump symtab** | `image dump symtab CoreNLP` \#Get the address of all the symbols from CoreNLP |
-
 
 > [!TIP]
 > When calling the **`objc_sendMsg`** function, the **rsi** register holds the **name of the method** as a null-terminated (“C”) string. To print the name via lldb do:
@@ -525,7 +519,7 @@ settings set target.x86-disassembly-flavor intel
   - `if(P_TRACED == (info.kp_proc.p_flag & P_TRACED)){ //process being debugged }`
 - It can also invoke the **`ptrace`** system call with the **`PT_DENY_ATTACH`** flag. This **prevents** a deb**u**gger from attaching and tracing.
   - You can check if the **`sysctl`** or **`ptrace`** function is being **imported** (but the malware could import it dynamically)
-  - As noted in this writeup, “[[https://alexomara.com/blog/defeating-anti-debug-techniques-macos-ptrace-variants/|Defeating Anti-Debug Techniques: macOS ptrace variants]]” :\
+  - As noted in this writeup, “[Defeating Anti-Debug Techniques: macOS ptrace variants](https://alexomara.com/blog/defeating-anti-debug-techniques-macos-ptrace-variants/)” :\
     “_The message Process # exited with **status = 45 (0x0000002d)** is usually a tell-tale sign that the debug target is using **PT_DENY_ATTACH**_”
 
 ## Core Dumps
@@ -540,7 +534,7 @@ In those cases the core dumps is generated according to `kern.corefile` sysctl a
 
 ## Fuzzing
 
-### [[https://ss64.com/osx/reportcrash.html|ReportCrash]]
+### [ReportCrash](https://ss64.com/osx/reportcrash.html)
 
 ReportCrash **analyzes crashing processes and saves a crash report to disk**. A crash report contains information that can **help a developer diagnose** the cause of a crash.\
 For applications and other processes **running in the per-user launchd context**, ReportCrash runs as a LaunchAgent and saves crash reports in the user's `~/Library/Logs/DiagnosticReports/`\
@@ -557,14 +551,14 @@ sudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.ReportCrash.Roo
 launchctl load -w /System/Library/LaunchAgents/com.apple.ReportCrash.plist
 sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.ReportCrash.Root.plist
 ```
-```
+
 ### Sleep
 
 While fuzzing in a MacOS it's important to not allow the Mac to sleep:
 
 - systemsetup -setsleep Never
 - pmset, System Preferences
-- [[https://github.com/newmarcel/KeepingYouAwake|KeepingYouAwake]]
+- [KeepingYouAwake](https://github.com/newmarcel/KeepingYouAwake)
 
 #### SSH Disconnect
 
@@ -578,7 +572,7 @@ If you are fuzzing via a SSH connection it's important to make sure the session 
 sudo launchctl unload /System/Library/LaunchDaemons/ssh.plist
 sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
 ```
-```
+
 ### Internal Handlers
 
 **Checkout the following page** to find out how you can find which app is responsible of **handling the specified scheme or protocol:**
@@ -595,25 +589,24 @@ dtrace -n 'syscall::recv*:entry { printf("-> %s (pid=%d)", execname, pid); }' >>
 sort -u recv.log > procs.txt
 cat procs.txt
 ```
-```
+
 Or use `netstat` or `lsof`
 
 ### Libgmalloc
 
-![[../../../images/Pasted Graphic 14.png|]]
-
+![](../../../images/Pasted Graphic 14.png)
 
 ```bash
-lldb -o "target create `which some-binary" -o "settings set target.env-vars DYLD_INSERT_LIBRARIES=/usr/lib/libgmalloc.dylib" -o "run arg1 arg2" -o "bt" -o "reg read" -o "dis -s \$pc-32 -c 24 -m -F intel" -o "quit"
+lldb -o "target create `which some-binary`" -o "settings set target.env-vars DYLD_INSERT_LIBRARIES=/usr/lib/libgmalloc.dylib" -o "run arg1 arg2" -o "bt" -o "reg read" -o "dis -s \$pc-32 -c 24 -m -F intel" -o "quit"
 ```
-```
+
 ### Fuzzers
 
-#### [[https://github.com/AFLplusplus/AFLplusplus|AFL++]]
+#### [AFL++](https://github.com/AFLplusplus/AFLplusplus)
 
 Works for CLI tools
 
-#### [[https://github.com/sec-tools/litefuzz|Litefuzz]]
+#### [Litefuzz](https://github.com/sec-tools/litefuzz)
 
 It "**just works"** with macOS GUI tools. Note some some macOS apps have some specific requirements like unique filenames, the right extension, need to read the files from the sandbox (`~/Library/Containers/com.apple.Safari/Data`)...
 
@@ -642,20 +635,18 @@ litefuzz -lk -c "smbutil view smb://localhost:4455" -a tcp://localhost:4455 -i i
 # screensharingd (using pcap capture)
 litefuzz -s -a tcp://localhost:5900 -i input/screenshared-session --reportcrash screensharingd -p -n 100000
 ```
-```
+
 ### More Fuzzing MacOS Info
 
-- [[https://www.youtube.com/watch?v=T5xfL9tEg44|https://www.youtube.com/watch?v=T5xfL9tEg44]]
-- [[https://github.com/bnagy/slides/blob/master/OSXScale.pdf|https://github.com/bnagy/slides/blob/master/OSXScale.pdf]]
-- [[https://github.com/bnagy/francis/tree/master/exploitaben|https://github.com/bnagy/francis/tree/master/exploitaben]]
-- [[https://github.com/ant4g0nist/crashwrangler|https://github.com/ant4g0nist/crashwrangler]]
+- [https://www.youtube.com/watch?v=T5xfL9tEg44](https://www.youtube.com/watch?v=T5xfL9tEg44)
+- [https://github.com/bnagy/slides/blob/master/OSXScale.pdf](https://github.com/bnagy/slides/blob/master/OSXScale.pdf)
+- [https://github.com/bnagy/francis/tree/master/exploitaben](https://github.com/bnagy/francis/tree/master/exploitaben)
+- [https://github.com/ant4g0nist/crashwrangler](https://github.com/ant4g0nist/crashwrangler)
 
 ## References
 
-- [[https://www.amazon.com/OS-Incident-Response-Scripting-Analysis-ebook/dp/B01FHOHHVS|**OS X Incident Response: Scripting and Analysis**]]
-- [[https://www.youtube.com/watch?v=T5xfL9tEg44|**https://www.youtube.com/watch?v=T5xfL9tEg44**]]
-- [[https://taomm.org/vol1/analysis.html|**https://taomm.org/vol1/analysis.html**]]
-- [[https://taomm.org/|**The Art of Mac Malware: The Guide to Analyzing Malicious Software**]]
-
-
+- [**OS X Incident Response: Scripting and Analysis**](https://www.amazon.com/OS-Incident-Response-Scripting-Analysis-ebook/dp/B01FHOHHVS)
+- [**https://www.youtube.com/watch?v=T5xfL9tEg44**](https://www.youtube.com/watch?v=T5xfL9tEg44)
+- [**https://taomm.org/vol1/analysis.html**](https://taomm.org/vol1/analysis.html)
+- [**The Art of Mac Malware: The Guide to Analyzing Malicious Software**](https://taomm.org/)
 

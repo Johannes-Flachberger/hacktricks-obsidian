@@ -1,7 +1,5 @@
 # macOS Red Teaming
 
-
-
 ## Abusing MDMs
 
 - JAMF Pro: `jamf checkJSSConnection`
@@ -17,7 +15,7 @@ For red teaming in MacOS environments it's highly recommended to have some under
 
 A MDM will have permission to install, query or remove profiles, install applications, create local admin accounts, set firmware password, change the FileVault key...
 
-In order to run your own MDM you need to **your CSR signed by a vendor** which you could try to get with [[https://mdmcert.download/). And to run your own MDM for Apple devices you could use [**MicroMDM**](https://github.com/micromdm/micromdm|**https://mdmcert.download/**]].
+In order to run your own MDM you need to **your CSR signed by a vendor** which you could try to get with [**https://mdmcert.download/**](https://mdmcert.download/). And to run your own MDM for Apple devices you could use [**MicroMDM**](https://github.com/micromdm/micromdm).
 
 However, to install an application in an enrolled device, you still need it to be signed by a developer account... however, upon MDM enrolment the **device adds the SSL cert of the MDM as a trusted CA**, so you can now sign anything.
 
@@ -33,16 +31,15 @@ JAMF can run **custom scripts** (scripts developed by the sysadmin), **native pa
 
 Go to a page such as `https://<company-name>.jamfcloud.com/enroll/` to see if they have **self-enrolment enabled**. If they have it might **ask for credentials to access**.
 
-You could use the script [[https://github.com/WithSecureLabs/Jamf-Attack-Toolkit/blob/master/JamfSniper.py|**JamfSniper.py**]] to perform a password spraying attack.
+You could use the script [**JamfSniper.py**](https://github.com/WithSecureLabs/Jamf-Attack-Toolkit/blob/master/JamfSniper.py) to perform a password spraying attack.
 
 Moreover, after finding proper credentials you could be able to brute-force other usernames with the next form:
 
-![[<../../images/image (107).png>|]]
+![[../../images/image (107).png]]
 
 #### JAMF device Authentication
 
-![[../../images/image (167).png|]]
-
+![](../../images/image (167).png)
 
 The **`jamf`** binary contained the secret to open the keychain which at the time of the discovery was **shared** among everybody and it was: **`jk23ucnq91jfu9aj`**.\
 Moreover, jamf **persist** as a **LaunchDaemon** in **`/Library/LaunchAgents/com.jamf.management.agent.plist`**
@@ -56,15 +53,15 @@ This file basically contains the URL:
 plutil -convert xml1 -o - /Library/Preferences/com.jamfsoftware.jamf.plist
 
 [...]
-	is\_virtual\_machine
-	
-	jss\_url
-	https://subdomain\-company.jamfcloud.com/
-	last\_management\_framework\_change\_id
-	4
+	<key>is_virtual_machine</key>
+	<false/>
+	<key>jss_url</key>
+	<string>https://subdomain-company.jamfcloud.com/</string>
+	<key>last_management_framework_change_id</key>
+	<integer>4</integer>
 [...]
 ```
-```
+
 So, an attacker could drop a malicious package (`pkg`) that **overwrites this file** when installed setting the **URL to a Mythic C2 listener from a Typhon agent** to now be able to abuse JAMF as C2.
 
 ```bash
@@ -73,7 +70,7 @@ sudo jamf policy -id 0
 
 # TODO: There is an ID, maybe it's possible to have the real jamf connection and another one to the C2
 ```
-```
+
 #### JAMF Impersonation
 
 In order to **impersonate the communication** between a device and JMF you need:
@@ -85,16 +82,15 @@ With this information, **create a VM** with the **stolen** Hardware **UUID** and
 
 #### Secrets stealing
 
-![[../../images/image (1025).png|]]
+![](../../images/image (1025).png)
 
 *a*
-
 
 You could also monitor the location `/Library/Application Support/Jamf/tmp/` for the **custom scripts** admins might want to execute via Jamf as they are **placed here, executed and removed**. These scripts **might contain credentials**.
 
 However, **credentials** might be passed tho these scripts as **parameters**, so you would need to monitor `ps aux | grep -i jamf` (without even being root).
 
-The script [[https://github.com/WithSecureLabs/Jamf-Attack-Toolkit/blob/master/JamfExplorer.py|**JamfExplorer.py**]] can listen for new files being added and new process arguments.
+The script [**JamfExplorer.py**](https://github.com/WithSecureLabs/Jamf-Attack-Toolkit/blob/master/JamfExplorer.py) can listen for new files being added and new process arguments.
 
 ### macOS Remote Access
 
@@ -117,19 +113,19 @@ Some **local MacOS tool** that may also help you is `dscl`:
 ```bash
 dscl "/Active Directory/[Domain]/All Domains" ls /
 ```
-```
+
 Also there are some tools prepared for MacOS to automatically enumerate the AD and play with kerberos:
 
-- [[https://github.com/XMCyber/MacHound|**Machound**]]: MacHound is an extension to the Bloodhound audting tool allowing collecting and ingesting of Active Directory relationships on MacOS hosts.
-- [[https://github.com/its-a-feature/bifrost|**Bifrost**]]: Bifrost is an Objective-C project designed to interact with the Heimdal krb5 APIs on macOS. The goal of the project is to enable better security testing around Kerberos on macOS devices using native APIs without requiring any other framework or packages on the target.
-- [[https://github.com/its-a-feature/Orchard): JavaScript for Automation (JXA|**Orchard**]] tool to do Active Directory enumeration.
+- [**Machound**](https://github.com/XMCyber/MacHound): MacHound is an extension to the Bloodhound audting tool allowing collecting and ingesting of Active Directory relationships on MacOS hosts.
+- [**Bifrost**](https://github.com/its-a-feature/bifrost): Bifrost is an Objective-C project designed to interact with the Heimdal krb5 APIs on macOS. The goal of the project is to enable better security testing around Kerberos on macOS devices using native APIs without requiring any other framework or packages on the target.
+- [**Orchard**](https://github.com/its-a-feature/Orchard): JavaScript for Automation (JXA) tool to do Active Directory enumeration.
 
 ### Domain Information
 
 ```bash
 echo show com.apple.opendirectoryd.ActiveDirectory | scutil
 ```
-```
+
 ### Users
 
 The three types of MacOS users are:
@@ -168,8 +164,8 @@ dscl "/Active Directory/TEST/All Domains" read "/Groups/[groupname]"
 #Domain Information
 dsconfigad -show
 ```
-```
-More info in [[https://its-a-feature.github.io/posts/2018/01/Active-Directory-Discovery-with-a-Mac/|https://its-a-feature.github.io/posts/2018/01/Active-Directory-Discovery-with-a-Mac/]]
+
+More info in [https://its-a-feature.github.io/posts/2018/01/Active-Directory-Discovery-with-a-Mac/](https://its-a-feature.github.io/posts/2018/01/Active-Directory-Discovery-with-a-Mac/)
 
 ### Computer$ password
 
@@ -178,7 +174,7 @@ Get passwords using:
 ```bash
 bifrost --action askhash --username [name] --password [password] --domain [domain]
 ```
-```
+
 It's possible to access the **`Computer$`** password inside the System keychain.
 
 ### Over-Pass-The-Hash
@@ -189,7 +185,7 @@ Get a TGT for an specific user and service:
 bifrost --action asktgt --username [user] --domain [domain.com] \
        --hash [hash] --enctype [enctype] --keytab [/path/to/keytab]
 ```
-```
+
 Once the TGT is gathered, it's possible to inject it in the current session with:
 
 ```bash
@@ -197,21 +193,21 @@ bifrost --action asktgt --username test_lab_admin \
        --hash CF59D3256B62EE655F6430B0F80701EE05A0885B8B52E9C2480154AFA62E78 \
        --enctype aes256 --domain test.lab.local
 ```
-```
+
 ### Kerberoasting
 
 ```bash
 bifrost --action asktgs --spn [service] --domain [domain.com] \
        --username [user] --hash [hash] --enctype [enctype]
 ```
-```
+
 With obtained service tickets it's possible to try to access shares in other computers:
 
 ```bash
 smbutil view //computer.fqdn
 mount -t smbfs //server/folder /local/mount/point
 ```
-```
+
 ## Accessing the Keychain
 
 The Keychain highly probably contains sensitive information that if accessed without generating a prompt could help to move forward a red team exercise:
@@ -228,16 +224,13 @@ MacOS Red Teaming is different from a regular Windows Red Teaming as usually **M
 
 When a file is downloaded in Safari, if its a "safe" file, it will be **automatically opened**. So for example, if you **download a zip**, it will be automatically decompressed:
 
-![[../../images/image (226).png|]]
-
+![](../../images/image (226).png)
 
 ## References
 
-- [[https://www.youtube.com/watch?v=IiMladUbL6E|**https://www.youtube.com/watch?v=IiMladUbL6E**]]
-- [[https://medium.com/xm-cyber/introducing-machound-a-solution-to-macos-active-directory-based-attacks-2a425f0a22b6|**https://medium.com/xm-cyber/introducing-machound-a-solution-to-macos-active-directory-based-attacks-2a425f0a22b6**]]
-- [[https://gist.github.com/its-a-feature/1a34f597fb30985a2742bb16116e74e0|**https://gist.github.com/its-a-feature/1a34f597fb30985a2742bb16116e74e0**]]
-- [[https://www.youtube.com/watch?v=pOQOh07eMxY|**Come to the Dark Side, We Have Apples: Turning macOS Management Evil**]]
-- [[https://www.youtube.com/watch?v=ju1IYWUv4ZA|**OBTS v3.0: "An Attackers Perspective on Jamf Configurations" - Luke Roberts / Calum Hall**]]
-
-
+- [**https://www.youtube.com/watch?v=IiMladUbL6E**](https://www.youtube.com/watch?v=IiMladUbL6E)
+- [**https://medium.com/xm-cyber/introducing-machound-a-solution-to-macos-active-directory-based-attacks-2a425f0a22b6**](https://medium.com/xm-cyber/introducing-machound-a-solution-to-macos-active-directory-based-attacks-2a425f0a22b6)
+- [**https://gist.github.com/its-a-feature/1a34f597fb30985a2742bb16116e74e0**](https://gist.github.com/its-a-feature/1a34f597fb30985a2742bb16116e74e0)
+- [**Come to the Dark Side, We Have Apples: Turning macOS Management Evil**](https://www.youtube.com/watch?v=pOQOh07eMxY)
+- [**OBTS v3.0: "An Attackers Perspective on Jamf Configurations" - Luke Roberts / Calum Hall**](https://www.youtube.com/watch?v=ju1IYWUv4ZA)
 

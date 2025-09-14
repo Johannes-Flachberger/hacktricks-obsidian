@@ -1,6 +1,5 @@
 # Synology PAT/SPK Encrypted Archive Decryption
 
-
 ## Overview
 
 Several Synology devices (DSM/BSM NAS, BeeStation, …) distribute their firmware and application packages in **encrypted PAT / SPK archives**.  Those archives can be decrypted *offline* with nothing but the public download files thanks to hard-coded keys embedded inside the official extraction libraries.
@@ -18,7 +17,7 @@ The firmware/application update can normally be downloaded from Synology’s pub
 ```bash
 $ wget https://archive.synology.com/download/Os/BSM/BSM_BST150-4T_65374.pat
 ```
-```
+
 ## 2. Dump the PAT structure (optional)
 
 `*.pat` images are themselves a **cpio bundle** that embeds several files (boot loader, kernel, rootfs, packages…).  The free utility [`patology`](https://github.com/sud0woodo/patology) is convenient to inspect that wrapper:
@@ -29,7 +28,7 @@ $ python3 patology.py --dump -i BSM_BST150-4T_65374.pat
 $ ls
 DiskCompatibilityDB.tar  hda1.tgz  rd.bin  packages/  …
 ```
-```
+
 For `*.spk` you can directly jump to step 3.
 
 ## 3. Extract the Synology extraction libraries
@@ -48,7 +47,7 @@ $ lzcat rd.bin | cpio -id 2>/dev/null
 $ file usr/lib/libsynocodesign.so
 usr/lib/libsynocodesign.so: ELF 64-bit LSB shared object, ARM aarch64, …
 ```
-```
+
 ## 4. Recover the hard-coded keys (`get_keys`)
 
 Inside `libsynocodesign.so` the function `get_keys(int keytype)` simply returns two 128-bit global variables for the requested archive family:
@@ -66,7 +65,7 @@ case 3:            // SPK (applications)
   master_key    = qword_23B08;
   break;
 ```
-```
+
 * **signature_key** → Ed25519 public key used to verify the archive header.
 * **master_key**    → Root key used to derive the per-archive encryption key.
 
@@ -91,7 +90,7 @@ You only have to dump those two constants once for each DSM major version.
   not_valid_before: int
 ]
 ```
-```
+
 `entries` later allows libarchive to integrity-check each file as it is decrypted.
 
 ## 6. Derive the per-archive sub-key
@@ -106,7 +105,7 @@ The 32-byte **stream key** is obtained with libsodium:
 ```c
 crypto_kdf_derive_from_key(kdf_subkey, 32, subkey_id, ctx, master_key);
 ```
-```
+
 ## 7. Synology’s custom **libarchive** backend
 
 Synology bundles a patched libarchive that registers a fake "tar" format whenever the magic is `0xADBEEF`:
@@ -117,7 +116,7 @@ register_format(
    spk_read_header, spk_read_data, spk_read_data_skip,
    NULL, spk_cleanup, NULL, NULL);
 ```
-```
+
 ### spk_read_header()
 
 ```
@@ -127,7 +126,7 @@ register_format(
 - crypto_secretstream_xchacha20poly1305_init_pull(state, nonce, kdf_subkey)
 - crypto_secretstream_xchacha20poly1305_pull(state, tar_hdr, …, cipher, 0x193)
 ```
-```
+
 The decrypted `tar_hdr` is a **classical POSIX TAR header**.
 
 ### spk_read_data()
@@ -139,7 +138,7 @@ while (remaining > 0):
     crypto_secretstream_xchacha20poly1305_pull(state, out, …, buf, chunk_len)
     remaining -= chunk_len - 0x11
 ```
-```
+
 Each **0x18-byte nonce** is prepended to the encrypted chunk.
 
 Once all entries are processed libarchive produces a perfectly valid **`.tar`** that can be unpacked with any standard tool.
@@ -155,7 +154,7 @@ $ python3 synodecrypt.py SynologyPhotos-rtd1619b-1.7.0-0794.spk
 
 $ tar xf SynologyPhotos-rtd1619b-1.7.0-0794.tar
 ```
-```
+
 `synodecrypt` automatically detects PAT/SPK, loads the correct keys and applies the full chain described above.
 
 ## 9. Common pitfalls
@@ -174,7 +173,7 @@ $ tar xf SynologyPhotos-rtd1619b-1.7.0-0794.tar
 
 ## References
 
-- [[https://www.synacktiv.com/publications/extraction-des-archives-chiffrees-synology-pwn2own-irlande-2024.html|Extraction of Synology encrypted archives – Synacktiv (Pwn2Own IE 2024)]]
-- [[https://github.com/synacktiv/synodecrypt|synodecrypt on GitHub]]
-- [[https://github.com/sud0woodo/patology|patology on GitHub]]
+- [Extraction of Synology encrypted archives – Synacktiv (Pwn2Own IE 2024)](https://www.synacktiv.com/publications/extraction-des-archives-chiffrees-synology-pwn2own-irlande-2024.html)
+- [synodecrypt on GitHub](https://github.com/synacktiv/synodecrypt)
+- [patology on GitHub](https://github.com/sud0woodo/patology)
 

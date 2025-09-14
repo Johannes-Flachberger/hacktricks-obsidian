@@ -1,6 +1,5 @@
 # iOS Backup Forensics (Messaging‑centric triage)
 
-
 This page describes practical steps to reconstruct and analyze iOS backups for signs of 0‑click exploit delivery via messaging app attachments. It focuses on turning Apple’s hashed backup layout into human‑readable paths, then enumerating and scanning attachments across common apps.
 
 Goals:
@@ -25,7 +24,7 @@ $ elegant-bouncer --ios-extract /path/to/backup --output /tmp/reconstructed
 [+] Reading Manifest.db ...
 ✓ iOS backup extraction completed successfully!
 ```
-```
+
 Notes:
 - Handle encrypted backups by supplying the backup password to your extractor
 - Preserve original timestamps/ACLs when possible for evidentiary value
@@ -65,7 +64,7 @@ JOIN message_attachment_join maj ON maj.message_id = m.ROWID
 JOIN attachment a ON a.ROWID = maj.attachment_id
 ORDER BY m.date DESC;
 ```
-```
+
 Attachment paths may be absolute or relative to the reconstructed tree under Library/SMS/Attachments/.
 
 ### WhatsApp (ChatStorage.sqlite)
@@ -83,7 +82,7 @@ LEFT JOIN ZWAMEDIAITEM mi ON mi.ZMESSAGE = m.Z_PK
 WHERE mi.ZMEDIALOCALPATH IS NOT NULL
 ORDER BY m.ZMESSAGEDATE DESC;
 ```
-```
+
 Adjust table/column names to your app version (ZWAMESSAGE/ZWAMEDIAITEM are common in iOS builds).
 
 ### Signal / Telegram / Viber
@@ -104,7 +103,7 @@ $ elegant-bouncer --scan --messaging /tmp/reconstructed
 ✗ THREAT in WhatsApp chat 'John Doe': suspicious_document.pdf → FORCEDENTRY (JBIG2)
 ✗ THREAT in iMessage: photo.webp → BLASTPASS (VP8L)
 ```
-```
+
 Detections covered by structural rules include:
 - PDF/JBIG2 FORCEDENTRY (CVE‑2021‑30860): impossible JBIG2 dictionary states
 - WebP/VP8L BLASTPASS (CVE‑2023‑4863): oversized Huffman table constructions
@@ -120,6 +119,6 @@ Detections covered by structural rules include:
 
 ## References
 
-- [[https://www.msuiche.com/posts/elegantbouncer-when-you-cant-get-the-samples-but-still-need-to-catch-the-threat/|ELEGANTBOUNCER: When You Can't Get the Samples but Still Need to Catch the Threat]]
-- [[https://github.com/msuiche/elegant-bouncer|ElegantBouncer project (GitHub)]]
+- [ELEGANTBOUNCER: When You Can't Get the Samples but Still Need to Catch the Threat](https://www.msuiche.com/posts/elegantbouncer-when-you-cant-get-the-samples-but-still-need-to-catch-the-threat/)
+- [ElegantBouncer project (GitHub)](https://github.com/msuiche/elegant-bouncer)
 

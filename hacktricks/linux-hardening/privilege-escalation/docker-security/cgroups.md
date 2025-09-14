@@ -1,6 +1,5 @@
 # CGroups
 
-
 ## Basic Information
 
 **Linux Control Groups**, or **cgroups**, are a feature of the Linux kernel that allows the allocation, limitation, and prioritization of system resources like CPU, memory, and disk I/O among process groups. They offer a mechanism for **managing and isolating the resource usage** of process collections, beneficial for purposes such as resource limitation, workload isolation, and resource prioritization among different process groups.
@@ -27,7 +26,7 @@ $ cat /proc/self/cgroup
 1:name=systemd:/user.slice/user-1000.slice/session-2.scope
 0::/user.slice/user-1000.slice/session-2.scope
 ```
-```
+
 The output structure is as follows:
 
 - **Numbers 2–12**: cgroups v1, with each line representing a different cgroup. Controllers for these are specified adjacent to the number.
@@ -40,15 +39,15 @@ The output structure is as follows:
 
 The filesystem is typically utilized for accessing **cgroups**, diverging from the Unix system call interface traditionally used for kernel interactions. To investigate a shell's cgroup configuration, one should examine the **/proc/self/cgroup** file, which reveals the shell's cgroup. Then, by navigating to the **/sys/fs/cgroup** (or **`/sys/fs/cgroup/unified`**) directory and locating a directory that shares the cgroup's name, one can observe various settings and resource usage information pertinent to the cgroup.
 
-![[<../../../images/image (1128).png>|Cgroup Filesystem]]
+![Cgroup Filesystem](<../../../images/image (1128).png>)
 
 The key interface files for cgroups are prefixed with **cgroup**. The **cgroup.procs** file, which can be viewed with standard commands like cat, lists the processes within the cgroup. Another file, **cgroup.threads**, includes thread information.
 
-![[<../../../images/image (281).png>|Cgroup Procs]]
+![Cgroup Procs](<../../../images/image (281).png>)
 
 Cgroups managing shells typically encompass two controllers that regulate memory usage and process count. To interact with a controller, files bearing the controller's prefix should be consulted. For instance, **pids.current** would be referenced to ascertain the count of threads in the cgroup.
 
-![[<../../../images/image (677).png>|Cgroup Memory]]
+![Cgroup Memory](<../../../images/image (677).png>)
 
 The indication of **max** in a value suggests the absence of a specific limit for the cgroup. However, due to the hierarchical nature of cgroups, limits might be imposed by a cgroup at a lower level in the directory hierarchy.
 
@@ -59,13 +58,13 @@ Processes are assigned to cgroups by **writing their Process ID (PID) to the `cg
 ```bash
 echo [pid] > cgroup.procs
 ```
-```
+
 Similarly, **modifying cgroup attributes, like setting a PID limit**, is done by writing the desired value to the relevant file. To set a maximum of 3,000 PIDs for a cgroup:
 
 ```bash
 echo 3000 > pids.max
 ```
-```
+
 **Creating new cgroups** involves making a new subdirectory within the cgroup hierarchy, which prompts the kernel to automatically generate necessary interface files. Though cgroups without active processes can be removed with `rmdir`, be aware of certain constraints:
 
 - **Processes can only be placed in leaf cgroups** (i.e., the most nested ones in a hierarchy).
@@ -75,19 +74,16 @@ echo 3000 > pids.max
 ```bash
 echo "+cpu +pids" > cgroup.subtree_control
 ```
-```
+
 The **root cgroup** is an exception to these rules, allowing direct process placement. This can be used to remove processes from systemd management.
 
 **Monitoring CPU usage** within a cgroup is possible through the `cpu.stat` file, displaying total CPU time consumed, helpful for tracking usage across a service's subprocesses:
 
-![[../../../images/image (908).png|]]
+![](../../../images/image (908).png)
 
 *CPU usage statistics as shown in the cpu.stat file*
-
 
 ## References
 
 - **Book: How Linux Works, 3rd Edition: What Every Superuser Should Know By Brian Ward**
-
-
 

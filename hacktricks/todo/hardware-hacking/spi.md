@@ -1,6 +1,5 @@
 # SPI
 
-
 ## Basic Information
 
 SPI (Serial Peripheral Interface) is an Synchronous Serial Communication Protocol used in embedded systems for short distance communication between ICs (Integrated Circuits). SPI Communication Protocol makes use of the master-slave architecture which is orchastrated by the Clock and Chip Select Signal. A master-slave architecture consists of a master (usually a microprocessor) that manages external peripherals like EEPROM, sensors, control devices, etc. which are considered to be the slaves.
@@ -21,15 +20,15 @@ Also, during red reaming and getting physical access to devices, dumping the fir
 
 This device is an inexpensive tool for dumping firmwares from EEPROMs and also reflashing them with firmware files. This has been a popular choice for working with computer BIOS chips (which are just EEPROMs). This device connects over USB and needs minimal tools to get started. Also, it usually gets the task done quickly, so can be helpful in physical device access too.
 
-![[../../images/board_image_ch341a.jpg|drawing]]
+![drawing](../../images/board_image_ch341a.jpg)
 
 Connect the EEPROM memory with the CH341a Programmer and plug the device into the computer. Incase the device is not getting detected, try installing drivers into the computer. Also, make sure that the EEPROM is connected in proper orientation (usually, place the VCC Pin in reverse orientation to the USB connector) or else, the software would not be able to detect the chip. Refer to the diagram if required:
 
-![[../../images/connect_wires_ch341a.jpg) ![drawing](../../images/eeprom_plugged_ch341a.jpg|drawing]]
+![drawing](../../images/connect_wires_ch341a.jpg) ![drawing](../../images/eeprom_plugged_ch341a.jpg)
 
 Finally, use softwares like flashrom, G-Flash (GUI), etc. for dumping the firmware. G-Flash is a minimal GUI tool is fast and detects the EEPROM automatically. This can be helpful in the firmware needs to be extracted quickly, without much tinkering with the documentation.
 
-![[../../images/connected_status_ch341a.jpg|drawing]]
+![drawing](../../images/connected_status_ch341a.jpg)
 
 After dumping the firmware, the analysis can be done on the binary files. Tools like strings, hexdump, xxd, binwalk, etc. can be used to extract a lot of information about the firmware as well as the whole file system too.
 
@@ -38,7 +37,7 @@ To extract the contents from the firmware, binwalk can be used. Binwalk analyses
 ```
 binwalk -e <filename>
 ```
-```
+
 The can be .bin or .rom as per the tools and configurations used.
 
 > [!CAUTION]
@@ -46,11 +45,11 @@ The can be .bin or .rom as per the tools and configurations used.
 
 ### Bus Pirate + flashrom
 
-![[<../../images/image (910).png>|]]
+![[../../images/image (910).png]]
 
 Note that even if the PINOUT of the Pirate Bus indicates pins for **MOSI** and **MISO** to connect to SPI however some SPIs may indicate pins as DI and DO. **MOSI -> DI, MISO -> DO**
 
-![[<../../images/image (360).png>|]]
+![[../../images/image (360).png]]
 
 In Windows or Linux you can use the program [**`flashrom`**](https://www.flashrom.org/Flashrom) to dump the content of the flash memory running something like:
 
@@ -62,7 +61,4 @@ In Windows or Linux you can use the program [**`flashrom`**](https://www.flashro
 # -r <file> Image to save in the filesystem
 flashrom -VV -c "W25Q64.V" -p buspirate_spi:dev=COM3 -r flash_content.img
 ```
-```
-
-
 

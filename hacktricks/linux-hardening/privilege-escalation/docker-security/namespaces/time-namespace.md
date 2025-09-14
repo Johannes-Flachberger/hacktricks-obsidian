@@ -1,6 +1,5 @@
 # Time Namespace
 
-
 ## Basic Information
 
 The time namespace in Linux allows for per-namespace offsets to the system monotonic and boot-time clocks. It is commonly used in Linux containers to change the date/time within a container and adjust clocks after restoring from a checkpoint or snapshot.
@@ -14,12 +13,12 @@ The time namespace in Linux allows for per-namespace offsets to the system monot
 ```bash
 sudo unshare -T [--mount-proc] /bin/bash
 ```
-```
+
 By mounting a new instance of the `/proc` filesystem if you use the param `--mount-proc`, you ensure that the new mount namespace has an **accurate and isolated view of the process information specific to that namespace**.
 
+<details>
 
 **Error: bash: fork: Cannot allocate memory**
-
 
 When `unshare` is executed without the `-f` option, an error is encountered due to the way Linux handles new PID (Process ID) namespaces. The key details and the solution are outlined below:
 
@@ -39,20 +38,21 @@ When `unshare` is executed without the `-f` option, an error is encountered due 
 
 By ensuring that `unshare` runs with the `-f` flag, the new PID namespace is correctly maintained, allowing `/bin/bash` and its sub-processes to operate without encountering the memory allocation error.
 
+</details>
 
 #### Docker
 
 ```bash
 docker run -ti --name ubuntu1 -v /usr:/ubuntu1 ubuntu bash
 ```
-```
+
 ### Check which namespace is your process in
 
 ```bash
 ls -l /proc/self/ns/time
 lrwxrwxrwx 1 root root 0 Apr  4 21:16 /proc/self/ns/time -> 'time:[4026531834]'
 ```
-```
+
 ### Find all Time namespaces
 
 ```bash
@@ -60,12 +60,11 @@ sudo find /proc -maxdepth 3 -type l -name time -exec readlink {} \; 2>/dev/null 
 # Find the processes with an specific namespace
 sudo find /proc -maxdepth 3 -type l -name time -exec ls -l  {} \; 2>/dev/null | grep <ns-number>
 ```
-```
+
 ### Enter inside a Time namespace
 
 ```bash
 nsenter -T TARGET_PID --pid /bin/bash
-```
 ```
 
 ## Manipulating Time Offsets
@@ -83,7 +82,7 @@ $ cat /proc/$$/timens_offsets
 monotonic 0
 boottime  0
 ```
-```
+
 The file contains two lines – one per clock – with the offset in **nanoseconds**.  Processes that hold **CAP_SYS_TIME** _in the time namespace_ can change the value:
 
 ```
@@ -93,7 +92,7 @@ echo "monotonic 172800000000000" > /proc/$$/timens_offsets
 $ cat /proc/$$/uptime   # first column uses CLOCK_MONOTONIC
 172801.37  13.57
 ```
-```
+
 If you need the wall clock (`CLOCK_REALTIME`) to change as well you still have to rely on classic mechanisms (`date`, `hwclock`, `chronyd`, …); it is **not** namespaced.
 
 ### `unshare(1)` helper flags (util-linux ≥ 2.38)
@@ -105,7 +104,7 @@ sudo unshare -T \
             --mount-proc         \
             bash
 ```
-```
+
 The long options automatically write the chosen deltas to `timens_offsets` right after the namespace is created, saving a manual `echo`.
 
 ---
@@ -151,6 +150,4 @@ The long options automatically write the chosen deltas to `timens_offsets` right
 
 * man7.org – Time namespaces manual page: <https://man7.org/linux/man-pages/man7/time_namespaces.7.html>
 * OCI blog – "OCI v1.1: new time and RDT namespaces" (Nov 15 2023): <https://opencontainers.org/blog/2023/11/15/oci-spec-v1.1>
-
-
 

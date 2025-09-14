@@ -1,6 +1,5 @@
 # macOS TCC Payloads
 
-
 ### Desktop
 
 - **Entitlement**: None
@@ -40,7 +39,6 @@ void myconstructor(int argc, const char **argv)
     fclose(stderr); // Close the file stream
 }
 ```
-```
 
 **Shell**
 Copy `$HOME/Desktop` to `/tmp/desktop`.
@@ -48,8 +46,6 @@ Copy `$HOME/Desktop` to `/tmp/desktop`.
 ```bash
 cp -r "$HOME/Desktop" "/tmp/desktop"
 ```
-```
-
 
 ### Documents
 
@@ -90,7 +86,6 @@ void myconstructor(int argc, const char **argv)
     fclose(stderr); // Close the file stream
 }
 ```
-```
 
 **Shell**
 Copy `$HOME/`Documents to `/tmp/documents`.
@@ -98,8 +93,6 @@ Copy `$HOME/`Documents to `/tmp/documents`.
 ```bash
 cp -r "$HOME/Documents" "/tmp/documents"
 ```
-```
-
 
 ### Downloads
 
@@ -140,7 +133,6 @@ void myconstructor(int argc, const char **argv)
     fclose(stderr); // Close the file stream
 }
 ```
-```
 
 **Shell**
 Copy `$HOME/Dowloads` to `/tmp/downloads`.
@@ -148,8 +140,6 @@ Copy `$HOME/Dowloads` to `/tmp/downloads`.
 ```bash
 cp -r "$HOME/Downloads" "/tmp/downloads"
 ```
-```
-
 
 ### Photos Library
 
@@ -190,7 +180,6 @@ void myconstructor(int argc, const char **argv)
     fclose(stderr); // Close the file stream
 }
 ```
-```
 
 **Shell**
 Copy `$HOME/Pictures/Photos Library.photoslibrary` to `/tmp/photos`.
@@ -198,8 +187,6 @@ Copy `$HOME/Pictures/Photos Library.photoslibrary` to `/tmp/photos`.
 ```bash
 cp -r "$HOME/Pictures/Photos Library.photoslibrary" "/tmp/photos"
 ```
-```
-
 
 ### Contacts
 
@@ -240,7 +227,6 @@ void myconstructor(int argc, const char **argv)
     fclose(stderr); // Close the file stream
 }
 ```
-```
 
 **Shell**
 Copy `$HOME/Library/Application Support/AddressBook` to `/tmp/contacts`.
@@ -248,8 +234,6 @@ Copy `$HOME/Library/Application Support/AddressBook` to `/tmp/contacts`.
 ```bash
 cp -r "$HOME/Library/Application Support/AddressBook" "/tmp/contacts"
 ```
-```
-
 
 ### Calendar
 
@@ -290,7 +274,6 @@ void myconstructor(int argc, const char **argv)
     fclose(stderr); // Close the file stream
 }
 ```
-```
 
 **Shell**
 Copy `$HOME/Library/Calendars` to `/tmp/calendars`.
@@ -298,8 +281,6 @@ Copy `$HOME/Library/Calendars` to `/tmp/calendars`.
 ```bash
 cp -r "$HOME/Library/Calendars" "/tmp/calendars"
 ```
-```
-
 
 ### Camera
 
@@ -384,7 +365,6 @@ static void myconstructor(int argc, const char **argv) {
     fclose(stderr); // Close the file stream
 }
 ```
-```
 
 **ObjectiveC - Check**
 Check if the program has access to the camera.
@@ -418,7 +398,6 @@ static void telegram(int argc, const char **argv) {
     fclose(stderr); // Close the file stream
 }
 ```
-```
 
 **Shell**
 Take a photo with the camera
@@ -426,8 +405,6 @@ Take a photo with the camera
 ```bash
 ffmpeg -framerate 30 -f avfoundation -i "0" -frames:v 1 /tmp/capture.jpg
 ```
-```
-
 
 ### Microphone
 
@@ -533,7 +510,6 @@ static void myconstructor(int argc, const char **argv) {
     fclose(stderr); // Close the file stream
 }
 ```
-```
 
 **ObjectiveC - Check**
 Check if the app has access to the mricrophone.
@@ -565,7 +541,6 @@ static void telegram(int argc, const char **argv) {
     [MicrophoneAccessChecker hasMicrophoneAccess];
 }
 ```
-```
 
 **Shell**
 Record a 5s audio and store it in `/tmp/recording.wav`
@@ -576,8 +551,6 @@ ffmpeg -f avfoundation -list_devices true -i ""
 # Use microphone from index 1 from the previous list to record
 ffmpeg -f avfoundation -i ":1" -t 5 /tmp/recording.wav
 ```
-```
-
 
 ### Location
 
@@ -636,7 +609,6 @@ void myconstructor(int argc, const char **argv)
     freopen("/tmp/logs.txt", "w", stderr); // Redirect stderr to /tmp/logs.txt
 }
 ```
-```
 
 **Shell**
 Get access to the location
@@ -644,8 +616,6 @@ Get access to the location
 ```
 ???
 ```
-```
-
 
 ### Screen Recording
 
@@ -708,7 +678,6 @@ void myconstructor(int argc, const char **argv)
     freopen("/tmp/logs.txt", "w", stderr); // Redirect stderr to /tmp/logs.txt
 }
 ```
-```
 
 **Shell**
 Record the main screen for 5s
@@ -716,8 +685,6 @@ Record the main screen for 5s
 ```bash
 screencapture -V 5 /tmp/screen.mov
 ```
-```
-
 
 ### Accessibility
 
@@ -777,7 +744,6 @@ int main() {
     }
     return 0;
 }
-```
 ```
 
 **Keylogger**
@@ -886,10 +852,6 @@ int main() {
     return 0;
 }
 ```
-```
-
 
 > [!CAUTION] > **Accessibility is a very powerful permission**, you could abuse it in other ways, for example you could perform the **keystrokes attack** just from it without needed to call System Events.
-
-
 

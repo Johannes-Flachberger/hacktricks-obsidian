@@ -1,9 +1,8 @@
 # Shadow Credentials
 
-
 ## Intro 
 
-**Check the original post for [[https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab|all the information about this technique]].**
+**Check the original post for [all the information about this technique](https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab).**
 
 As **summary**: if you can write to the **msDS-KeyCredentialLink** property of a user/computer, you can retrieve the **NT hash of that object**.
 
@@ -29,7 +28,7 @@ A significant advantage of Key Trust abuse is its limitation to the attacker-gen
 
 ## Tools
 
-### [[https://github.com/eladshamir/Whisker|**Whisker**]]
+### [**Whisker**](https://github.com/eladshamir/Whisker)
 
 It's based on DSInternals providing a C# interface for this attack. Whisker and its Python counterpart, **pyWhisker**, enable manipulation of the `msDS-KeyCredentialLink` attribute to gain control over Active Directory accounts. These tools support various operations like adding, listing, removing, and clearing key credentials from the target object.
 
@@ -43,25 +42,23 @@ It's based on DSInternals providing a C# interface for this attack. Whisker and 
 ```shell
 Whisker.exe add /target:computername$ /domain:constoso.local /dc:dc1.contoso.local /path:C:\path\to\file.pfx /password:P@ssword1
 ```
-```
-### [[https://github.com/ShutdownRepo/pywhisker|pyWhisker]]
+
+### [pyWhisker](https://github.com/ShutdownRepo/pywhisker)
 
 It extends Whisker functionality to **UNIX-based systems**, leveraging Impacket and PyDSInternals for comprehensive exploitation capabilities, including listing, adding, and removing KeyCredentials, as well as importing and exporting them in JSON format.
 
 ```shell
 python3 pywhisker.py -d "domain.local" -u "user1" -p "complexpassword" --target "user2" --action "list"
 ```
-```
-### [[https://github.com/Dec0ne/ShadowSpray/|ShadowSpray]]
+
+### [ShadowSpray](https://github.com/Dec0ne/ShadowSpray/)
 
 ShadowSpray aims to **exploit GenericWrite/GenericAll permissions that wide user groups may have over domain objects** to apply ShadowCredentials broadly. It entails logging into the domain, verifying the domain's functional level, enumerating domain objects, and attempting to add KeyCredentials for TGT acquisition and NT hash revelation. Cleanup options and recursive exploitation tactics enhance its utility.
 
 ## References
 
-- [[https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab|https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab]]
-- [[https://github.com/eladshamir/Whisker|https://github.com/eladshamir/Whisker]]
-- [[https://github.com/Dec0ne/ShadowSpray/|https://github.com/Dec0ne/ShadowSpray/]]
-- [[https://github.com/ShutdownRepo/pywhisker|https://github.com/ShutdownRepo/pywhisker]]
-
-
+- [https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab](https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab)
+- [https://github.com/eladshamir/Whisker](https://github.com/eladshamir/Whisker)
+- [https://github.com/Dec0ne/ShadowSpray/](https://github.com/Dec0ne/ShadowSpray/)
+- [https://github.com/ShutdownRepo/pywhisker](https://github.com/ShutdownRepo/pywhisker)
 

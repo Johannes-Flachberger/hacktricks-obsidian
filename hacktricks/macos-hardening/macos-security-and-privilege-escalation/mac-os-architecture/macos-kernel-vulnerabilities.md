@@ -1,10 +1,9 @@
 # macOS Kernel Vulnerabilities
 
+## [Pwning OTA](https://jhftss.github.io/The-Nightmare-of-Apple-OTA-Update/)
 
-## [[https://jhftss.github.io/The-Nightmare-of-Apple-OTA-Update/|Pwning OTA]]
-
-[[https://jhftss.github.io/The-Nightmare-of-Apple-OTA-Update/|**In this report**]] are explained several vulnerabilities that allowed to compromised the kernel compromising the software updater.\
-[[https://github.com/jhftss/POC/tree/main/CVE-2022-46722|**PoC**]].
+[**In this report**](https://jhftss.github.io/The-Nightmare-of-Apple-OTA-Update/) are explained several vulnerabilities that allowed to compromised the kernel compromising the software updater.\
+[**PoC**](https://github.com/jhftss/POC/tree/main/CVE-2022-46722).
 
 ---
 
@@ -24,12 +23,12 @@ Patch level detection:
 sw_vers                 # ProductVersion 14.4 or later is patched
 authenticate sudo sysctl kern.osversion  # 23E214 or later for Sonoma
 ```
-```If upgrading is not possible, mitigate by disabling vulnerable services:
+If upgrading is not possible, mitigate by disabling vulnerable services:
 ```bash
 launchctl disable system/com.apple.analyticsd
 launchctl disable system/com.apple.rtcreportingd
 ```
-```
+
 ---
 
 ## 2023: MIG Type-Confusion – CVE-2023-41075
@@ -47,7 +46,7 @@ io_service_open_extended(...);
 // malformed MIG message triggers confusion
 mach_msg(&msg.header, MACH_SEND_MSG|MACH_RCV_MSG, ...);
 ```
-```Public exploits weaponise the bug by:
+Public exploits weaponise the bug by:
 1. Spraying `ipc_kmsg` buffers with active port pointers.  
 2. Overwriting `ip_kobject` of a dangling port.  
 3. Jumping to shellcode mapped at a PAC-forged address using `mprotect()`.
@@ -67,7 +66,7 @@ Detection tips:
 kmutil showloaded | grep -v com.apple   # list non-Apple kexts
 log stream --style syslog --predicate 'senderImagePath contains "storagekitd"'   # watch for suspicious child procs
 ```
-```Immediate remediation is to update to macOS Sequoia 15.2 or later.
+Immediate remediation is to update to macOS Sequoia 15.2 or later.
 
 ---
 
@@ -81,7 +80,7 @@ sysctl kern.kaslr_enable          # Verify KASLR is ON (should be 1)
 csrutil status                    # Check SIP from RecoveryOS
 spctl --status                    # Confirms Gatekeeper state
 ```
-```
+
 ---
 
 ## Fuzzing & Research Tools
@@ -89,7 +88,6 @@ spctl --status                    # Confirms Gatekeeper state
 * **Luftrauser** – Mach message fuzzer that targets MIG subsystems (`github.com/preshing/luftrauser`).  
 * **oob-executor** – IPC out-of-bounds primitive generator used in CVE-2024-23225 research.  
 * **kmutil inspect** – Built-in Apple utility (macOS 11+) to statically analyse kexts before loading: `kmutil inspect -b io.kext.bundleID`.
-
 
 ## References
 

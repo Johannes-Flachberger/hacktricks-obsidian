@@ -7,7 +7,7 @@ Last updated: 02/04/2023
 This Cookies Policy applies to the following websites owned and operated by HackTricks team ("HackTricks", "we", "us" or "our"):
 
 * hacktricks.wiki
-* [[https://www.hacktricks.wiki/|www.hacktricks.wiki]]
+* [www.hacktricks.wiki](https://www.hacktricks.wiki/)
 * book.hacktricks.wiki
 * cloud.hacktricks.wiki
 
@@ -26,7 +26,7 @@ We use cookies on our websites for the following purposes:
 3. Functionality cookies: These cookies enable our websites to remember choices you make, such as your language or region, to provide a more personalized experience.
 4. Targeting/advertising cookies: These cookies are used to deliver relevant ads and marketing communications based on your interests, browsing history, and interactions with our websites.
 
-Moreover, the pages book.hacktricks.wiki and cloud.hacktricks.wiki are hosted in Gitbook. You can find more information about Gitbooks cookies in [[https://gitbook-1652864889.teamtailor.com/cookie-policy|https://gitbook-1652864889.teamtailor.com/cookie-policy]].
+Moreover, the pages book.hacktricks.wiki and cloud.hacktricks.wiki are hosted in Gitbook. You can find more information about Gitbooks cookies in [https://gitbook-1652864889.teamtailor.com/cookie-policy](https://gitbook-1652864889.teamtailor.com/cookie-policy).
 
 ### Third-party cookies
 
@@ -42,7 +42,5 @@ We may update this Cookies Policy from time to time to reflect changes in our pr
 
 ### Contact us
 
-If you have any questions or concerns about this Cookies Policy, please contact us at [[mailto:support@hacktricks.xyz|support@hacktricks.xyz]]
-
-
+If you have any questions or concerns about this Cookies Policy, please contact us at [support@hacktricks.xyz](mailto:support@hacktricks.xyz)
 

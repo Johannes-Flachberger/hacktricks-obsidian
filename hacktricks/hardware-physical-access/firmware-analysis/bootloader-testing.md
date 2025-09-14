@@ -1,6 +1,5 @@
 # Bootloader Testing
 
-
 The following steps are recommended for modifying device startup configurations and bootloaders like U-boot:
 
 1. **Access Bootloader's Interpreter Shell**:
@@ -48,7 +47,5 @@ The following steps are recommended for modifying device startup configurations 
 
 ## References
 
-- [[https://scriptingxss.gitbook.io/firmware-security-testing-methodology/|https://scriptingxss.gitbook.io/firmware-security-testing-methodology/]]
-
-
+- [https://scriptingxss.gitbook.io/firmware-security-testing-methodology/](https://scriptingxss.gitbook.io/firmware-security-testing-methodology/)
 

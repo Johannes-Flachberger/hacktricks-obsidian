@@ -1,6 +1,5 @@
 # macOS Authorizations DB & Authd
 
-
 ## **Athorizarions DB**
 
 The database located in `/var/db/auth.db` is database used to store permissions to perform sensitive operations. These operations are performed completely in **user space** and are usually used by **XPC services** which need to check **if the calling client is authorized** to perform certain action checking this database.
@@ -39,25 +38,25 @@ security authorizationdb read com.apple.tcc.util.admin
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	class
-	rule
-	comment
-	For modification of TCC settings.
-	created
-	701369782\.01043606
-	modified
-	701369782\.01043606
-	rule
+	<key>class</key>
+	<string>rule</string>
+	<key>comment</key>
+	<string>For modification of TCC settings.</string>
+	<key>created</key>
+	<real>701369782.01043606</real>
+	<key>modified</key>
+	<real>701369782.01043606</real>
+	<key>rule</key>
 	<array>
-		authenticate\-admin\-nonshared
+		<string>authenticate-admin-nonshared</string>
 	</array>
-	version
-	0
+	<key>version</key>
+	<integer>0</integer>
 </dict>
 </plist>
 ```
-```
-Moreover in [[https://www.dssw.co.uk/reference/authorization-rights/authenticate-admin-nonshared/|https://www.dssw.co.uk/reference/authorization-rights/authenticate-admin-nonshared/]] it's possible to see the meaning of `authenticate-admin-nonshared`:
+
+Moreover in [https://www.dssw.co.uk/reference/authorization-rights/authenticate-admin-nonshared/](https://www.dssw.co.uk/reference/authorization-rights/authenticate-admin-nonshared/) it's possible to see the meaning of `authenticate-admin-nonshared`:
 
 ```json
 {
@@ -73,7 +72,7 @@ Moreover in [[https://www.dssw.co.uk/reference/authorization-rights/authenticate
   "version": "1"
 }
 ```
-```
+
 ## Authd
 
 It's a deamon that will receive requests to authorize clients to perform sensitive actions. It works as a XPC service defined inside the `XPCServices/` folder and use to write its logs in `/var/log/authd.log`.
@@ -82,9 +81,5 @@ Moreover using the security tool it's possible to test many `Security.framework`
 
 That will fork and exec `/usr/libexec/security_authtrampoline /bin/ls` as root, which will ask for permissions in a prompt to execute ls as root:
 
-![[../../../images/image (10).png|]]
-
-
-
-
+![](../../../images/image (10).png)
 

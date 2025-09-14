@@ -1,11 +1,10 @@
 # macOS Useful Commands
 
-
 ### MacOS Automatic Enumeration Tools
 
-- **MacPEAS**: [[https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS|https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS]]
-- **Metasploit**: [[https://github.com/rapid7/metasploit-framework/blob/master/modules/post/osx/gather/enum_osx.rb|https://github.com/rapid7/metasploit-framework/blob/master/modules/post/osx/gather/enum_osx.rb]]
-- **SwiftBelt**: [[https://github.com/cedowens/SwiftBelt|https://github.com/cedowens/SwiftBelt]]
+- **MacPEAS**: [https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
+- **Metasploit**: [https://github.com/rapid7/metasploit-framework/blob/master/modules/post/osx/gather/enum_osx.rb](https://github.com/rapid7/metasploit-framework/blob/master/modules/post/osx/gather/enum_osx.rb)
+- **SwiftBelt**: [https://github.com/cedowens/SwiftBelt](https://github.com/cedowens/SwiftBelt)
 
 ### Specific MacOS Commands
 
@@ -43,28 +42,35 @@ system_profiler SPEthernetDataType #Ethernet Info
 system_profiler SPUSBDataType #USB info
 system_profiler SPAirPortDataType #Airport Info
 
+
 #Searches
 mdfind password #Show all the files that contains the word password
 mfind -name password #List all the files containing the word password in the name
+
 
 #Open any app
 open -a <Application Name> --hide #Open app hidden
 open some.doc -a TextEdit #Open a file in one application
 
+
 #Computer doesn't go to sleep
 caffeinate &
+
 
 #Screenshot
 # This will ask for permission to the user
 screencapture -x /tmp/ss.jpg #Save screenshot in that file
 
+
 #Get clipboard info
 pbpaste
+
 
 #system_profiler
 system_profiler --help #This command without arguments take lot of memory and time.
 system_profiler -listDataTypes
 system_profiler SPSoftwareDataType SPNetworkDataType
+
 
 #Network
 arp -i en0 -l -a #Print the macOS device's ARP table
@@ -79,6 +85,7 @@ networksetup -getautoproxyurl Wi-Fi #Get proxy URL for Wifi
 networksetup -getwebproxy Wi-Fi #Wifi Web proxy
 networksetup -getftpproxy Wi-Fi #Wifi ftp proxy
 
+
 #Brew
 brew list #List installed
 brew search <text> #Search package
@@ -87,6 +94,7 @@ brew install <formula>
 brew uninstall <formula>
 brew cleanup #Remove older versions of installed formulae.
 brew cleanup <formula> #Remove older versions of specified formula.
+
 
 #Make the machine talk
 say hello -v diego
@@ -106,7 +114,7 @@ sudo apachectl (start|status|restart|stop)
 dscacheutil -flushcache
 sudo killall -HUP mDNSResponder
 ```
-```
+
 ### Installed Software & Services
 
 Check for **suspicious** applications installed and **privileges** over the.installed resources:
@@ -117,7 +125,7 @@ system_profiler SPFrameworksDataType #Instaled framework
 lsappinfo list #Installed Apps
 launchctl list #Services
 ```
-```
+
 ### User Processes
 
 ```bash
@@ -130,14 +138,10 @@ launchctl print system
 # will print detailed information about the specific launch agent. And if it’s not running or you’ve mistyped, you will get some output with a non-zero exit code: Could not find service “com.company.launchagent.label” in domain for login
 launchctl print gui/<user's UID>/com.company.launchagent.label
 ```
-```
+
 ### Create a user
 
 Without prompts
 
-![[../images/image (79).png|]]
-
-
-
-
+![](../images/image (79).png)
 

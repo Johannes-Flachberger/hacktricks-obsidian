@@ -1,6 +1,5 @@
 # macOS Dyld Process
 
-
 ## Basic Information
 
 The real **entrypoint** of a Mach-o binary is the dynamic linked, defined in `LC_LOAD_DYLINKER` usually is `/usr/lib/dyld`.
@@ -59,7 +58,7 @@ int main (int argc, char **argv, char **envp, char **apple)
     printf("Hi\n");
 }
 ```
-```
+
 Interesting disassembly part:
 
 ```armasm
@@ -68,7 +67,7 @@ Interesting disassembly part:
 100003f80: 913e9000    	add	x0, x0, #4004
 100003f84: 94000005    	bl	0x100003f98 <_printf+0x100003f98>
 ```
-```
+
 It's possible to see that the jump to call printf is going to **`__TEXT.__stubs`**:
 
 ```bash
@@ -84,7 +83,7 @@ Idx Name          Size     VMA              Type
   3 __unwind_info 00000058 0000000100003fa8 DATA
   4 __got         00000008 0000000100004000 DATA
 ```
-```
+
 In the disassemble of the **`__stubs`** section:
 
 ```bash
@@ -99,7 +98,7 @@ Disassembly of section __TEXT,__stubs:
 100003f9c: f9400210    	ldr	x16, [x16]
 100003fa0: d61f0200    	br	x16
 ```
-```
+
 you can see that we are **jumping to the address of the GOT**, which in this case is resolved non-lazy and will contain the address of the printf function.
 
 In other situations instead of directly jumping to the GOT, it could jump to **`__DATA.__la_symbol_ptr`** which will load a value that represents the function that it's trying to load, then jump to **`__TEXT.__stub_helper`** which jumps the **`__DATA.__nl_symbol_ptr`** which contains the address of **`dyld_stub_binder`** which takes as parameters the number of the function and an address.\
@@ -125,7 +124,7 @@ int main (int argc, char **argv, char **envp, char **apple)
         printf("%d: %s\n", i, apple[i])
 }
 ```
-```
+
 Result:
 
 ```
@@ -142,25 +141,25 @@ Result:
 10: arm64e_abi=os
 11: th_port=
 ```
-```
+
 > [!TIP]
 > By the time these values reaches the main function, sensitive information has already been removed from them or it would have been a data leak.
 
 it's possible to see all these interesting values debugging before getting into main with:
 
-_lldb ./apple
+<pre><code>lldb ./apple
 
-(lldb) target create "./a"
-Current executable set to '/tmp/a' (arm64).
+<strong>(lldb) target create "./a"
+</strong>Current executable set to '/tmp/a' (arm64).
 (lldb) process launch -s
 [..]
 
-(lldb) mem read $sp
-0x16fdff510: 00 00 00 00 01 00 00 00 01 00 00 00 00 00 00 00  ................
+<strong>(lldb) mem read $sp
+</strong>0x16fdff510: 00 00 00 00 01 00 00 00 01 00 00 00 00 00 00 00  ................
 0x16fdff520: d8 f6 df 6f 01 00 00 00 00 00 00 00 00 00 00 00  ...o............
 
-(lldb) x/55s 0x016fdff6d8
-[...]
+<strong>(lldb) x/55s 0x016fdff6d8
+</strong>[...]
 0x16fdffd6a: "TERM_PROGRAM=WarpTerminal"
 0x16fdffd84: "WARP_USE_SSH_WRAPPER=1"
 0x16fdffd9b: "WARP_IS_LOCAL_SHELL_SESSION=1"
@@ -185,11 +184,11 @@ Current executable set to '/tmp/a' (arm64).
 0x16fdfffdf: "arm64e_abi=os"
 0x16fdfffed: "th_port=0x103"
 0x16fdffffb: ""
-```
+</code></pre>
 
 ## dyld_all_image_infos
 
-This is a structure exported by dyld with information about the dyld state which can be found in the [[https://opensource.apple.com/source/dyld/dyld-852.2/include/mach-o/dyld_images.h.auto.html|**source code**]] with information like the version, pointer to dyld_image_info array, to dyld_image_notifier, if proc is detached from shared cache, if libSystem initializer was called, pointer to dyls's own Mach header, pointer to dyld version string...
+This is a structure exported by dyld with information about the dyld state which can be found in the [**source code**](https://opensource.apple.com/source/dyld/dyld-852.2/include/mach-o/dyld_images.h.auto.html) with information like the version, pointer to dyld_image_info array, to dyld_image_notifier, if proc is detached from shared cache, if libSystem initializer was called, pointer to dyls's own Mach header, pointer to dyld version string...
 
 ## dyld env variables
 
@@ -216,7 +215,7 @@ dyld[19948]: <F7CE9486-FFF5-3CB8-B26F-75811EF4283A> /usr/lib/system/libkeymgr.dy
 dyld[19948]: <1A7038EC-EE49-35AE-8A3C-C311083795FB> /usr/lib/system/libmacho.dylib
 [...]
 ```
-```
+
 - **DYLD_PRINT_SEGMENTS**
 
 Check how is each library loaded:
@@ -255,7 +254,7 @@ dyld[21147]:   __AUTH_CONST (rw.) 0x0001DDE014D0->0x0001DDE015A8
 dyld[21147]:     __LINKEDIT (r..) 0x000239574000->0x000270BE4000
 [...]
 ```
-```
+
 - **DYLD_PRINT_INITIALIZERS**
 
 Print when each library initializer is running:
@@ -265,7 +264,7 @@ DYLD_PRINT_INITIALIZERS=1 ./apple
 dyld[21623]: running initializer 0x18e59e5c0 in /usr/lib/libSystem.B.dylib
 [...]
 ```
-```
+
 ### Others
 
 - `DYLD_BIND_AT_LAUNCH`: Lazy bindings are resolved with non lazy ones
@@ -299,16 +298,14 @@ It's possible to find more with someting like:
 ```bash
 strings /usr/lib/dyld | grep "^DYLD_" | sort -u
 ```
-```
-Or downloading the dyld project from [[https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz|https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz]] and running inside the folder:
+
+Or downloading the dyld project from [https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz](https://opensource.apple.com/tarballs/dyld/dyld-852.2.tar.gz) and running inside the folder:
 
 ```bash
 find . -type f | xargs grep strcmp| grep key,\ \" | cut -d'"' -f2 | sort -u
 ```
-```
+
 ## References
 
-- [[https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X|**\*OS Internals, Volume I: User Mode. By Jonathan Levin**]]
-
-
+- [**\*OS Internals, Volume I: User Mode. By Jonathan Levin**](https://www.amazon.com/MacOS-iOS-Internals-User-Mode/dp/099105556X)
 

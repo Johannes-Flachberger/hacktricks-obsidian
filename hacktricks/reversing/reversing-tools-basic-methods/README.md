@@ -1,34 +1,33 @@
 # Reversing Tools & Basic Methods
 
-
 ## ImGui Based Reversing tools
 
 Software:
 
-- ReverseKit: [[https://github.com/zer0condition/ReverseKit|https://github.com/zer0condition/ReverseKit]]
+- ReverseKit: [https://github.com/zer0condition/ReverseKit](https://github.com/zer0condition/ReverseKit)
 
 ## Wasm decompiler / Wat compiler
 
 Online:
 
-- Use [[https://webassembly.github.io/wabt/demo/wasm2wat/index.html) to **decompile** from wasm (binary) to wat (clear text|https://webassembly.github.io/wabt/demo/wasm2wat/index.html]]
-- Use [[https://webassembly.github.io/wabt/demo/wat2wasm/|https://webassembly.github.io/wabt/demo/wat2wasm/]] to **compile** from wat to wasm
-- you can also try to use [[https://wwwg.github.io/web-wasmdec/|https://wwwg.github.io/web-wasmdec/]] to decompile
+- Use [https://webassembly.github.io/wabt/demo/wasm2wat/index.html](https://webassembly.github.io/wabt/demo/wasm2wat/index.html) to **decompile** from wasm (binary) to wat (clear text)
+- Use [https://webassembly.github.io/wabt/demo/wat2wasm/](https://webassembly.github.io/wabt/demo/wat2wasm/) to **compile** from wat to wasm
+- you can also try to use [https://wwwg.github.io/web-wasmdec/](https://wwwg.github.io/web-wasmdec/) to decompile
 
 Software:
 
-- [[https://www.pnfsoftware.com/jeb/demo|https://www.pnfsoftware.com/jeb/demo]]
-- [[https://github.com/wwwg/wasmdec|https://github.com/wwwg/wasmdec]]
+- [https://www.pnfsoftware.com/jeb/demo](https://www.pnfsoftware.com/jeb/demo)
+- [https://github.com/wwwg/wasmdec](https://github.com/wwwg/wasmdec)
 
 ## .NET decompiler
 
-### [[https://www.jetbrains.com/decompiler/|dotPeek]]
+### [dotPeek](https://www.jetbrains.com/decompiler/)
 
 dotPeek is a decompiler that **decompiles and examines multiple formats**, including **libraries** (.dll), **Windows metadata file**s (.winmd), and **executables** (.exe). Once decompiled, an assembly can be saved as a Visual Studio project (.csproj).
 
 The merit here is that if a lost source code requires restoration from a legacy assembly, this action can save time. Further, dotPeek provides handy navigation throughout the decompiled code, making it one of the perfect tools for **Xamarin algorithm analysis.**
 
-### [[https://www.red-gate.com/products/reflector/|.NET Reflector]]
+### [.NET Reflector](https://www.red-gate.com/products/reflector/)
 
 With a comprehensive add-in model and an API that extends the tool to suit your exact needs, .NET reflector saves time and simplifies development. Let's take a look at the plethora of reverse engineering services this tool provides:
 
@@ -39,10 +38,10 @@ With a comprehensive add-in model and an API that extends the tool to suit your 
 - Tracks down the exact location of errors in your code, third-party components, and libraries.
 - Debugs into the source of all the .NET code you work with.
 
-### [[https://github.com/icsharpcode/ILSpy) & [dnSpy](https://github.com/dnSpy/dnSpy/releases|ILSpy]]
+### [ILSpy](https://github.com/icsharpcode/ILSpy) & [dnSpy](https://github.com/dnSpy/dnSpy/releases)
 
-[[https://github.com/icsharpcode/ilspy-vscode): You can have it in any OS (you can install it directly from VSCode, no need to download the git. Click on **Extensions** and **search ILSpy**|ILSpy plugin for Visual Studio Code]].\
-If you need to **decompile**, **modify** and **recompile** again you can use [[https://github.com/dnSpy/dnSpy/releases) or an actively maintained fork of it, [**dnSpyEx**](https://github.com/dnSpyEx/dnSpy/releases). (**Right Click -> Modify Method** to change something inside a function|**dnSpy**]].
+[ILSpy plugin for Visual Studio Code](https://github.com/icsharpcode/ilspy-vscode): You can have it in any OS (you can install it directly from VSCode, no need to download the git. Click on **Extensions** and **search ILSpy**).\
+If you need to **decompile**, **modify** and **recompile** again you can use [**dnSpy**](https://github.com/dnSpy/dnSpy/releases) or an actively maintained fork of it, [**dnSpyEx**](https://github.com/dnSpyEx/dnSpy/releases). (**Right Click -> Modify Method** to change something inside a function).
 
 ### DNSpy Logging
 
@@ -53,21 +52,21 @@ using System.IO;
 path = "C:\\inetpub\\temp\\MyTest2.txt";
 File.AppendAllText(path, "Password: " + password + "\n");
 ```
-```
+
 ### DNSpy Debugging
 
 In order to debug code using DNSpy you need to:
 
 First, change the **Assembly attributes** related to **debugging**:
 
-![[<../../images/image (973).png>|]]
+![[../../images/image (973).png]]
 
 From:
 
 ```aspnet
 [assembly: Debuggable(DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints)]
 ```
-```
+
 To:
 
 ```
@@ -76,14 +75,14 @@ DebuggableAttribute.DebuggingModes.DisableOptimizations |
 DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints |
 DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]
 ```
-```
+
 And click on **compile**:
 
-![[<../../images/image (314) (1).png>|]]
+![[../../images/image (314) (1).png]]
 
 Then save the new file via _**File >> Save module...**_:
 
-![[<../../images/image (602).png>|]]
+![[../../images/image (602).png]]
 
 This is necessary because if you don't do this, at **runtime** several **optimisations** will be applied to the code and it could be possible that while debugging a **break-point is never hit** or some **variables don't exist**.
 
@@ -92,33 +91,33 @@ Then, if your .NET application is being **run** by **IIS** you can **restart** i
 ```
 iisreset /noforce
 ```
-```
+
 Then, in order to start debugging you should close all the opened files and inside the **Debug Tab** select **Attach to Process...**:
 
-![[<../../images/image (318).png>|]]
+![[../../images/image (318).png]]
 
 Then select **w3wp.exe** to attach to the **IIS server** and click **attach**:
 
-![[<../../images/image (113).png>|]]
+![[../../images/image (113).png]]
 
 Now that we are debugging the process, it's time to stop it and load all the modules. First click on _Debug >> Break All_ and then click on _**Debug >> Windows >> Modules**_:
 
-![[<../../images/image (132).png>|]]
+![[../../images/image (132).png]]
 
-![[<../../images/image (834).png>|]]
+![[../../images/image (834).png]]
 
 Click any module on **Modules** and select **Open All Modules**:
 
-![[<../../images/image (922).png>|]]
+![[../../images/image (922).png]]
 
 Right click any module in **Assembly Explorer** and click **Sort Assemblies**:
 
-![[<../../images/image (339).png>|]]
+![[../../images/image (339).png]]
 
 ## Java decompiler
 
-[[https://github.com/skylot/jadx|https://github.com/skylot/jadx]]\
-[[https://github.com/java-decompiler/jd-gui/releases|https://github.com/java-decompiler/jd-gui/releases]]
+[https://github.com/skylot/jadx](https://github.com/skylot/jadx)\
+[https://github.com/java-decompiler/jd-gui/releases](https://github.com/java-decompiler/jd-gui/releases)
 
 ## Debugging DLLs
 
@@ -128,11 +127,11 @@ Right click any module in **Assembly Explorer** and click **Sort Assemblies**:
 - Select **Windbg** debugger
 - Select "**Suspend on library load/unload**"
 
-![[<../../images/image (868).png>|]]
+![[../../images/image (868).png]]
 
 - Configure the **parameters** of the execution putting the **path to the DLL** and the function that you want to call:
 
-![[<../../images/image (704).png>|]]
+![[../../images/image (704).png]]
 
 Then, when you start debugging **the execution will be stopped when each DLL is loaded**, then, when rundll32 load your DLL the execution will be stopped.
 
@@ -147,19 +146,19 @@ But, how can you get to the code of the DLL that was lodaded? Using this method,
 
 Notice that when the execution is stopped by any reason in win64dbg you can see **in which code you are** looking in the **top of the win64dbg window**:
 
-![[<../../images/image (842).png>|]]
+![[../../images/image (842).png]]
 
 Then, looking to this ca see when the execution was stopped in the dll you want to debug.
 
 ## GUI Apps / Videogames
 
-[[https://www.cheatengine.org/downloads.php|**Cheat Engine**]] is a useful program to find where important values are saved inside the memory of a running game and change them. More info in:
+[**Cheat Engine**](https://www.cheatengine.org/downloads.php) is a useful program to find where important values are saved inside the memory of a running game and change them. More info in:
 
 [[cheat-engine.md]]
 
-[[https://github.com/korcankaraokcu/PINCE) is a front-end/reverse engineering tool for the GNU Project Debugger (GDB|**PiNCE**]], focused on games. However, it can be used for any reverse-engineering related stuff
+[**PiNCE**](https://github.com/korcankaraokcu/PINCE) is a front-end/reverse engineering tool for the GNU Project Debugger (GDB), focused on games. However, it can be used for any reverse-engineering related stuff
 
-[[https://dogbolt.org/|**Decompiler Explorer**]] is a web front-end to a number of decompilers. This web service lets you compare the output of different decompilers on small executables.
+[**Decompiler Explorer**](https://dogbolt.org/) is a web front-end to a number of decompilers. This web service lets you compare the output of different decompilers on small executables.
 
 ## ARM & MIPS
 
@@ -169,43 +168,43 @@ Then, looking to this ca see when the execution was stopped in the dll you want 
 
 ### Debugging a shellcode with blobrunner
 
-[[https://github.com/OALabs/BlobRunner|**Blobrunner**]] will **allocate** the **shellcode** inside a space of memory, will **indicate** you the **memory address** were the shellcode was allocated and will **stop** the execution.\
+[**Blobrunner**](https://github.com/OALabs/BlobRunner) will **allocate** the **shellcode** inside a space of memory, will **indicate** you the **memory address** were the shellcode was allocated and will **stop** the execution.\
 Then, you need to **attach a debugger** (Ida or x64dbg) to the process and put a **breakpoint the indicated memory address** and **resume** the execution. This way you will be debugging the shellcode.
 
-The releases github page contains zips containing the compiled releases: [[https://github.com/OALabs/BlobRunner/releases/tag/v0.0.5|https://github.com/OALabs/BlobRunner/releases/tag/v0.0.5]]\
+The releases github page contains zips containing the compiled releases: [https://github.com/OALabs/BlobRunner/releases/tag/v0.0.5](https://github.com/OALabs/BlobRunner/releases/tag/v0.0.5)\
 You can find a slightly modified version of Blobrunner in the following link. In order to compile it just **create a C/C++ project in Visual Studio Code, copy and paste the code and build it**.
 
 [[blobrunner.md]]
 
 ### Debugging a shellcode with jmp2it
 
-[[https://github.com/adamkramer/jmp2it/releases/tag/v1.4|**jmp2it** ]]is very similar to blobrunner. It will **allocate** the **shellcode** inside a space of memory, and start an **eternal loop**. You then need to **attach the debugger** to the process, **play start wait 2-5 secs and press stop** and you will find yourself inside the **eternal loop**. Jump to the next instruction of the eternal loop as it will be a call to the shellcode, and finally you will find yourself executing the shellcode.
+[**jmp2it** ](https://github.com/adamkramer/jmp2it/releases/tag/v1.4)is very similar to blobrunner. It will **allocate** the **shellcode** inside a space of memory, and start an **eternal loop**. You then need to **attach the debugger** to the process, **play start wait 2-5 secs and press stop** and you will find yourself inside the **eternal loop**. Jump to the next instruction of the eternal loop as it will be a call to the shellcode, and finally you will find yourself executing the shellcode.
 
-![[<../../images/image (509).png>|]]
+![[../../images/image (509).png]]
 
-You can download a compiled version of [[https://github.com/adamkramer/jmp2it/releases/|jmp2it inside the releases page]].
+You can download a compiled version of [jmp2it inside the releases page](https://github.com/adamkramer/jmp2it/releases/).
 
 ### Debugging shellcode using Cutter
 
-[[https://github.com/rizinorg/cutter/releases/tag/v1.12.0|**Cutter**]] is the GUI of radare. Using cutter you can emulate the shellcode and inspect it dynamically.
+[**Cutter**](https://github.com/rizinorg/cutter/releases/tag/v1.12.0) is the GUI of radare. Using cutter you can emulate the shellcode and inspect it dynamically.
 
 Note that Cutter allows you to "Open File" and "Open Shellcode". In my case when I opened the shellcode as a file it decompiled it correctly, but when I opened it as a shellcode it didn't:
 
-![[<../../images/image (562).png>|]]
+![[../../images/image (562).png]]
 
 In order to start the emulation in the place you want to, set a bp there and apparently cutter will automatically start the emulation from there:
 
-![[<../../images/image (589).png>|]]
+![[../../images/image (589).png]]
 
-![[<../../images/image (387).png>|]]
+![[../../images/image (387).png]]
 
 You can see the stack for example inside a hex dump:
 
-![[<../../images/image (186).png>|]]
+![[../../images/image (186).png]]
 
 ### Deobfuscating shellcode and getting executed functions
 
-You should try [[http://sandsprite.com/blogs/index.php?uid=7&pid=152|**scdbg**]].\
+You should try [**scdbg**](http://sandsprite.com/blogs/index.php?uid=7&pid=152).\
 It will tell you things like **which functions** is the shellcode using and if the shellcode is **decoding** itself in memory.
 
 ```bash
@@ -216,49 +215,49 @@ scdbg.exe -f shellcode -d #Dump decoded shellcode
 scdbg.exe -f shellcode /findsc #Find offset where starts
 scdbg.exe -f shellcode /foff 0x0000004D #Start the executing in that offset
 ```
-```
+
 scDbg also counts with a graphical launcher where you can select the options you want and execute the shellcode
 
-![[<../../images/image (258).png>|]]
+![[../../images/image (258).png]]
 
 The **Create Dump** option will dump the final shellcode if any change is done to the shellcode dynamically in memory (useful to download the decoded shellcode). The **start offset** can be useful to start the shellcode at a specific offset. The **Debug Shell** option is useful to debug the shellcode using the scDbg terminal (however I find any of the options explained before better for this matter as you will be able to use Ida or x64dbg).
 
 ### Disassembling using CyberChef
 
-Upload your shellcode file as input and use the following recipe to decompile it: [[<https://gchq.github.io/CyberChef/index.html#recipe=To_Hex('Space',0)Disassemble_x86('32','Full%20x86%20architecture',16,0,true,true)>|https://gchq.github.io/CyberChef/#recipe=To_Hex('Space',0)Disassemble_x86('32','Full%20x86%20architecture',16,0,true,true)]]
+Upload your shellcode file as input and use the following recipe to decompile it: [https://gchq.github.io/CyberChef/#recipe=To_Hex('Space',0)Disassemble_x86('32','Full%20x86%20architecture',16,0,true,true)](<https://gchq.github.io/CyberChef/index.html#recipe=To_Hex('Space',0)Disassemble_x86('32','Full%20x86%20architecture',16,0,true,true)>)
 
-## [[https://github.com/xoreaxeaxeax/movfuscator|Movfuscator]]
+## [Movfuscator](https://github.com/xoreaxeaxeax/movfuscator)
 
 This obfuscator **modifies all the instructions for `mov`**(yeah, really cool). It also uses interruptions to change executions flows. For more information about how does it works:
 
-- [[https://www.youtube.com/watch?v=2VF_wPkiBJY|https://www.youtube.com/watch?v=2VF_wPkiBJY]]
-- [[https://github.com/xoreaxeaxeax/movfuscator/blob/master/slides/domas_2015_the_movfuscator.pdf|https://github.com/xoreaxeaxeax/movfuscator/blob/master/slides/domas_2015_the_movfuscator.pdf]]
+- [https://www.youtube.com/watch?v=2VF_wPkiBJY](https://www.youtube.com/watch?v=2VF_wPkiBJY)
+- [https://github.com/xoreaxeaxeax/movfuscator/blob/master/slides/domas_2015_the_movfuscator.pdf](https://github.com/xoreaxeaxeax/movfuscator/blob/master/slides/domas_2015_the_movfuscator.pdf)
 
-If you are lucky [[https://github.com/kirschju/demovfuscator|demovfuscator]] will deofuscate the binary. It has several dependencies
+If you are lucky [demovfuscator](https://github.com/kirschju/demovfuscator) will deofuscate the binary. It has several dependencies
 
 ```
 apt-get install libcapstone-dev
 apt-get install libz3-dev
 ```
-```
-And [[https://github.com/keystone-engine/keystone/blob/master/docs/COMPILE-NIX.md|install keystone]] (`apt-get install cmake; mkdir build; cd build; ../make-share.sh; make install`)
 
-If you are playing a **CTF, this workaround to find the flag** could be very useful: [[https://dustri.org/b/defeating-the-recons-movfuscator-crackme.html|https://dustri.org/b/defeating-the-recons-movfuscator-crackme.html]]
+And [install keystone](https://github.com/keystone-engine/keystone/blob/master/docs/COMPILE-NIX.md) (`apt-get install cmake; mkdir build; cd build; ../make-share.sh; make install`)
+
+If you are playing a **CTF, this workaround to find the flag** could be very useful: [https://dustri.org/b/defeating-the-recons-movfuscator-crackme.html](https://dustri.org/b/defeating-the-recons-movfuscator-crackme.html)
 
 ## Rust
 
 To find the **entry point** search the functions by `::main` like in:
 
-![[<../../images/image (1080).png>|]]
+![[../../images/image (1080).png]]
 
 In this case the binary was called authenticator, so it's pretty obvious that this is the interesting main function.\
 Having the **name** of the **functions** being called, search for them on the **Internet** to learn about their **inputs** and **outputs**.
 
 ## **Delphi**
 
-For Delphi compiled binaries you can use [[https://github.com/crypto2011/IDR|https://github.com/crypto2011/IDR]]
+For Delphi compiled binaries you can use [https://github.com/crypto2011/IDR](https://github.com/crypto2011/IDR)
 
-If you have to reverse a Delphi binary I would suggest you to use the IDA plugin [[https://github.com/Coldzer0/IDA-For-Delphi|https://github.com/Coldzer0/IDA-For-Delphi]]
+If you have to reverse a Delphi binary I would suggest you to use the IDA plugin [https://github.com/Coldzer0/IDA-For-Delphi](https://github.com/Coldzer0/IDA-For-Delphi)
 
 Just press **ATL+f7** (import python plugin in IDA) and select the python plugin.
 
@@ -268,7 +267,7 @@ It is also very interesting because if you press a button in the graphic applica
 
 ## Golang
 
-If you have to reverse a Golang binary I would suggest you to use the IDA plugin [[https://github.com/sibears/IDAGolangHelper|https://github.com/sibears/IDAGolangHelper]]
+If you have to reverse a Golang binary I would suggest you to use the IDA plugin [https://github.com/sibears/IDAGolangHelper](https://github.com/sibears/IDAGolangHelper)
 
 Just press **ATL+f7** (import python plugin in IDA) and select the python plugin.
 
@@ -284,14 +283,14 @@ In this page you can find how to get the python code from an ELF/EXE python comp
 
 If you get the **binary** of a GBA game you can use different tools to **emulate** and **debug** it:
 
-- [[https://problemkaputt.de/gba.htm) (_Download the debug version_|**no$gba**]] - Contains a debugger with interface
-- [[https://mgba.io|**mgba** ]]- Contains a CLI debugger
-- [[https://github.com/pudii/gba-ghidra-loader|**gba-ghidra-loader**]] - Ghidra plugin
-- [[https://github.com/SiD3W4y/GhidraGBA|**GhidraGBA**]] - Ghidra plugin
+- [**no$gba**](https://problemkaputt.de/gba.htm) (_Download the debug version_) - Contains a debugger with interface
+- [**mgba** ](https://mgba.io)- Contains a CLI debugger
+- [**gba-ghidra-loader**](https://github.com/pudii/gba-ghidra-loader) - Ghidra plugin
+- [**GhidraGBA**](https://github.com/SiD3W4y/GhidraGBA) - Ghidra plugin
 
-In [[https://problemkaputt.de/gba.htm|**no$gba**]], in _**Options --> Emulation Setup --> Controls**_** ** you can see how to press the Game Boy Advance **buttons**
+In [**no$gba**](https://problemkaputt.de/gba.htm), in _**Options --> Emulation Setup --> Controls**_** ** you can see how to press the Game Boy Advance **buttons**
 
-![[<../../images/image (581).png>|]]
+![[../../images/image (581).png]]
 
 When pressed, each **key has a value** to identify it:
 
@@ -307,10 +306,10 @@ DOWN = 128
 R = 256
 L = 256
 ```
-```
+
 So, in this kind of program, the interesting part will be **how the program treats the user input**. In the address **0x4000130** you will find the commonly found function: **KEYINPUT**.
 
-![[<../../images/image (447).png>|]]
+![[../../images/image (447).png]]
 
 In the previous image you can find that the function is called from **FUN_080015a8** (addresses: _0x080015fa_ and _0x080017ac_).
 
@@ -336,7 +335,7 @@ void FUN_080015a8(void)
   FUN_08000354(&DAT_030000dc,0x3c);
   uVar4 = DAT_030004d8;
 ```
-```
+
 It's found this code:
 
 ```c
@@ -350,7 +349,7 @@ It's found this code:
       uVar1 = *puVar6;
       if ((uVar1 & DAT_030004da & ~uVar4) != 0) {
 ```
-```
+
 The last if is checking **`uVar4`** is in the **last Keys** and not is the current key, also called letting go off a button (current key is stored in **`uVar1`**).
 
 ```c
@@ -380,7 +379,7 @@ The last if is checking **`uVar4`** is in the **last Keys** and not is the curre
               if (uVar1 == 0x10) {
                 DAT_030000d8 = DAT_030000d8 + 0x3a;
 ```
-```
+
 In the previous code you can see that we are comparing **uVar1** (the place where the **value of the pressed button** is) with some values:
 
 - First, it's compared with the **value 4** (**SELECT** button): In the challenge this button clears the screen
@@ -391,7 +390,7 @@ In the previous code you can see that we are comparing **uVar1** (the place wher
 
 So, in this challenge, knowing the values of the buttons, you needed to **press a combination with a length smaller than 8 that the resulting addition is 0xf3.**
 
-**Reference for this tutorial:** [[https://exp.codes/Nostalgia/|**https://exp.codes/Nostalgia/**]]
+**Reference for this tutorial:** [**https://exp.codes/Nostalgia/**](https://exp.codes/Nostalgia/)
 
 ## Game Boy
 
@@ -399,6 +398,6 @@ So, in this challenge, knowing the values of the buttons, you needed to **press 
 
 ## Courses
 
-- [[https://github.com/0xZ0F/Z0FCourse_ReverseEngineering|https://github.com/0xZ0F/Z0FCourse_ReverseEngineering]]
-- [[https://github.com/malrev/ABD) (Binary deobfuscation|https://github.com/malrev/ABD]]
+- [https://github.com/0xZ0F/Z0FCourse_ReverseEngineering](https://github.com/0xZ0F/Z0FCourse_ReverseEngineering)
+- [https://github.com/malrev/ABD](https://github.com/malrev/ABD) (Binary deobfuscation)
 

