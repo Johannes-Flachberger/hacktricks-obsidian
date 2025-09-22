@@ -14,16 +14,26 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Fetch hacktricks
+    - name: Fetch hacktricks src
       run: |
         git remote add hacktricks https://github.com/HackTricks-wiki/hacktricks.git
         git fetch hacktricks master
         git checkout -B hacktricks-master hacktricks/master
+        # remove .github/ to avoid workflow conflicts
+        rm -rf .github/
+        git config user.name "github-actions"
+        git config user.email "actions@github.com"
+        git commit -am "Remove upstream .github directory"
         git push --force origin hacktricks-master
 
-    - name: Fetch hacktricks-cloud
+    - name: Fetch hacktricks-cloud src
       run: |
         git remote add hacktricks-cloud https://github.com/HackTricks-wiki/hacktricks-cloud.git
         git fetch hacktricks-cloud master
         git checkout -B hacktricks-cloud-master hacktricks-cloud/master
+        # remove .github/ to avoid workflow conflicts
+        rm -rf .github/
+        git config user.name "github-actions"
+        git config user.email "actions@github.com"
+        git commit -am "Remove upstream .github directory"
         git push --force origin hacktricks-cloud-master
