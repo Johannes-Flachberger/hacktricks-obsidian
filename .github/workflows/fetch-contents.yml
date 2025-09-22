@@ -1,0 +1,29 @@
+name: Fetch contents from Hacktricks repos
+
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: '0 2 * * *' # every day at 2:00 AM UTC
+
+jobs:
+  fetch-contents:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Fetch hacktricks
+      run: |
+        git remote add hacktricks https://github.com/HackTricks-wiki/hacktricks.git
+        git fetch hacktricks master
+        git checkout -B hacktricks-master hacktricks/master
+        git push --force origin hacktricks-master
+
+    - name: Fetch hacktricks-cloud
+      run: |
+        git remote add hacktricks-cloud https://github.com/HackTricks-wiki/hacktricks-cloud.git
+        git fetch hacktricks-cloud master
+        git checkout -B hacktricks-cloud-master hacktricks-cloud/master
+        git push --force origin hacktricks-cloud-master
