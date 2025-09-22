@@ -5,6 +5,18 @@ from html_to_markdown import convert_to_markdown
 # Root of your repo
 BASE_DIR = "./src"
 
+
+external_link_pattern = r"\[([^$]+)\$\$([^$]+)\$\$\]\(\)"
+def transform_external_links(match):
+    print(f"Updating external link: {match.group(0)}")
+    label = match.group(1)      # Link text
+    path = match.group(2)        # URL
+    path = path.replace("external:https://cloud.hacktricks.wiki/en", "hacktricks-cloud")
+    path = path.replace("external:external:https://book.hacktricks.wiki/en", "hacktricks")
+    path = path.replace("index.html", "README.md")
+    path = path.replace(".html", ".md")
+    return f"[[{path}|{label}]]"
+
 link_pattern = r"\[([^\]]+?)\]\(([\w\-\/]*)index\.html(#([^\)]*))?\)"
 def transform_links(match):
     print(f"Updating link: {match.group(0)}")
@@ -103,7 +115,8 @@ for subdir, _, files in os.walk(BASE_DIR):
                     part = re.sub(html_pattern, transform_html, part)
                     part = re.sub(img_pattern, transform_img, part)
                     # Transform mdbook patterns
-                    part = re.sub(link_pattern,transform_links, part)
+                    part = re.sub(external_link_pattern, transform_external_links, part)
+                    part = re.sub(link_pattern, transform_links, part)
                     part = re.sub(ref_pattern, transform_refs, part)
                     part = re.sub(file_pattern, transform_files, part)
                     part = re.sub(include_pattern, tranfsform_includes, part)
