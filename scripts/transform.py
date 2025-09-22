@@ -7,25 +7,32 @@ BASE_DIR = "./src"
 
 
 external_link_pattern = r"\[([^$]+)\$\$([^$]+)\$\$\]\(\)"
+
+
 def transform_external_links(match):
     print(f"Updating external link: {match.group(0)}")
-    label = match.group(1)      # Link text
-    path = match.group(2)        # URL
+    label = match.group(1)  # Link text
+    path = match.group(2)  # URL
     path = path.replace("external:https://cloud.hacktricks.wiki/en", "hacktricks-cloud")
-    path = path.replace("external:external:https://book.hacktricks.wiki/en", "hacktricks")
+    path = path.replace(
+        "external:external:https://book.hacktricks.wiki/en", "hacktricks"
+    )
     path = path.replace("index.html", "README.md")
     path = path.replace(".html", ".md")
     return f"[[{path}|{label}]]"
 
+
 link_pattern = r"\[([^\]]+?)\]\(([\w\-\/]*)index\.html(#([^\)]*))?\)"
+
+
 def transform_links(match):
     print(f"Updating link: {match.group(0)}")
-    label = match.group(1)      # Link text
+    label = match.group(1)  # Link text
     label = label.replace("**", "")  # Remove bold markdown
     label = label.replace("_", "")  # Remove italic markdown
-    folder = match.group(2)     # Path before index.html
-    anchor = match.group(3)     # Optional anchor
-    
+    folder = match.group(2)  # Path before index.html
+    anchor = match.group(3)  # Optional anchor
+
     if anchor:
         # Prettify anchor: "system-information" -> "System Information
         anchor_text = anchor.replace("-", " ").title()
@@ -33,15 +40,26 @@ def transform_links(match):
     else:
         return f"[[{folder}README.md|{label}]]"
 
+
 ref_pattern = r"{{[\s]*#ref[\s]*}}(?:\n)?[\s>]*([^\n]*)(?:\n)?[\s>]*{{#endref}}"
+
+
 def transform_refs(match):
     return f"[[{match.group(1)}]]"
 
-file_pattern = r"{{[\s]*#file[\s]*}}(?:\n)?([^\\\n#]*(?:#(.*))?)(?:\n)?{{[\s]*#endfile[\s]*}}"
+
+file_pattern = (
+    r"{{[\s]*#file[\s]*}}(?:\n)?([^\\\n#]*(?:#(.*))?)(?:\n)?{{[\s]*#endfile[\s]*}}"
+)
+
+
 def transform_files(match):
     return f"[[files/{match.group(1)}]]"
 
+
 include_pattern = r"{{[\s]*#include[\s]*([^\}]+)}}"
+
+
 def tranfsform_includes(match):
     # remove banners
     if "banner" in match.group(1):
@@ -49,24 +67,37 @@ def tranfsform_includes(match):
     else:
         return f"![[{match.group(1)}]]"
 
+
 tab_pattern = r'{{#tab name="(.+)"}}'
+
+
 def transform_tabs(match):
     return f"**{match.group(1)}**"
 
+
 img_pattern = r"<img src=(?:\"|')([^\"']*)(?:\"|')(?:.*)\/?>"
+
+
 def transform_img(match):
     return f"![[{match.group(1)}]]"
 
+
 html_pattern = r"<([a-zA-Z][^>\s]*)\b[^>]*>.*?<\/\1>|<[a-zA-Z][^>]*\/>"
+
+
 def transform_html(match):
     return convert_to_markdown(match.group(0))
 
+
 img_link_pattern = r"\[\]\(<(.*)>\)"
+
+
 def transform_img_links(match):
-        return f"[[{match.group(1)}]]"
+    return f"[[{match.group(1)}]]"
 
 
-fenced_code_pattern = r'((`{3,})[\s\S]*?^\2)|(`.+?`)'
+fenced_code_pattern = r"((`{3,})[\s\S]*?^\2)|(`.+?`)"
+
 
 def split_content(content):
     parts = []
