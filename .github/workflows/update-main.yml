@@ -7,7 +7,7 @@ on:
     types: [ completed ]
 
 jobs:
-  prepare:
+  transform-and-update:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
