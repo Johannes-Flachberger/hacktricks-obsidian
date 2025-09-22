@@ -2,7 +2,7 @@
 
 # 👾 Welcome!
 
-- [HackTricks](README.md)
+- [[hacktricks-cloud/pentesting-cloud/azure-security/az-lateral-movement-cloud-on-prem/README.md|HackTricks](README.md)
 - [HackTricks Values & FAQ](welcome/hacktricks-values-and-faq.md)
 - [About the author](welcome/about-the-author.md)
 
@@ -318,8 +318,8 @@
   - [SCMexec](windows-hardening/lateral-movement/scmexec.md)
   - [WinRM](windows-hardening/lateral-movement/winrm.md)
   - [WmiExec](windows-hardening/lateral-movement/wmiexec.md)
-- [Pivoting to the Cloud$$external:https://cloud.hacktricks.wiki/en/pentesting-cloud/azure-security/az-lateral-movement-cloud-on-prem/index.html$$]()
-- [Stealing Windows Credentials](windows-hardening/stealing-credentials/README.md)
+- [Pivoting to the Cloud]]
+- [[external:http://hacking-printers.net/wiki/index.php/Main_Page|Stealing Windows Credentials](windows-hardening/stealing-credentials/README.md)
   - [Windows Credentials Protections](windows-hardening/stealing-credentials/credentials-protections.md)
   - [Mimikatz](windows-hardening/stealing-credentials/credentials-mimikatz.md)
   - [WTS Impersonator](windows-hardening/stealing-credentials/wts-impersonator.md)
@@ -390,8 +390,8 @@
 # 👽 Network Services Pentesting
 
 - [Pentesting JDWP - Java Debug Wire Protocol](network-services-pentesting/pentesting-jdwp-java-debug-wire-protocol.md)
-- [Pentesting Printers$$external:http://hacking-printers.net/wiki/index.php/Main_Page$$]()
-- [Pentesting SAP](network-services-pentesting/pentesting-sap.md)
+- [Pentesting Printers]]
+- [[external:network-services-pentesting/pentesting-web/special-http-headers.md|Pentesting SAP](network-services-pentesting/pentesting-sap.md)
 - [Pentesting VoIP](network-services-pentesting/pentesting-voip/README.md)
   - [Basic VoIP Protocols](network-services-pentesting/pentesting-voip/basic-voip-protocols/README.md)
     - [SIP (Session Initiation Protocol)](network-services-pentesting/pentesting-voip/basic-voip-protocols/sip-session-initiation-protocol.md)
@@ -471,8 +471,8 @@
   - [Python](network-services-pentesting/pentesting-web/python.md)
   - [Rocket Chat](network-services-pentesting/pentesting-web/rocket-chat.md)
   - [Ruby Tricks](network-services-pentesting/pentesting-web/ruby-tricks.md)
-  - [Special HTTP headers$$external:network-services-pentesting/pentesting-web/special-http-headers.md$$]()
-  - [Source code Review / SAST Tools](network-services-pentesting/pentesting-web/code-review-tools.md)
+  - [Special HTTP headers]]
+  - [[hacktricks-cloud/pentesting-cloud/kubernetes-security/README.md|Source code Review / SAST Tools](network-services-pentesting/pentesting-web/code-review-tools.md)
   - [Special Http Headers](network-services-pentesting/pentesting-web/special-http-headers.md)
   - [Spring Actuators](network-services-pentesting/pentesting-web/spring-actuators.md)
   - [Symfony](network-services-pentesting/pentesting-web/symphony.md)
@@ -742,13 +742,13 @@
 
 # ⛈️ Cloud Security
 
-- [Pentesting Kubernetes$$external:https://cloud.hacktricks.wiki/en/pentesting-cloud/kubernetes-security/index.html$$]()
-- [Pentesting Cloud (AWS, GCP, Az...)$$external:https://cloud.hacktricks.wiki/en/pentesting-cloud/pentesting-cloud-methodology.html$$]()
-- [Pentesting CI/CD (Github, Jenkins, Terraform...)$$external:https://cloud.hacktricks.wiki/en/pentesting-ci-cd/pentesting-ci-cd-methodology.html$$]()
+- [Pentesting Kubernetes]]
+- [[hacktricks-cloud/pentesting-cloud/pentesting-cloud-methodology.md|Pentesting Cloud (AWS, GCP, Az...)]]
+- [[hacktricks-cloud/pentesting-ci-cd/pentesting-ci-cd-methodology.md|Pentesting CI/CD (Github, Jenkins, Terraform...)]]
 
 # 😎 Hardware/Physical Access
 
-- [Physical Attacks](hardware-physical-access/physical-attacks.md)
+- [[external:todo/interesting-http.md|Physical Attacks](hardware-physical-access/physical-attacks.md)
 - [Escaping from KIOSKs](hardware-physical-access/escaping-from-gui-applications.md)
 - [Firmware Analysis](hardware-physical-access/firmware-analysis/README.md)
   - [Bootloader testing](hardware-physical-access/firmware-analysis/bootloader-testing.md)
@@ -924,7 +924,7 @@
 - [Test LLMs](todo/test-llms.md)
 - [Burp Suite](todo/burp-suite.md)
 - [Other Web Tricks](todo/other-web-tricks.md)
-- [Interesting HTTP$$external:todo/interesting-http.md$$]()
+- [Interesting HTTP]]
 - [Android Forensics](todo/android-forensics.md)
 - [Online Platforms with API](todo/online-platforms-with-api.md)
 - [Stealing Sensitive Information Disclosure from a Web](todo/stealing-sensitive-information-disclosure-from-a-web.md)

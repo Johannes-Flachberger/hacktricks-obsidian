@@ -2,13 +2,13 @@
 
 # 👽 Welcome!
 
-- [HackTricks Cloud](README.md)
-- [About the Author$$external:https://book.hacktricks.wiki/en/welcome/about-the-author.html$$]()
-- [HackTricks Values & faq$$external:https://book.hacktricks.wiki/en/welcome/hacktricks-values-and-faq.html$$]()
+- [[external:https://book.hacktricks.wiki/en/welcome/about-the-author.md|HackTricks Cloud](README.md)
+- [About the Author]]
+- [[external:https://book.hacktricks.wiki/en/welcome/hacktricks-values-and-faq.md|HackTricks Values & faq]]
 
 # 🏭 Pentesting CI/CD
 
-- [Pentesting CI/CD Methodology](pentesting-ci-cd/pentesting-ci-cd-methodology.md)
+- [[external:https://book.hacktricks.wiki/en/generic-methodologies-and-resources/pentesting-network/README.md|Pentesting CI/CD Methodology](pentesting-ci-cd/pentesting-ci-cd-methodology.md)
 - [Gitblit Security](pentesting-ci-cd/gitblit-security/README.md)
   - [Ssh Auth Bypass](pentesting-ci-cd/gitblit-security/gitblit-embedded-ssh-auth-bypass-cve-2024-28080.md)
 - [Github Security](pentesting-ci-cd/github-security/README.md)
@@ -537,5 +537,5 @@
 
 # 🛫 Pentesting Network Services
 
-- [HackTricks Pentesting Network$$external:https://book.hacktricks.wiki/en/generic-methodologies-and-resources/pentesting-network/index.html$$]()
-- [HackTricks Pentesting Services$$external:https://book.hacktricks.wiki/en/network-services-pentesting/pentesting-ssh.html$$]()
+- [HackTricks Pentesting Network]]
+- [[external:https://book.hacktricks.wiki/en/network-services-pentesting/pentesting-ssh.md|HackTricks Pentesting Services]]
