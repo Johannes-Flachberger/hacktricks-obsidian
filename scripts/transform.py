@@ -14,9 +14,7 @@ def transform_external_links(match):
     label = match.group(1)  # Link text
     path = match.group(2)  # URL
     path = path.replace("external:https://cloud.hacktricks.wiki/en", "hacktricks-cloud")
-    path = path.replace(
-        "external:external:https://book.hacktricks.wiki/en", "hacktricks"
-    )
+    path = path.replace("external:https://book.hacktricks.wiki/en", "hacktricks")
     path = path.replace("index.html", "README.md")
     path = path.replace(".html", ".md")
     return f"[[{path}|{label}]]"
