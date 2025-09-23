@@ -3,7 +3,7 @@ Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
 Copyright © Carlos Polop 2021. 
 Except where otherwise specified (external information copied into the project belongs to the original authors).
 
-This repository is a fork of HackTricks (https://github.com/carlospolop/hacktricks).
+This repository uses contents of [HackTricks](https://github.com/carlospolop/hacktricks) and [HackTricks Cloud](https://github.com/HackTricks-wiki/hacktricks-cloud) by Carlos Polop.  
 The original work by Carlos Polop is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License.
 
 You are free to:
