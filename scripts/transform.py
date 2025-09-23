@@ -6,7 +6,7 @@ from html_to_markdown import convert_to_markdown
 BASE_DIR = "./src"
 
 
-external_link_pattern = r"\[([^$]+)\$\$([^$]+)\$\$\]\(\)"
+external_link_pattern = r"\[(.+)\$\$([^$]+)\$\$\]\(\)"
 
 
 def transform_external_links(match):
