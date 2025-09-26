@@ -167,7 +167,7 @@ Full token privileges cheatsheet at [https://github.com/gtworek/Priv2Admin](http
                                                                       |
 | **`SeCreateToken`**        | _**Admin**_ | 3rd party tool          | Create arbitrary token including local admin rights with `NtCreateToken`.                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                                                                                |
 | **`SeDebug`**              | _**Admin**_ | **PowerShell**          | Duplicate the `lsass.exe` token.                                                                                                                                                                                                                                                                                                                   | Script to be found at [FuzzySecurity](https://github.com/FuzzySecurity/PowerShell-Suite/blob/master/Conjure-LSASS.ps1)                                                                                                                                                                                                         |
-| **`SeLoadDriver`**         | _**Admin**_ | 3rd party tool          | 1\. Load buggy kernel driver such as `szkg64\.sys`  
+| **`SeLoadDriver`**         | _**Admin**_ | 3rd party tool          | 1\. Load buggy kernel driver such as `szkg64.sys`  
 2\. Exploit the driver vulnerability  
   
 Alternatively, the privilege may be used to unload security\-related drivers with `ftlMC` builtin command. i.e.: `fltMC sysmondrv`
@@ -187,8 +187,8 @@ Alternatively, the privilege may be used to unload security\-related drivers wit
 Alternative method relies on replacing service binaries stored in "Program Files" using the same privilege
 
                                                                                                                                                             |
-| **`SeTakeOwnership`**      | _**Admin**_ | _**Built-in commands**_ | 1\. `takeown.exe /f "%windir%\\system32"`  
-2\. `icalcs.exe "%windir%\\system32" /grant "%username%":F`  
+| **`SeTakeOwnership`**      | _**Admin**_ | _**Built-in commands**_ | 1\. `takeown.exe /f "%windir%\system32"`  
+2\. `icalcs.exe "%windir%\system32" /grant "%username%":F`  
 3\. Rename cmd.exe to utilman.exe  
 4\. Lock the console and press Win\+U
 
