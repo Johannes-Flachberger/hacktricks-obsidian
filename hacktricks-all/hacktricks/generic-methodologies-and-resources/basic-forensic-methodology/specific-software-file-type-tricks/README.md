@@ -22,3 +22,5 @@ Here you can find interesting tricks for specific file-types and/or software:
 
 [[zips-tricks.md]]
 
+[[mach-o-entitlements-and-ipsw-indexing.md]]
+

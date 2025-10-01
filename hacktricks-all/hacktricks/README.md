@@ -205,6 +205,18 @@ Stay informed and up to date with the latest in cybersecurity by visiting our [*
 
 ---
 
+### [K8Studio - The Smarter GUI to Manage Kubernetes.](https://k8studio.io/)
+
+![k8studio logo](images/k8studio.png)
+
+K8Studio IDE empowers DevOps, DevSecOps, and developers to manage, monitor, and secure Kubernetes clusters efficiently. Leverage our AI-driven insights, advanced security framework, and intuitive CloudMaps GUI to visualize your clusters, understand their state, and act with confidence.
+
+Moreover, K8Studio is **compatible with all major kubernetes distributions** (AWS, GCP, Azure, DO, Rancher, K3s, Openshift and more).
+
+[[https://k8studio.io/]]
+
+---
+
 ## License & Disclaimer
 
 Check them in:
