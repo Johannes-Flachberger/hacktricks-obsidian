@@ -207,7 +207,7 @@ Stay informed and up to date with the latest in cybersecurity by visiting our [*
 
 ### [K8Studio - The Smarter GUI to Manage Kubernetes.](https://k8studio.io/)
 
-![k8studio logo](images/k8studio.png)
+![k8studio logo](images/k8studio.jpg)
 
 K8Studio IDE empowers DevOps, DevSecOps, and developers to manage, monitor, and secure Kubernetes clusters efficiently. Leverage our AI-driven insights, advanced security framework, and intuitive CloudMaps GUI to visualize your clusters, understand their state, and act with confidence.
 
