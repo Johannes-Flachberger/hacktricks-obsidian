@@ -558,15 +558,54 @@ Besides classic push-bombing, operators simply **force a new MFA registration** 
 
 Monitor for AzureAD/AWS/Okta events where **`deleteMFA` + `addMFA`** occur **within minutes from the same IP**.
 
+
+
 ## Clipboard Hijacking / Pastejacking
 
 Attackers can silently copy malicious commands into the victim’s clipboard from a compromised or typosquatted web page and then trick the user to paste them inside **Win + R**, **Win + X** or a terminal window, executing arbitrary code without any download or attachment.
 
-[[clipboard-hijacking.md]]
+
+{{#ref}}
+clipboard-hijacking.md
+{{#endref}}
 
 ## Mobile Phishing & Malicious App Distribution (Android & iOS)
 
-[[mobile-phishing-malicious-apps.md]]
+
+{{#ref}}
+mobile-phishing-malicious-apps.md
+{{#endref}}
+
+### Mobile‑gated phishing to evade crawlers/sandboxes
+Operators increasingly gate their phishing flows behind a simple device check so desktop crawlers never reach the final pages. A common pattern is a small script that tests for a touch-capable DOM and posts the result to a server endpoint; non‑mobile clients receive HTTP 500 (or a blank page), while mobile users are served the full flow.
+
+Minimal client snippet (typical logic):
+
+```html
+
+```
+
+`detect_device.js` logic (simplified):
+
+```javascript
+const isMobile = ('ontouchstart' in document.documentElement);
+fetch('/detect', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({is_mobile:isMobile})})
+  .then(()=>location.reload());
+```
+
+Server behaviour often observed:
+- Sets a session cookie during the first load.
+- Accepts `POST /detect {"is_mobile":true|false}`.
+- Returns 500 (or placeholder) to subsequent GETs when `is_mobile=false`; serves phishing only if `true`.
+
+Hunting and detection heuristics:
+- urlscan query: `filename:"detect_device.js" AND page.status:500`
+- Web telemetry: sequence of `GET /static/detect_device.js` → `POST /detect` → HTTP 500 for non‑mobile; legitimate mobile victim paths return 200 with follow‑on HTML/JS.
+- Block or scrutinize pages that condition content exclusively on `ontouchstart` or similar device checks.
+
+Defence tips:
+- Execute crawlers with mobile‑like fingerprints and JS enabled to reveal gated content.
+- Alert on suspicious 500 responses following `POST /detect` on newly registered domains.
 
 ## References
 
@@ -575,4 +614,5 @@ Attackers can silently copy malicious commands into the victim’s clipboard fro
 - [https://darkbyte.net/robando-sesiones-y-bypasseando-2fa-con-evilnovnc/](https://darkbyte.net/robando-sesiones-y-bypasseando-2fa-con-evilnovnc/)
 - [https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy](https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy)
 - [2025 Unit 42 Global Incident Response Report – Social Engineering Edition](https://unit42.paloaltonetworks.com/2025-unit-42-global-incident-response-report-social-engineering-edition/)
+- [Silent Smishing – mobile-gated phishing infra and heuristics (Sekoia.io)](https://blog.sekoia.io/silent-smishing-the-hidden-abuse-of-cellular-router-apis/)
 
