@@ -182,7 +182,6 @@ For more detailed information, consult the official [documentation](https://docs
 | Windows Server 2003 RTM | Windows Server 2003 SP1+ | Windows Server 2012,  
 Windows Server 2008 R2,  
 Windows Server 2008
-
  | Windows Server 2016          |
 | ----------------------- | ------------------------ | ----------------------------------------------------------------------------- | ---------------------------- |
 | Account Operators       | Account Operators        | Account Operators                                                             | Account Operators            |

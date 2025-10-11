@@ -120,11 +120,11 @@ One potential loophole is that if a file is specified in **`rootless.conf` but d
 > [!CAUTION]
 > The entitlement **`com.apple.rootless.install.heritable`** allows to bypass SIP
 
-#### [CVE-2019-8561](https://objective-see.org/blog/blog_0x42.html) 
+#### [CVE-2019-8561](https://objective-see.org/blog/blog_0x42.html) [](#cve)
 
 It was discovered that it was possible to **swap the installer package after the system verified its code** signature and then, the system would install the malicious package instead of the original. As these actions were performed by **`system_installd`**, it would allow to bypass SIP.
 
-#### [CVE-2020–9854](https://objective-see.org/blog/blog_0x4D.html) 
+#### [CVE-2020–9854](https://objective-see.org/blog/blog_0x4D.html) [](#cve-unauthd-chain)
 
 If a package was installed from a mounted image or external drive the **installer** would **execute** the binary from **that file system** (instead from a SIP protected location), making **`system_installd`** execute an arbitrary binary.
 
@@ -186,7 +186,7 @@ Moreover, within the `InstallESD.dmg`, there's a `BaseSystem.dmg`, which serves 
 
 In this talk from [**DEF CON 31**](https://www.youtube.com/watch?v=zxZesAN-TEk), it's shown how **`systemmigrationd`** (which can bypass SIP) executes a **bash** and a **perl** script, which can be abused via env variables **`BASH_ENV`** and **`PERL5OPT`**.
 
-#### CVE-2023-42860 
+#### CVE-2023-42860 [](#cve-a-detailed-look)
 
 As [**detailed in this blog post**](https://blog.kandji.io/apple-mitigates-vulnerabilities-installer-scripts), a `postinstall` script from `InstallAssistant.pkg` packages allowed was executing:
 

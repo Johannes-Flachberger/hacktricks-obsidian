@@ -45,7 +45,7 @@ It turns out that Microsoft Defender's Sandbox computername is HAL9TH, so, you c
 
 ![](../images/image (209).png)
 
-*source: [https://youtu.be/StSLxFbVz0M?t\=1439](https://youtu.be/StSLxFbVz0M?t=1439)*
+*source: <https://youtu.be/StSLxFbVz0M?t=1439>*
 
 Some other really good tips from [@mgeeky](https://twitter.com/mariuszbit) for going against Sandboxes
 

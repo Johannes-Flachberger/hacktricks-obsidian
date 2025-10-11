@@ -2,9 +2,9 @@
 
 **This is a summary of the post [https://blog.xpnsec.com/macos-injection-via-third-party-frameworks/](https://blog.xpnsec.com/macos-injection-via-third-party-frameworks/). Check it for further details!**
 
-## .NET Core Debugging 
+## .NET Core Debugging [](#net-core-debugging)
 
-### **Establishing a Debugging Session** 
+### **Establishing a Debugging Session** [](#net-core-debugging)
 
 The handling of communication between debugger and debuggee in .NET is managed by [**dbgtransportsession.cpp**](https://github.com/dotnet/runtime/blob/0633ecfb79a3b2f1e4c098d1dd0166bc1ae41739/src/coreclr/debug/shared/dbgtransportsession.cpp). This component sets up two named pipes per .NET process as seen in [dbgtransportsession.cpp#L127](https://github.com/dotnet/runtime/blob/0633ecfb79a3b2f1e4c098d1dd0166bc1ae41739/src/coreclr/debug/shared/dbgtransportsession.cpp#L127), which are initiated via [twowaypipe.cpp#L27](https://github.com/dotnet/runtime/blob/0633ecfb79a3b2f1e4c098d1dd0166bc1ae41739/src/coreclr/debug/debug-pal/unix/twowaypipe.cpp#L27). These pipes are suffixed with **`-in`** and **`-out`**.
 
@@ -94,7 +94,7 @@ return true;
 
 The associated POC is available [here](https://gist.github.com/xpn/7c3040a7398808747e158a25745380a5).
 
-## .NET Core Code Execution 
+## .NET Core Code Execution [](#net-core-code-execution)
 
 To execute code, one needs to identify a memory region with rwx permissions, which can be done using vmmap -pages:
 

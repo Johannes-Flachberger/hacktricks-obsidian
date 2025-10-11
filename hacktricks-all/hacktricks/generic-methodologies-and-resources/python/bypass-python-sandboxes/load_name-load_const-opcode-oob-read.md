@@ -2,13 +2,13 @@
 
 **This info was taken** [**from this writeup**](https://blog.splitline.tw/hitcon-ctf-2022/)**.**
 
-### TL;DR 
+### TL;DR [](#tldr-2)
 
 We can use OOB read feature in LOAD_NAME / LOAD_CONST opcode to get some symbol in the memory. Which means using trick like `(a, b, c, ... hundreds of symbol ..., __getattribute__) if [] else [].__getattribute__(...)` to get a symbol (such as function name) you want.
 
 Then just craft your exploit.
 
-### Overview 
+### Overview [](#overview-1)
 
 The source code is pretty short, only contains 4 lines!
 
@@ -23,7 +23,7 @@ You can input arbitrary Python code, and it'll be compiled to a [Python code obj
 
 So in this way, all the expression contains consts (e.g. numbers, strings etc.) or names (e.g. variables, functions) might cause segmentation fault in the end.
 
-### Out of Bound Read 
+### Out of Bound Read [](#out-of-bound-read)
 
 How does the segfault happen?
 
@@ -55,7 +55,7 @@ case TARGET(LOAD_CONST): {
 
 In this way we can use the OOB feature to get a "name" from arbitrary memory offset. To make sure what name it has and what's it's offset, just keep trying `LOAD_NAME 0`, `LOAD_NAME 1` ... `LOAD_NAME 99` ... And you could find something in about oparg > 700. You can also try to use gdb to take a look at the memory layout of course, but I don't think it would be more easier?
 
-### Generating the Exploit 
+### Generating the Exploit [](#generating-the-exploit)
 
 Once we retrieve those useful offsets for names / consts, how _do_ we get a name / const from that offset and use it? Here is a trick for you:\
 Let's assume we can get a `__getattribute__` name from offset 5 (`LOAD_NAME 5`) with `co_names=()`, then just do the following stuff:
@@ -97,7 +97,7 @@ For generating numbers should be trivial:
 - 2: (not \[]) + (not \[])
 - ...
 
-### Exploit Script 
+### Exploit Script [](#exploit-script-1)
 
 I didn't use consts due to the length limit.
 

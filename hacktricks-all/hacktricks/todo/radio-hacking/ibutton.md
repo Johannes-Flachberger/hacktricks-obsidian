@@ -6,7 +6,7 @@ iButton is a generic name for an electronic identification key packed in a **coi
 
 ![](../../images/image (915).png)
 
-### What is iButton? 
+### What is iButton? [](#what-is-ibutton)
 
 Usually, iButton implies the physical form of the key and reader - a round coin with two contacts. For the frame surrounding it, there are lots of variations from the most common plastic holder with a hole to rings, pendants, etc.
 
@@ -16,7 +16,7 @@ When the key reaches the reader, the **contacts come to touch** and the key is p
 
 ![](../../images/image (290).png)
 
-### **1-Wire protocol** 
+### **1-Wire protocol** [](#id-1-wire-protocol)
 
 Dallas keys exchange data using the 1-wire protocol. With only one contact for data transfer (!!) in both directions, from master to slave and vice versa. The 1-wire protocol works according to the Master-Slave model. In this topology, the Master always initiates communication and the Slave follows its instructions.
 

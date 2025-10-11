@@ -163,7 +163,6 @@ Full token privileges cheatsheet at [https://github.com/gtworek/Priv2Admin](http
 \- `SeBackupPrivilege` (and robocopy) is not helpful when it comes to open files.  
   
 \- Robocopy requires both SeBackup and SeRestore to work with /b parameter.
-
                                                                       |
 | **`SeCreateToken`**        | _**Admin**_ | 3rd party tool          | Create arbitrary token including local admin rights with `NtCreateToken`.                                                                                                                                                                                                                                                                          |                                                                                                                                                                                                                                                                                                                                |
 | **`SeDebug`**              | _**Admin**_ | **PowerShell**          | Duplicate the `lsass.exe` token.                                                                                                                                                                                                                                                                                                                   | Script to be found at [FuzzySecurity](https://github.com/FuzzySecurity/PowerShell-Suite/blob/master/Conjure-LSASS.ps1)                                                                                                                                                                                                         |
@@ -171,36 +170,26 @@ Full token privileges cheatsheet at [https://github.com/gtworek/Priv2Admin](http
 2\. Exploit the driver vulnerability  
   
 Alternatively, the privilege may be used to unload security\-related drivers with `ftlMC` builtin command. i.e.: `fltMC sysmondrv`
-
                                                                            | 1\. The `szkg64` vulnerability is listed as [CVE\-2018\-15732](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-15732)  
 2\. The `szkg64` [exploit code](https://www.greyhathacker.net/?p=1025) was created by [Parvez Anwar](https://twitter.com/parvezghh)
-
  |
 | **`SeRestore`**            | _**Admin**_ | **PowerShell**          | 1\. Launch PowerShell/ISE with the SeRestore privilege present.  
 2\. Enable the privilege with [Enable\-SeRestorePrivilege](https://github.com/gtworek/PSBits/blob/master/Misc/EnableSeRestorePrivilege.ps1)).  
 3\. Rename utilman.exe to utilman.old  
 4\. Rename cmd.exe to utilman.exe  
 5\. Lock the console and press Win\+U
-
  | Attack may be detected by some AV software.
-
 Alternative method relies on replacing service binaries stored in "Program Files" using the same privilege
-
                                                                                                                                                             |
 | **`SeTakeOwnership`**      | _**Admin**_ | _**Built-in commands**_ | 1\. `takeown.exe /f "%windir%\system32"`  
 2\. `icalcs.exe "%windir%\system32" /grant "%username%":F`  
 3\. Rename cmd.exe to utilman.exe  
 4\. Lock the console and press Win\+U
-
                                                                                                                                        | Attack may be detected by some AV software.
-
 Alternative method relies on replacing service binaries stored in "Program Files" using the same privilege.
-
                                                                                                                                                            |
 | **`SeTcb`**                | _**Admin**_ | 3rd party tool          | Manipulate tokens to have local admin rights included. May require SeImpersonate.
-
 To be verified.
-
                                                                                                                                                                                                                                      |                                                                                                                                                                                                                                                                                                                                |
 
 ## Reference

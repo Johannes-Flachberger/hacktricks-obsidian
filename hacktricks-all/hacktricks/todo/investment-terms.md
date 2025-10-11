@@ -21,7 +21,7 @@ Although in exchanges this is usually used to try to make a profit.
 * Notice that a "Long position" means that someone if betting that a price is going to increase
 * While a "short position" means that someone if betting that a price is going to go down
 
-### Hedging With Futures 
+### Hedging With Futures [](#mntl-sc-block_7-0)
 
 If a fund manager is afraid that some stocks are going to go down he might take a short position over some assets like bitcoins or S\&P 500 futures contracts. This would be similar to buying or having some assets and create a contract of selling those at a future time at a bigger price.
 

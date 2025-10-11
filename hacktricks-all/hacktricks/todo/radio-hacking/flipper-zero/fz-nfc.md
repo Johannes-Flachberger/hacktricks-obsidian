@@ -1,12 +1,12 @@
 # FZ - NFC
 
-## Intro 
+## Intro [](#id-9wrzi)
 
 For info about RFID and NFC check the following page:
 
 [[../pentesting-rfid.md]]
 
-## Supported NFC cards 
+## Supported NFC cards [](#id-9wrzi)
 
 > [!CAUTION]
 > Apart from NFC cards Flipper Zero supports **other type of High-frequency cards** such as several **Mifare** Classic and Ultralight and **NTAG**.
@@ -18,9 +18,9 @@ New types of NFC cards will be added to the list of supported cards. Flipper Zer
 
 For **NFC cards type B, type F, and type V**, Flipper Zero is able to read an UID without saving it.
 
-### NFC cards type A 
+### NFC cards type A [](#uvusf)
 
-#### Bank card (EMV) 
+#### Bank card (EMV) [](#kzmrp)
 
 Flipper Zero can only read an UID, SAK, ATQA, and stored data on bank cards **without saving**.
 
@@ -28,7 +28,7 @@ Bank card reading screenFor bank cards, Flipper Zero can only read data **withou
 
 ![](https://cdn.flipperzero.one/Monosnap_Miro_2022-08-17_12-26-31.png?auto=format&ixlib=react-9.1.1&h=916&w=2662)
 
-#### Unknown cards 
+#### Unknown cards [](#id-37eo8)
 
 When Flipper Zero is **unable to determine NFC card's type**, then only an **UID, SAK, and ATQA** can be **read and saved**.
 
@@ -36,7 +36,7 @@ Unknown card reading screenFor unknown NFC cards, Flipper Zero can emulate only 
 
 ![](https://cdn.flipperzero.one/Monosnap_Miro_2022-08-17_12-27-53.png?auto=format&ixlib=react-9.1.1&h=932&w=2634)
 
-### NFC cards types B, F, and V 
+### NFC cards types B, F, and V [](#wyg51)
 
 For **NFC cards types B, F, and V**, Flipper Zero can only **read and display an UID** without saving it.
 
@@ -50,7 +50,7 @@ For an intro about NFC [**read this page**](../pentesting-rfid.md#high-frequency
 
 Flipper Zero can **read NFC cards**, however, it **doesn't understand all the protocols** that are based on ISO 14443. However, since **UID is a low-level attribute**, you might find yourself in a situation when **UID is already read, but the high-level data transfer protocol is still unknown**. You can read, emulate and manually input UID using Flipper for the primitive readers that use UID for authorization.
 
-#### Reading the UID VS Reading the Data Inside 
+#### Reading the UID VS Reading the Data Inside [](#reading-the-uid-vs-reading-the-data-inside)
 
 ![](../../../images/image (217).png)
 
@@ -63,7 +63,7 @@ In Flipper, reading 13.56 MHz tags can be divided into two parts:
 
 In case Flipper Zero isn't capable of finding the type of card from the low level data, in `Extra Actions` you can select `Read Specific Card Type` and **manually** **indicate the type of card you would like to read**.
 
-#### EMV Bank Cards (PayPass, payWave, Apple Pay, Google Pay) 
+#### EMV Bank Cards (PayPass, payWave, Apple Pay, Google Pay) [](#emv-bank-cards-paypass-paywave-apple-pay-google-pay)
 
 Apart from simply reading the UID, you can extract a lot more data from a bank card. It's possible to **get the full card number** (the 16 digits on the front of the card), **validity date**, and in some cases even the **owner's name** along with a list of the **most recent transactions**.\
 However, you **can't read the CVV this way** (the 3 digits on the back of the card). Also **bank cards are protected from replay attacks**, so copying it with Flipper and then trying to emulate it to pay for something won't work.

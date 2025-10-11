@@ -193,7 +193,7 @@ Set-DomainObjectOwner -Identity <TargetUser> -OwnerIdentity <You>
 
 The DCSync attack leverages specific replication permissions on the domain to mimic a Domain Controller and synchronize data, including user credentials. This powerful technique requires permissions like `DS-Replication-Get-Changes`, allowing attackers to extract sensitive information from the AD environment without direct access to a Domain Controller. [**Learn more about the DCSync attack here.**](../dcsync.md)
 
-## GPO Delegation 
+## GPO Delegation [](#gpo-delegation)
 
 ### GPO Delegation
 

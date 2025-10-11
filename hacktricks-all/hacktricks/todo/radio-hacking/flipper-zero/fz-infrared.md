@@ -1,12 +1,12 @@
 # FZ - Infrared
 
-## Intro 
+## Intro [](#ir-signal-receiver-in-flipper-zero)
 
 For more info about how Infrared works check:
 
 [[../infrared.md]]
 
-## IR Signal Receiver in Flipper Zero 
+## IR Signal Receiver in Flipper Zero [](#ir-signal-receiver-in-flipper-zero)
 
 Flipper uses a digital IR signal receiver TSOP, which **allows intercepting signals from IR remotes**. There are some **smartphones** like Xiaomi, which also have an IR port, but keep in mind that **most of them can only transmit** signals and are **unable to receive** them.
 

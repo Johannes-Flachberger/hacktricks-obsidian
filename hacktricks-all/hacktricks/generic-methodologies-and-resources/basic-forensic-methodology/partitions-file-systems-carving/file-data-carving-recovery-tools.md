@@ -17,7 +17,7 @@ autopsycli case --create MyCase --base /cases
 autopsycli ingest MyCase /evidence/disk01.E01 --threads 8
 ```
 
-### Binwalk 
+### Binwalk [](#binwalk)
 
 **Binwalk** is a tool for analyzing binary files to find embedded content. It's installable via `apt` and its source is on [GitHub](https://github.com/ReFirmLabs/binwalk).
 

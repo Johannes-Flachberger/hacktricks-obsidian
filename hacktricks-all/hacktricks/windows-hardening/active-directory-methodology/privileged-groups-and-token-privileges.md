@@ -305,7 +305,7 @@ This group has permissions to perform various configurations on Domain Controlle
 Get-NetGroupMember -Identity "Server Operators" -Recurse
 ```
 
-## References 
+## References [](#references)
 
 - [https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges](https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/privileged-accounts-and-token-privileges)
 - [https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/](https://www.tarlogic.com/en/blog/abusing-seloaddriverprivilege-for-privilege-escalation/)

@@ -260,8 +260,16 @@ IGNORECASE\
 DOTALL --> Allow dot to match newline\
 MULTILINE --> Allow ^ and $ to match in different lines
 
-re.findall("<.\*>", "\**foo\\**and\*so on\\*") = \['\**foo\\**and\*so on\\*']\
-re.findall("<.\*?>", "\**foo\\**and\*so on\\*") = \['\**', '\\**', '\*', '\\*']
+re.findall("<.\*>", "\**foo\\**
+and\*so on\\*
+") = \['\**foo\\**
+and\*so on\\*
+']\
+re.findall("<.\*?>", "\**foo\\**
+and\*so on\\*
+") = \['\**', '\\**
+', '\*', '\\*
+']
 
 IterTools\
 **product**\

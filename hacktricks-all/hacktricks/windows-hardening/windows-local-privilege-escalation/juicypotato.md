@@ -4,7 +4,7 @@
 
 [[roguepotato-and-printspoofer.md]]
 
-## Juicy Potato (abusing the golden privileges) 
+## Juicy Potato (abusing the golden privileges) [](#juicy-potato-abusing-the-golden-privileges)
 
 _A sugared version of_ [_RottenPotatoNG_](https://github.com/breenmachine/RottenPotatoNG)_, with a bit of juice, i.e. **another Local Privilege Escalation tool, from a Windows Service Accounts to NT AUTHORITY\SYSTEM**_
 
@@ -15,7 +15,7 @@ _A sugared version of_ [_RottenPotatoNG_](https://github.com/breenmachine/Rotten
 - Works reliably up to Windows 10 1803 and Windows Server 2016 when the current context has SeImpersonatePrivilege or SeAssignPrimaryTokenPrivilege.
 - Broken by Microsoft hardening in Windows 10 1809 / Windows Server 2019 and later. Prefer the alternatives linked above for those builds.
 
-### Summary 
+### Summary [](#summary)
 
 [**From juicy-potato Readme**](https://github.com/ohpe/juicy-potato/blob/master/README.md)**:**
 
@@ -33,7 +33,7 @@ We discovered that, other than `BITS` there are a several COM servers we can abu
 
 After some testing we obtained and tested an extensive list of [interesting CLSID’s](http://ohpe.it/juicy-potato/CLSID/) on several Windows versions.
 
-### Juicy details 
+### Juicy details [](#juicy-details)
 
 JuicyPotato allows you to:
 
@@ -50,7 +50,7 @@ JuicyPotato allows you to:
 - **RPC Server port** _useful if you want to authenticate to an external server and firewall is blocking port `135`…_
 - **TEST mode** _mainly for testing purposes, i.e. testing CLSIDs. It creates the DCOM and prints the user of token. See_ [_here for testing_](http://ohpe.it/juicy-potato/Test/)
 
-### Usage 
+### Usage [](#usage)
 
 ```
 T:\>JuicyPotato.exe
@@ -69,7 +69,7 @@ Optional args:
 -n <port>: RPC server listen port (default 135)
 ```
 
-### Final thoughts 
+### Final thoughts [](#final-thoughts)
 
 [**From juicy-potato Readme**](https://github.com/ohpe/juicy-potato/blob/master/README.md#final-thoughts)**:**
 

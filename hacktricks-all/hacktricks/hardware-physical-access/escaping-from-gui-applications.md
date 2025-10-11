@@ -83,7 +83,6 @@ Registry editor: [https://sourceforge.net/projects/uberregedit/](https://sourcef
 | C:\windows\\        | C:\windows/       | %WINDIR%           | %TMP%               |
 | %TEMP%              | %SYSTEMDRIVE%     | %SYSTEMROOT%       | %APPDATA%           |
 | %HOMEDRIVE%         | %HOMESHARE        |                    |   
-
          |
 
 ### ShortCuts

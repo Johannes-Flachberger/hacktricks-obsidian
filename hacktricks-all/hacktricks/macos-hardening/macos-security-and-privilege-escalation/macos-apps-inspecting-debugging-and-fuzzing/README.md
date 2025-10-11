@@ -148,9 +148,8 @@ x64:
 | **4th argument**  | **rcx**                                                         | **2nd argument to the method**                         |
 | **5th argument**  | **r8**                                                          | **3rd argument to the method**                         |
 | **6th argument**  | **r9**                                                          | **4th argument to the method**                         |
-| **7th+ argument** | **rsp\+** 
+| **7th+ argument** | **rsp\+**  
 **(on the stack)**
-
  | **5th+ argument to the method**                        |
 
 ### Dump ObjectiveC metadata
@@ -451,7 +450,7 @@ fs_usage -w -f network curl #This tracks network actions
 [**Taskexplorer**](https://objective-see.com/products/taskexplorer.html) is useful to see the **libraries** used by a binary, the **files** it's using and the **network** connections.\
 It also checks the binary processes against **virustotal** and show information about the binary.
 
-## PT_DENY_ATTACH 
+## PT_DENY_ATTACH [](#page-title)
 
 In [**this blog post**](https://knight.sc/debugging/2019/06/03/debugging-apple-binaries-that-use-pt-deny-attach.html) you can find an example about how to **debug a running daemon** that used **`PT_DENY_ATTACH`** to prevent debugging even if SIP was disabled.
 
@@ -479,24 +478,13 @@ settings set target.x86-disassembly-flavor intel
 | --- | --- |
 | **(lldb) Command** | **Description** |
 | **run (r)** | Starting execution, which will continue unabated until a breakpoint is hit or the process terminates. |
-| **process launch \-\-stop\-at\-entry** | Strt execution stopping at the entry point |
+| **process launch --stop-at-entry** | Strt execution stopping at the entry point |
 | **continue (c)** | Continue execution of the debugged process. |
 | **nexti (n / ni)** | Execute the next instruction. This command will skip over function calls. |
 | **stepi (s / si)** | Execute the next instruction. Unlike the nexti command, this command will step into function calls. |
 | **finish (f)** | Execute the rest of the instructions in the current function (“frame”) return and halt. |
-| **control \+ c** | Pause execution. If the process has been run (r) or continued (c), this will cause the process to halt ...wherever it is currently executing. |
-| **breakpoint (b)** | `b main` \#Any func called main`b main` \#Main func of the bin`b set -n main --shlib`  \#Main func of the indicated bin`breakpoint set -r '\[NSFileManager .*\]$'` \#Any NSFileManager method`breakpoint set -r '\[NSFileManager contentsOfDirectoryAtPath:.*\]$'``break set -r . -s libobjc.A.dylib` \# Break in all functions of that library`b -a 0x0000000100004bd9``br l` \#Breakpoint list`br e/dis`  \#Enable/Disable breakpointbreakpoint delete |
-| **help** | help breakpoint \#Get help of breakpoint commandhelp memory write \#Get help to write into the memory |
-| **reg** | reg readreg read $raxreg read $rax \-\-format \<[format](https://lldb.llvm.org/use/variable.html#type-format)\>reg write $rip 0x100035cc0 |
-| **x/s** | Display the memory as a null\-terminated string. |
-| **x/i** | Display the memory as assembly instruction. |
-| **x/b** | Display the memory as byte. |
-| **print object (po)** | This will print the object referenced by the parampo $raw`{``dnsChanger = {``"affiliate" = "";``"blacklist_dns" = ();`Note that most of Apple’s Objective\-C APIs or methods return objects, and thus should be displayed via the “print object” (po) command. If po doesn't produce a meaningful output use `x/b` |
-| **memory** | memory read 0x000\.... memory read $x0\+0xf2a memory write 0x100600000 \-s 4 0x41414141 \#Write AAAA in that address memory write \-f s $rip\+0x11f\+7 "AAAA" \#Write AAAA in the addr |
-| **disassembly** | dis \#Disas current functiondis \-n \#Disas funcdis \-n \-b \#Disas func dis \-c 6 \#Disas 6 lines dis \-c 0x100003764 \-e 0x100003768 \# From one add until the other dis \-p \-c 4 \# Start in current address disassembling |
-| **parray** | parray 3 (char \*\*)$x1 \# Check array of 3 components in x1 reg |
-| **image dump sections** | Print map of the current process memory |
-| **image dump symtab** | `image dump symtab CoreNLP` \#Get the address of all the symbols from CoreNLP |
+| **control + c** | Pause execution. If the process has been run (r) or continued (c), this will cause the process to halt ...wherever it is currently executing. |
+| **breakpoint (b)** | `b main` #Any func called main<br>`b main #Main func of the bin<br>b set -n main --shlib  #Main func of the indicated bin<br>breakpoint set -r '\[NSFileManager .*\]$' #Any NSFileManager method<br>breakpoint set -r '\[NSFileManager contentsOfDirectoryAtPath:.*\]$'<br>break set -r . -s libobjc.A.dylib # Break in all functions of that library<br>b -a 0x0000000100004bd9<br>br l #Breakpoint list<br>br e/dis  #Enable/Disable breakpoint<br>breakpoint delete ` |
 
 > [!TIP]
 > When calling the **`objc_sendMsg`** function, the **rsi** register holds the **name of the method** as a null-terminated (“C”) string. To print the name via lldb do:

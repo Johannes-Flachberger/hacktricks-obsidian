@@ -46,7 +46,7 @@ Two different methods this might be exploitable:
    - Exploit sends **service** B a message passing **that reply port**.
    - When service **B replies**, it s**ends the message to service A**, **while** the **exploit** sends a different **message to service A** trying to **reach a privileged functionality** and expecting that the reply from service B will overwrite the Audit token in the perfect moment (Race Condition).
 
-## Variant 1: calling xpc_connection_get_audit_token outside of an event handler 
+## Variant 1: calling xpc_connection_get_audit_token outside of an event handler [](#variant-1-calling-xpc_connection_get_audit_token-outside-of-an-event-handler)
 
 Scenario:
 
@@ -108,7 +108,7 @@ Below is a visual representation of the described attack scenario:
 - **Analysis Tooling**: Tools like IDA/Ghidra were used for examining reachable mach services, but the process was time-consuming, complicated by calls involving the dyld shared cache.
 - **Scripting Limitations**: Attempts to script the analysis for calls to `xpc_connection_get_audit_token` from `dispatch_async` blocks were hindered by complexities in parsing blocks and interactions with the dyld shared cache.
 
-## The fix 
+## The fix [](#the-fix)
 
 - **Reported Issues**: A report was submitted to Apple detailing the general and specific issues found within `smd`.
 - **Apple's Response**: Apple addressed the issue in `smd` by substituting `xpc_connection_get_audit_token` with `xpc_dictionary_get_audit_token`.

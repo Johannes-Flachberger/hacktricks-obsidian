@@ -903,7 +903,8 @@ It's possible to **add an application** just with:
 
 ```bash
 # Add /System/Applications/Books.app
-defaults write com.apple.dock persistent-apps -array-add 'tile\-datafile\-data\_CFURLString/System/Applications/Books.app\_CFURLStringType0</dict></dict>'
+defaults write com.apple.dock persistent-apps -array-add 'tile\-datafile\-data\_CFURLString/System/Applications/Books.app\_CFURLStringType0
+</dict></dict>'
 
 # Restart Dock
 killall Dock
@@ -937,21 +938,37 @@ cat << EOF > /tmp/Google\ Chrome.app/Contents/Info.plist
 <plist version="1.0">
 <dict>
     CFBundleExecutable
+
     Google Chrome
+
     CFBundleIdentifier
+
     com.google.Chrome
+
     CFBundleName
+
     Google Chrome
+
     CFBundleVersion
+
     1\.0
+
     CFBundleShortVersionString
+
     1\.0
+
     CFBundleInfoDictionaryVersion
+
     6\.0
+
     CFBundlePackageType
+
     APPL
+
     CFBundleIconFile
+
     app
+
 </dict>
 </plist>
 EOF
@@ -960,7 +977,8 @@ EOF
 cp /Applications/Google\ Chrome.app/Contents/Resources/app.icns /tmp/Google\ Chrome.app/Contents/Resources/app.icns
 
 # Add to Dock
-defaults write com.apple.dock persistent-apps -array-add 'tile\-datafile\-data\_CFURLString/tmp/Google Chrome.app\_CFURLStringType0</dict></dict>'
+defaults write com.apple.dock persistent-apps -array-add 'tile\-datafile\-data\_CFURLString/tmp/Google Chrome.app\_CFURLStringType0
+</dict></dict>'
 killall Dock
 ```
 
@@ -1421,10 +1439,14 @@ cat > /tmp/rule.plist <<EOF
 <plist version="1.0">
 <dict>
             class
+
             evaluate\-mechanisms
+
             mechanisms
+
             <array>
                 CustomAuth:login,privileged
+
             </array>
         </dict>
 </plist>
@@ -1566,12 +1588,18 @@ Ensure that both the rc script and the `StartupParameters.plist` file are correc
 <plist version="1.0">
 <dict>
     Description
+
         This is a description of this service
+
     OrderPreference
-        None <!--Other req services to execute before this -->
+
+        None
+ <!--Other req services to execute before this -->
     Provides
+
     <array>
-        superservicename <!--Name of the services provided by this file -->
+        superservicename
+ <!--Name of the services provided by this file -->
     </array>
 </dict>
 </plist>

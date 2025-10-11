@@ -76,37 +76,24 @@ Potato techniques overview:
 | Service Type                               | Service Silver Tickets                                                     |
 | ------------------------------------------ | -------------------------------------------------------------------------- |
 | WMI                                        | HOST
-
 RPCSS
-
                                                     |
 | PowerShell Remoting                        | HOST
-
 HTTP
-
 Depending on OS also:
-
 WSMAN
-
 RPCSS
-
  |
 | WinRM                                      | HOST
-
 HTTP
-
 In some occasions you can just ask for: WINRM
-
  |
 | Scheduled Tasks                            | HOST                                                                       |
 | Windows File Share, also psexec            | CIFS                                                                       |
 | LDAP operations, included DCSync           | LDAP                                                                       |
 | Windows Remote Server Administration Tools | RPCSS
-
 LDAP
-
 CIFS
-
                                          |
 | Golden Tickets                             | krbtgt                                                                     |
 

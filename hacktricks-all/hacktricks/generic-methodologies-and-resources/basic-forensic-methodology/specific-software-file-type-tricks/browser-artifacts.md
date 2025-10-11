@@ -1,6 +1,6 @@
 # Browser Artifacts
 
-## Browsers Artifacts 
+## Browsers Artifacts [](#id-3def)
 
 Browser artifacts include various types of data stored by web browsers, such as navigation history, bookmarks, and cache data. These artifacts are kept in specific folders within the operating system, differing in location and name across browsers, yet generally storing similar data types.
 

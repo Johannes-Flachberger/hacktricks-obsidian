@@ -24,7 +24,7 @@ It's possible to **put a window over the TCC prompt** to make the user **accept*
 
 ![](broken-reference)
 
-*[https://github.com/breakpointHQ/TCC\-ClickJacking/raw/main/resources/clickjacking.jpg](https://github.com/breakpointHQ/TCC-ClickJacking/raw/main/resources/clickjacking.jpg)*
+*<https://github.com/breakpointHQ/TCC-ClickJacking/raw/main/resources/clickjacking.jpg>*
 
 ### TCC Request by arbitrary name
 
@@ -112,7 +112,7 @@ do shell script "rm " & POSIX path of (copyFile as alias)
 
 ## By App behaviour
 
-### CVE-2020–9934 - TCC 
+### CVE-2020–9934 - TCC [](#c19b)
 
 The userland **tccd daemon** what using the **`HOME`** **env** variable to access the TCC users database from: **`$HOME/Library/Application Support/com.apple.TCC/TCC.db`**
 
@@ -159,7 +159,7 @@ The binary `/usr/libexec/lsd` with the library `libsecurity_translocate` had the
 
 It was possible to add the quarantine attribute to "Library", call the **`com.apple.security.translocation`** XPC service and then it would map Library to **`$TMPDIR/AppTranslocation/d/d/Library`** where all the documents inside Library could be **accessed**.
 
-### CVE-2023-38571 - Music & TV 
+### CVE-2023-38571 - Music & TV [](#cve-2023-38571-a-macos-tcc-bypass-in-music-and-tv)
 
 **`Music`** has an interesting feature: When it's running, it will **import** the files dropped to **`~/Music/Music/Media.localized/Automatically Add to Music.localized`** into the user's "media library". Moreover, it calls something like: **`rename(a, b);`** where `a` and `b` are:
 
@@ -234,7 +234,7 @@ Therefore, if the user manages to restart TCC with a $HOME env variable pointing
 > [!TIP]
 > Note that Apple uses the setting stored within the user's profile in the **`NFSHomeDirectory`** attribute for the **value of `$HOME`**, so if you compromise an application with permissions to modify this value (**`kTCCServiceSystemPolicySysAdminFiles`**), you can **weaponize** this option with a TCC bypass.
 
-### [CVE-2020–9934 - TCC](#c19b) 
+### [CVE-2020–9934 - TCC](#c19b) [](#c19b)
 
 ### [CVE-2020-27937 - Directory Utility](#cve-2020-27937-directory-utility-1)
 

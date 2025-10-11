@@ -1,12 +1,12 @@
 # Infrared
 
-## How the Infrared Works 
+## How the Infrared Works [](#how-the-infrared-port-works)
 
 **Infrared light is invisible to humans**. IR wavelength is from **0.7 to 1000 microns**. Household remotes use an IR signal for data transmission and operate in the wavelength range of 0.75..1.4 microns. A microcontroller in the remote makes an infrared LED blink with a specific frequency, turning the digital signal into an IR signal.
 
 To receive IR signals a **photoreceiver** is used. It **converts IR light into voltage pulses**, which are already **digital signals**. Usually, there is a **dark light filter inside the receiver**, which lets **only the desired wavelength through** and cuts out noise.
 
-### Variety of IR Protocols 
+### Variety of IR Protocols [](#variety-of-ir-protocols)
 
 IR protocols differ in 3 factors:
 
@@ -14,7 +14,7 @@ IR protocols differ in 3 factors:
 - data structure
 - carrier frequency — often in range 36..38 kHz
 
-#### Bit encoding ways 
+#### Bit encoding ways [](#bit-encoding-ways)
 
 **1. Pulse Distance Encoding**
 
@@ -66,7 +66,7 @@ This will avoid that a machine set as 20ºC is increased to 21ºC with one remot
 
 ---
 
-## Attacks & Offensive Research 
+## Attacks & Offensive Research [](#attacks)
 
 You can attack Infrared with Flipper Zero:
 
@@ -92,7 +92,7 @@ Firmware 1.0 (September 2024) added **dozens of extra IR protocols and optional 
 
 ---
 
-## Tooling & Practical Examples 
+## Tooling & Practical Examples [](#tooling)
 
 ### Hardware
 
@@ -122,7 +122,7 @@ Firmware 1.0 (September 2024) added **dozens of extra IR protocols and optional 
 
 ---
 
-## Defensive Measures 
+## Defensive Measures [](#defense)
 
 * Disable or cover IR receivers on devices deployed in public spaces when not required.
 * Enforce *pairing* or cryptographic checks between smart-TVs and remotes; isolate privileged “service” codes.

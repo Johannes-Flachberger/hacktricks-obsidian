@@ -59,7 +59,7 @@ If a pre or post installation script is for example executing from **`/var/tmp/I
 
 ![https://www.youtube.com/watch?v=iASSG0_zobQ](../../../images/Pasted Graphic 5.png)
 
-*[https://www.youtube.com/watch?v\=kCXhIYtODBg](https://www.youtube.com/watch?v=kCXhIYtODBg)*
+*<https://www.youtube.com/watch?v=kCXhIYtODBg>*
 
 ### AuthorizationExecuteWithPrivileges
 

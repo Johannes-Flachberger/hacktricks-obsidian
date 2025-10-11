@@ -125,32 +125,43 @@ Just do **`launctl load you_bin.plist`**, with a plist like:
 <dict>
     <!-- Label for the job -->
     Label
+
     com.example.yourbinary
 
     <!-- The path to the executable -->
     Program
+
     /path/to/binary
 
     <!-- Arguments to pass to the executable (if any) -->
     ProgramArguments
+
     <array>
         arg1
+
         arg2
+
     </array>
 
     <!-- Run at load -->
     RunAtLoad
+
     
 
     <!-- Keep the job alive, restart if necessary -->
     KeepAlive
+
     
 
     <!-- Standard output and error paths (optional) -->
     StandardOutPath
+
     /tmp/YourBinary.stdout
+
     StandardErrorPath
+
     /tmp/YourBinary.stderr
+
 </dict>
 </plist>
 ```
@@ -226,10 +237,14 @@ Apple's apps **won’t generate prompts**. They contain **pre-granted rights** i
 codesign -dv --entitlements :- /System/Applications/Calendar.app
 [...]
 com.apple.private.tcc.allow
+
 <array>
     kTCCServiceReminders
+
     kTCCServiceCalendar
+
     kTCCServiceAddressBook
+
 </array>
 ```
 
@@ -571,16 +586,24 @@ AllowApplicationsList.plist:
 <plist version="1.0">
 <dict>
 	Services
+
 	<dict>
 		SystemPolicyAllFiles
+
 		<array>
 			<dict>
 				CodeRequirement
+
 				identifier "com.apple.Terminal" and anchor apple
+
 				IdentifierType
+
 				bundleID
+
 				Identifier
+
 				com.apple.Terminal
+
 			</dict>
 		</array>
 	</dict>

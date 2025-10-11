@@ -1,6 +1,6 @@
 # Shadow Credentials
 
-## Intro 
+## Intro [](#3f17)
 
 **Check the original post for [all the information about this technique](https://posts.specterops.io/shadow-credentials-abusing-key-trust-account-mapping-for-takeover-8ee1a53566ab).**
 

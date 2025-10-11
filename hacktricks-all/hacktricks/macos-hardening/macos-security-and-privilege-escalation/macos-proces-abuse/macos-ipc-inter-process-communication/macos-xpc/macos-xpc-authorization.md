@@ -184,9 +184,9 @@ There are different scopes to indicate who can access a right. Some of them are 
 | --- | --- | --- |
 | kAuthorizationRuleClassAllow | allow | Anyone |
 | kAuthorizationRuleClassDeny | deny | Nobody |
-| kAuthorizationRuleIsAdmin | is\-admin | Current user needs to be an admin (inside admin group) |
-| kAuthorizationRuleAuthenticateAsSessionUser | authenticate\-session\-owner | Ask user to authenticate. |
-| kAuthorizationRuleAuthenticateAsAdmin | authenticate\-admin | Ask user to authenticate. He needs to be an admin (inside admin group) |
+| kAuthorizationRuleIsAdmin | is-admin | Current user needs to be an admin (inside admin group) |
+| kAuthorizationRuleAuthenticateAsSessionUser | authenticate-session-owner | Ask user to authenticate. |
+| kAuthorizationRuleAuthenticateAsAdmin | authenticate-admin | Ask user to authenticate. He needs to be an admin (inside admin group) |
 | kAuthorizationRightRule | rule | Specify rules |
 | kAuthorizationComment | comment | Specify some extra comments on the right |
 

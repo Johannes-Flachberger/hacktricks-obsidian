@@ -1082,7 +1082,7 @@ gcc -framework Foundation -framework Appkit dylib_injector.m -o dylib_injector
 ./inject <pid-of-mysleep> </path/to/lib.dylib>
 ```
 
-### Thread Hijacking via Task port 
+### Thread Hijacking via Task port [](#step-1-thread-hijacking)
 
 In this technique a thread of the process is hijacked:
 

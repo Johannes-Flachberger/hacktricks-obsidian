@@ -349,8 +349,11 @@ The page [www.mail-tester.com](https://www.mail-tester.com) can indicate you if 
 Dear {{.FirstName}} {{.LastName}},
 
   
+
 Note: We require all user to login an a very suspicios page before the end of the week, thanks!  
+
   
+
 Regards,</span></p>
 
 WRITE HERE SOME SIGNATURE OF SOMEONE FROM THE COMPANY

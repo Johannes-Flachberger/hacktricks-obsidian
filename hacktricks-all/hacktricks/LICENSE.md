@@ -1,6 +1,9 @@
 
 
-[![Creative Commons License](https://licensebuttons.net/l/by-nc/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc/4.0/)<br>Copyright © Carlos Polop 2021. Except where otherwise specified (the external information copied into the book belongs to the original authors), the text on [HACK TRICKS](https://github.com/carlospolop/hacktricks) by Carlos Polop is licensed under the [Creative Commons Attribution\-NonCommercial 4\.0 International (CC BY\-NC 4\.0\)](https://creativecommons.org/licenses/by-nc/4.0/).
+[![Creative Commons License](https://licensebuttons.net/l/by-nc/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc/4.0/)
+<br>Copyright © Carlos Polop 2021. Except where otherwise specified (the external information copied into the book belongs to the original authors), the text on [HACK TRICKS](https://github.com/carlospolop/hacktricks)
+ by Carlos Polop is licensed under the [Creative Commons Attribution\-NonCommercial 4\.0 International (CC BY\-NC 4\.0\)](https://creativecommons.org/licenses/by-nc/4.0/)
+.
 
 License: Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)<br>
 Human Readable License: https://creativecommons.org/licenses/by-nc/4.0/<br>
