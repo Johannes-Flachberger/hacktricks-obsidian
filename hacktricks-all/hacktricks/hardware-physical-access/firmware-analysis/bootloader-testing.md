@@ -2,6 +2,10 @@
 
 The following steps are recommended for modifying device startup configurations and testing bootloaders such as U-Boot and UEFI-class loaders. Focus on getting early code execution, assessing signature/rollback protections, and abusing recovery or network-boot paths.
 
+Related: MediaTek secure-boot bypass via bl2_ext patching:
+
+[[android-mediatek-secure-boot-bl2_ext-bypass-el3.md]]
+
 ## U-Boot quick wins and environment abuse
 
 1. Access the interpreter shell
