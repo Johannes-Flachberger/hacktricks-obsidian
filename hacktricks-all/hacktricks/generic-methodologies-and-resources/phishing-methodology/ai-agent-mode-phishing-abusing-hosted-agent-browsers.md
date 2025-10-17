@@ -40,6 +40,10 @@ Notes:
 - General MFA phishing via reverse proxies (Evilginx, etc.) is still effective but requires inline MitM. Agent-mode abuse shifts the flow to a trusted assistant UI and a remote browser that many controls ignore.
 - Clipboard/pastejacking (ClickFix) and mobile phishing also deliver credential theft without obvious attachments or executables.
 
+See also – local AI CLI/MCP abuse and detection:
+
+[[ai-agent-abuse-local-ai-cli-tools-and-mcp.md]]
+
 ## References
 
 - [Double agents: How adversaries can abuse “agent mode” in commercial AI products (Red Canary)](https://redcanary.com/blog/threat-detection/ai-agent-mode/)
