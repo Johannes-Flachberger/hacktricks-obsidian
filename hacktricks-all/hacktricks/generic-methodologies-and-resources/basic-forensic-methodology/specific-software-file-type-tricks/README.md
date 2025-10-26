@@ -14,6 +14,8 @@ Here you can find interesting tricks for specific file-types and/or software:
 
 [[pdf-file-analysis.md]]
 
+[[svg-font-glyph-analysis-and-web-drm-deobfuscation.md]]
+
 [[structural-file-format-exploit-detection.md]]
 
 [[png-tricks.md]]

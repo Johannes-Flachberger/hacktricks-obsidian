@@ -54,6 +54,7 @@
 - [ ] [[windows-local-privilege-escalation/README.md#Modify Service Binary Path|Can you modify the binary that is executed by any service?]]
 - [ ] [[windows-local-privilege-escalation/README.md#Services Registry Modify Permissions|Can you modify the registry of any service?]]
 - [ ] [[windows-local-privilege-escalation/README.md#Unquoted Service Paths|Can you take advantage of any unquoted service binary path?]]
+- [ ] [Service Triggers: enumerate and trigger privileged services](windows-local-privilege-escalation/service-triggers.md)
 
 ### [[windows-local-privilege-escalation/README.md#Applications|Applications]]
 
