@@ -151,19 +151,6 @@ In addition to the above WebSec is also a **committed supporter of HackTricks.**
 
 ---
 
-### [Venacus](https://venacus.com/?utm_medium=link&utm_source=hacktricks&utm_campaign=spons)
-
-![venacus logo](images/venacus-logo.svg)
-
-[**Venacus**](https://venacus.com/?utm_medium=link&utm_source=hacktricks&utm_campaign=spons) is a data breach (leak) search engine. \
-We provide random string search (like google) over all types of data leaks big and small --not only the big ones-- over data from multiple sources. \
-People search, AI search, organization search, API (OpenAPI) access, theHarvester integration, all features a pentester needs.\
-**HackTricks continues to be a great learning platform for us all and we're proud to be sponsoring it!**
-
-[[https://venacus.com/?utm_medium=link&utm_source=hacktricks&utm_campaign=spons]]
-
----
-
 ### [CyberHelmets](https://cyberhelmets.com/courses/?ref=hacktricks)
 
 ![cyberhelmets logo](images/cyberhelmets-logo.png)
