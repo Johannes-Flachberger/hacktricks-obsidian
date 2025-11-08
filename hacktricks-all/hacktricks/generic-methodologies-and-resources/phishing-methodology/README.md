@@ -348,11 +348,7 @@ The page [www.mail-tester.com](https://www.mail-tester.com) can indicate you if 
 <body>
 Dear {{.FirstName}} {{.LastName}},
 
-  
-
-Note: We require all user to login an a very suspicios page before the end of the week, thanks!  
-
-  
+Note: We require all user to login an a very suspicios page before the end of the week, thanks!
 
 Regards,</span></p>
 
