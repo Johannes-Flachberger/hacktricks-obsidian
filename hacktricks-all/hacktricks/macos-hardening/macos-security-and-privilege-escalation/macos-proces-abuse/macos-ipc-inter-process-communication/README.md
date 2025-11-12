@@ -1127,7 +1127,7 @@ You can try it with:
 
 <details>
 
-****processor\_set\_tasks code****
+**processor\_set\_tasks code**
 
 ````c
 // Maincpart fo the code from https://newosxbook.com/articles/PST2.html
