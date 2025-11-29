@@ -408,7 +408,7 @@ Moreover, a subset of Kperfs functionality resides in `kpc`, which provides info
 [**SpriteTree**](https://themittenmac.com/tools/) is a tool to prints the relations between processes.\
 You need to monitor your mac with a command like **`sudo eslogger fork exec rename create > cap.json`** (the terminal launching this required FDA). And then you can load the json in this tool to view all the relations:
 
-![[../../../images/image (1182).png]]
+![](../../../images/image (1182).png)
 
 ### FileMonitor
 

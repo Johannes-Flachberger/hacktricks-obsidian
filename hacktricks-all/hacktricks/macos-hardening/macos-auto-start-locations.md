@@ -211,7 +211,7 @@ In **`~/Library/Preferences`** are store the preferences of the user in the Appl
 
 For example, the Terminal can execute a command in the Startup:
 
-![[../images/image (1148).png]]
+![](../images/image (1148).png)
 
 This config is reflected in the file **`~/Library/Preferences/com.apple.Terminal.plist`** like this:
 
@@ -498,7 +498,7 @@ The iTerm2 preferences located in **`~/Library/Preferences/com.googlecode.iterm2
 
 This setting can be configured in the iTerm2 settings:
 
-![[../images/image (37).png]]
+![](../images/image (37).png)
 
 And the command is reflected in the preferences:
 

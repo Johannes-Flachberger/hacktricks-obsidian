@@ -15,7 +15,7 @@
 > - **ORGANIZE** all the hacking techniques in the book so it's **MORE ACCESSIBLE**
 >  - The HackTricks team has dedicated thousands of hours for free **only to organize the content** so people can **learn faster**
 
-![[../images/hack tricks gif.gif]]
+![](../images/hack tricks gif.gif)
 
 ## HackTricks faq
 

@@ -89,7 +89,7 @@ dyldex_all [dyld_shared_cache_path] # Extract all
 > [!TIP]
 > Note that even if `dyld_shared_cache_util` tool doesn't work, you can pass the **shared dyld binary to Hopper** and Hopper will be able to identify all the libraries and let you **select which one** you want to investigate:
 
-![[../../../images/image (1152).png]]
+![](../../../images/image (1152).png)
 
 Some extractors won't work as dylibs are prelinked with hard coded addresses in therefore they might be jumping to unknown addresses
 

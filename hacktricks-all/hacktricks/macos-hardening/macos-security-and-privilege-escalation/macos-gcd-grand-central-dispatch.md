@@ -195,26 +195,26 @@ Currently Ghidra doesn't understand neither the ObjectiveC **`dispatch_block_t`*
 
 So if you want it to understand them, you could just **declare them**:
 
-![[../../images/image (1160).png]]
+![](../../images/image (1160).png)
 
-![[../../images/image (1162).png]]
+![](../../images/image (1162).png)
 
-![[../../images/image (1163).png]]
+![](../../images/image (1163).png)
 
 Then, find a place in the code where they are **used**:
 
 > [!TIP]
 > Note all of references made to "block" to understand how you could figure out that the struct is being used.
 
-![[../../images/image (1164).png]]
+![](../../images/image (1164).png)
 
 Right click on the variable -> Retype Variable and select in this case **`swift_dispatch_block`**:
 
-![[../../images/image (1165).png]]
+![](../../images/image (1165).png)
 
 Ghidra will automatically rewrite everything:
 
-![[../../images/image (1166).png]]
+![](../../images/image (1166).png)
 
 ## References
 

@@ -86,7 +86,7 @@ ioreg -p <plane> #Check other plane
 
 You could download **`IORegistryExplorer`** from **Xcode Additional Tools** from [**https://developer.apple.com/download/all/**](https://developer.apple.com/download/all/) and inspect the **macOS IORegistry** through a **graphical** interface.
 
-![[../../../images/image (1167).png]]
+![](../../../images/image (1167).png)
 
 In IORegistryExplorer, "planes" are used to organize and display the relationships between different objects in the IORegistry. Each plane represents a specific type of relationship or a particular view of the system's hardware and driver configuration. Here are some of the common planes you might encounter in IORegistryExplorer:
 
@@ -168,7 +168,7 @@ You could obtain these for example from a [**firmware image (ipsw)**](#ipsw). Th
 
 You could start decompiling the **`externalMethod`** function as this is the driver function that will be receiving the call and calling the correct function:
 
-![[../../../images/image (1168).png]]
+![](../../../images/image (1168).png)
 
 ![](../../../images/image (1169).png)
 
@@ -206,19 +206,19 @@ For the next step we need to have defined the **`IOExternalMethodDispatch2022`**
 
 Now, following the `(IOExternalMethodDispatch2022 *)&sIOExternalMethodArray` you can see a lot of data:
 
-![[../../../images/image (1176).png]]
+![](../../../images/image (1176).png)
 
 Change the Data Type to **`IOExternalMethodDispatch2022:`**
 
-![[../../../images/image (1177).png]]
+![](../../../images/image (1177).png)
 
 after the change:
 
-![[../../../images/image (1179).png]]
+![](../../../images/image (1179).png)
 
 And as we now in there we have an **array of 7 elements** (check the final decompiled code), click to create an array of 7 elements:
 
-![[../../../images/image (1180).png]]
+![](../../../images/image (1180).png)
 
 After the array is created you can see all the exported functions:
 

@@ -6,7 +6,7 @@
 
 Mach-o binaries contains a load command called **`LC_CODE_SIGNATURE`** that indicates the **offset** and **size** of the signatures inside the binary. Actually, using the GUI tool MachOView, it's possible to find at the end of the binary a section called **Code Signature** with this information:
 
-![[../../../images/image (1) (1) (1) (1).png]]
+![](../../../images/image (1) (1) (1) (1).png)
 
 The magic header of the Code Signature is **`0xFADE0CC0`** (embedded code signature) or **`0xFADE0CC1`** (detached code signature). Then you have information such as the length and the number of blobs of the superBlob that contains them.\
 It's possible to find this information in the [source code here](https://github.com/apple-oss-distributions/xnu/blob/94d3b452840153a99b38a3a9659680b2a006908e/osfmk/kern/cs_blobs.h#L276):
