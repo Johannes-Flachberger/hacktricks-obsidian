@@ -1,5 +1,10 @@
 # Exfiltration
 
+> [!TIP]
+> For an end-to-end example of staging loot in `C:\Users\Public` and exfiltrating it with Rclone to mimic legitimate backups, review the workflow below.
+
+[[../windows-hardening/windows-local-privilege-escalation/dll-hijacking/advanced-html-staged-dll-sideloading.md]]
+
 ## Commonly whitelisted domains to exfiltrate information
 
 Check [https://lots-project.com/](https://lots-project.com/) to find commonly whitelisted domains that can be abused

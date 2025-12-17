@@ -43,5 +43,5 @@ openssl pkcs12 -in file.pfx -out out.pem
 
 ### CT logs
 
-- https://crt.sh/
+- [https://crt.sh/](https://crt.sh/)
 
