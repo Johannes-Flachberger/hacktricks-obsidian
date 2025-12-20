@@ -711,6 +711,10 @@ If a driver exposes an arbitrary kernel read/write primitive (common in poorly d
 
 [[arbitrary-kernel-rw-token-theft.md]]
 
+For race-condition bugs where the vulnerable call opens an attacker-controlled Object Manager path, deliberately slowing the lookup (using max-length components or deep directory chains) can stretch the window from microseconds to tens of microseconds:
+
+[[kernel-race-condition-object-manager-slowdown.md]]
+
 #### Registry hive memory corruption primitives
 
 Modern hive vulnerabilities let you groom deterministic layouts, abuse writable HKLM/HKU descendants, and convert metadata corruption into kernel paged-pool overflows without a custom driver. Learn the full chain here:
