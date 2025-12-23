@@ -472,18 +472,7 @@ settings set target.x86-disassembly-flavor intel
 | **stepi (s / si)** | Execute the next instruction. Unlike the nexti command, this command will step into function calls. |
 | **finish (f)** | Execute the rest of the instructions in the current function (“frame”) return and halt. |
 | **control \+ c** | Pause execution. If the process has been run (r) or continued (c), this will cause the process to halt ...wherever it is currently executing. |
-| **breakpoint (b)** | `b main` \#Any func called main<br>`b main` \#Main func of the bin<br>`b set -n main --shlib ` \#Main func of the indicated bin<br>`breakpoint set -r '\[NSFileManager .*\]$'` \#Any NSFileManager method<br>`breakpoint set -r '\[NSFileManager contentsOfDirectoryAtPath:.*\]$'`<br>`break set -r . -s libobjc.A.dylib` \# Break in all functions of that library<br>`b -a 0x0000000100004bd9`<br>`br l` \#Breakpoint list<br>`br e/dis ` \#Enable/Disable breakpoint<br>breakpoint delete |
-| **help** | help breakpoint \#Get help of breakpoint command<br>help memory write \#Get help to write into the memory |
-| **reg** | reg read<br>reg read $rax<br>reg read $rax \-\-format \<[format](https://lldb.llvm.org/use/variable.html#type-format)\><br>reg write $rip 0x100035cc0 |
-| **x/s** | Display the memory as a null\-terminated string. |
-| **x/i** | Display the memory as assembly instruction. |
-| **x/b** | Display the memory as byte. |
-| **print object (po)** | This will print the object referenced by the param<br>po $raw<br>`{`<br>`dnsChanger = {`<br>`"affiliate" = "";`<br>`"blacklist_dns" = ();`<br>Note that most of Apple’s Objective\-C APIs or methods return objects, and thus should be displayed via the “print object” (po) command. If po doesn't produce a meaningful output use `x/b` |
-| **memory** | memory read 0x000\....   memory read $x0\+0xf2a   memory write 0x100600000 \-s 4 0x41414141 \#Write AAAA in that address   memory write \-f s $rip\+0x11f\+7 "AAAA" \#Write AAAA in the addr |
-| **disassembly** | dis \#Disas current function<br>dis \-n  \#Disas func<br>dis \-n  \-b  \#Disas func   dis \-c 6 \#Disas 6 lines   dis \-c 0x100003764 \-e 0x100003768 \# From one add until the other   dis \-p \-c 4 \# Start in current address disassembling |
-| **parray** | parray 3 (char \*\*)$x1 \# Check array of 3 components in x1 reg |
-| **image dump sections** | Print map of the current process memory |
-| **image dump symtab** | `image dump symtab CoreNLP` \#Get the address of all the symbols from CoreNLP |
+| **breakpoint (b)** | `b main` \#Any func called main<br>`b main #Main func of the bin<br>b set -n main --shlib  #Main func of the indicated bin<br>breakpoint set -r '\[NSFileManager .*\]$' #Any NSFileManager method<br>breakpoint set -r '\[NSFileManager contentsOfDirectoryAtPath:.*\]$'<br>break set -r . -s libobjc.A.dylib # Break in all functions of that library<br>b -a 0x0000000100004bd9<br>br l #Breakpoint list<br>br e/dis  #Enable/Disable breakpoint<br>breakpoint delete ` |
 
 > [!TIP]
 > When calling the **`objc_sendMsg`** function, the **rsi** register holds the **name of the method** as a null-terminated (“C”) string. To print the name via lldb do:
