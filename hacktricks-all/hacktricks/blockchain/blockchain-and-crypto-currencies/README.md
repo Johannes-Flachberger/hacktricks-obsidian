@@ -182,6 +182,12 @@ These practices and mechanisms are foundational for anyone looking to engage wit
 
 [[value-centric-web3-red-teaming.md]]
 
+## Web3 Signing Workflow Compromise
+
+- Supply-chain tampering of wallet UIs can mutate EIP-712 payloads right before signing, harvesting valid signatures for delegatecall-based proxy takeovers (e.g., slot-0 overwrite of Safe masterCopy).
+
+[[web3-signing-workflow-compromise-safe-delegatecall-proxy-takeover.md]]
+
 ## Smart Contract Security
 
 - Mutation testing to find blind spots in test suites:
