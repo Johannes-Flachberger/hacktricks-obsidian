@@ -4,7 +4,7 @@
 
 ![](../../../../../images/image (901).png)
 
-*Image from <http://newosxbook.com/files/HITSB.pdf>*
+Image from <http://newosxbook.com/files/HITSB.pdf>
 
 In the previous image it's possible to observe **how the sandbox will be loaded** when an application with the entitlement **`com.apple.security.app-sandbox`** is run.
 

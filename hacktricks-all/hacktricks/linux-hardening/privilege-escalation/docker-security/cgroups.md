@@ -81,7 +81,7 @@ The **root cgroup** is an exception to these rules, allowing direct process plac
 
 ![](../../../images/image (908).png)
 
-*CPU usage statistics as shown in the cpu.stat file*
+CPU usage statistics as shown in the cpu.stat file
 
 ## References
 

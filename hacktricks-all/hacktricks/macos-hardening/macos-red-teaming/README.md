@@ -84,7 +84,7 @@ With this information, **create a VM** with the **stolen** Hardware **UUID** and
 
 ![](../../images/image (1025).png)
 
-*a*
+a
 
 You could also monitor the location `/Library/Application Support/Jamf/tmp/` for the **custom scripts** admins might want to execute via Jamf as they are **placed here, executed and removed**. These scripts **might contain credentials**.
 

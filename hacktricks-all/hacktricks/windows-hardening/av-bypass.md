@@ -80,13 +80,13 @@ It turns out that Microsoft Defender's Sandbox computername is HAL9TH, so, you c
 
 ![](../images/image (209).png)
 
-*source: <https://youtu.be/StSLxFbVz0M?t=1439>*
+source: <https://youtu.be/StSLxFbVz0M?t=1439>
 
 Some other really good tips from [@mgeeky](https://twitter.com/mariuszbit) for going against Sandboxes
 
 ![](../images/image (248).png)
 
-*[Red Team VX Discord](https://discord.com/servers/red-team-vx-community-1012733841229746240) \#malware\-dev channel*
+[Red Team VX Discord](https://discord.com/servers/red-team-vx-community-1012733841229746240) \#malware\-dev channel
 
 As we've said before in this post, **public tools** will eventually **get detected**, so, you should ask yourself something:
 
@@ -105,7 +105,7 @@ As we can see in this image, a DLL Payload from Havoc has a detection rate of 4/
 
 ![](../images/image (1130).png)
 
-*antiscan.me comparison of a normal Havoc EXE payload vs a normal Havoc DLL*
+antiscan.me comparison of a normal Havoc EXE payload vs a normal Havoc DLL
 
 Now we'll show some tricks you can use with DLL files to be much more stealthier.
 

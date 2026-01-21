@@ -472,7 +472,7 @@ settings set target.x86-disassembly-flavor intel
 | **stepi (s / si)** | Execute the next instruction. Unlike the nexti command, this command will step into function calls. |
 | **finish (f)** | Execute the rest of the instructions in the current function (“frame”) return and halt. |
 | **control \+ c** | Pause execution. If the process has been run (r) or continued (c), this will cause the process to halt ...wherever it is currently executing. |
-| **breakpoint (b)** | `b main` \#Any func called main   `b main #Main func of the bin   b set -n main --shlib  #Main func of the indicated bin   breakpoint set -r '\[NSFileManager .*\]$' #Any NSFileManager method   breakpoint set -r '\[NSFileManager contentsOfDirectoryAtPath:.*\]$'   break set -r . -s libobjc.A.dylib # Break in all functions of that library   b -a 0x0000000100004bd9   br l #Breakpoint list   br e/dis  #Enable/Disable breakpoint   breakpoint delete ` |
+| **breakpoint (b)** | `b main` \#Any func called main<br>`b main #Main func of the bin<br>b set -n main --shlib  #Main func of the indicated bin<br>breakpoint set -r '\[NSFileManager .*\]$' #Any NSFileManager method<br>breakpoint set -r '\[NSFileManager contentsOfDirectoryAtPath:.*\]$'<br>break set -r . -s libobjc.A.dylib # Break in all functions of that library<br>b -a 0x0000000100004bd9<br>br l #Breakpoint list<br>br e/dis  #Enable/Disable breakpoint<br>breakpoint delete ` |
 
 > [!TIP]
 > When calling the **`objc_sendMsg`** function, the **rsi** register holds the **name of the method** as a null-terminated (“C”) string. To print the name via lldb do:

@@ -24,7 +24,7 @@ It's possible to **put a window over the TCC prompt** to make the user **accept*
 
 ![](broken-reference)
 
-*<https://github.com/breakpointHQ/TCC-ClickJacking/raw/main/resources/clickjacking.jpg>*
+<https://github.com/breakpointHQ/TCC-ClickJacking/raw/main/resources/clickjacking.jpg>
 
 ### TCC Request by arbitrary name
 
