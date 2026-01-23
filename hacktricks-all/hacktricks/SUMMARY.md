@@ -276,6 +276,7 @@
   - [SeImpersonate from High To System](windows-hardening/windows-local-privilege-escalation/seimpersonate-from-high-to-system.md)
   - [Semanagevolume Perform Volume Maintenance Tasks](windows-hardening/windows-local-privilege-escalation/semanagevolume-perform-volume-maintenance-tasks.md)
   - [Service Triggers](windows-hardening/windows-local-privilege-escalation/service-triggers.md)
+  - [Telephony Tapsrv Arbitrary Dword Write To Rce](windows-hardening/windows-local-privilege-escalation/telephony-tapsrv-arbitrary-dword-write-to-rce.md)
   - [Windows C Payloads](windows-hardening/windows-local-privilege-escalation/windows-c-payloads.md)
 - [Active Directory Methodology](windows-hardening/active-directory-methodology/README.md)
   - [Abusing Active Directory ACLs/ACEs](windows-hardening/active-directory-methodology/acl-persistence-abuse/README.md)
@@ -898,11 +899,13 @@
   - [ios Corellium](binary-exploitation/ios-exploiting/ios-corellium.md)
   - [ios Heap Exploitation](binary-exploitation/ios-exploiting/ios-example-heap-exploit.md)
   - [ios Physical UAF - IOSurface](binary-exploitation/ios-exploiting/ios-physical-uaf-iosurface.md)
+  - [Webkit Dfg Store Barrier Uaf Angle Oob](binary-exploitation/ios-exploiting/webkit-dfg-store-barrier-uaf-angle-oob.md)
 
 # 🤖 AI
 - [AI Security](AI/README.md)
   - [Ai Assisted Fuzzing And Vulnerability Discovery](AI/AI-Assisted-Fuzzing-and-Vulnerability-Discovery.md)
   - [AI Security Methodology](AI/AI-Deep-Learning.md)
+  - [Burp MCP: LLM-assisted traffic review](AI/AI-Burp-MCP.md)
   - [AI MCP Security](AI/AI-MCP-Servers.md)
   - [AI Model Data Preparation](AI/AI-Model-Data-Preparation-and-Evaluation.md)
   - [AI Models RCE](AI/AI-Models-RCE.md)
