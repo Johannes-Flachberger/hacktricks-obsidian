@@ -10,6 +10,8 @@
 
 [[android-mediatek-secure-boot-bl2_ext-bypass-el3.md]]
 
+[[mediatek-xflash-carbonara-da2-hash-bypass.md]]
+
 Firmware is essential software that enables devices to operate correctly by managing and facilitating communication between the hardware components and the software that users interact with. It's stored in permanent memory, ensuring the device can access vital instructions from the moment it's powered on, leading to the operating system's launch. Examining and potentially modifying firmware is a critical step in identifying security vulnerabilities.
 
 ## **Gathering Information**
@@ -180,9 +182,9 @@ Both source code and compiled binaries found in the filesystem must be scrutiniz
 
 Many IoT hubs fetch their per-device configuration from a cloud endpoint that looks like:
 
-- [https://<api-host>/pf/<deviceId>/<token>](https://<api-host>/pf/<deviceId>/<token>)
+- `https://<api-host>/pf/<deviceId>/<token>`
 
-During firmware analysis you may find that <token> is derived locally from the device ID using a hardcoded secret, for example:
+During firmware analysis you may find that `<token>` is derived locally from the device ID using a hardcoded secret, for example:
 
 - token = MD5( deviceId || STATIC_KEY ) and represented as uppercase hex
 
