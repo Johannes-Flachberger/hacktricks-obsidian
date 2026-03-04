@@ -708,6 +708,12 @@ Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Ac
 Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Acl $_ -EA SilentlyContinue | Where {($_.Access|select -ExpandProperty IdentityReference) -match 'BUILTIN\Users'} } catch {}}
 ```
 
+### Notepad++ plugin autoload persistence/execution
+
+Notepad++ autoloads any plugin DLL under its `plugins` subfolders. If a writable portable/copy install is present, dropping a malicious plugin gives automatic code execution inside `notepad++.exe` on every launch (including from `DllMain` and plugin callbacks).
+
+[[notepad-plus-plus-plugin-autoload-persistence.md]]
+
 ### Run at startup
 
 **Check if you can overwrite some registry or binary that is going to be executed by a different user.**\
@@ -1497,6 +1503,12 @@ More details:
 ### File Extensions that could execute stuff in Windows
 
 Check out the page **[https://filesec.io/](https://filesec.io/)**
+
+### Protocol handler / ShellExecute abuse via Markdown renderers
+
+Clickable Markdown links forwarded to `ShellExecuteExW` can trigger dangerous URI handlers (`file:`, `ms-appinstaller:` or any registered scheme) and execute attacker-controlled files as the current user. See:
+
+[[../protocol-handler-shell-execute-abuse.md]]
 
 ### **Monitoring Command Lines for passwords**
 
