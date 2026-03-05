@@ -207,6 +207,8 @@ impacket-rbcd -delegate-to 'VICTIM$' -action flush 'domain.local/jdoe:Summer2025
 
 [[../../generic-methodologies-and-resources/pentesting-network/spoofing-llmnr-nbt-ns-mdns-dns-and-wpad-and-relay-attacks.md]]
 
+- If LDAP signing/channel binding are **disabled** and you can create a machine account, tools like **KrbRelayUp** can relay a coerced Kerberos auth to LDAP, set `msDS-AllowedToActOnBehalfOfOtherIdentity` for your machine account on the target computer object, and immediately impersonate **Administrator** via S4U from off-host.
+
 ## References
 
 - [https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html](https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html)
@@ -216,4 +218,5 @@ impacket-rbcd -delegate-to 'VICTIM$' -action flush 'domain.local/jdoe:Summer2025
 - [https://posts.specterops.io/kerberosity-killed-the-domain-an-offensive-kerberos-overview-eb04b1402c61](https://posts.specterops.io/kerberosity-killed-the-domain-an-offensive-kerberos-overview-eb04b1402c61)
 - Impacket rbcd.py (official): https://github.com/fortra/impacket/blob/master/examples/rbcd.py
 - Quick Linux cheatsheet with recent syntax: https://tldrbins.github.io/rbcd/
+- [0xdf – HTB Bruno (LDAP signing off → Kerberos relay to RBCD)](https://0xdf.gitlab.io/2026/02/24/htb-bruno.html)
 
