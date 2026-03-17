@@ -1,57 +1,189 @@
 ;(function sponsor() {
   var sponsorSide = document.querySelector(".sidesponsor")
-  var sponsorImg = sponsorSide.querySelector(".sidesponsor img")
-  var sponsorTitle = sponsorSide.querySelector(".sponsor-title")
-  var sponsorDescription = sponsorSide.querySelector(".sponsor-description")
-  var sponsorCTA = sponsorSide.querySelector(".sponsor-cta")
-  var mobilesponsorSide = document.querySelector(".mobilesponsor")
-  var mobilesponsorImg = mobilesponsorSide.querySelector(".mobilesponsor img")
-  var mobilesponsorTitle = mobilesponsorSide.querySelector(
-    ".mobilesponsor-title"
-  )
-  var mobilesponsorDescription = mobilesponsorSide.querySelector(
-    ".mobilesponsor-description"
-  )
-  var mobilesponsorCTA = mobilesponsorSide.querySelector(".mobilesponsor-cta")
+  var sponsorImg = sponsorSide && sponsorSide.querySelector("img")
+  var sponsorTitle = sponsorSide && sponsorSide.querySelector(".sponsor-title")
+  var sponsorDescription =
+    sponsorSide && sponsorSide.querySelector(".sponsor-description")
+  var sponsorCTA = sponsorSide && sponsorSide.querySelector(".sponsor-cta")
+  var sponsorSideBsa = document.querySelector(".sidesponsor-bsa")
+  var topSponsorBsa = document.querySelector(".topsponsor-bsa")
 
-  async function getSponsor() {
-  const currentUrl = encodeURIComponent(window.location.href);
-  const url = `https://cloud.hacktricks.wiki/sponsor?current_url=${currentUrl}`;
-    try {
-      const response = await fetch(url, { method: "GET" })
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`)
+  var bottomSponsor = document.querySelector(".bottomsponsor")
+  var bottomSponsorImg = bottomSponsor && bottomSponsor.querySelector("img")
+  var bottomSponsorTitle =
+    bottomSponsor && bottomSponsor.querySelector(".bottomsponsor-title")
+  var bottomSponsorDescription =
+    bottomSponsor && bottomSponsor.querySelector(".bottomsponsor-description")
+  var bottomSponsorCTA =
+    bottomSponsor && bottomSponsor.querySelector(".bottomsponsor-cta")
+  var bottomSponsorBsa = document.querySelector(".bottomsponsor-bsa")
+
+  if (
+    !sponsorSide ||
+    !bottomSponsor ||
+    !sponsorSideBsa ||
+    !topSponsorBsa ||
+    !bottomSponsorBsa
+  ) {
+    return
+  }
+
+  var BSA_SCRIPT_BASE = "https://cdn4.buysellads.net/pub/hacktricks.js"
+  var bsaScriptPromise
+
+  function getBsaScriptSrc() {
+    return BSA_SCRIPT_BASE + "?" + (new Date() - (new Date() % 600000))
+  }
+
+  function ensureBsaScript() {
+    if (bsaScriptPromise) {
+      return bsaScriptPromise
+    }
+
+    var existingScript = document.querySelector(
+      'script[src^="' + BSA_SCRIPT_BASE + '"]'
+    )
+    if (existingScript) {
+      bsaScriptPromise = Promise.resolve(existingScript)
+      return bsaScriptPromise
+    }
+
+    bsaScriptPromise = new Promise(function(resolve, reject) {
+      var bsaOptimize = document.createElement("script")
+      bsaOptimize.type = "text/javascript"
+      bsaOptimize.async = true
+      bsaOptimize.src = getBsaScriptSrc()
+      bsaOptimize.onload = function() {
+        resolve(bsaOptimize)
       }
+      bsaOptimize.onerror = reject
+      ;(
+        document.getElementsByTagName("head")[0] ||
+        document.getElementsByTagName("body")[0]
+      ).appendChild(bsaOptimize)
+    })
 
-      const json = await response.json()
-      var sponsor = json.sponsor
-      sponsorImg.src = sponsor.image_url
-      sponsorTitle.textContent = sponsor.name
-      sponsorDescription.innerHTML = sponsor.description
-      sponsorSide.href = sponsor.link
-      sponsorCTA.textContent = sponsor.cta
-      sponsorSide.style.display = "flex"
+    return bsaScriptPromise
+  }
 
-      mobilesponsorImg.src = sponsor.image_url
-      mobilesponsorTitle.textContent = sponsor.name
-      mobilesponsorDescription.innerHTML = sponsor.description
-      mobilesponsorSide.href = sponsor.link
-      mobilesponsorCTA.textContent = sponsor.cta
-      mobilesponsorSide.style.display = "flex"
+  function setLegacySponsorContent(sponsor, container, nodes) {
+    nodes.img.src = sponsor.image_url
+    nodes.img.alt = sponsor.name
+    nodes.title.textContent = sponsor.name
+    nodes.description.innerHTML = sponsor.description
+    container.href = sponsor.link
+    nodes.cta.textContent = sponsor.cta
+    container.style.display = "flex"
 
-      if (sponsor.name.length > 45) {
-        sponsorTitle.style.fontSize = "1.6rem"
-        mobilesponsorTitle.style.fontSize = "1.6rem"
-      }
+    if (sponsor.name.length > 45) {
+      nodes.title.style.fontSize = "1.6rem"
+    }
 
-      if (sponsor.description.length > 250) {
-        sponsorDescription.style.fontSize = "1.4rem"
-        mobilesponsorDescription.style.fontSize = "1.4rem"
-      }
-    } catch (error) {
-      console.error(error.message)
+    if (sponsor.description.length > 250) {
+      nodes.description.style.fontSize = "1.4rem"
     }
   }
 
-  getSponsor()
+  async function fetchLegacySponsor() {
+    var currentUrl = encodeURIComponent(window.location.href)
+    var url = "https://cloud.hacktricks.wiki/sponsor?current_url=" + currentUrl
+    var response = await fetch(url, { method: "GET" })
+
+    if (!response.ok) {
+      throw new Error("Response status: " + response.status)
+    }
+
+    var json = await response.json()
+    return json.sponsor
+  }
+
+  function renderLegacySideSponsor(sponsor) {
+    setLegacySponsorContent(sponsor, sponsorSide, {
+      img: sponsorImg,
+      title: sponsorTitle,
+      description: sponsorDescription,
+      cta: sponsorCTA,
+    })
+  }
+
+  function renderLegacyBottomSponsor(sponsor) {
+    setLegacySponsorContent(sponsor, bottomSponsor, {
+      img: bottomSponsorImg,
+      title: bottomSponsorTitle,
+      description: bottomSponsorDescription,
+      cta: bottomSponsorCTA,
+    })
+  }
+
+  async function loadLegacySponsor() {
+    var sponsor = await fetchLegacySponsor()
+    renderLegacySideSponsor(sponsor)
+    renderLegacyBottomSponsor(sponsor)
+  }
+
+  function shouldUseBsa() {
+    var params = new URLSearchParams(window.location.search)
+    var forcedProvider = params.get("ads")
+
+    if (forcedProvider === "bsa") {
+      return true
+    }
+
+    if (forcedProvider === "legacy") {
+      return false
+    }
+
+    if (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname === "::1"
+    ) {
+      return true
+    }
+
+    return Math.floor(Math.random() * 5) !== 0
+  }
+
+  async function loadBsaSponsor() {
+    bottomSponsorBsa.style.display = "block"
+    if (window.matchMedia("(min-width: 880px)").matches) {
+      sponsorSideBsa.style.display = "block"
+      topSponsorBsa.style.display = "none"
+    } else {
+      sponsorSideBsa.style.display = "none"
+      topSponsorBsa.style.display = "block"
+    }
+    await ensureBsaScript()
+  }
+
+  async function initSponsor() {
+    try {
+      var useBsa = shouldUseBsa()
+      window.__hacktricksAdsProvider = useBsa ? "bsa" : "legacy"
+      console.info("HackTricks ads provider:", window.__hacktricksAdsProvider)
+
+      if (useBsa) {
+        await loadBsaSponsor()
+        return
+      }
+
+      await loadLegacySponsor()
+    } catch (error) {
+      console.error(error.message || error)
+
+      if (sponsorSideBsa.style.display === "block") {
+        sponsorSideBsa.style.display = "none"
+      }
+      topSponsorBsa.style.display = "none"
+      bottomSponsorBsa.style.display = "none"
+
+      try {
+        await loadLegacySponsor()
+      } catch (legacyError) {
+        console.error(legacyError.message || legacyError)
+      }
+    }
+  }
+
+  initSponsor()
 })()
