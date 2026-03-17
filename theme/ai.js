@@ -6,7 +6,12 @@
 (() => {
   try {
     const host = window.location.hostname;
-    if (host === "localhost" || host === "127.0.0.1") return;
+    const port = window.location.port;
+    if (
+      host === "localhost" ||
+      host === "127.0.0.1" ||
+      port === "3377"
+    ) return;
   } catch (e) {}
   const KEY = 'htSummerDiscountsDismissed';
   const IMG = '/ima * HackTricks AI Chat Widget v1.17 – enhanced resizable sidebar

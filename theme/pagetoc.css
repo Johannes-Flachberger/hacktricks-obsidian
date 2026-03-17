@@ -345,6 +345,24 @@
     pointer-events: none;
 }
 
+.bsa-pageviews-slot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.bsa-fixedfooter-slot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
 @media only screen and (min-width: 0px) and (min-height: 0px) {
     #bsa-zone_1773736844679-9_123456 {
         min-height: 100px;
@@ -355,6 +373,14 @@
     }
 
     #bsa-zone_1773065859037-5_123456 {
+        min-height: 1px;
+    }
+
+    #bsa-zone_1770368463-7_123456 {
+        min-height: 1px;
+    }
+
+    #bsa-zone_1770367111944-8_123456 {
         min-height: 1px;
     }
 
@@ -373,6 +399,14 @@
     }
 
     #bsa-zone_1773065859037-5_123456 {
+        min-height: 1px;
+    }
+
+    #bsa-zone_1770368463-7_123456 {
+        min-height: 1px;
+    }
+
+    #bsa-zone_1770367111944-8_123456 {
         min-height: 1px;
     }
 }

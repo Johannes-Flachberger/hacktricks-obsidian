@@ -7,6 +7,8 @@
   var sponsorCTA = sponsorSide && sponsorSide.querySelector(".sponsor-cta")
   var sponsorSideBsa = document.querySelector(".sidesponsor-bsa")
   var topSponsorBsa = document.querySelector(".topsponsor-bsa")
+  var crawlerSlot = document.querySelector(".bsa-crawler-slot")
+  var pageviewsSlot = document.querySelector(".bsa-pageviews-slot")
 
   var bottomSponsor = document.querySelector(".bottomsponsor")
   var bottomSponsorImg = bottomSponsor && bottomSponsor.querySelector("img")
@@ -23,12 +25,18 @@
     !bottomSponsor ||
     !sponsorSideBsa ||
     !topSponsorBsa ||
+    !crawlerSlot ||
+    !pageviewsSlot ||
     !bottomSponsorBsa
   ) {
     return
   }
 
   var BSA_SCRIPT_BASE = "https://cdn4.buysellads.net/pub/hacktricks.js"
+  var BSA_FIXED_LEADERBOARD_FALLBACK = {
+    brokenId: "bsa-zone_1773065859037-5_123456",
+    actualId: "bsa-zone_1770367111944-8_123456",
+  }
   var bsaScriptPromise
 
   function getBsaScriptSrc() {
@@ -49,14 +57,35 @@
     }
 
     bsaScriptPromise = new Promise(function(resolve, reject) {
+      var originalMapGet = Map.prototype.get
+      var restoreMapGet = function() {
+        Map.prototype.get = originalMapGet
+      }
+
+      Map.prototype.get = function(key) {
+        if (
+          key === BSA_FIXED_LEADERBOARD_FALLBACK.brokenId &&
+          !this.has(key) &&
+          this.has(BSA_FIXED_LEADERBOARD_FALLBACK.actualId)
+        ) {
+          return originalMapGet.call(this, BSA_FIXED_LEADERBOARD_FALLBACK.actualId)
+        }
+
+        return originalMapGet.call(this, key)
+      }
+
       var bsaOptimize = document.createElement("script")
       bsaOptimize.type = "text/javascript"
       bsaOptimize.async = true
       bsaOptimize.src = getBsaScriptSrc()
       bsaOptimize.onload = function() {
+        restoreMapGet()
         resolve(bsaOptimize)
       }
-      bsaOptimize.onerror = reject
+      bsaOptimize.onerror = function(error) {
+        restoreMapGet()
+        reject(error)
+      }
       ;(
         document.getElementsByTagName("head")[0] ||
         document.getElementsByTagName("body")[0]
@@ -146,6 +175,7 @@
 
   async function loadBsaSponsor() {
     bottomSponsorBsa.style.display = "block"
+
     if (window.matchMedia("(min-width: 880px)").matches) {
       sponsorSideBsa.style.display = "block"
       topSponsorBsa.style.display = "none"
@@ -153,6 +183,7 @@
       sponsorSideBsa.style.display = "none"
       topSponsorBsa.style.display = "block"
     }
+
     await ensureBsaScript()
   }
 
