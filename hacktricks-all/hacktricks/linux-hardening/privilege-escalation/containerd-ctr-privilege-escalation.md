@@ -2,9 +2,9 @@
 
 ## Basic information
 
-Go to the following link to learn **what is containerd** and `ctr`:
+Go to the following link to learn **where `containerd` and `ctr` fit in the container stack**:
 
-[[../../network-services-pentesting/2375-pentesting-docker.md]]
+[[container-security/runtimes-and-engines.md]]
 
 ## PE 1
 
@@ -41,5 +41,5 @@ You can run a privileged container as:
 
 Then you can use some of the techniques mentioned in the following page to **escape from it abusing privileged capabilities**:
 
-[[docker-security/]]
+[[container-security/]]
 

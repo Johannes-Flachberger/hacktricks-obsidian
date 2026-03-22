@@ -239,7 +239,7 @@ docker run --rm -it --pid=host --net=host --privileged -v /:/mnt <imagename> chr
 
 Finally, if you don't like any of the suggestions of before, or they aren't working for some reason (docker api firewall?) you could always try to **run a privileged container and escape from it** as explained here:
 
-[[../docker-security/]]
+[[../container-security/]]
 
 If you have write permissions over the docker socket read [**this post about how to escalate privileges abusing the docker socket**](../index.html#writable-docker-socket)**.**
 

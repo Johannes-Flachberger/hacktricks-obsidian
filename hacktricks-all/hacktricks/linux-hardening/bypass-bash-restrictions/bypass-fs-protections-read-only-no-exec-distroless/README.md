@@ -80,6 +80,10 @@ With a similar purpose to DDexec, [**memdlopen**](https://github.com/arget13/mem
 
 ## Distroless Bypass
 
+For a dedicated explanation of **what distroless actually is**, when it helps, when it does not, and how it changes post-exploitation tradecraft in containers, check:
+
+[[../../privilege-escalation/container-security/distroless.md]]
+
 ### What is distroless
 
 Distroless containers contain only the **bare minimum components necessary to run a specific application or service**, such as libraries and runtime dependencies, but exclude larger components like a package manager, shell, or system utilities.
