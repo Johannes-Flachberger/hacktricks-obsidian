@@ -12,6 +12,12 @@ For communication with the D-Bus interface, two tools were employed: a CLI tool 
 sudo apt-get install d-feet
 ```
 
+If you are checking the **session bus**, confirm the current address first:
+
+```bash
+echo "$DBUS_SESSION_BUS_ADDRESS"
+```
+
 ![https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-21.png](https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-21.png)
 
 ![https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-22.png](https://unit42.paloaltonetworks.com/wp-content/uploads/2019/07/word-image-22.png)
@@ -55,6 +61,15 @@ org.freedesktop.PolicyKit1               - -               -                (act
 org.freedesktop.hostname1                - -               -                (activatable) -                         -
 org.freedesktop.locale1                  - -               -                (activatable) -                         -
 ```
+
+Services marked as **`(activatable)`** are especially interesting because they are **not running yet**, but a bus request can start them on demand. Do not stop at `busctl list`; map those names to the actual binaries they would execute.
+
+```bash
+ls -la /usr/share/dbus-1/system-services/ /usr/share/dbus-1/services/ 2>/dev/null
+grep -RInE '^(Name|Exec|User)=' /usr/share/dbus-1/system-services /usr/share/dbus-1/services 2>/dev/null
+```
+
+That quickly tells you which `Exec=` path will start for an activatable name and under which identity. If the binary or its execution chain is weakly protected, an inactive service can still become a privilege-escalation path.
 
 #### Connections
 
@@ -124,6 +139,16 @@ BoundingCapabilities=cap_chown cap_dac_override cap_dac_read_search
         cap_wake_alarm cap_block_suspend cap_audit_read
 ```
 
+Also correlate the bus name with its `systemd` unit and executable path:
+
+```bash
+systemctl status dbus-server.service --no-pager
+systemctl cat dbus-server.service
+namei -l /root/dbus-server
+```
+
+This answers the operational question that matters during privesc: **if a method call succeeds, which real binary and unit will perform the action?**
+
 ### List Interfaces of a Service Object
 
 You need to have enough permissions.
@@ -159,6 +184,13 @@ org.freedesktop.DBus.Properties     interface -         -            -
 ```
 
 Note the method `.Block` of the interface `htb.oouch.Block` (the one we are interested in). The "s" of the other columns may mean that it's expecting a string.
+
+Before trying anything dangerous, validate a **read-oriented** or otherwise low-risk method first. This separates three cases cleanly: wrong syntax, reachable but denied, or reachable and allowed.
+
+```bash
+busctl call org.freedesktop.login1 /org/freedesktop/login1 org.freedesktop.login1.Manager CanReboot
+gdbus call --system --dest org.freedesktop.login1 --object-path /org/freedesktop/login1 --method org.freedesktop.login1.Manager.CanReboot
+```
 
 ### Monitor/Capture Interface
 

@@ -188,6 +188,12 @@ These practices and mechanisms are foundational for anyone looking to engage wit
 
 [[web3-signing-workflow-compromise-safe-delegatecall-proxy-takeover.md]]
 
+## Account Abstraction (ERC-4337)
+
+- Common smart-account failure modes include bypassing `EntryPoint` access control, unsigned gas fields, stateful validation, ERC-1271 replay, and fee-drain via revert-after-validation.
+
+[[erc-4337-smart-account-security-pitfalls.md]]
+
 ## Smart Contract Security
 
 - Mutation testing to find blind spots in test suites:
